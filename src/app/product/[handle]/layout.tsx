@@ -14,14 +14,14 @@ export async function generateMetadata(
 
   try {
     const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
-    const TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || process.env.SHOPIFY_API_KEY;
+    const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
 
-    if (SHOPIFY_STORE && TOKEN) {
-      const res = await fetch(`https://${SHOPIFY_STORE}/api/2024-01/graphql.json`, {
+    if (SHOPIFY_STORE && ADMIN_TOKEN) {
+      const res = await fetch(`https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Shopify-Storefront-Access-Token": TOKEN,
+          "X-Shopify-Access-Token": ADMIN_TOKEN,
         },
         body: JSON.stringify({
           query: `
@@ -42,19 +42,27 @@ export async function generateMetadata(
 
       if (res.ok) {
         const json = await res.json();
+        console.log("GraphQL Response:", JSON.stringify(json).slice(0, 200));
         const product = json?.data?.productByHandle;
         if (product) {
           title = product.seo?.title || product.title;
           description = product.seo?.description || description;
+          console.log("Setting SEO title to:", title);
         }
+      } else {
+        console.error("Shopify fetch failed:", res.status, res.statusText);
       }
+    } else {
+      console.error("Missing SHOPIFY_STORE or TOKEN in env!");
     }
   } catch (error) {
     console.error("Error fetching product SEO metadata:", error);
   }
 
   return {
-    title,
+    title: {
+      absolute: title,
+    },
     description,
     openGraph: {
       title,
