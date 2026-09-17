@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Clock, ArrowRight, BookOpen, User } from "lucide-react";
-import { BLOG_POSTS, BlogPost } from "@/app/blogs/news/page";
+import { BLOG_POSTS, BlogPost } from "@/app/blog/page";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -114,7 +114,7 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
           </div>
 
           <Link
-            href={settings.viewAllHref || "/blogs/news"}
+            href={settings.viewAllHref || "/blog"}
             className="group self-start md:self-auto inline-flex items-center justify-center gap-2 bg-foreground text-background hover:bg-primary transition-colors text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-full shadow-sm"
           >
             <span>{settings.viewAllLabel}</span>
@@ -164,7 +164,7 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
 
                   {/* Title */}
                   <CardTitle className="text-lg sm:text-xl font-sans text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                    <Link href={`/blogs/news/${post.slug}`} className="hover:underline decoration-primary/30 underline-offset-4">
+                    <Link href={`/blog/${post.slug}`} className="hover:underline decoration-primary/30 underline-offset-4">
                       {post.title}
                     </Link>
                   </CardTitle>
@@ -186,7 +186,7 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
                 </span>
                 
                 <Link
-                  href={`/blogs/news/${post.slug}`}
+                  href={`/blog/${post.slug}`}
                   className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background group-hover:bg-primary transition-all duration-300 hover:scale-105 shadow-xs"
                   aria-label="Read Guide"
                 >
@@ -200,7 +200,7 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
         {/* Bottom Mobile View All Link */}
         <div className="text-center pt-1 md:hidden">
           <Link
-            href={settings.viewAllHref || "/blogs/news"}
+            href={settings.viewAllHref || "/blog"}
             className={cn(
               buttonVariants({ variant: "outline", size: "sm" }),
               "w-full sm:w-auto inline-flex items-center gap-2"
