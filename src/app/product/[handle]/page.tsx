@@ -605,9 +605,9 @@ export default function ProductPage() {
                   {product.section || product.category}
                 </span>
 
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-foreground mt-1.5 leading-tight tracking-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-foreground mt-1.5 leading-tight tracking-tight">
                   {product.name}
-                </h3>
+                </h1>
 
                 {/* Compact Rating & In-Stock & Social Share Bar */}
                 <div className="flex flex-wrap items-center justify-between gap-3 mt-2.5 pb-3 border-b border-border/40">

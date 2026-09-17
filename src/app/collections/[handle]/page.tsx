@@ -487,17 +487,7 @@ function CollectionPageContent() {
     };
   }, [handle, collectionMeta, sectionInstances]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && collectionInfo) {
-      const seoTitle = collectionInfo.seo?.title || collectionInfo.title;
-      const seoDesc = collectionInfo.seo?.description || collectionInfo.description;
-      document.title = `${seoTitle} | Vape Shop Dubai`;
-      let metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute("content", seoDesc);
-      }
-    }
-  }, [collectionInfo]);
+
 
   // Base collection products for THIS specific page/handle
   const collectionProducts = useMemo(() => {
@@ -833,7 +823,7 @@ function CollectionPageContent() {
                     PRODUCTS
                   </Link>
                   <span className="text-muted-foreground/40 shrink-0 font-light">/</span>
-                  <span className="text-foreground font-extrabold">{collectionInfo.title}</span>
+                  <h1 className="text-foreground font-extrabold m-0 text-base">{collectionInfo.title}</h1>
                 </nav>
 
                 <div className="flex items-center gap-2">
