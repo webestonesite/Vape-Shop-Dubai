@@ -35,6 +35,9 @@ query getArticleByHandle($blogHandle: String!, $articleHandle: String!) {
 }
 `;
 
+const singleArticleCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 10 * 60 * 1000;
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ handle: string }> }
@@ -43,6 +46,13 @@ export async function GET(
     const { handle } = await params;
     if (!handle) {
       return NextResponse.json({ error: "Article handle is required" }, { status: 400 });
+    }
+
+    const cached = singleArticleCache.get(handle);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json(cached.data, {
+        headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
+      });
     }
 
     // Try Storefront API first (blog handle = "news")
@@ -66,7 +76,7 @@ export async function GET(
           const json = await res.json();
           const node = json.data?.blogByHandle?.articleByHandle;
           if (node) {
-            return NextResponse.json({
+            const articleData = {
               id: node.id,
               title: node.title,
               handle: node.handle,
@@ -79,6 +89,12 @@ export async function GET(
               blogTitle: node.blog?.title || "News & Vaping Guides",
               seoTitle: node.seo?.title || node.title,
               seoDescription: node.seo?.description || node.excerpt,
+            };
+
+            singleArticleCache.set(handle, { data: articleData, timestamp: Date.now() });
+
+            return NextResponse.json(articleData, {
+              headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
             });
           }
         }

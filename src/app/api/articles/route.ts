@@ -225,7 +225,17 @@ const BUILTIN_ARTICLES: ShopifyArticle[] = [
   },
 ];
 
+let articlesCache: { data: ShopifyArticle[]; timestamp: number } | null = null;
+const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+
 export async function GET() {
+  if (articlesCache && Date.now() - articlesCache.timestamp < CACHE_DURATION_MS) {
+    return NextResponse.json(
+      { articles: articlesCache.data },
+      { headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" } }
+    );
+  }
+
   try {
     let articles: ShopifyArticle[] = [];
 
@@ -320,7 +330,12 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ articles });
+    articlesCache = { data: articles, timestamp: Date.now() };
+
+    return NextResponse.json(
+      { articles },
+      { headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" } }
+    );
   } catch (error: any) {
     console.error("Articles API error:", error?.message || error);
     return NextResponse.json({ articles: BUILTIN_ARTICLES }, { status: 500 });
