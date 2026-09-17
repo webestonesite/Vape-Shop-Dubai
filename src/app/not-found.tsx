@@ -39,8 +39,8 @@ export default function NotFound() {
       <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 flex flex-col lg:flex-row items-center h-full mt-20 lg:mt-10">
         
         {/* Left Side: Character Image */}
-        <div className="w-full lg:w-[45%] flex justify-center lg:justify-start items-end relative h-[350px] lg:h-[750px] mb-8 lg:mb-0 lg:pl-10">
-          <div className="relative w-full h-full mx-auto lg:mx-0 lg:scale-125 xl:scale-150 lg:origin-bottom lg:-ml-10 xl:-ml-20">
+        <div className="w-full lg:w-[45%] flex justify-center lg:justify-start items-center relative h-[350px] lg:h-[850px] mb-8 lg:mb-0 lg:pl-10 lg:-mt-20">
+          <div className="relative w-full h-full mx-auto lg:mx-0 lg:scale-[1.4] xl:scale-[1.8] lg:origin-center lg:-translate-y-12 lg:-translate-x-4">
             <Image
               src="/vape_404_character.png"
               alt="Sad Vape Character"
