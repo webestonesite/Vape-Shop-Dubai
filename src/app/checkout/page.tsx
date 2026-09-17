@@ -351,7 +351,7 @@ export default function CheckoutPage() {
                       src={item.image}
                       alt={item.name}
                       className="h-full w-auto object-contain"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/hero_vape.png"; }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
                     />
                   </div>
                   <div className="flex-grow min-w-0">

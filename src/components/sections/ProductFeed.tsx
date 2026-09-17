@@ -228,7 +228,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
             sizes="(max-width: 640px) 160px, (max-width: 1024px) 230px, 260px"
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = "/hero_vape.png";
+              (e.currentTarget as HTMLImageElement).style.opacity = "0";
               setImageLoaded(true);
             }}
             className={`h-[160px] sm:h-[230px] lg:h-[260px] max-h-full w-auto object-contain filter drop-shadow-md transition-all duration-300 ${

@@ -139,7 +139,7 @@ export const AuthorizedDealers: React.FC<AuthorizedDealersProps> = ({
               <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex items-center justify-center bg-muted/20 border border-primary/15 group-hover:border-primary/40 rounded-xl p-1 sm:p-2 mb-2 transition-colors">
                 <SmartImage
                   src={(getHandleFromUrl(brand.href) ? collectionImages[getHandleFromUrl(brand.href)!] : undefined) || brand.image}
-                  fallbackSrc="/hero_vape.png"
+                  fallbackSrc=""
                   alt={brand.name}
                   width={64}
                   height={64}

@@ -403,7 +403,7 @@ export async function GET(
     }
 
     const images = node.images?.edges?.map((edge: any) => edge.node.url) || [];
-    const image = images[0] || "/hero_vape.png";
+    const image = images[0] || "";
 
     let specsTable: any = null;
 

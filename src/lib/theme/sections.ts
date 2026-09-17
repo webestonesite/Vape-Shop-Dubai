@@ -99,7 +99,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           accent: "Category",
           description: "",
           image: "",
-          fallbackImage: "/hero_vape.png",
+          fallbackImage: "",
           tag: "New",
           buttonText: "Shop Now",
           ctaHref: "/shop",

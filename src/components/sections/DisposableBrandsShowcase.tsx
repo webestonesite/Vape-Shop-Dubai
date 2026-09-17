@@ -291,7 +291,7 @@ export function DisposableBrandsShowcase({
             <div className="w-full h-40 sm:h-48 rounded-2xl bg-slate-950 border border-border/40 relative mb-3.5 overflow-hidden shrink-0 group-hover:border-primary/40 transition-all duration-300">
               <SmartImage
                 src={collectionImages[brand.handle] || brand.image}
-                fallbackSrc="/hero_vape.png"
+                fallbackSrc=""
                 alt={brand.name}
                 width={330}
                 height={192}

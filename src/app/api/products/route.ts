@@ -261,7 +261,7 @@ export async function GET() {
       }
 
       const allImages = node.images?.edges?.map((img: any) => img.node?.url).filter(Boolean) || [];
-      const image = allImages[0] || "/hero_vape.png";
+      const image = allImages[0] || "";
       const hoverImage = allImages.length > 1 ? allImages[1] : undefined;
 
       return {

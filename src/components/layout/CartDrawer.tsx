@@ -92,7 +92,7 @@ export const CartDrawer: React.FC = () => {
                     alt={item.name}
                     className="h-full w-full object-cover"
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = "/hero_vape.png";
+                      (e.currentTarget as HTMLImageElement).style.opacity = "0";
                     }}
                   />
                 </div>

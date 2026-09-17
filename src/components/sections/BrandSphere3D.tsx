@@ -428,7 +428,7 @@ export function BrandSphere3D({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {featuredBrands.map((b) => {
-              const brandImg = collectionImages[b.handle] || b.image || "/hero_vape.png";
+              const brandImg = collectionImages[b.handle] || b.image || "";
               return (
                 <div
                   key={b.handle}
@@ -505,7 +505,7 @@ export function BrandSphere3D({
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
             {filteredBrands.map((b) => {
-              const brandImg = collectionImages[b.handle] || b.image || "/hero_vape.png";
+              const brandImg = collectionImages[b.handle] || b.image || "";
               return (
                 <div
                   key={b.handle}
@@ -522,7 +522,7 @@ export function BrandSphere3D({
                       alt={b.name}
                       className="w-full h-full object-contain"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/hero_vape.png";
+                        (e.currentTarget as HTMLImageElement).style.opacity = "0";
                       }}
                     />
                   </div>

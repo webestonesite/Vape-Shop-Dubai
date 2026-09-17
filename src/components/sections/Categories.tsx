@@ -77,7 +77,7 @@ export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
             <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex items-center justify-center bg-muted/20 border border-primary/15 group-hover:border-primary/40 rounded-xl p-1 sm:p-2 mb-2 transition-colors">
               <SmartImage
                 src={section.image}
-                fallbackSrc="/hero_vape.png"
+                fallbackSrc=""
                 alt={section.label}
                 width={64}
                 height={64}

@@ -453,7 +453,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                   src={product.image}
                                   alt={product.name}
                                   className="w-9 h-9 rounded-lg object-contain bg-white dark:bg-muted p-1 flex-shrink-0"
-                                  onError={(e) => { e.currentTarget.src = "/hero_vape.png"; }}
+                                  onError={(e) => { e.currentTarget.style.opacity = "0"; }}
                                 />
                                 <div className="min-w-0 flex-1">
                                   <p className="text-xs font-bold text-foreground truncate">{product.name}</p>
@@ -587,7 +587,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                             src={product.image}
                             alt={product.name}
                             className="w-9 h-9 rounded-lg object-contain bg-white dark:bg-muted p-1 flex-shrink-0"
-                            onError={(e) => { e.currentTarget.src = "/hero_vape.png"; }}
+                            onError={(e) => { e.currentTarget.style.opacity = "0"; }}
                           />
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-bold text-foreground truncate">{product.name}</p>
