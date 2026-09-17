@@ -23,17 +23,27 @@ export async function GET() {
     "/privacy-policy",
   ];
 
-  let productUrls: string[] = [];
+  let dynamicUrls: string[] = [];
   try {
-    const res = await fetch(`${siteUrl}/api/products`, { next: { revalidate: 3600 } });
-    if (res.ok) {
-      const products = await res.json();
+    // Fetch products
+    const prodRes = await fetch(`${siteUrl}/api/products`, { next: { revalidate: 3600 } });
+    if (prodRes.ok) {
+      const products = await prodRes.json();
       if (Array.isArray(products)) {
-        productUrls = products.map((p: any) => `/products/${p.handle}`);
+        products.forEach((p: any) => dynamicUrls.push(`/products/${p.handle}`));
       }
     }
-  } catch {
-    // Fallback if products endpoint fails during build
+
+    // Fetch blog articles
+    const blogRes = await fetch(`${siteUrl}/api/articles`, { next: { revalidate: 3600 } });
+    if (blogRes.ok) {
+      const blogData = await blogRes.json();
+      if (blogData.articles && Array.isArray(blogData.articles)) {
+        blogData.articles.forEach((a: any) => dynamicUrls.push(`/blogs/news/${a.handle}`));
+      }
+    }
+  } catch (e) {
+    console.error("Sitemap fetch error:", e);
   }
 
   const allUrls = Array.from(new Set([...staticPages, ...productUrls]));
