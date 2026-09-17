@@ -158,6 +158,38 @@ export const Footer: React.FC = () => {
             </div>
           ))}
 
+          {/* Useful Links Column (Hardcoded) */}
+          <div className="lg:col-span-2 sm:col-span-1 space-y-4">
+            <div className="pb-2 border-b-2 border-primary/30">
+              <h4 className="text-xs sm:text-sm font-black text-foreground uppercase tracking-wider flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary inline-block shrink-0 shadow-xs" />
+                Useful Links
+              </h4>
+            </div>
+
+            <ul className="space-y-2.5">
+              {[
+                { label: "Shop", href: "/shop" },
+                { label: "About Us", href: "/pages/about-us" },
+                { label: "Contact Us", href: "/pages/contact" },
+                { label: "Refund & Return Policy", href: "/pages/privacy-policy" },
+                { label: "Shipping Guidelines", href: "/pages/shipping-delivery" },
+              ].map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="group flex items-center gap-1 text-xs sm:text-sm font-extrabold text-foreground/80 hover:text-primary transition-all duration-200"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5 text-primary opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200 shrink-0" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      {link.label}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Column 4: Contact & Dubai Hub (3 cols) — Clean Unified Box */}
           <div className="lg:col-span-3 bg-card border border-border/60 rounded-3xl p-5 lg:p-6 space-y-4 shadow-xs">
             <div className="pb-2 border-b-2 border-primary/30">
