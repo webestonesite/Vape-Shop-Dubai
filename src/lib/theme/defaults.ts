@@ -429,7 +429,8 @@ const DEFAULT_FOOTER: ThemeSettings["footer"] = {
   bottomLinks: [
     { label: "Terms", href: "/terms-conditions" },
     { label: "Privacy", href: "/privacy-policy" },
-    { label: "Shipping", href: "/shipping-delivery" },
+    { label: "Delivery", href: "/shipping-delivery" },
+    { label: "Sitemap", href: "/sitemap" },
   ],
 };
 
