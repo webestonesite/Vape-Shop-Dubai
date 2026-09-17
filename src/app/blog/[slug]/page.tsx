@@ -112,12 +112,12 @@ export default function SingleBlogPage() {
           </div>
 
           {/* Clean Featured Image Banner */}
-          <div className="mt-8 bg-gradient-to-br from-background via-muted/20 to-background border border-border/50 rounded-3xl p-4 sm:p-8 flex items-center justify-center overflow-hidden shadow-xs">
+          <div className="mt-8 bg-gradient-to-br from-background via-muted/20 to-background border border-border/50 rounded-3xl aspect-[21/9] flex items-center justify-center overflow-hidden shadow-xs">
             <img
               src={post.image}
               alt={post.title}
-              className="max-h-[380px] w-auto object-contain rounded-2xl filter drop-shadow-xl"
-              onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/hero_vape.png"; }}
+              className="w-full h-full object-cover rounded-3xl"
+              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
             />
           </div>
         </div>
@@ -196,8 +196,8 @@ export default function SingleBlogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedPosts.map((rel) => (
               <div key={rel.slug} className="bg-card border border-border/50 rounded-3xl p-4 flex flex-col gap-3 hover:-translate-y-1 transition-all shadow-2xs hover:shadow-md">
-                <Link href={`/blog/${rel.slug}`} className="bg-gradient-to-br from-background via-muted/30 to-background rounded-2xl p-4 aspect-video flex items-center justify-center border border-border/30">
-                  <img src={rel.image} alt={rel.title} className="h-28 w-auto object-contain filter drop-shadow-md" onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/hero_vape.png"; }} />
+                <Link href={`/blog/${rel.slug}`} className="bg-gradient-to-br from-background via-muted/30 to-background rounded-2xl aspect-video overflow-hidden border border-border/30">
+                  <img src={rel.image} alt={rel.title} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }} />
                 </Link>
                 <span className="text-[10px] font-black text-primary uppercase tracking-wider">{rel.category}</span>
                 <Link href={`/blog/${rel.slug}`}>

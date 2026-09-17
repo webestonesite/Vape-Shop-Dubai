@@ -28,7 +28,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "August 2, 2026",
     readTime: "5 min read",
-    image: "/juul_device.png",
+    image: "/blog_juul_guide.png",
     featured: true,
   },
   {
@@ -39,7 +39,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Specialist Team",
     date: "July 28, 2026",
     readTime: "7 min read",
-    image: "/lost_mary.png",
+    image: "/blog_disposable_vapes.png",
   },
   {
     slug: "best-places-to-buy-juul-1-series",
@@ -49,7 +49,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "July 20, 2026",
     readTime: "6 min read",
-    image: "/vape_kit.png",
+    image: "/blog_juul_guide.png",
   },
   {
     slug: "juul-2-dubai-complete-guide-2026",
@@ -59,7 +59,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "August 2, 2026",
     readTime: "5 min read",
-    image: "/juul_device.png",
+    image: "/blog_juul_guide.png",
   },
   {
     slug: "top-10-longest-lasting-disposable-vapes-uae",
@@ -69,7 +69,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Specialist Team",
     date: "July 28, 2026",
     readTime: "7 min read",
-    image: "/lost_mary.png",
+    image: "/blog_disposable_vapes.png",
   },
   {
     slug: "myle-v5-vs-juul-2-which-should-you-buy",
@@ -79,7 +79,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "July 20, 2026",
     readTime: "6 min read",
-    image: "/vape_kit.png",
+    image: "/blog_pod_comparison.png",
   },
   {
     slug: "how-to-verify-authentic-vape-products-dubai",
@@ -89,7 +89,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Quality Assurance Team",
     date: "July 15, 2026",
     readTime: "4 min read",
-    image: "/hero_vape.png",
+    image: "/blog_authenticity_guide.png",
   },
   {
     slug: "best-salt-nicotine-e-liquids-dubai-summer-2026",
@@ -99,7 +99,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Flavor Sommelier",
     date: "July 10, 2026",
     readTime: "5 min read",
-    image: "/premium_liquid.png",
+    image: "/blog_eliquid_flavors.png",
   },
   {
     slug: "vaping-regulations-delivery-guidelines-uae-2026",
@@ -108,8 +108,8 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "UAE Guides",
     author: "Compliance Team",
     date: "July 01, 2026",
-    readTime: "4 min read",
-    image: "/hero_vape.png",
+    readTime: "6 min read",
+    image: "/blog_authenticity_guide.png",
   },
 ];
 
@@ -261,11 +261,11 @@ export default function BlogPage() {
               </div>
               
               <div className="lg:col-span-5">
-                <Link href={`/blog/${featuredPost.slug}`} className="block relative bg-gradient-to-br from-background via-muted/30 to-background border border-border/40 rounded-2xl p-6 aspect-video flex items-center justify-center overflow-hidden group shadow-inner">
+                <Link href={`/blog/${featuredPost.slug}`} className="block relative bg-gradient-to-br from-background via-muted/30 to-background border border-border/40 rounded-2xl aspect-video overflow-hidden group shadow-inner">
                   <img
                     src={featuredPost.image}
                     alt={featuredPost.title}
-                    className="max-h-52 w-auto object-contain transition-transform duration-500 group-hover:scale-105 filter drop-shadow-xl"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </Link>
               </div>
@@ -327,11 +327,11 @@ export default function BlogPage() {
                     key={post.slug}
                     className="bg-card border border-border/50 rounded-3xl overflow-hidden flex flex-col p-4 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
                   >
-                    <Link href={`/blog/${post.slug}`} className="relative bg-gradient-to-br from-background via-muted/30 to-background rounded-2xl p-6 aspect-video flex items-center justify-center overflow-hidden border border-border/30">
+                    <Link href={`/blog/${post.slug}`} className="relative bg-gradient-to-br from-background via-muted/30 to-background rounded-2xl aspect-video overflow-hidden border border-border/30">
                       <img
                         src={post.image}
                         alt={post.title}
-                        className="max-h-36 w-auto object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-md"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                       <span className="absolute top-3 left-3 bg-background/90 backdrop-blur-md border border-border/40 text-primary text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 rounded-full shadow-xs">
                         {post.category}

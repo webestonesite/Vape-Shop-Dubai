@@ -624,7 +624,7 @@ export default function ProductPage() {
                   src={activeImage}
                   alt={product.name}
                   className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/hero_vape.png"; }}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
                 />
                 
                 {product.tag && (
@@ -650,7 +650,7 @@ export default function ProductPage() {
                         src={img}
                         alt={`${product.name} thumb ${idx + 1}`}
                         className="h-full w-auto object-contain"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/hero_vape.png"; }}
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
                       />
                     </button>
                   ))}
