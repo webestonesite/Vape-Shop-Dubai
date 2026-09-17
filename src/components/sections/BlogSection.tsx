@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BlogImageWithSkeleton } from "@/components/ui/BlogImageWithSkeleton";
 
 export interface BlogSettings {
   badgeText: string;
@@ -55,8 +56,11 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
           const data = await res.json();
           if (data.articles && data.articles.length > 0) {
             const mapped: BlogPost[] = data.articles.map((item: any, idx: number) => {
+              const matchingBuiltin = BLOG_POSTS.find((p) => p.slug === item.handle);
               const rawImg = typeof item.image === "string" ? item.image : item.image?.url;
-              const image = rawImg && rawImg.trim() !== "" ? rawImg : BLOG_POSTS[idx % BLOG_POSTS.length]?.image || "/hero_vape.png";
+              const image = (rawImg && rawImg.trim() !== "" && rawImg !== "/hero_vape.png")
+                ? rawImg
+                : (matchingBuiltin?.image || BLOG_POSTS[idx % BLOG_POSTS.length]?.image || "");
 
               return {
                 slug: item.handle || `article-${idx}`,
@@ -129,17 +133,16 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
               className="group overflow-hidden bg-background/80 hover:bg-background border border-border/80 hover:border-primary/40 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 flex flex-col gap-0 h-full rounded-[1.75rem]"
             >
               {/* Card Image Header */}
-              <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-muted border-b border-border/40">
-                <Image
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden border-b border-border/40">
+                <BlogImageWithSkeleton
                   src={post.image}
                   alt={post.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  containerClassName="w-full h-full"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
                 
                 {/* Category Badge */}
-                <div className="absolute top-4 left-4 z-10">
+                <div className="absolute top-4 left-4 z-20">
                   <Badge className="bg-primary/90 backdrop-blur-md text-primary-foreground font-bold tracking-[0.14em] uppercase text-[10px] px-2.5 py-1 border-none shadow-sm">
                     {post.category}
                   </Badge>

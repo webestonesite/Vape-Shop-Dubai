@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Calendar, Clock, User, ChevronRight, ChevronLeft, Search, ArrowRight, Tag, BookOpen, Sparkles } from "lucide-react";
+import { BlogImageWithSkeleton } from "@/components/ui/BlogImageWithSkeleton";
 
 export interface BlogPost {
   slug: string;
@@ -138,17 +139,25 @@ export default function BlogPage() {
         if (res.ok) {
           const data = await res.json();
           if (data.articles && data.articles.length > 0) {
-            const mapped: BlogPost[] = data.articles.map((item: any, idx: number) => ({
-              slug: item.handle,
-              title: item.title,
-              excerpt: item.excerpt || "Read full article on Vape Shop Dubai.",
-              category: item.blogTitle || "News",
-              author: item.author || "Vape Shop Dubai Editorial",
-              date: formatDate(item.publishedAt),
-              readTime: "5 min read",
-              image: item.image || "/hero_vape.png",
-              featured: idx === 0,
-            }));
+            const mapped: BlogPost[] = data.articles.map((item: any, idx: number) => {
+              const matchingBuiltin = BLOG_POSTS.find((p) => p.slug === item.handle);
+              const rawImage = typeof item.image === "string" ? item.image : item.image?.url;
+              const image = (rawImage && rawImage.trim() !== "" && rawImage !== "/hero_vape.png")
+                ? rawImage
+                : (matchingBuiltin?.image || "");
+
+              return {
+                slug: item.handle,
+                title: item.title,
+                excerpt: item.excerpt || "Read full article on Vape Shop Dubai.",
+                category: item.blogTitle || "News",
+                author: item.author || "Vape Shop Dubai Editorial",
+                date: formatDate(item.publishedAt),
+                readTime: "5 min read",
+                image,
+                featured: idx === 0,
+              };
+            });
             setPosts(mapped);
           }
         }
@@ -261,10 +270,11 @@ export default function BlogPage() {
               </div>
               
               <div className="lg:col-span-5">
-                <Link href={`/blog/${featuredPost.slug}`} className="block relative bg-gradient-to-br from-background via-muted/30 to-background border border-border/40 rounded-2xl aspect-video overflow-hidden group shadow-inner">
-                  <img
+                <Link href={`/blog/${featuredPost.slug}`} className="block relative rounded-2xl overflow-hidden group shadow-inner">
+                  <BlogImageWithSkeleton
                     src={featuredPost.image}
                     alt={featuredPost.title}
+                    containerClassName="aspect-video rounded-2xl border border-border/40"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </Link>
@@ -327,13 +337,14 @@ export default function BlogPage() {
                     key={post.slug}
                     className="bg-card border border-border/50 rounded-3xl overflow-hidden flex flex-col p-4 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group"
                   >
-                    <Link href={`/blog/${post.slug}`} className="relative bg-gradient-to-br from-background via-muted/30 to-background rounded-2xl aspect-video overflow-hidden border border-border/30">
-                      <img
+                    <Link href={`/blog/${post.slug}`} className="relative block rounded-2xl overflow-hidden">
+                      <BlogImageWithSkeleton
                         src={post.image}
                         alt={post.title}
+                        containerClassName="aspect-video rounded-2xl border border-border/30"
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
-                      <span className="absolute top-3 left-3 bg-background/90 backdrop-blur-md border border-border/40 text-primary text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 rounded-full shadow-xs">
+                      <span className="absolute top-3 left-3 z-20 bg-background/90 backdrop-blur-md border border-border/40 text-primary text-[10px] font-extrabold tracking-wider uppercase px-3 py-1 rounded-full shadow-xs">
                         {post.category}
                       </span>
                     </Link>

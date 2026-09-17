@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Calendar, Clock, User, ChevronRight, ArrowLeft, Share2, MessageCircle, Copy, Check, Sparkles, BookOpen } from "lucide-react";
 import { BLOG_POSTS } from "../page";
+import { BlogImageWithSkeleton } from "@/components/ui/BlogImageWithSkeleton";
 
 export default function SingleBlogPage() {
   const params = useParams();
@@ -39,7 +40,12 @@ export default function SingleBlogPage() {
     loadArticle();
   }, [slug]);
 
-  const post = article || fallbackPost;
+  const rawArticleImage = article?.image;
+  const postImage = (rawArticleImage && rawArticleImage !== "/hero_vape.png" && rawArticleImage.trim() !== "")
+    ? rawArticleImage
+    : (fallbackPost?.image || "");
+
+  const post = article ? { ...article, image: postImage } : fallbackPost;
   const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== slug).slice(0, 3);
 
   const handleCopyLink = () => {
@@ -112,12 +118,12 @@ export default function SingleBlogPage() {
           </div>
 
           {/* Clean Featured Image Banner */}
-          <div className="mt-8 bg-gradient-to-br from-background via-muted/20 to-background border border-border/50 rounded-3xl aspect-[21/9] flex items-center justify-center overflow-hidden shadow-xs">
-            <img
+          <div className="mt-8">
+            <BlogImageWithSkeleton
               src={post.image}
               alt={post.title}
+              containerClassName="aspect-[21/9] rounded-3xl border border-border/50 shadow-xs"
               className="w-full h-full object-cover rounded-3xl"
-              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
             />
           </div>
         </div>
@@ -196,8 +202,13 @@ export default function SingleBlogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedPosts.map((rel) => (
               <div key={rel.slug} className="bg-card border border-border/50 rounded-3xl p-4 flex flex-col gap-3 hover:-translate-y-1 transition-all shadow-2xs hover:shadow-md">
-                <Link href={`/blog/${rel.slug}`} className="bg-gradient-to-br from-background via-muted/30 to-background rounded-2xl aspect-video overflow-hidden border border-border/30">
-                  <img src={rel.image} alt={rel.title} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }} />
+                <Link href={`/blog/${rel.slug}`} className="block rounded-2xl overflow-hidden">
+                  <BlogImageWithSkeleton
+                    src={rel.image}
+                    alt={rel.title}
+                    containerClassName="aspect-video rounded-2xl border border-border/30"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
                 </Link>
                 <span className="text-[10px] font-black text-primary uppercase tracking-wider">{rel.category}</span>
                 <Link href={`/blog/${rel.slug}`}>

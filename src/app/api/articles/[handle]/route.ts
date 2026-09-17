@@ -74,7 +74,7 @@ export async function GET(
               contentHtml: node.contentHtml || "",
               publishedAt: node.publishedAt,
               author: node.authorV2?.name || "Vape Shop Dubai Editorial",
-              image: node.image?.url || "/hero_vape.png",
+              image: node.image?.url || "",
               blogHandle: node.blog?.handle || "news",
               blogTitle: node.blog?.title || "News & Vaping Guides",
               seoTitle: node.seo?.title || node.title,
