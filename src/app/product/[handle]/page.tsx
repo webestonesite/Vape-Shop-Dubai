@@ -298,17 +298,6 @@ export default function ProductPage() {
         setProduct(data);
         setActiveImage(data.image);
 
-        if (typeof window !== "undefined") {
-          const pageTitle = data.seoTitle ? `${data.seoTitle} | Vape Shop Dubai` : `${data.name} | Vape Shop Dubai`;
-          document.title = pageTitle;
-
-          if (data.seoDescription) {
-            let metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) {
-              metaDesc.setAttribute("content", data.seoDescription);
-            }
-          }
-        }
 
         // Select first available variant only if there is 1 option.
         // If there are multiple options/flavors, default to null so user must select.
