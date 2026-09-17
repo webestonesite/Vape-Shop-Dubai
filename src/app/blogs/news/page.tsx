@@ -129,6 +129,7 @@ export default function BlogNewsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
+  const [blogMeta, setBlogMeta] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -138,6 +139,9 @@ export default function BlogNewsPage() {
         const res = await fetch("/api/articles");
         if (res.ok) {
           const data = await res.json();
+          if (data.blog) {
+            setBlogMeta(data.blog);
+          }
           if (data.articles && data.articles.length > 0) {
             const mapped: BlogPost[] = data.articles.map((item: any, idx: number) => {
               const rawImage = typeof item.image === "string" ? item.image : item.image?.url;
@@ -210,10 +214,10 @@ export default function BlogNewsPage() {
               Dubai Vaping Editorial
             </span>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black text-foreground tracking-tight leading-tight">
-              Vape Guides &amp; News
+              {blogMeta?.title || "Vape Shop Dubai Blog & Expert Guides"}
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl leading-relaxed">
-              Expert reviews, pod system comparisons, authenticity guides &amp; UAE vaping news.
+              {blogMeta?.seoDescription || "Expert reviews, pod system comparisons, authenticity guides & UAE vaping news."}
             </p>
           </div>
         </div>

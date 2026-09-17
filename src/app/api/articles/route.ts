@@ -10,6 +10,10 @@ query getArticles {
     nodes {
       handle
       title
+      seo {
+        title
+        description
+      }
       articles(first: 100, sortKey: PUBLISHED_AT, reverse: true) {
         nodes {
           id
@@ -225,19 +229,20 @@ export const BUILTIN_ARTICLES: ShopifyArticle[] = [
   },
 ];
 
-let articlesCache: { data: ShopifyArticle[]; timestamp: number } | null = null;
+let articlesCache: { data: ShopifyArticle[]; blogMeta: any; timestamp: number } | null = null;
 const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 
 export async function GET() {
   if (articlesCache && Date.now() - articlesCache.timestamp < CACHE_DURATION_MS) {
     return NextResponse.json(
-      { articles: articlesCache.data },
+      { articles: articlesCache.data, blog: articlesCache.blogMeta },
       { headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" } }
     );
   }
 
   try {
     let articles: ShopifyArticle[] = [];
+    let blogMeta = { title: "Vape Guides & News", seoTitle: "", seoDescription: "" };
 
     // Try Storefront API first
     if (STOREFRONT_TOKEN) {
@@ -257,6 +262,13 @@ export async function GET() {
           const json = await res.json();
           const blogNodes = json.data?.blogs?.nodes || [];
           for (const bNode of blogNodes) {
+            if (bNode.handle === "news" || !blogMeta.seoTitle) {
+               blogMeta = {
+                 title: bNode.title,
+                 seoTitle: bNode.seo?.title || "",
+                 seoDescription: bNode.seo?.description || "",
+               };
+            }
             const artNodes = bNode.articles?.nodes || [];
             for (const node of artNodes) {
               articles.push({
@@ -358,14 +370,14 @@ export async function GET() {
       }
     }
 
-    articlesCache = { data: articles, timestamp: Date.now() };
+    articlesCache = { data: articles, blogMeta, timestamp: Date.now() };
 
     return NextResponse.json(
-      { articles },
+      { articles, blog: blogMeta },
       { headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" } }
     );
   } catch (error: any) {
     console.error("Articles API error:", error?.message || error);
-    return NextResponse.json({ articles: BUILTIN_ARTICLES }, { status: 500 });
+    return NextResponse.json({ articles: BUILTIN_ARTICLES, blog: null }, { status: 500 });
   }
 }
