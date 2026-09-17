@@ -86,36 +86,37 @@ export const Footer: React.FC = () => {
 
       {/* ── 2. Main Footer Directory (Organized & Balanced) ──── */}
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 items-start relative z-10">
 
-          {/* Column 1: Brand Info & Support Box (4 cols) */}
-          <div className="lg:col-span-4 bg-muted/20 border border-border/50 rounded-3xl p-6 space-y-5 shadow-xs">
-            <Link href="/" className="inline-block transition-transform hover:scale-105">
+          {/* Column 1: Brand Info & Support Box (3 cols) */}
+          <div className="lg:col-span-3 space-y-5">
+            <Link href="/" className="inline-block group relative">
               <Image
-                src="/Vape%20Shop%20Dubai%20logo%201.png"
+                src="/Vape Shop Dubai logo 1.png"
                 alt="Vape Shop Dubai"
-                width={220}
-                height={40}
-                className="h-10 w-auto cursor-pointer"
+                width={200}
+                height={50}
+                className="h-9 w-auto relative z-10 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
               />
+              <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </Link>
 
-            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground font-semibold">
+            <p className="text-muted-foreground text-xs font-semibold leading-relaxed max-w-xs">
               {settings.description}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1 border-t border-border/40">
+            <div className="flex flex-col gap-3 pt-2">
               <a
-                href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, "")}`}
+                href={`https://wa.me/${settings.whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-black uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-500/20 hover:scale-105 active:scale-95 cursor-pointer w-fit"
               >
                 <WhatsAppIcon className="h-4 w-4 fill-current" />
                 <span>{settings.whatsappLabel}</span>
               </a>
 
-              <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-foreground">
+              <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-bold text-foreground w-fit">
                 <div className="flex items-center text-amber-500">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="h-3.5 w-3.5 fill-current" />
@@ -130,7 +131,7 @@ export const Footer: React.FC = () => {
           {settings.columns.map((column, idx) => (
             <div
               key={idx}
-              className={idx === 0 ? "lg:col-span-2 sm:col-span-1 space-y-4" : "lg:col-span-2 sm:col-span-1 space-y-4"}
+              className="lg:col-span-2 sm:col-span-1 space-y-4"
             >
               <div className="pb-2 border-b-2 border-primary/30">
                 <h4 className="text-xs sm:text-sm font-black text-foreground uppercase tracking-wider flex items-center gap-2">
@@ -157,8 +158,8 @@ export const Footer: React.FC = () => {
             </div>
           ))}
 
-          {/* Column 4: Contact & Dubai Hub (4 cols) — Clean Unified Box */}
-          <div className="lg:col-span-4 bg-card border border-border/60 rounded-3xl p-5 lg:p-6 space-y-4 shadow-xs">
+          {/* Column 4: Contact & Dubai Hub (3 cols) — Clean Unified Box */}
+          <div className="lg:col-span-3 bg-card border border-border/60 rounded-3xl p-5 lg:p-6 space-y-4 shadow-xs">
             <div className="pb-2 border-b-2 border-primary/30">
               <h4 className="text-xs sm:text-sm font-black text-foreground uppercase tracking-wider flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-primary inline-block shrink-0 shadow-xs" />

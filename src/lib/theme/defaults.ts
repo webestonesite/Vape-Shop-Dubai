@@ -400,6 +400,16 @@ const DEFAULT_FOOTER: ThemeSettings["footer"] = {
       ],
     },
     {
+      heading: "Useful Links",
+      links: [
+        { label: "Shop", href: "/shop" },
+        { label: "About Us", href: "/pages/about-us" },
+        { label: "Contact Us", href: "/pages/contact" },
+        { label: "Refund & Return Policy", href: "/pages/privacy-policy" },
+        { label: "Shipping Guidelines", href: "/pages/shipping-delivery" },
+      ],
+    },
+    {
       heading: "Top Brands",
       links: [
         { label: "Tugboat Vape Dubai", href: "/collections/disposables?brand=Tugboat" },
