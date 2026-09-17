@@ -530,52 +530,14 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
       return products;
     }
 
-    // Check if the current handle exists as an actual Shopify collection for ANY product
-    const isRealShopifyCollection = products.some(p =>
-      p.collections && p.collections.some(c => c.toLowerCase() === hLower)
-    );
-
     return products.filter((p) => {
-      const prodNameLower = p.name.toLowerCase();
-      const prodBrandLower = (p.brand || "").toLowerCase();
-      const prodSectionLower = (p.section || "").toLowerCase();
-      const prodCatLower = (p.category || "").toLowerCase();
-
-      // First check: Exact Shopify Collection match on the product
+      // Exact Shopify Collection match on the product
       const hasDirectCollectionMatch = p.collections && p.collections.length > 0 && p.collections.some((c) => {
         const cLower = c.toLowerCase();
         return cLower === hLower;
       });
 
-      if (hasDirectCollectionMatch) {
-        return true;
-      }
-
-      // If the Shopify collection exists on the backend, STRICTLY return only what's inside it. No guessing.
-      if (isRealShopifyCollection) {
-        return false;
-      }
-
-      // If no exact match is found, fallback to search by keywords from handle (Generic fallback for dynamically typed URLs)
-      const GENERIC_WORDS = new Set(["vape", "dubai", "series", "shop", "online", "uae", "offers", "offer", "official"]);
-      const cleanKeywords = hLower
-        .split("-")
-        .filter((w) => {
-          // Keep words longer than 2 chars, OR keep if it's a number (like '1', '2', 'v5')
-          const isNumber = !isNaN(Number(w));
-          const isShortImportant = w === "v5" || w === "v2" || isNumber;
-          return (w.length > 2 || isShortImportant) && !GENERIC_WORDS.has(w);
-        });
-
-      if (cleanKeywords.length > 0) {
-        return cleanKeywords.every((kw) =>
-          prodNameLower.includes(kw) ||
-          prodBrandLower.includes(kw) ||
-          prodSectionLower.includes(kw) ||
-          prodCatLower.includes(kw)
-        );
-      }
-      return false;
+      return hasDirectCollectionMatch;
     });
   }, [products, handle]);
 
