@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { SITE_URL } from "@/lib/seo-schemas";
 
 export function CanonicalHead() {
   const pathname = usePathname();
@@ -10,9 +9,11 @@ export function CanonicalHead() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    const siteUrl = window.location.origin;
+
     // Clean query parameters from canonical URL to prevent duplicate content indexing
     const cleanPath = (pathname || "/").split("?")[0];
-    const canonicalUrl = `${SITE_URL}${cleanPath === "/" ? "" : cleanPath}`;
+    const canonicalUrl = `${siteUrl}${cleanPath === "/" ? "" : cleanPath}`;
 
     // 1. Update or create canonical link tag
     let canonicalLink = document.querySelector('link[rel="canonical"]');
@@ -29,7 +30,7 @@ export function CanonicalHead() {
       sitemapLink = document.createElement("link");
       sitemapLink.setAttribute("rel", "sitemap");
       sitemapLink.setAttribute("type", "application/xml");
-      sitemapLink.setAttribute("href", `${SITE_URL}/sitemap.xml`);
+      sitemapLink.setAttribute("href", `${siteUrl}/sitemap.xml`);
       document.head.appendChild(sitemapLink);
     }
   }, [pathname]);

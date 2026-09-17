@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { SITE_URL } from "@/lib/seo-schemas";
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.net";
+  const siteUrl = SITE_URL;
 
   const staticPages = [
     "",
