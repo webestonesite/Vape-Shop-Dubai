@@ -547,10 +547,15 @@ const CANONICAL_HANDLE_TITLES: Record<string, string> = {
       }
 
       // If no exact match is found, fallback to search by keywords from handle (Generic fallback for dynamically typed URLs)
-      const GENERIC_WORDS = new Set(["vape", "dubai", "disposable", "pods", "pod", "device", "kit", "series", "shop", "online", "uae", "offers", "offer"]);
+      const GENERIC_WORDS = new Set(["vape", "dubai", "series", "shop", "online", "uae", "offers", "offer", "official"]);
       const cleanKeywords = hLower
         .split("-")
-        .filter((w) => w.length > 2 && !GENERIC_WORDS.has(w));
+        .filter((w) => {
+          // Keep words longer than 2 chars, OR keep if it's a number (like '1', '2', 'v5')
+          const isNumber = !isNaN(Number(w));
+          const isShortImportant = w === "v5" || w === "v2" || isNumber;
+          return (w.length > 2 || isShortImportant) && !GENERIC_WORDS.has(w);
+        });
 
       if (cleanKeywords.length > 0) {
         return cleanKeywords.every((kw) =>
