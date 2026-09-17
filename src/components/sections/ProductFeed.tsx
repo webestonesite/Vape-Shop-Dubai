@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Star, ShoppingCart, Package, Zap, Tag, ChevronLeft, ChevronRight } from "lucide-react";
+import { instanceSettings } from "./SectionRenderer";
+import { prefetchProduct } from "@/lib/product-cache";
 import { useCart } from "@/context/CartContext";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { ProductSectionCarousel } from "./ProductSectionCarousel";
@@ -211,7 +213,12 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
           </div>
         )}
 
-        <Link href={`/products/${product.handle}`} className="block relative z-10 w-full h-full flex items-center justify-center">
+        <Link
+          href={`/products/${product.handle}`}
+          prefetch={true}
+          onMouseEnter={() => prefetchProduct(product.handle)}
+          className="block relative z-10 w-full h-full flex items-center justify-center"
+        >
           <Image
             key={displayedImage}
             src={displayedImage}
@@ -266,7 +273,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
         {(product.isSoldOut || product.tag) && (
           <div className={`absolute top-3 left-3 text-[10px] font-bold tracking-wide px-3 py-1.5 rounded-full pointer-events-none z-20 shadow-xs ${
             product.isSoldOut
-              ? "bg-[#2D2A26] text-white"
+              ? "bg-[#2D2A26]"
               : isSale
               ? "bg-primary text-white"
               : "bg-card/95 text-primary border border-primary/20"
@@ -295,7 +302,12 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
         </span>
 
         {/* Product Title */}
-        <Link href={`/products/${product.handle}`} className="hover:text-primary transition-colors block">
+        <Link
+          href={`/products/${product.handle}`}
+          prefetch={true}
+          onMouseEnter={() => prefetchProduct(product.handle)}
+          className="hover:text-primary transition-colors block"
+        >
           <h3 className="text-base sm:text-lg font-body text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2 min-h-[44px] sm:min-h-[50px]">
             {product.name}
           </h3>

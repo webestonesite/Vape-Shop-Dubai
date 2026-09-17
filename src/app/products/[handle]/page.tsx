@@ -53,6 +53,7 @@ import {
   getBreadcrumbSchema,
   getFAQSchema,
 } from "@/lib/seo-schemas";
+import { getCachedProduct, setCachedProduct } from "@/lib/product-cache";
 
 /** One row of the buy box's specification card. */
 interface SpecCardRow {
@@ -286,8 +287,23 @@ export default function ProductPage() {
   useEffect(() => {
     if (!handle) return;
 
-    async function fetchProduct() {
+    // 0ms Instant Cache Check
+    const cached = getCachedProduct(handle);
+    if (cached) {
+      setProduct(cached);
+      setActiveImage(cached.image);
+      if (cached.variants && cached.variants.length > 1) {
+        setSelectedVariant(null);
+      } else if (cached.variants) {
+        const firstAvailable = cached.variants.find((v: Variant) => v.availableForSale) || cached.variants[0] || null;
+        setSelectedVariant(firstAvailable);
+      }
+      setLoading(false);
+    } else {
       setLoading(true);
+    }
+
+    async function fetchProduct() {
       setError("");
       try {
         const res = await fetch(`/api/products/${handle}`);
@@ -297,10 +313,9 @@ export default function ProductPage() {
         const data = await res.json();
         setProduct(data);
         setActiveImage(data.image);
-
+        setCachedProduct(handle, data);
 
         // Select first available variant only if there is 1 option.
-        // If there are multiple options/flavors, default to null so user must select.
         if (data.variants && data.variants.length > 1) {
           setSelectedVariant(null);
         } else {
@@ -325,8 +340,10 @@ export default function ProductPage() {
           .catch(() => {});
       } catch (err: any) {
         console.error("Error loading product:", err);
-        setError(err.message || "Failed to load product details");
-        setLoading(false);
+        if (!cached) {
+          setError(err.message || "Failed to load product details");
+          setLoading(false);
+        }
       }
     }
 
