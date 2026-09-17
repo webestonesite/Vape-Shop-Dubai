@@ -38,16 +38,23 @@ export const Footer: React.FC = () => {
   return (
     <footer className="relative mt-2 sm:mt-3 lg:mt-4 bg-card text-foreground font-sans border-t border-border/50" suppressHydrationWarning>
       {/* ── 1. Top Trust Features (Seamless Luxury Glassmorphic Banner) ──── */}
-      <div className="py-6 sm:py-8 bg-muted/20 border-b border-border/50">
+      <div className="py-6 sm:py-8 bg-muted/10 border-b border-border/50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-r from-card via-card/95 to-card border border-emerald-500/25 shadow-xl shadow-emerald-500/5 p-5 sm:p-7 lg:p-8">
-            {/* Top Green Accent Glow Line */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500/10 via-[#009966] to-emerald-500/10" />
+          <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-card border border-orange-500/20 shadow-xl shadow-orange-500/5 p-6 sm:p-8 lg:p-10">
+            
+            {/* Background Decor (Smoke / Gradients) */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+              <div className="absolute -top-24 -left-24 w-64 h-64 bg-orange-300/30 dark:bg-orange-600/20 rounded-full blur-[80px]"></div>
+              <div className="absolute top-10 -left-10 w-48 h-48 bg-orange-400/20 dark:bg-orange-500/20 rounded-full blur-[60px]"></div>
+              <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-orange-300/40 dark:bg-orange-600/20 rounded-full blur-[100px]"></div>
+              <div className="absolute top-0 right-10 w-40 h-40 bg-red-300/20 dark:bg-red-900/20 rounded-full blur-[60px]"></div>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-border/60">
+            {/* Grid Items */}
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-orange-500/10 dark:divide-orange-500/20 mb-6 lg:mb-8">
               {settings.trustItems.map((item, idx) => {
                 const microBadges = [
-                  "⚡ EXPRESS 2-HR",
+                  "⚡ EXPRESS 1-2H",
                   "🛡️ 100% GENUINE",
                   "💳 COD & CARD",
                   "⏱️ 24/7 DISPATCH",
@@ -57,19 +64,21 @@ export const Footer: React.FC = () => {
                 return (
                   <div
                     key={idx}
-                    className="group relative flex items-center gap-4 lg:px-6 py-4 sm:py-2 first:pl-0 last:pr-0 transition-all duration-300"
+                    className="group relative flex items-center gap-5 lg:px-8 py-4 sm:py-2 first:pl-0 last:pr-0 transition-all duration-300"
                   >
-                    {/* 3D Glowing Emerald Icon Container */}
-                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-[#009966] via-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-600/30 border border-emerald-400/40 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-emerald-500/50">
-                      <ThemeIcon name={item.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
+                    {/* Circular Orange Icon Container */}
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white dark:bg-card text-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.15)] border border-orange-100 dark:border-orange-500/30 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(249,115,22,0.3)]">
+                      <div className="bg-gradient-to-br from-orange-400 to-orange-600 text-transparent bg-clip-text">
+                        <ThemeIcon name={item.icon} className="h-6 w-6 sm:h-7 sm:w-7 stroke-[2.5]" />
+                      </div>
                     </div>
 
                     {/* Content Details */}
                     <div className="min-w-0 flex-1">
-                      <div className="inline-flex items-center gap-1 text-[9px] font-black tracking-widest text-[#009966] dark:text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20 mb-1">
+                      <div className="inline-flex items-center gap-1 text-[9px] font-black tracking-widest text-orange-500 uppercase px-2 py-0.5 rounded-full border border-orange-500/20 bg-orange-500/5 mb-1.5">
                         <span>{tag}</span>
                       </div>
-                      <h4 className="text-sm sm:text-base font-black text-foreground tracking-tight leading-snug group-hover:text-[#009966] dark:group-hover:text-emerald-400 transition-colors">
+                      <h4 className="text-sm sm:text-[15px] font-black text-foreground tracking-tight leading-snug group-hover:text-orange-500 transition-colors">
                         {item.title}
                       </h4>
                       <p className="text-xs font-semibold text-muted-foreground mt-0.5 leading-snug">
@@ -79,6 +88,24 @@ export const Footer: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Bottom Divider Text */}
+            <div className="relative z-10 flex items-center justify-center w-full mt-2 pt-6 lg:pt-0">
+              <div className="w-full flex items-center justify-center gap-4 text-[9px] sm:text-[10px] font-black tracking-widest text-muted-foreground uppercase opacity-80">
+                <div className="w-12 sm:w-24 h-px bg-gradient-to-r from-transparent to-border"></div>
+                <span className="tracking-[0.2em]">PREMIUM VAPES</span>
+                <span className="text-border mx-1">|</span>
+                <span className="tracking-[0.2em]">FASTER DAYS</span>
+                <span className="text-border mx-1">|</span>
+                <span className="tracking-[0.2em]">DUBAI</span>
+                <div className="w-12 sm:w-24 h-px bg-gradient-to-l from-transparent to-border"></div>
+              </div>
+            </div>
+
+            {/* Optional Dubai Skyline / Cursive Text (Simulated with Text for now since we lack the exact image asset) */}
+            <div className="absolute right-8 bottom-4 z-0 hidden xl:block opacity-20 pointer-events-none transform -rotate-6">
+              <span className="font-playfair italic font-extrabold text-5xl text-orange-600">Vape Better Today</span>
             </div>
           </div>
         </div>
