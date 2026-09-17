@@ -125,10 +125,9 @@ export function getProductSchema(product: {
   isSoldOut?: boolean;
 }) {
   const productUrl = `${SITE_URL}/products/${product.handle}`;
-  const cleanDescription = (product.descriptionHtml || product.name)
-    .replace(/<[^>]*>?/gm, "")
-    .slice(0, 300)
-    .trim();
+  const cleanDescription = product.descriptionHtml
+    ? product.descriptionHtml.replace(/<[^>]*>?/gm, "").slice(0, 300).trim()
+    : `Buy ${product.name} in Dubai, UAE. Premium authentic ${product.brand || product.category || "vape"} product with fast express delivery.`;
 
   const imageList = product.images && product.images.length > 0 ? product.images : [product.image];
 
