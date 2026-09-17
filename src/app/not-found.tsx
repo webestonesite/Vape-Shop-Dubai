@@ -39,9 +39,8 @@ export default function NotFound() {
       <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 flex flex-col lg:flex-row items-center h-full mt-20 lg:mt-10">
         
         {/* Left Side: Character Image */}
-        <div className="w-full lg:w-1/2 flex justify-center lg:justify-start items-end relative h-[300px] lg:h-[600px] mb-8 lg:mb-0">
-          {/* Replace this src with the actual image you provided */}
-          <div className="relative w-full h-full max-w-lg mx-auto lg:mx-0 lg:-ml-10 xl:-ml-20">
+        <div className="w-full lg:w-[45%] flex justify-center lg:justify-start items-end relative h-[350px] lg:h-[750px] mb-8 lg:mb-0 lg:pl-10">
+          <div className="relative w-full h-full mx-auto lg:mx-0 lg:scale-125 xl:scale-150 lg:origin-bottom lg:-ml-10 xl:-ml-20">
             <Image
               src="/vape_404_character.png"
               alt="Sad Vape Character"
@@ -51,15 +50,15 @@ export default function NotFound() {
             />
           </div>
           {/* Absolute text on the left block (OOPS) - visible on large screens */}
-          <div className="absolute bottom-10 left-10 z-20 hidden lg:flex flex-col transform -rotate-12 select-none opacity-20">
-            <span className="font-bebas text-4xl xl:text-5xl text-[#111] leading-none tracking-wider">OOPS...</span>
-            <span className="font-bebas text-4xl xl:text-5xl text-[#111] leading-none tracking-wider">THIS PAGE</span>
-            <span className="font-bebas text-4xl xl:text-5xl text-[#111] leading-none tracking-wider">IS MISSING</span>
+          <div className="absolute bottom-16 lg:bottom-32 left-4 lg:left-0 z-20 hidden lg:flex flex-col transform -rotate-12 select-none opacity-20 lg:-ml-10 xl:-ml-20">
+            <span className="font-bebas text-4xl xl:text-6xl text-[#111] leading-none tracking-wider">OOPS...</span>
+            <span className="font-bebas text-4xl xl:text-6xl text-[#111] leading-none tracking-wider">THIS PAGE</span>
+            <span className="font-bebas text-4xl xl:text-6xl text-[#111] leading-none tracking-wider">IS MISSING</span>
           </div>
         </div>
 
         {/* Right Side: Text & Actions */}
-        <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-center text-center space-y-6 lg:pl-10">
+        <div className="w-full lg:w-[55%] flex flex-col items-center lg:items-center text-center space-y-6 lg:pl-10">
           
           {/* Huge 404 Text */}
           <div className="font-bebas text-[9rem] sm:text-[12rem] xl:text-[15rem] leading-[0.8] text-[#1a1a1a] drop-shadow-xl flex items-center justify-center tracking-tighter">
