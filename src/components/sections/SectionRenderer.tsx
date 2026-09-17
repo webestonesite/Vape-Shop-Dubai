@@ -54,6 +54,7 @@ const FAQSection = dynamic(() => import("./FAQSection").then((m) => ({ default: 
 const WhatsAppContactSection = dynamic(() => import("./WhatsAppContactSection").then((m) => ({ default: m.WhatsAppContactSection })), { ssr: false });
 const BlogSection = dynamic(() => import("./BlogSection").then((m) => ({ default: m.BlogSection })));
 const FlavorsWheel = dynamic(() => import("./FlavorsWheel").then((m) => ({ default: m.FlavorsWheel })), { ssr: false });
+const BrandSphere3D = dynamic(() => import("./BrandSphere3D").then((m) => ({ default: m.BrandSphere3D })));
 
 /**
  * Sections the page renders itself, keyed by section type.
@@ -86,6 +87,8 @@ function renderRegistrySection(
   switch (instance.type) {
     case "hero":
       return <HeroSection settings={s as unknown as HeroSettings} />;
+    case "brandDirectoryShowcase":
+      return <BrandSphere3D settings={s as any} />;
     case "categories":
       return isIdle ? <Categories settings={s as unknown as CategoriesSettings} /> : <div style={{ height: "300px" }} />;
     case "brands":

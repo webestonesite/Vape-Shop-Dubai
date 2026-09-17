@@ -101,7 +101,10 @@ export const COLLECTION_BASE: Template = template({
   label: "Collection pages",
   previewPath: "/collections/disposable-vape",
   sections: [
-    inst("col-main", "collectionMain"),
+    inst("col-brand-showcase", "brandDirectoryShowcase", {
+      showWhen: "isBrandDirectory",
+    }),
+    inst("col-main", "collectionMain", { showWhen: "notBrandDirectory" }),
     inst("col-disp-showcase", "disposableShowcase", {
       showWhen: "handleIncludesDisposable",
     }),

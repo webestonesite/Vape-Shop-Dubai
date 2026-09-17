@@ -15,6 +15,8 @@ import {
   Search,
 } from "lucide-react";
 
+import { useCollectionImages } from "@/hooks/useCollectionImages";
+
 export interface BrandData {
   id: number;
   name: string;
@@ -305,14 +307,18 @@ export const BRANDS_DATA: BrandData[] = [
 ];
 
 export interface BrandSphereSettings {
-  flagshipHeading: string;
-  directoryHeading: string;
+  flagshipHeading?: string;
+  flagshipSubtitle?: string;
+  directoryHeading?: string;
+  directorySubtitle?: string;
+  featuredBrands?: any[];
 }
 
 export function BrandSphere3D({
   settings,
 }: { settings?: BrandSphereSettings } = {}) {
   const router = useRouter();
+  const collectionImages = useCollectionImages();
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -324,7 +330,22 @@ export function BrandSphere3D({
     return matchCategory && matchQuery;
   });
 
-  const featuredBrands = BRANDS_DATA.filter((b) => b.isFeatured);
+  const featuredBrands =
+    settings?.featuredBrands && settings.featuredBrands.length > 0
+      ? settings.featuredBrands.map((b, idx) => ({
+          id: idx + 1,
+          name: b.name || "Brand",
+          handle: b.handle || "all",
+          category: b.category || "juul-myle",
+          image: b.image || "",
+          tag: b.tag || "",
+          badge: b.badge || "Certified Brand",
+          color: b.color || "from-blue-500/20 via-indigo-500/10 to-transparent",
+          description: b.description || "",
+          productCount: b.productCount || 20,
+          isFeatured: true,
+        }))
+      : BRANDS_DATA.filter((b) => b.isFeatured);
 
   return (
     <div className="w-full space-y-10 my-4">
@@ -401,54 +422,57 @@ export function BrandSphere3D({
               {settings?.flagshipHeading || "Flagship Certified Brands"}
             </h2>
             <span className="text-xs font-bold text-primary tracking-wider uppercase">
-              Most Popular in Dubai
+              {settings?.flagshipSubtitle || "Most Popular in Dubai"}
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {featuredBrands.map((b) => (
-              <div
-                key={b.handle}
-                onClick={() => router.push(`/collections/${b.handle}`)}
-                className="group relative bg-card border border-primary/30 rounded-3xl p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 overflow-hidden"
-              >
-                {/* Background Accent Gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${b.color} opacity-60 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+            {featuredBrands.map((b) => {
+              const brandImg = collectionImages[b.handle] || b.image || "/hero_vape.png";
+              return (
+                <div
+                  key={b.handle}
+                  onClick={() => router.push(`/collections/${b.handle}`)}
+                  className="group relative bg-card border border-primary/30 rounded-3xl p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 overflow-hidden"
+                >
+                  {/* Background Accent Gradient */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${b.color} opacity-60 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
 
-                {/* Top Badge */}
-                <div className="relative z-10 flex items-center justify-between mb-4">
-                  <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    {b.badge}
-                  </span>
-                  <span className="text-xs font-extrabold text-muted-foreground flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" /> 4.9
-                  </span>
-                </div>
-
-                {/* Brand Logo & Details */}
-                <div className="relative z-10 flex items-center gap-4 my-2">
-                  <div className="w-16 h-16 rounded-2xl bg-background/80 border border-border/40 p-2.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                    <img src={b.image} alt={b.name} className="w-full h-full object-contain" />
+                  {/* Top Badge */}
+                  <div className="relative z-10 flex items-center justify-between mb-4">
+                    <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      {b.badge}
+                    </span>
+                    <span className="text-xs font-extrabold text-muted-foreground flex items-center gap-1">
+                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" /> 4.9
+                    </span>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-serif font-black text-foreground group-hover:text-primary transition-colors">
-                      {b.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-primary">{b.tag}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">
-                      {b.productCount}+ Products Available
-                    </p>
+
+                  {/* Brand Logo & Details */}
+                  <div className="relative z-10 flex items-center gap-4 my-2">
+                    <div className="w-16 h-16 rounded-2xl bg-background/80 border border-border/40 p-2.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                      <img src={brandImg} alt={b.name} className="w-full h-full object-contain" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-serif font-black text-foreground group-hover:text-primary transition-colors">
+                        {b.name}
+                      </h3>
+                      <p className="text-xs font-semibold text-primary">{b.tag}</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">
+                        {b.productCount}+ Products Available
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Button */}
+                  <div className="relative z-10 mt-6 pt-4 border-t border-border/30 flex items-center justify-between text-xs font-bold text-primary group-hover:translate-x-1 transition-all uppercase tracking-wider">
+                    <span>Explore Collection</span>
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
-
-                {/* Button */}
-                <div className="relative z-10 mt-6 pt-4 border-t border-border/30 flex items-center justify-between text-xs font-bold text-primary group-hover:translate-x-1 transition-all uppercase tracking-wider">
-                  <span>Explore Collection</span>
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -461,7 +485,7 @@ export function BrandSphere3D({
             {settings?.directoryHeading || "All Certified Brands"} ({filteredBrands.length})
           </h2>
           <span className="text-xs font-bold text-muted-foreground">
-            Showing 100% Verified Importers
+            {settings?.directorySubtitle || "Showing 100% Verified Importers"}
           </span>
         </div>
 
@@ -480,44 +504,47 @@ export function BrandSphere3D({
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
-            {filteredBrands.map((b) => (
-              <div
-                key={b.handle}
-                onClick={() => router.push(`/collections/${b.handle}`)}
-                className="group relative bg-card hover:bg-muted/30 border border-border/50 rounded-3xl p-5 flex flex-col items-center text-center cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40 overflow-hidden"
-              >
-                {/* Glow Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${b.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+            {filteredBrands.map((b) => {
+              const brandImg = collectionImages[b.handle] || b.image || "/hero_vape.png";
+              return (
+                <div
+                  key={b.handle}
+                  onClick={() => router.push(`/collections/${b.handle}`)}
+                  className="group relative bg-card hover:bg-muted/30 border border-border/50 rounded-3xl p-5 flex flex-col items-center text-center cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40 overflow-hidden"
+                >
+                  {/* Glow Overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${b.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
 
-                {/* Brand Logo Container */}
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted/20 border border-border/40 p-2.5 mb-3 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
-                  <img
-                    src={b.image}
-                    alt={b.name}
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = "/hero_vape.png";
-                    }}
-                  />
+                  {/* Brand Logo Container */}
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted/20 border border-border/40 p-2.5 mb-3 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                    <img
+                      src={brandImg}
+                      alt={b.name}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/hero_vape.png";
+                      }}
+                    />
+                  </div>
+
+                  {/* Brand Title */}
+                  <h3 className="text-lg sm:text-xl font-serif font-black text-foreground group-hover:text-primary transition-colors tracking-tight">
+                    {b.name}
+                  </h3>
+
+                  {/* Subtag */}
+                  <span className="text-[11px] font-semibold text-muted-foreground mt-1 line-clamp-1">
+                    {b.tag}
+                  </span>
+
+                  {/* Action Link */}
+                  <div className="mt-4 pt-3 border-t border-border/30 w-full flex items-center justify-center gap-1 text-[11px] font-bold text-primary group-hover:scale-105 transition-transform uppercase tracking-wider">
+                    <span>Browse Collection</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-
-                {/* Brand Title */}
-                <h3 className="text-lg sm:text-xl font-serif font-black text-foreground group-hover:text-primary transition-colors tracking-tight">
-                  {b.name}
-                </h3>
-
-                {/* Subtag */}
-                <span className="text-[11px] font-semibold text-muted-foreground mt-1 line-clamp-1">
-                  {b.tag}
-                </span>
-
-                {/* Action Link */}
-                <div className="mt-4 pt-3 border-t border-border/30 w-full flex items-center justify-center gap-1 text-[11px] font-bold text-primary group-hover:scale-105 transition-transform uppercase tracking-wider">
-                  <span>Browse Collection</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
