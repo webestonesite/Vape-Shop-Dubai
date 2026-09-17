@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BookOpen } from "lucide-react";
 
 interface BlogImageWithSkeletonProps {
@@ -8,6 +8,7 @@ interface BlogImageWithSkeletonProps {
   alt: string;
   className?: string;
   containerClassName?: string;
+  priority?: boolean;
 }
 
 export function BlogImageWithSkeleton({
@@ -15,28 +16,67 @@ export function BlogImageWithSkeleton({
   alt,
   className = "",
   containerClassName = "",
+  priority = false,
 }: BlogImageWithSkeletonProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [isVisible, setIsVisible] = useState(priority);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     setLoaded(false);
     setError(false);
   }, [src]);
 
+  // Lazy load image only when visible on active page / viewport
+  useEffect(() => {
+    if (priority || isVisible) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: "200px" }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [priority, isVisible]);
+
   return (
-    <div className={`relative overflow-hidden bg-muted/70 ${containerClassName}`}>
+    <div ref={containerRef} className={`relative overflow-hidden bg-muted/70 ${containerClassName}`}>
       {/* Skeleton Pulse animation shown while loading */}
       {!loaded && !error && (
-        <div className="absolute inset-0 bg-muted/80 animate-pulse flex items-center justify-center z-10">
+        <div className="absolute inset-0 bg-muted/80 animate-pulse flex items-center justify-center z-10 pointer-events-none">
           <div className="w-7 h-7 rounded-full border-2 border-primary/20 border-t-primary animate-spin opacity-40" />
         </div>
       )}
 
-      {src && !error ? (
+      {src && !error && isVisible ? (
         <img
+          ref={(el) => {
+            imgRef.current = el;
+            if (el && el.complete) {
+              if (el.naturalWidth === 0) {
+                setError(true);
+              } else {
+                setLoaded(true);
+              }
+            }
+          }}
           src={src}
           alt={alt}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => setError(true)}
           className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}

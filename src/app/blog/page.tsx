@@ -274,6 +274,7 @@ export default function BlogPage() {
                   <BlogImageWithSkeleton
                     src={featuredPost.image}
                     alt={featuredPost.title}
+                    priority={true}
                     containerClassName="aspect-video rounded-2xl border border-border/40"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
