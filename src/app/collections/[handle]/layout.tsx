@@ -1,14 +1,14 @@
 import { Metadata, ResolvingMetadata } from "next";
 
 type Props = {
-  params: { handle: string };
+  params: Promise<{ handle: string }>;
 };
 
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const handle = params.handle;
+  const { handle } = await params;
   let title = "Collection | Vape Shop Dubai";
   let description = "Shop our premium collection of vapes, pods, and e-liquids at Vape Shop Dubai.";
 
@@ -37,7 +37,7 @@ export async function generateMetadata(
           `,
           variables: { handle },
         }),
-        next: { revalidate: 3600 }
+        next: { revalidate: 60 }
       });
 
       if (res.ok) {
