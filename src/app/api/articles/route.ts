@@ -87,7 +87,7 @@ export interface ShopifyArticle {
   seoDescription?: string;
 }
 
-const BUILTIN_ARTICLES: ShopifyArticle[] = [
+export const BUILTIN_ARTICLES: ShopifyArticle[] = [
   {
     id: "art-1",
     title: "Best JUUL Device Shop in UAE",

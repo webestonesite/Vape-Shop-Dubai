@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { BUILTIN_ARTICLES } from "../route";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE || "vap-shop-dubai.myshopify.com";
 const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
@@ -101,6 +102,18 @@ export async function GET(
       } catch (e) {
         console.warn("Storefront single article fetch error:", e);
       }
+    }
+
+    // Fallback to BUILTIN_ARTICLES if handle matches
+    const builtin = BUILTIN_ARTICLES.find(
+      (a) => a.handle.toLowerCase() === handle.toLowerCase()
+    );
+
+    if (builtin) {
+      singleArticleCache.set(handle, { data: builtin, timestamp: Date.now() });
+      return NextResponse.json(builtin, {
+        headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
+      });
     }
 
     return NextResponse.json({ error: "Article not found" }, { status: 404 });
