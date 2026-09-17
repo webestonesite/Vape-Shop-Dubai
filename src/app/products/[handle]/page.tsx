@@ -1142,7 +1142,7 @@ export default function ProductPage() {
                 productReviewsCount={product.reviews}
                 productReviewsList={product.reviewsList}
                 settings={settings as never}
-                hideIfEmpty={false}
+                hideIfEmpty={true}
               />
             ),
             faq: (settings: Record<string, unknown>) => (

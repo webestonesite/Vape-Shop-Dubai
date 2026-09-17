@@ -117,6 +117,8 @@ export function CustomerReviewsSection({
       ? productReviewsList
       : settings?.reviews?.length
       ? settings.reviews
+      : hideIfEmpty
+      ? []
       : INITIAL_REVIEWS;
 
   const [reviews, setReviews] = useState<Review[]>(defaultList);
@@ -129,6 +131,8 @@ export function CustomerReviewsSection({
         ? productReviewsList
         : settings?.reviews?.length
         ? settings.reviews
+        : hideIfEmpty
+        ? []
         : INITIAL_REVIEWS;
 
     const fetchApproved = async () => {
@@ -161,7 +165,7 @@ export function CustomerReviewsSection({
     };
 
     fetchApproved();
-  }, [productHandle, productReviewsList, settings?.reviews, collectionName]);
+  }, [productHandle, productReviewsList, settings?.reviews, collectionName, hideIfEmpty]);
 
   const ratingValueText =
     productRating !== undefined
