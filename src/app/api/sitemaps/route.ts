@@ -14,7 +14,7 @@ export async function GET() {
     "/collections/vape-e-juice",
     "/collections/pod-system",
     "/collections/brand",
-    "/blog",
+    "/blogs/news",
     "/about-us",
     "/contact",
     "/shipping-delivery",

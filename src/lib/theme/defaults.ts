@@ -372,7 +372,7 @@ const DEFAULT_HEADER: ThemeSettings["header"] = {
         { label: "Voopoo Vape", href: "/collections/voopoo-vape" },
       ],
     },
-    { label: "BLOG", href: "/blog", children: [] },
+    { label: "BLOG", href: "/blogs/news", children: [] },
   ],
 };
 

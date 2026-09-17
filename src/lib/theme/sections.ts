@@ -924,7 +924,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         "Read simple guides on best disposable vape in UAE, JUUL 2, vape price in Dubai, nicotine salts, and UAE vape rules. Stay updated with product reviews and tips from a trusted vape shop UAE.",
       selectedPosts: "",
       viewAllLabel: "View All Articles",
-      viewAllHref: "/blog",
+      viewAllHref: "/blogs/news",
       postCount: 3,
     },
   },
