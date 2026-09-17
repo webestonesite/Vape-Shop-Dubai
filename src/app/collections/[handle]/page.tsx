@@ -408,8 +408,55 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     [previewSections, savedSections, templateInstances, templateIsOverride]
   );
 
+const CANONICAL_HANDLE_TITLES: Record<string, string> = {
+  "juul-vape-dubai": "Juul Vape Dubai",
+  "myle-vape-dubai": "Myle Vape Dubai",
+  "disposable-vape": "Disposable Vape",
+  "vape-e-juice": "Vape E-Juice",
+  "pod-system": "Pod System",
+  "juul-1-series": "JUUL 1 Series",
+  "juul-2-series": "JUUL 2 Series",
+  "juul-pods-offers": "JUUL Pods Offers",
+  "myle-v5-pods": "Myle V5 Pods",
+  "myle-v5-device": "Myle V5 Device",
+  "myle-disposable": "Myle Disposable",
+  "al-fakher-vape": "Al Fakher Vape",
+  "elf-bar-vape": "Elf Bar Vape",
+  "fummo-vape": "Fummo Vape",
+  "pod-salt-vape": "Pod Salt Vape",
+  "vapes-bars": "Vapes Bars",
+  "vozol-vape": "Vozol Vape",
+  "tugboat-vape": "Tugboat Vape",
+  "hqd-vape": "HQD Vape",
+  "lost-mary-disposable": "Lost Mary Vape",
+  "maskking-vape": "Maskking Vape",
+  "geek-bar-disposable": "Geek Bar Vape",
+  "yuoto-vape": "Yuoto Vape",
+  "relx-vape": "Relx Vape",
+  "nerd-vape": "Nerd Vape",
+  "vgod-stig": "VGOD Stig Vape",
+  "silvaper-vape": "Silvaper Vape",
+  "salt-nicotine": "Salt Nicotine",
+  "freebase-e-liquid": "Freebase E-Liquid",
+  "pod-kit": "Pod Kit",
+  "pod-cartridge": "Pod Cartridges",
+  "vape-coils": "Vape Coils",
+  "oxva-vape": "OXVA Vape",
+  "uwell-vape": "Uwell Vape",
+  "vaporesso-vape": "Vaporesso Vape",
+  "smok-vape": "Smok Vape",
+  "geek-vape": "GeekVape",
+  "voopoo-vape": "VooPoo Vape",
+  "best-seller-vape": "Best Sellers",
+  "flash-sale": "Flash Sale",
+  "brand": "Certified Vape Brands",
+};
+
   const collectionInfo = useMemo(() => {
-    const defaultTitle = handle
+    const hKey = (handle || "").toLowerCase();
+    const defaultTitle = CANONICAL_HANDLE_TITLES[hKey]
+      ? CANONICAL_HANDLE_TITLES[hKey]
+      : handle
       ? handle.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
       : "Premium Vape Collections";
 
@@ -426,8 +473,9 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     const mainSettings = instanceSettings(sectionInstances, "collectionMain");
 
     // If Shopify data loaded, use it merged with customizer overrides
-    if (collectionMeta && collectionMeta.title) {
-      let shortDesc = `Shop authentic ${collectionMeta.title} devices, pods, and e-liquids at Vape Shop Dubai. 2-Hour fast delivery in Dubai.`;
+    if (collectionMeta && (collectionMeta.title || (collectionMeta as any).customHeading)) {
+      const displayTitle = (mainSettings.customHeading as string) || CANONICAL_HANDLE_TITLES[hKey] || (collectionMeta as any).customHeading || collectionMeta.title || defaultTitle;
+      let shortDesc = `Shop authentic ${displayTitle} devices, pods, and e-liquids at Vape Shop Dubai. 2-Hour fast delivery in Dubai.`;
       if (collectionMeta.description) {
         const firstSentence = collectionMeta.description.split(". ")[0];
         if (firstSentence && firstSentence.length > 15 && firstSentence.length < 180) {
@@ -437,9 +485,9 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
         }
       }
 
-      let rawTitle = collectionMeta.title || (collectionMeta as any).customHeading || (mainSettings.customHeading as string) || defaultTitle;
+      let rawTitle = displayTitle;
       if (typeof rawTitle === "string" && rawTitle.trim().startsWith("{")) {
-        rawTitle = collectionMeta.title || defaultTitle;
+        rawTitle = CANONICAL_HANDLE_TITLES[hKey] || collectionMeta.title || defaultTitle;
       }
 
       return {
