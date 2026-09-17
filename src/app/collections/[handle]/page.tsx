@@ -530,6 +530,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
       return products;
     }
 
+    // Check if the current handle exists as an actual Shopify collection for ANY product
+    const isRealShopifyCollection = products.some(p =>
+      p.collections && p.collections.some(c => c.toLowerCase() === hLower)
+    );
+
     return products.filter((p) => {
       const prodNameLower = p.name.toLowerCase();
       const prodBrandLower = (p.brand || "").toLowerCase();
@@ -544,6 +549,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
 
       if (hasDirectCollectionMatch) {
         return true;
+      }
+
+      // If the Shopify collection exists on the backend, STRICTLY return only what's inside it. No guessing.
+      if (isRealShopifyCollection) {
+        return false;
       }
 
       // If no exact match is found, fallback to search by keywords from handle (Generic fallback for dynamically typed URLs)
@@ -896,8 +906,8 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
                         setActivePillFilter(pill.query);
                       }}
                       className={`shrink-0 text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 cursor-pointer shadow-2xs ${isActive
-                          ? "bg-primary text-white font-black scale-105 shadow-md border border-primary"
-                          : "bg-background border border-border/70 text-foreground hover:border-primary hover:bg-primary/10 hover:text-primary hover:scale-105"
+                        ? "bg-primary text-white font-black scale-105 shadow-md border border-primary"
+                        : "bg-background border border-border/70 text-foreground hover:border-primary hover:bg-primary/10 hover:text-primary hover:scale-105"
                         }`}
                     >
                       {pill.label}
