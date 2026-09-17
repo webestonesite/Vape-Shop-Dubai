@@ -122,11 +122,6 @@ const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
 
       {/* Right product image */}
       <div className="w-[120px] sm:w-[140px] h-[160px] sm:h-[190px] flex-shrink-0 relative flex items-center justify-center z-10 overflow-hidden">
-        <div
-          className={`hidden sm:block absolute w-24 h-24 rounded-full filter blur-[30px] pointer-events-none ${
-            isPrimary ? "bg-white/10" : "bg-primary/5"
-          }`}
-        />
         {card.image && (
           <SmartImage
             src={card.image}
@@ -135,9 +130,7 @@ const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
             height={190}
             sizes="140px"
             className={`relative max-h-full max-w-full w-auto h-auto object-contain group-hover:scale-108 transition-all duration-500 pointer-events-none ${
-              isPrimary
-                ? "drop-shadow-[0_10px_25px_rgba(0,0,0,0.25)] group-hover:-rotate-2"
-                : "drop-shadow-[0_10px_25px_rgba(0,0,0,0.15)] group-hover:rotate-2"
+              isPrimary ? "group-hover:-rotate-2" : "group-hover:rotate-2"
             }`}
           />
         )}
@@ -234,7 +227,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
           {/* ── Left: Main Slide Panel ──────────── col 1-8 */}
-          <div className="lg:col-span-8 relative bg-white dark:bg-card border border-border/60 rounded-[2.5rem] overflow-hidden card-shadow min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex flex-col justify-between">
+          <div className="lg:col-span-8 relative bg-card border border-border/60 rounded-[2.5rem] overflow-hidden card-shadow min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex flex-col justify-between">
             {/* BG glow */}
             <div className="hidden lg:block absolute top-[-10%] right-[-5%] w-[450px] h-[450px] rounded-full bg-primary/8 filter blur-[100px] pointer-events-none" />
 
@@ -264,7 +257,6 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                     <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
                       {/* Product image (Placed TOP on mobile, RIGHT on desktop) */}
                       <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
-                        <div className="hidden sm:block absolute w-44 sm:w-56 h-44 sm:h-56 rounded-full bg-primary/8 filter blur-[60px] pointer-events-none" />
                         {slide.image && (
                           idx === 0 ? (
                             <Image
@@ -275,7 +267,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                               priority
                               draggable={false}
                               sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
-                              className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none sm:drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+                              className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
                             />
                           ) : (
                             <SmartImage
@@ -286,7 +278,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                               height={420}
                               draggable={false}
                               sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
-                              className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none sm:drop-shadow-[0_20px_40px_rgba(0,0,0,0.12)]"
+                              className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
                             />
                           )
                         )}
