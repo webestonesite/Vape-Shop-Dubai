@@ -121,7 +121,7 @@ const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
       </div>
 
       {/* Right product image */}
-      <div className="w-[120px] sm:w-[140px] h-[160px] sm:h-[190px] flex-shrink-0 relative flex items-center justify-center z-10 overflow-hidden">
+      <div className="w-[120px] sm:w-[140px] h-[160px] sm:h-[190px] flex-shrink-0 relative flex items-center justify-center z-10 overflow-hidden mix-blend-multiply">
         {card.image && (
           <SmartImage
             src={card.image}
@@ -256,7 +256,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                     {/* Center grid */}
                     <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
                       {/* Product image (Placed TOP on mobile, RIGHT on desktop) */}
-                      <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
+                      <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none mix-blend-multiply">
                         {slide.image && (
                           idx === 0 ? (
                             <Image
