@@ -13,6 +13,7 @@ export interface CategoryItem {
 export interface CategoriesSettings {
   eyebrow: string;
   heading: string;
+  description?: string;
   seeAllLabel: string;
   seeAllHref: string;
   items: CategoryItem[];
@@ -38,6 +39,11 @@ export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight leading-[0.95]">
             {settings.heading}
           </h2>
+          {settings.description && (
+            <p className="text-xs sm:text-sm text-muted-foreground mt-2 max-w-xl text-center">
+              {settings.description}
+            </p>
+          )}
           {/* Premium Divider */}
           <div className="flex items-center justify-center gap-2 mt-2">
             <div className="h-[1px] w-10 bg-gradient-to-r from-transparent to-primary/65" />

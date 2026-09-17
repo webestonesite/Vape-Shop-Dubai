@@ -223,9 +223,9 @@ export function FlavorsWheel({
             </span>
           )}
           {heading && (
-            <h3 className="text-lg sm:text-3xl md:text-5xl lg:text-6xl font-serif font-black text-foreground tracking-tight leading-tight mb-1 sm:mb-2">
+            <h2 className="text-lg sm:text-3xl md:text-5xl lg:text-6xl font-serif font-black text-foreground tracking-tight leading-tight mb-1 sm:mb-2">
               {heading}
-            </h3>
+            </h2>
           )}
           {description && (
             <p className="hidden md:block text-muted-foreground text-xs sm:text-sm mb-3 px-4 leading-relaxed font-medium whitespace-pre-line">

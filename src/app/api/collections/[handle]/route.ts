@@ -618,7 +618,7 @@ function mapCollection(col: Record<string, unknown>): CollectionMeta {
   const combinedParsed = parseCombinedBlock(combinedDetailsMeta || (col.description as string) || "");
 
   let headingVal = customHeading || combinedParsed?.heading || null;
-  if (headingVal && (headingVal.includes("{") || headingVal.includes(":") || headingVal.length > 120)) {
+  if (headingVal && (typeof headingVal === "string" && headingVal.trim().startsWith("{"))) {
     headingVal = null;
   }
 

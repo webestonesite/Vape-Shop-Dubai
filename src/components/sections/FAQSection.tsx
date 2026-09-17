@@ -93,9 +93,9 @@ export function FAQSection({ settings, productFaqs, collectionFaqs, hideIfEmpty 
               <span>{badgeText}</span>
             </div>
 
-            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight leading-snug">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight leading-snug">
               {heading}
-            </h3>
+            </h2>
 
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mt-3 max-w-xl">
               {description}

@@ -154,9 +154,9 @@ function SubCollectionSectionSlider({
             <span>{badge}</span>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-serif font-black text-foreground tracking-tight leading-tight">
+          <h3 className="text-2xl sm:text-4xl font-serif font-black text-foreground tracking-tight leading-tight">
             {title}
-          </h2>
+          </h3>
 
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-semibold max-w-xl">
             {subtitle}
@@ -243,9 +243,9 @@ function SubCollectionSectionSlider({
 
             {/* Title & Short Description */}
             <div className="space-y-1">
-              <h3 className="text-base sm:text-lg font-serif font-black text-foreground group-hover:text-primary transition-colors leading-snug">
+              <span className="text-base sm:text-lg font-serif font-black text-foreground group-hover:text-primary transition-colors leading-snug block">
                 {card.title}
-              </h3>
+              </span>
               <p className="text-xs text-muted-foreground font-normal leading-relaxed line-clamp-2">
                 {card.subtitle}
               </p>

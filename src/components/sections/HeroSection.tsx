@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Carousel,
   CarouselContent,
@@ -150,6 +150,8 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
   settings: hero,
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const isHome = pathname === "/" || pathname === "";
   const slides = hero.slides;
 
   const [api, setApi] = useState<CarouselApi>();
@@ -296,7 +298,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                           <p className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-primary uppercase mb-2 sm:mb-2.5">
                             {slide.accent}
                           </p>
-                          <SlideHeadline title={slide.title} as={idx === 0 ? "h1" : "h2"} />
+                          <SlideHeadline title={slide.title} as="h2" />
                         </div>
                         <p className="text-xs sm:text-base text-muted-foreground leading-relaxed font-normal whitespace-pre-line max-w-xl line-clamp-3 sm:line-clamp-none">
                           {slide.description}

@@ -166,9 +166,9 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
                 <span>{flashSale?.badgeText || "⚡ Limited Time Dubai Flash Deals"}</span>
               </div>
 
-              <h3 className="text-xl sm:text-3xl lg:text-4xl font-serif text-foreground tracking-tight leading-snug">
+              <h2 className="text-xl sm:text-3xl lg:text-4xl font-serif text-foreground tracking-tight leading-snug">
                 {sectionName}
-              </h3>
+              </h2>
 
               <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed">
                 {flashSale?.description ||
@@ -209,9 +209,9 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
                 Curated Selection
               </span>
 
-              <h3 className="text-2xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight leading-snug">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight leading-snug">
                 {sectionName}
-              </h3>
+              </h2>
 
               <div className="flex items-center justify-center gap-2 mt-2">
                 <div className="h-[1px] w-10 bg-gradient-to-r from-transparent to-primary/65" />

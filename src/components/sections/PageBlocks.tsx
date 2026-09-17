@@ -82,11 +82,33 @@ function renderBody(body: string): React.ReactNode[] {
     .map((block, idx) => {
       const lines = block.split("\n").map((l) => l.trim());
       
+      if (lines.length === 1 && lines[0].startsWith("# ")) {
+        return (
+          <div key={idx} className="flex items-center gap-3 pt-6 pb-2 mt-6 first:mt-0 border-t border-border/40 first:border-t-0">
+            <span className="w-2 h-6 rounded-full bg-primary shrink-0" />
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-foreground tracking-tight leading-snug">
+              {parseInline(lines[0].slice(2))}
+            </h1>
+          </div>
+        );
+      }
+
+      if (lines.length === 1 && lines[0].startsWith("## ")) {
+        return (
+          <div key={idx} className="flex items-center gap-3 pt-6 pb-2 mt-6 first:mt-0 border-t border-border/40 first:border-t-0">
+            <span className="w-2 h-6 rounded-full bg-primary shrink-0" />
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif text-foreground tracking-tight leading-snug">
+              {parseInline(lines[0].slice(3))}
+            </h2>
+          </div>
+        );
+      }
+
       if (lines.length === 1 && lines[0].startsWith("### ")) {
         return (
           <div key={idx} className="flex items-center gap-3 pt-6 pb-2 mt-6 first:mt-0 border-t border-border/40 first:border-t-0">
             <span className="w-2 h-6 rounded-full bg-primary shrink-0" />
-            <h3 className="text-xl sm:text-2xl font-serif text-foreground tracking-tight leading-snug">
+            <h3 className="text-lg sm:text-xl font-serif text-foreground tracking-tight leading-snug">
               {parseInline(lines[0].slice(4))}
             </h3>
           </div>

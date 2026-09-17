@@ -65,26 +65,7 @@ function cleanDescriptionHtml(html: string): string {
   cleaned = cleaned.replace(/^\s*["';\s\}]+/g, "");
   cleaned = cleaned.replace(/["';\s\}]+\s*$/g, "");
 
-  // 2. If text does NOT have paragraph tags (<p>), auto-format plain text into structured paragraphs & headings
-  if (!cleaned.includes("<p>") && !cleaned.includes("<div>")) {
-    cleaned = cleaned
-      .replace(/(JUUL VAPE DUBAI:\s*Introduction to JUUL Vape in Dubai)/gi, '<h2>$1</h2>')
-      .replace(/(JUUL Vape 1\s*[–\-]\s*The Classic Device)/gi, '<h3>$1</h3>')
-      .replace(/(JUUL Vape 2\s*[–\-]\s*The Updated Generation)/gi, '<h3>$1</h3>')
-      .replace(/(Pod Compatibility)/gi, '<h3>$1</h3>')
-      .replace(/(Compatible Pods for JUUL Vape 1)/gi, '<h3>$1</h3>')
-      .replace(/(Why JUUL Fruit Flavors Are Available in the Market\?)/gi, '<h3>$1</h3>');
-
-    const blocks = cleaned.split(/(?=<h[1-6]>|\n\n+)/);
-    cleaned = blocks
-      .map((block) => {
-        const trimmed = block.trim();
-        if (!trimmed) return "";
-        if (trimmed.startsWith("<h")) return trimmed;
-        return `<p class="mb-4 text-foreground/90 leading-relaxed text-justify [text-align-last:left]">${trimmed}</p>`;
-      })
-      .join("");
-  }
+  // Output raw Shopify backend HTML untouched without regex heading mutations
 
   // Process tables: promote first <tr> to <thead><th> if table lacks <thead>
   cleaned = cleaned.replace(/<table[\s\S]*?<\/table>/gi, (tableHtml) => {
@@ -293,7 +274,7 @@ function getSubPillsForHandle(h: string) {
   ];
 }
 
-function CollectionPageContent() {
+function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
   const params = useParams();
   const rawHandle = params?.handle;
   const handle = (typeof rawHandle === "string" ? rawHandle : Array.isArray(rawHandle) ? rawHandle[0] : "") || "";
@@ -326,7 +307,7 @@ function CollectionPageContent() {
     descriptionHtml: string;
     image: { url: string; altText: string; width: number; height: number } | null;
     seo: { title: string; description: string } | null;
-  } | null>(null);
+  } | null>(initialMeta || null);
 
   // Global search & navbar states
   const [searchQuery, setSearchQuery] = useState("");
@@ -358,6 +339,9 @@ function CollectionPageContent() {
 
   // Fetch Shopify collection metadata
   useEffect(() => {
+    if (initialMeta) {
+      setCollectionMeta(initialMeta);
+    }
     if (!handle) return;
     async function loadCollectionMeta() {
       try {
@@ -365,15 +349,15 @@ function CollectionPageContent() {
         if (res.ok) {
           const data = await res.json();
           setCollectionMeta(data);
-        } else {
+        } else if (!initialMeta) {
           setCollectionMeta(null);
         }
       } catch {
-        setCollectionMeta(null);
+        if (!initialMeta) setCollectionMeta(null);
       }
     }
     loadCollectionMeta();
-  }, [handle]);
+  }, [handle, initialMeta]);
 
   // Synchronize brand filter from query params
   useEffect(() => {
@@ -453,9 +437,9 @@ function CollectionPageContent() {
         }
       }
 
-      let rawTitle = (collectionMeta as any).customHeading || (mainSettings.customHeading as string) || collectionMeta.title || defaultTitle;
-      if (rawTitle.includes("{") || rawTitle.includes(":") || rawTitle.length > 120) {
-        rawTitle = defaultTitle;
+      let rawTitle = collectionMeta.title || (collectionMeta as any).customHeading || (mainSettings.customHeading as string) || defaultTitle;
+      if (typeof rawTitle === "string" && rawTitle.trim().startsWith("{")) {
+        rawTitle = collectionMeta.title || defaultTitle;
       }
 
       return {
@@ -825,7 +809,7 @@ function CollectionPageContent() {
                     PRODUCTS
                   </Link>
                   <span className="text-muted-foreground/40 shrink-0 font-light">/</span>
-                  <h1 className="text-foreground font-extrabold m-0 text-base">{collectionInfo.title}</h1>
+                  <span className="text-foreground font-bold shrink-0">{collectionInfo.title}</span>
                 </nav>
 
                 <div className="flex items-center gap-2">
@@ -833,6 +817,19 @@ function CollectionPageContent() {
                     Products Of {collectionInfo.title}
                   </span>
                 </div>
+              </div>
+
+              {/* Main Collection Heading H1 (from Shopify Backend) */}
+              <div className="pt-1 pb-1">
+                {/<h1[^>]*>/i.test(collectionInfo.descriptionHtml || "") ? (
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-foreground tracking-tight m-0">
+                    {collectionInfo.title}
+                  </div>
+                ) : (
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-foreground tracking-tight m-0">
+                    {collectionInfo.title}
+                  </h1>
+                )}
               </div>
 
               {/* Bottom Row: Horizontal Scrollable Sub-Category & Brand Filter Pills (In-Page State Filtering) */}
@@ -1236,10 +1233,10 @@ function CollectionPageContent() {
               {/* Full Unclamped Guide Content */}
               <div>
                 <div
-                  className="text-sm sm:text-base text-foreground leading-relaxed prose prose-sm sm:prose-base max-w-none 
-                    [&_h1]:text-base [&_h1]:sm:text-lg [&_h1]:font-serif [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:border-l-4 [&_h1]:border-primary [&_h1]:pl-3.5
-                    [&_h2]:text-base [&_h2]:sm:text-lg [&_h2]:font-serif [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:border-l-4 [&_h2]:border-primary [&_h2]:pl-3.5
-                    [&_h3]:text-sm [&_h3]:sm:text-base [&_h3]:font-serif [&_h3]:font-bold [&_h3]:text-foreground [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:border-l-4 [&_h3]:border-primary [&_h3]:pl-3
+                  className="product-description-content text-sm sm:text-base text-foreground leading-relaxed prose prose-sm sm:prose-base max-w-none 
+                    [&_h1]:text-xl [&_h1]:sm:text-2xl [&_h1]:font-serif [&_h1]:font-black [&_h1]:text-foreground [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:border-l-4 [&_h1]:border-primary [&_h1]:pl-3.5
+                    [&_h2]:text-lg [&_h2]:sm:text-xl [&_h2]:font-serif [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:border-l-4 [&_h2]:border-primary [&_h2]:pl-3
+                    [&_h3]:text-base [&_h3]:sm:text-lg [&_h3]:font-serif [&_h3]:font-bold [&_h3]:text-foreground [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:border-l-4 [&_h3]:border-primary/70 [&_h3]:pl-2.5
                     [&_h4]:text-sm [&_h4]:font-bold [&_h4]:text-foreground [&_h4]:mt-4 [&_h4]:mb-1.5
                     [&_p]:mb-4 [&_p]:text-foreground/95 [&_p]:leading-relaxed [&_p]:text-justify [&_p]:[text-align-last:left]
                     [&_li]:text-foreground/95 [&_li]:text-justify [&_li]:[text-align-last:left]
@@ -1302,10 +1299,10 @@ function CollectionPageContent() {
                       {/* Full Unclamped Guide Content */}
                       <div>
                         <div
-                          className="text-sm sm:text-base text-foreground leading-relaxed prose prose-sm sm:prose-base max-w-none 
-                            [&_h1]:text-base [&_h1]:sm:text-lg [&_h1]:font-serif [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mt-6 [&_h1]:mb-3 [&_h1]:border-l-4 [&_h1]:border-primary [&_h1]:pl-3.5
-                            [&_h2]:text-base [&_h2]:sm:text-lg [&_h2]:font-serif [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:border-l-4 [&_h2]:border-primary [&_h2]:pl-3.5
-                            [&_h3]:text-sm [&_h3]:sm:text-base [&_h3]:font-serif [&_h3]:font-bold [&_h3]:text-foreground [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:border-l-4 [&_h3]:border-primary [&_h3]:pl-3
+                          className="product-description-content text-sm sm:text-base text-foreground leading-relaxed prose prose-sm sm:prose-base max-w-none 
+                            [&_h1]:text-xl [&_h1]:sm:text-2xl [&_h1]:font-serif [&_h1]:font-black [&_h1]:text-foreground [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:border-l-4 [&_h1]:border-primary [&_h1]:pl-3.5
+                            [&_h2]:text-lg [&_h2]:sm:text-xl [&_h2]:font-serif [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:border-l-4 [&_h2]:border-primary [&_h2]:pl-3
+                            [&_h3]:text-base [&_h3]:sm:text-lg [&_h3]:font-serif [&_h3]:font-bold [&_h3]:text-foreground [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:border-l-4 [&_h3]:border-primary/70 [&_h3]:pl-2.5
                             [&_h4]:text-sm [&_h4]:font-bold [&_h4]:text-foreground [&_h4]:mt-4 [&_h4]:mb-1.5
                             [&_p]:mb-4 [&_p]:text-foreground/95 [&_p]:leading-relaxed [&_p]:text-justify [&_p]:[text-align-last:left]
                             [&_li]:text-foreground/95 [&_li]:text-justify [&_li]:[text-align-last:left]

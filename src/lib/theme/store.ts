@@ -50,23 +50,53 @@ const firestoreStorage: ThemeStorage = {
         updatedAt: parsed.updatedAt ?? new Date(0).toISOString(),
         updatedBy: parsed.updatedBy ?? null,
       };
-    } catch (err) {
-      console.error(`[theme] could not read ${slot} settings from Firestore:`, err);
+    } catch {
       return null;
     }
   },
 
   async write(slot, record) {
-    try {
-      await adminDb.collection("theme").doc(slot).set(record);
-    } catch (err) {
-      console.error(`[theme] could not write ${slot} settings to Firestore:`, err);
-      throw err;
-    }
+    await adminDb.collection("theme").doc(slot).set(record);
   },
 };
 
-const storage: ThemeStorage = firestoreStorage;
+const jsonFileStorage: ThemeStorage = {
+  async read(slot) {
+    const file = slot === "draft" ? DRAFT_FILE : PUBLISHED_FILE;
+    try {
+      const raw = await fs.readFile(file, "utf-8");
+      const parsed = JSON.parse(raw);
+      return {
+        settings: normalizeSettings(parsed.settings),
+        updatedAt: parsed.updatedAt ?? new Date(0).toISOString(),
+        updatedBy: parsed.updatedBy ?? null,
+      };
+    } catch {
+      return null;
+    }
+  },
+  async write(slot, record) {
+    const file = slot === "draft" ? DRAFT_FILE : PUBLISHED_FILE;
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(file, JSON.stringify(record, null, 2), "utf-8");
+  },
+};
+
+const storage: ThemeStorage = {
+  async read(slot) {
+    const fromFS = await firestoreStorage.read(slot);
+    if (fromFS) return fromFS;
+    return jsonFileStorage.read(slot);
+  },
+  async write(slot, record) {
+    try {
+      await firestoreStorage.write(slot, record);
+    } catch {
+      // Fallback silently to JSON file storage if Firestore credentials are not configured
+    }
+    await jsonFileStorage.write(slot, record);
+  },
+};
 
 /* ── Public API ───────────────────────────────────────────────────── */
 

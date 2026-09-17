@@ -103,11 +103,11 @@ export const AuthorizedDealers: React.FC<AuthorizedDealersProps> = ({
           {/* Centered Title */}
           <div className="text-center flex flex-col items-center flex-1">
             <span className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-primary uppercase mb-2">
-              TASTE THE DIFFERENCE
+              TRUSTED BRANDS
             </span>
-            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight">
-              Best Vape Brands in Dubai
-            </h3>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-foreground tracking-tight">
+              {heading || "Popular Vaping Brands"}
+            </h2>
             {/* Premium Divider */}
             <div className="flex items-center justify-center gap-2 mt-2">
               <div className="h-[1px] w-10 bg-gradient-to-r from-transparent to-primary/65" />
