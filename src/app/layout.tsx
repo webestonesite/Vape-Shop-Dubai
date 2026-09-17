@@ -63,9 +63,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Vape Shop Dubai" }],
   creator: "Vape Shop Dubai",
   publisher: "Vape Shop Dubai",
-  alternates: {
-    canonical: SITE_URL,
-  },
   icons: {
     icon: "/favicon_v2.png",
     apple: "/favicon_v2.png",
@@ -82,7 +79,7 @@ export const metadata: Metadata = {
         url: `${SITE_URL}/hero_vape.png`,
         width: 1200,
         height: 630,
-        alt: "Vape Shop Dubai Luxury Pod Systems & Disposables",
+        alt: "Vape Shop Dubai",
       },
     ],
   },
@@ -126,6 +123,7 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         
         {/* Root Google JSON-LD Schemas */}
         <script
