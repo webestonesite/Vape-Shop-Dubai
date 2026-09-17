@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative mt-2 sm:mt-3 lg:mt-4 bg-card text-foreground font-sans border-t border-border/50">
+    <footer className="relative mt-2 sm:mt-3 lg:mt-4 bg-card text-foreground font-sans border-t border-border/50" suppressHydrationWarning>
       {/* ── 1. Top Trust Features (Seamless Luxury Glassmorphic Banner) ──── */}
       <div className="py-6 sm:py-8 bg-muted/20 border-b border-border/50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">

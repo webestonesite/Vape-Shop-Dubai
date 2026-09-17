@@ -401,7 +401,7 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="relative flex flex-col min-h-screen bg-background text-foreground">
+      <div className="relative flex flex-col min-h-screen bg-background text-foreground" suppressHydrationWarning>
         <Navbar onSearchChange={setSearchQuery} onCategorySelect={setActiveCategory} activeCategory={activeCategory} />
         <main className="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 pt-[115px]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
@@ -523,7 +523,7 @@ export default function ProductPage() {
     : 0;
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-background text-foreground">
+    <div className="relative flex flex-col min-h-screen bg-background text-foreground" suppressHydrationWarning>
       {/* Product JSON-LD Schemas */}
       <script
         type="application/ld+json"
