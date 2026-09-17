@@ -52,16 +52,30 @@ export function BlogImageWithSkeleton({
     return () => observer.disconnect();
   }, [priority, isVisible]);
 
+  const isDummyImage =
+    !src ||
+    src.includes("juul_menthol") ||
+    src.includes("juul_device") ||
+    src.includes("vape_kit") ||
+    src.includes("lost_mary") ||
+    src.includes("premium_liquid") ||
+    src.includes("hero_vape") ||
+    src.includes("blog_juul") ||
+    src.includes("blog_disposable") ||
+    src.includes("blog_eliquid") ||
+    src.includes("blog_pod") ||
+    src.includes("blog_authenticity");
+
   return (
     <div ref={containerRef} className={`relative overflow-hidden bg-muted/70 ${containerClassName}`}>
       {/* Skeleton Pulse animation shown while loading */}
-      {!loaded && !error && (
+      {!loaded && !error && !isDummyImage && (
         <div className="absolute inset-0 bg-muted/80 animate-pulse flex items-center justify-center z-10 pointer-events-none">
           <div className="w-7 h-7 rounded-full border-2 border-primary/20 border-t-primary animate-spin opacity-40" />
         </div>
       )}
 
-      {src && !error && isVisible ? (
+      {!isDummyImage && !error && isVisible ? (
         <img
           ref={(el) => {
             imgRef.current = el;
@@ -83,8 +97,8 @@ export function BlogImageWithSkeleton({
         />
       ) : null}
 
-      {/* Clean CSS skeleton state if image fails or missing (NO fallback image used) */}
-      {(error || !src) && (
+      {/* Clean CSS skeleton state if image fails or missing or legacy dummy (NO fallback image used) */}
+      {(error || isDummyImage) && (
         <div className="w-full h-full bg-gradient-to-br from-muted/50 via-muted/30 to-muted/60 flex flex-col items-center justify-center p-4 text-center">
           <BookOpen className="w-7 h-7 text-primary/30 mb-2 animate-pulse" />
           <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">

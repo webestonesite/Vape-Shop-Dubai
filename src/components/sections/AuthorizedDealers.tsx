@@ -41,22 +41,22 @@ interface AuthorizedDealersProps {
 }
 
 const DEFAULT_BRANDS: BrandItem[] = [
-  { name: "JUUL", image: "/juul_device.png", href: "/collections/juul-vape-dubai" },
-  { name: "MYLE", image: "/vape_kit.png", href: "/collections/myle-vape-dubai" },
-  { name: "GeekVape", image: "/vape_kit.png", href: "/collections/geek-vape" },
-  { name: "Uwell", image: "/vape_kit.png", href: "/collections/uwell-vape" },
-  { name: "Vaporesso", image: "/vape_kit.png", href: "/collections/vaporesso-vape" },
-  { name: "VooPoo", image: "/vape_kit.png", href: "/collections/voopoo-vape" },
-  { name: "Smok", image: "/vape_kit.png", href: "/collections/smok-vape" },
-  { name: "Oxva", image: "/vape_kit.png", href: "/collections/oxva-vape" },
-  { name: "Elf Bar", image: "/lost_mary.png", href: "/collections/elf-bar-vape" },
-  { name: "Lost Mary", image: "/lost_mary.png", href: "/collections/lost-mary-disposable" },
-  { name: "Tugboat", image: "/lost_mary.png", href: "/collections/tugboat-vape" },
-  { name: "Maskking Vape", image: "/lost_mary.png", href: "/collections/maskking-vape" },
-  { name: "Pod Salt", image: "/premium_liquid.png", href: "/collections/pod-salt-vape" },
-  { name: "Yuoto", image: "/lost_mary.png", href: "/collections/yuoto-vape" },
-  { name: "Silvaper", image: "/premium_liquid.png", href: "/collections/silvaper-vape" },
-  { name: "Al Fakher", image: "/lost_mary.png", href: "/collections/al-fakher-vape" },
+  { name: "JUUL", image: "", href: "/collections/juul-vape-dubai" },
+  { name: "MYLE", image: "", href: "/collections/myle-vape-dubai" },
+  { name: "GeekVape", image: "", href: "/collections/geek-vape" },
+  { name: "Uwell", image: "", href: "/collections/uwell-vape" },
+  { name: "Vaporesso", image: "", href: "/collections/vaporesso-vape" },
+  { name: "VooPoo", image: "", href: "/collections/voopoo-vape" },
+  { name: "Smok", image: "", href: "/collections/smok-vape" },
+  { name: "Oxva", image: "", href: "/collections/oxva-vape" },
+  { name: "Elf Bar", image: "", href: "/collections/elf-bar-vape" },
+  { name: "Lost Mary", image: "", href: "/collections/lost-mary-disposable" },
+  { name: "Tugboat", image: "", href: "/collections/tugboat-vape" },
+  { name: "Maskking Vape", image: "", href: "/collections/maskking-vape" },
+  { name: "Pod Salt", image: "", href: "/collections/pod-salt-vape" },
+  { name: "Yuoto", image: "", href: "/collections/yuoto-vape" },
+  { name: "Silvaper", image: "", href: "/collections/silvaper-vape" },
+  { name: "Al Fakher", image: "", href: "/collections/al-fakher-vape" },
 ];
 
 export const AuthorizedDealers: React.FC<AuthorizedDealersProps> = ({
@@ -78,7 +78,7 @@ export const AuthorizedDealers: React.FC<AuthorizedDealersProps> = ({
 
   const eyebrow = settings?.eyebrow || "Taste the Difference";
   const heading = settings?.heading || "Best Vape Brands in Dubai";
-  const items = Array.isArray(settings?.items) && settings.items.length > 0 && !settings.items.some(i => i.image === "/vape_kit.png") ? settings.items : DEFAULT_BRANDS;
+  const items = Array.isArray(settings?.items) && settings.items.length > 0 ? settings.items : DEFAULT_BRANDS;
 
   const handleBrandClick = (brand: BrandItem) => {
     if (onBrandSelect) {

@@ -97,7 +97,7 @@ export function JuulCustomFeatureSection({
 }) {
   const title = featureData?.heading || settings?.title || "Sleek, Compact & Pocket-Friendly Design";
   const description = featureData?.description || settings?.description;
-  const image = featureData?.image_url || settings?.image || "/juul_device.png";
+  const image = featureData?.image_url || settings?.image || "";
   const buttonText = featureData?.button_text || settings?.buttonText || "Shop Collection";
   const buttonLink = featureData?.button_url || settings?.buttonLink || "/collections/all";
   const bulletPoints = featureData?.bulletPoints || settings?.bulletPoints || [];

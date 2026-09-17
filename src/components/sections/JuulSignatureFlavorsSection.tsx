@@ -29,7 +29,7 @@ const JUUL1_FLAVORS: JuulFlavorItem[] = [
     price: 85.0,
     description:
       '"The JUUL 1 Menthol 5% delivers a crisp, cool menthol profile that stays clean and balanced from start to finish. Menthol lovers mostly prefer this flavour for its strong salt nicotine hit."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul-virginia-5",
@@ -40,7 +40,7 @@ const JUUL1_FLAVORS: JuulFlavorItem[] = [
     price: 90.0,
     description:
       '"Tobacco flavors in the vaping market are a mixed bag. The JUUL Virginia Tobacco pod cartridge 5% is slightly sweet, slightly earthy and doesn\'t get harsh or flat as the pod runs down."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul-menthol-3",
@@ -51,7 +51,7 @@ const JUUL1_FLAVORS: JuulFlavorItem[] = [
     price: 85.0,
     description:
       '"JUUL 1 pod refill cartridge is well appreciated among cooling effect lovers. Every puff delivers a subtle icy sensation of cool mint. Never tastes chemically or overpowered."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul-virginia-3",
@@ -62,7 +62,7 @@ const JUUL1_FLAVORS: JuulFlavorItem[] = [
     price: 90.0,
     description:
       '"JUUL Classic tobacco vape flavor is designed to deliver a consistent, grounded tobacco experience from start to finish. A perfect choice for cigarette smokers looking for a clean alternative."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul-mint-5",
@@ -73,7 +73,7 @@ const JUUL1_FLAVORS: JuulFlavorItem[] = [
     price: 85.0,
     description:
       '"Refreshing peppermint flavor with a soothing icy exhale. One of the most popular JUUL pod flavors in Dubai for all-day vaping."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul-mango-5",
@@ -84,7 +84,7 @@ const JUUL1_FLAVORS: JuulFlavorItem[] = [
     price: 120.0,
     description:
       '"Ripe tropical sweet mango flavor pod cartridge. Highly sought-after original flavor with rich nicotine salt satisfaction."',
-    image: "/juul_device.png",
+    image: "",
   },
 ];
 
@@ -98,7 +98,7 @@ const JUUL2_FLAVORS: JuulFlavorItem[] = [
     price: 85.0,
     description:
       '"JUUL 2 Crisp Menthol features fresh green menthol flavor with a brisk cooling exhale. Engineered with anti-counterfeit chip technology."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul2-virginia-tobacco",
@@ -109,7 +109,7 @@ const JUUL2_FLAVORS: JuulFlavorItem[] = [
     price: 90.0,
     description:
       '"Subtle, toasted tobacco flavor with sweet aromatic notes. Specially blended for JUUL 2 next-gen pod system."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul2-ruby-scheme",
@@ -120,7 +120,7 @@ const JUUL2_FLAVORS: JuulFlavorItem[] = [
     price: 85.0,
     description:
       '"JUUL 2 Ruby Scheme combines wild red berry notes with a crisp cooling finish. Unique signature blend."',
-    image: "/juul_device.png",
+    image: "",
   },
   {
     id: "juul2-polar-menthol",
@@ -131,7 +131,7 @@ const JUUL2_FLAVORS: JuulFlavorItem[] = [
     price: 85.0,
     description:
       '"Deep, intense freezing menthol flavor with a powerful cooling hit designed for maximum satisfaction."',
-    image: "/juul_device.png",
+    image: "",
   },
 ];
 

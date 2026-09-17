@@ -76,7 +76,7 @@ export function JuulPackagingCompareSection({
         tabLabel: settings?.newTabLabel || "NEW PACKAGING",
         title: settings?.newTitle || "New Packaging Specifications",
         badge: settings?.newBadge || "NEW DESIGN",
-        image: settings?.newImage || "/juul_device.png",
+        image: settings?.newImage || "",
         points:
           settings?.newPoints && settings.newPoints.length > 0
             ? settings.newPoints
@@ -86,7 +86,7 @@ export function JuulPackagingCompareSection({
         tabLabel: settings?.oldTabLabel || "OLD PACKAGING",
         title: settings?.oldTitle || "Old Packaging Specifications",
         badge: settings?.oldBadge || "OLD DESIGN",
-        image: settings?.oldImage || "/juul_device.png",
+        image: settings?.oldImage || "",
         points:
           settings?.oldPoints && settings.oldPoints.length > 0
             ? settings.oldPoints

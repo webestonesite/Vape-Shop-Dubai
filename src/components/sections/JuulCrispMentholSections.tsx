@@ -53,7 +53,7 @@ export function JuulCrispMentholSections({
   const heading = fill(settings?.headingTemplate || "Why Choose {product}");
   const body = fill(settings?.bodyTemplate ?? "");
   const points = settings?.points ?? [];
-  const image = settings?.image || "/juul_menthol_pack.png";
+  const image = settings?.image || "";
 
   const showIngredients = settings?.showIngredients !== false;
   const ingredientsHeading = fill(
@@ -61,7 +61,7 @@ export function JuulCrispMentholSections({
   );
   const ingredientsBody = fill(settings?.ingredientsBodyTemplate ?? "");
   const ingredients = settings?.ingredients ?? [];
-  const ingredientsImage = settings?.ingredientsImage || "/juul_menthol_pod.png";
+  const ingredientsImage = settings?.ingredientsImage || "";
 
   // Only the first six points fit around the image; the list below shows all
   // of them, so a seventh point is copy rather than a dropped setting.

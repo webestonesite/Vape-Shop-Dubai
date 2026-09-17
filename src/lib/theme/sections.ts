@@ -178,7 +178,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
             "Discover the best vaping experience in Dubai with Vape Shop Dubai! Explore a wide range of premium vapes, disposables, e-liquids, and accessories. Enjoy fast 3-hour delivery across Dubai, Sharjah, and Abu Dhabi.",
           image:
             "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/myle_slider.webp?v=1786640992",
-          fallbackImage: "/Slider/myle_slider.webp",
+          fallbackImage: "",
           tag: "⚡ 3-Hour Delivery",
           buttonText: "Shop Collection",
           ctaHref: "/shop",
@@ -194,7 +194,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
             "Experience next-level flavor and satisfaction with Juul 2 Pods, available at Vape Shop Dubai. Offering richer taste, enhanced airflow, and sleek design. Fast delivery across Dubai, Sharjah, and Abu Dhabi!",
           image:
             "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/juul_2_slider.webp?v=1786641001",
-          fallbackImage: "/Slider/juul_2_slider.webp",
+          fallbackImage: "",
           tag: "🔥 UK Genuine Stock",
           buttonText: "Shop JUUL 2",
           ctaHref: "/collections/juul-2-series",
@@ -210,7 +210,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
             "Elevate your vaping experience with Myle Meta V5 Pods, now at Vape Shop Dubai. Featuring advanced technology, rich flavors, and leak-resistant design. Order today for fast delivery across Dubai and the UAE!",
           image:
             "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/myle_slider.webp?v=1786640992",
-          fallbackImage: "/Slider/myle_slider.webp",
+          fallbackImage: "",
           tag: "✨ Authentic V5",
           buttonText: "Shop MYLE V5",
           ctaHref: "/collections/myle-vape-dubai",
@@ -262,7 +262,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         itemNoun: "category",
         itemLabelKey: "label",
         max: 40,
-        defaultItem: { label: "New Category", image: "/vape_kit.png", href: "/collections/" },
+        defaultItem: { label: "New Category", image: "", href: "/collections/" },
         fields: [
           { type: "text", key: "label", label: "Label" },
           { type: "image", key: "image", label: "Icon image" },
@@ -277,22 +277,22 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       seeAllLabel: "SEE ALL",
       seeAllHref: "/shop",
       items: [
-        { label: "JUUL 1 Series", image: "/juul_device.png", href: "/collections/juul-1-series" },
-        { label: "JUUL 2 Series", image: "/juul_device.png", href: "/collections/juul-2-series" },
-        { label: "JUUL Pods", image: "/juul_device.png", href: "/collections/juul-pods-offers" },
-        { label: "Myle v5 Pods", image: "/vape_kit.png", href: "/collections/myle-v5-pods" },
-        { label: "Myle v5 Kits", image: "/vape_kit.png", href: "/collections/myle-v5-device" },
-        { label: "Myle Disposables", image: "/vape_kit.png", href: "/collections/myle-disposable" },
-        { label: "Disposables", image: "/lost_mary.png", href: "/collections/disposable-vape" },
-        { label: "Salt Nicotine", image: "/premium_liquid.png", href: "/collections/salt-nicotine" },
-        { label: "Freebase Nic", image: "/premium_liquid.png", href: "/collections/freebase-e-liquid" },
-        { label: "Pod Kits", image: "/vape_kit.png", href: "/collections/pod-kit" },
-        { label: "Cartridges", image: "/vape_kit.png", href: "/collections/pod-cartridge" },
-        { label: "Vape Coils", image: "/vape_kit.png", href: "/collections/vape-coils" },
-        { label: "Uwell", image: "/vape_kit.png", href: "/collections/uwell-vape" },
-        { label: "Vaporesso", image: "/vape_kit.png", href: "/collections/vaporesso-vape" },
-        { label: "Geekvape", image: "/vape_kit.png", href: "/collections/geek-vape" },
-        { label: "OXVA", image: "/vape_kit.png", href: "/collections/oxva-vape" },
+        { label: "JUUL 1 Series", image: "", href: "/collections/juul-1-series" },
+        { label: "JUUL 2 Series", image: "", href: "/collections/juul-2-series" },
+        { label: "JUUL Pods", image: "", href: "/collections/juul-pods-offers" },
+        { label: "Myle v5 Pods", image: "", href: "/collections/myle-v5-pods" },
+        { label: "Myle v5 Kits", image: "", href: "/collections/myle-v5-device" },
+        { label: "Myle Disposables", image: "", href: "/collections/myle-disposable" },
+        { label: "Disposables", image: "", href: "/collections/disposable-vape" },
+        { label: "Salt Nicotine", image: "", href: "/collections/salt-nicotine" },
+        { label: "Freebase Nic", image: "", href: "/collections/freebase-e-liquid" },
+        { label: "Pod Kits", image: "", href: "/collections/pod-kit" },
+        { label: "Cartridges", image: "", href: "/collections/pod-cartridge" },
+        { label: "Vape Coils", image: "", href: "/collections/vape-coils" },
+        { label: "Uwell", image: "", href: "/collections/uwell-vape" },
+        { label: "Vaporesso", image: "", href: "/collections/vaporesso-vape" },
+        { label: "Geekvape", image: "", href: "/collections/geek-vape" },
+        { label: "OXVA", image: "", href: "/collections/oxva-vape" },
       ],
     },
   },
@@ -617,7 +617,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         itemNoun: "brand",
         itemLabelKey: "name",
         max: 40,
-        defaultItem: { name: "New Brand", image: "/vape_kit.png", href: "/collections/" },
+        defaultItem: { name: "New Brand", image: "", href: "/collections/" },
         fields: [
           { type: "text", key: "name", label: "Brand name" },
           { type: "image", key: "image", label: "Icon image" },
@@ -653,22 +653,22 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         { name: "Sweet Candy & Soda", color: "#38bdf8", img: "https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=200&h=200&fit=crop", query: "Candy" },
       ],
       items: [
-        { name: "JUUL", image: "/juul_device.png", href: "/collections/juul-vape-dubai" },
-        { name: "MYLE", image: "/vape_kit.png", href: "/collections/myle-vape-dubai" },
-        { name: "GeekVape", image: "/vape_kit.png", href: "/collections/geek-vape" },
-        { name: "Uwell", image: "/vape_kit.png", href: "/collections/uwell-vape" },
-        { name: "Vaporesso", image: "/vape_kit.png", href: "/collections/vaporesso-vape" },
-        { name: "VooPoo", image: "/vape_kit.png", href: "/collections/voopoo-vape" },
-        { name: "Smok", image: "/vape_kit.png", href: "/collections/smok-vape" },
-        { name: "Oxva", image: "/vape_kit.png", href: "/collections/oxva-vape" },
-        { name: "Elf Bar", image: "/lost_mary.png", href: "/collections/elf-bar-vape" },
-        { name: "Lost Mary", image: "/lost_mary.png", href: "/collections/lost-mary-disposable" },
-        { name: "Tugboat", image: "/lost_mary.png", href: "/collections/tugboat-vape" },
-        { name: "SKE Crystal", image: "/lost_mary.png", href: "/collections/disposable-vape" },
-        { name: "Pod Salt", image: "/premium_liquid.png", href: "/collections/pod-salt-vape" },
-        { name: "Nasty Juice", image: "/premium_liquid.png", href: "/collections/salt-nicotine" },
-        { name: "IVG", image: "/premium_liquid.png", href: "/collections/salt-nicotine" },
-        { name: "Al Fakher", image: "/premium_liquid.png", href: "/collections/al-fakher-vape" },
+        { name: "JUUL", image: "", href: "/collections/juul-vape-dubai" },
+        { name: "MYLE", image: "", href: "/collections/myle-vape-dubai" },
+        { name: "GeekVape", image: "", href: "/collections/geek-vape" },
+        { name: "Uwell", image: "", href: "/collections/uwell-vape" },
+        { name: "Vaporesso", image: "", href: "/collections/vaporesso-vape" },
+        { name: "VooPoo", image: "", href: "/collections/voopoo-vape" },
+        { name: "Smok", image: "", href: "/collections/smok-vape" },
+        { name: "Oxva", image: "", href: "/collections/oxva-vape" },
+        { name: "Elf Bar", image: "", href: "/collections/elf-bar-vape" },
+        { name: "Lost Mary", image: "", href: "/collections/lost-mary-disposable" },
+        { name: "Tugboat", image: "", href: "/collections/tugboat-vape" },
+        { name: "SKE Crystal", image: "", href: "/collections/disposable-vape" },
+        { name: "Pod Salt", image: "", href: "/collections/pod-salt-vape" },
+        { name: "Nasty Juice", image: "", href: "/collections/salt-nicotine" },
+        { name: "IVG", image: "", href: "/collections/salt-nicotine" },
+        { name: "Al Fakher", image: "", href: "/collections/al-fakher-vape" },
       ],
     },
   },
@@ -1131,7 +1131,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         defaultItem: {
           name: "New brand",
           handle: "",
-          image: "/vape_kit.png",
+          image: "",
           tagline: "",
           description: "",
           href: "",
@@ -1166,7 +1166,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Al Fakher",
           handle: "al-fakher-vape",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "Authentic Shisha Flavors & Massive Puffs",
           description: "Al Fakher Crown Bar and E-Hose disposable vape devices bring traditional shisha-inspired flavors into a modern portable vape format.",
           href: "/collections/disposable-vape?sub=Al%20Fakher",
@@ -1174,7 +1174,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Vozol",
           handle: "vozol-vape",
-          image: "/lost_mary.png",
+          image: "",
           tagline: "Smart Display & Advanced Vapor Tech",
           description: "Vozol disposable vapes combine sleek futuristic styling with robust battery life and advanced dual mesh coil technology.",
           href: "/collections/disposable-vape?sub=Vozol",
@@ -1182,7 +1182,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Tugboat",
           handle: "tugboat-vape",
-          image: "/lost_mary.png",
+          image: "",
           tagline: "Dependable Performance & Everyday Comfort",
           description: "Tugboat disposable vape devices are engineered for practical performance and simple operation with reliable flavor consistency.",
           href: "/collections/disposable-vape?sub=Tugboat",
@@ -1190,7 +1190,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Lost Mary",
           handle: "lost-mary-disposable",
-          image: "/lost_mary.png",
+          image: "",
           tagline: "Compact Ergonomics & Rich Fruit Profiles",
           description: "Lost Mary disposable vapes are celebrated for their compact ergonomic feel, stylish color gradient looks, and unique salt nicotine blends.",
           href: "/collections/disposable-vape?sub=Lost%20Mary",
@@ -1198,7 +1198,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "HQD",
           handle: "hqd-vape",
-          image: "/vape_kit.png",
+          image: "",
           tagline: "Ultra-Reliable Daily Vaping & Zero Upkeep",
           description: "HQD provides reliable disposable e-cigarettes popular across Dubai for daily vaping with zero upkeep required.",
           href: "/collections/disposable-vape?sub=HQD",
@@ -1206,7 +1206,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Geek Bar",
           handle: "geek-bar-disposable",
-          image: "/lost_mary.png",
+          image: "",
           tagline: "Pulse Boost Mode & Full Screen Displays",
           description: "Geek Bar disposable vape products are designed for flavor-focused vapers seeking smooth airflow and modern device styling.",
           href: "/collections/disposable-vape?sub=Geek%20Bar",
@@ -1214,7 +1214,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Elf Bar",
           handle: "elf-bar-vape",
-          image: "/lost_mary.png",
+          image: "",
           tagline: "World-Renowned Flavor Consistency & Quality",
           description: "Elf Bar disposables set industry standards for flavor delivery and draw smoothness built with advanced Quaq mesh coil tech.",
           href: "/collections/disposable-vape?sub=Elf%20Bar",
@@ -1222,7 +1222,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Maskking",
           handle: "maskking-vape",
-          image: "/vape_kit.png",
+          image: "",
           tagline: "Premium Metallic Finish & Intense Flavor Output",
           description: "Maskking disposable vapes feature premium alloy construction and instant draw-activated heating beloved in Dubai.",
           href: "/collections/disposable-vape?sub=Maskking",
@@ -1339,7 +1339,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         defaultItem: {
           name: "New brand",
           handle: "",
-          image: "/vape_kit.png",
+          image: "",
           tagline: "",
           description: "",
           href: "",
@@ -1374,7 +1374,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Pod Salt",
           handle: "pod-salt-vape",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "British Nicotine Salt Specialists & Hit Blends",
           description: "Pod Salt is an award-winning British e-liquid brand renowned for its smooth nicotine salt formulation.",
           href: "/collections/e-liquids?sub=Pod%20Salt",
@@ -1382,7 +1382,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "VGOD",
           handle: "vgod-stig",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "USA Premium SaltNic & Signature Cubano Tobaccos",
           description: "VGOD E-Liquids deliver high-potency flavor profiles and dense clouds. Famous for Cubano cigar tobacco.",
           href: "/collections/e-liquids?sub=VGOD",
@@ -1390,7 +1390,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Dr Vapes",
           handle: "dr-vapes",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "Panther Series & Award-Winning Fruit Liquids",
           description: "Dr Vapes UK creates iconic flavor blends like Pink Panther blackcurrant cotton candy and Blue Panther.",
           href: "/collections/e-liquids?sub=Dr%20Vapes",
@@ -1398,7 +1398,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Nasty Juice",
           handle: "nasty-juice",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "Low Mint Signature Aluminum Tin Liquids",
           description: "Nasty Juice is globally celebrated for signature low-mint fruity e-liquids like Asap Grape and Slow Blow.",
           href: "/collections/e-liquids?sub=Nasty%20Juice",
@@ -1406,7 +1406,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Silvaper",
           handle: "silvaper-vape",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "Luxury Craft E-Liquids & Pure Flavor Extract",
           description: "Silvaper offers handcrafted e-liquids featuring rich shisha double apple, icy grape mint, and berry fruit.",
           href: "/collections/e-liquids?sub=Silvaper",
@@ -1414,7 +1414,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           name: "Vape Pink & Propaganda",
           handle: "vape-pink",
-          image: "/premium_liquid.png",
+          image: "",
           tagline: "Gourmet Dessert & Candy Fruit E-Juice",
           description: "Gourmet e-liquids crafted for flavor enthusiasts seeking sweet dessert pastries and fruit chews.",
           href: "/collections/e-liquids?sub=Vape%20Pink%20%26%20Propaganda",
@@ -1447,7 +1447,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           strength: "STRENGTH: 5%",
           price: 0,
           description: "",
-          image: "/juul_device.png",
+          image: "",
         },
         fields: [
           { type: "text", key: "name", label: "Flavour name" },
@@ -1487,7 +1487,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           price: 85.0,
           description:
             '"The JUUL 1 Menthol 5% delivers a crisp, cool menthol profile that stays clean and balanced from start to finish. Menthol lovers mostly prefer this flavour for its strong salt nicotine hit."',
-          image: "/juul_device.png",
+          image: "",
         },
         {
           id: "juul-virginia-5",
@@ -1498,7 +1498,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           price: 90.0,
           description:
             '"Tobacco flavors in the vaping market are a mixed bag. The JUUL Virginia Tobacco pod cartridge 5% is slightly sweet, slightly earthy and doesn\'t get harsh or flat as the pod runs down."',
-          image: "/juul_device.png",
+          image: "",
         },
         {
           id: "juul-menthol-3",
@@ -1509,7 +1509,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           price: 85.0,
           description:
             '"JUUL 1 pod refill cartridge is well appreciated among cooling effect lovers. Every puff delivers a subtle icy sensation of cool mint. Never tastes chemically or overpowered."',
-          image: "/juul_device.png",
+          image: "",
         },
         {
           id: "juul-virginia-3",
@@ -1520,7 +1520,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           price: 90.0,
           description:
             '"JUUL Classic tobacco vape flavor is designed to deliver a consistent, grounded tobacco experience from start to finish. A perfect choice for cigarette smokers looking for a clean alternative."',
-          image: "/juul_device.png",
+          image: "",
         },
         {
           id: "juul-mint-5",
@@ -1531,7 +1531,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           price: 85.0,
           description:
             '"Refreshing peppermint flavor with a soothing icy exhale. One of the most popular JUUL pod flavors in Dubai for all-day vaping."',
-          image: "/juul_device.png",
+          image: "",
         },
         {
           id: "juul-mango-5",
@@ -1542,7 +1542,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           price: 120.0,
           description:
             '"Ripe tropical sweet mango flavor pod cartridge. Highly sought-after original flavor with rich nicotine salt satisfaction."',
-          image: "/juul_device.png",
+          image: "",
         },
       ],
     },
@@ -1601,7 +1601,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       oldTabLabel: "OLD PACKAGING",
       oldTitle: "Old Packaging Specifications",
       oldBadge: "OLD DESIGN",
-      oldImage: "/juul_device.png",
+      oldImage: "",
       oldPoints: [
         {
           label: "Cardboard Sleeve:",
@@ -1624,7 +1624,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       newTabLabel: "NEW PACKAGING",
       newTitle: "New Packaging Specifications",
       newBadge: "NEW DESIGN",
-      newImage: "/juul_device.png",
+      newImage: "",
       newPoints: [
         {
           label: "Cardboard Sleeve:",
@@ -1715,7 +1715,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         defaultItem: {
           title: "New collection",
           subtitle: "",
-          image: "/vape_kit.png",
+          image: "",
           href: "",
         },
         fields: [
@@ -2456,7 +2456,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       description: "Discover the ultimate JUUL experience tailored for you.",
       buttonText: "Shop JUUL",
       buttonLink: "/collections/juul-vape-dubai",
-      image: "/juul_device.png",
+      image: "",
       bulletPoints: [
         { text: "Premium Quality" },
         { text: "Authentic Products" }
@@ -2491,7 +2491,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       description: "Sleek, satisfying, and simple to use.",
       buttonText: "Learn More",
       buttonLink: "/collections/juul-vape-dubai",
-      image: "/juul_menthol_pack.png",
+      image: "",
       bulletPoints: [
         { text: "Easy to use" },
         { text: "Consistent performance" }
@@ -2631,7 +2631,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           text: "maintained right across the full 300 to 400 puff capacity",
         },
       ],
-      image: "/juul_menthol_pack.png",
+      image: "",
       showIngredients: true,
       ingredientsHeadingTemplate: "{product} Ingredients",
       ingredientsBodyTemplate:
@@ -2658,7 +2658,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
             "18mg/mL of pharmaceutical-grade, pure liquid nicotine. Specifically designed for adult smokers.",
         },
       ],
-      ingredientsImage: "/juul_menthol_pod.png",
+      ingredientsImage: "",
     },
   },
 
@@ -2683,7 +2683,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           name: "JUUL",
           handle: "juul-vape-dubai",
           category: "juul-myle",
-          image: "/juul_device.png",
+          image: "",
           tag: "JUUL 1 & JUUL 2 Series",
           badge: "Official Bestseller",
           color: "from-blue-500/20 via-indigo-500/10 to-transparent",
@@ -2908,7 +2908,7 @@ export const JUUL_2_FLAVORS = {
       price: 85.0,
       description:
         '"JUUL 2 Crisp Menthol features fresh green menthol flavor with a brisk cooling exhale. Engineered with anti-counterfeit chip technology."',
-      image: "/juul_device.png",
+      image: "",
     },
     {
       id: "juul2-virginia-tobacco",
@@ -2919,7 +2919,7 @@ export const JUUL_2_FLAVORS = {
       price: 90.0,
       description:
         '"Subtle, toasted tobacco flavor with sweet aromatic notes. Specially blended for JUUL 2 next-gen pod system."',
-      image: "/juul_device.png",
+      image: "",
     },
     {
       id: "juul2-ruby-scheme",
@@ -2930,7 +2930,7 @@ export const JUUL_2_FLAVORS = {
       price: 85.0,
       description:
         '"JUUL 2 Ruby Scheme combines wild red berry notes with a crisp cooling finish. Unique signature blend."',
-      image: "/juul_device.png",
+      image: "",
     },
     {
       id: "juul2-polar-menthol",
@@ -2941,7 +2941,7 @@ export const JUUL_2_FLAVORS = {
       price: 85.0,
       description:
         '"Deep, intense freezing menthol flavor with a powerful cooling hit designed for maximum satisfaction."',
-      image: "/juul_device.png",
+      image: "",
     },
   ],
 };
@@ -2959,19 +2959,19 @@ export const BOTTOM_GRID_CARDS = {
     {
       title: "JUUL 1 Series",
       subtitle: "Classic JUUL 1 Devices, Virginia Tobacco & Menthol Pods (3% & 5%)",
-      image: "/juul_device.png",
+      image: "",
       href: "/collections/juul-1-series",
     },
     {
       title: "JUUL 2 Series",
       subtitle: "Next-Gen JUUL 2 Starter Kit, Ruby Scheme & Crisp Menthol Pods",
-      image: "/juul_device.png",
+      image: "",
       href: "/collections/juul-2-series",
     },
     {
       title: "JUUL Pods Offers",
       subtitle: "Special Multi-Pack Bundle Deals on JUUL 1 & JUUL 2 Pods",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/juul-pods-offers",
     },
   ],
@@ -2979,19 +2979,19 @@ export const BOTTOM_GRID_CARDS = {
     {
       title: "MYLE Meta V5 Pods",
       subtitle: "Pre-filled Meta V5 Pods in Iced Mint, Peach & Tobacco Flavors",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/myle-v5-pods",
     },
     {
       title: "MYLE Meta V5 Devices",
       subtitle: "Rechargeable Meta V5 Battery Devices in Jet Black & Rose Gold",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/myle-v5-device",
     },
     {
       title: "MYLE Micro Disposables",
       subtitle: "Compact MYLE Micro & Drip 2500+ Puffs Disposable Pods",
-      image: "/lost_mary.png",
+      image: "",
       href: "/collections/myle-disposable",
     },
   ],
@@ -2999,37 +2999,37 @@ export const BOTTOM_GRID_CARDS = {
     {
       title: "Geek Bar Pulse 15000",
       subtitle: "Geek Bar Pulse 15000 Puffs Dual Mesh & Full LED Screen",
-      image: "/lost_mary.png",
+      image: "",
       href: "/collections/geek-bar-disposable",
     },
     {
       title: "Elf Bar Disposables",
       subtitle: "Elf Bar BC5000, Ultra & Lowit Pod Disposables",
-      image: "/lost_mary.png",
+      image: "",
       href: "/collections/elf-bar-vape",
     },
     {
       title: "Lost Mary BM6000",
       subtitle: "Lost Mary BM6000 & MO5000 Fruity Mesh Coil Vapes",
-      image: "/lost_mary.png",
+      image: "",
       href: "/collections/lost-mary-disposable",
     },
     {
       title: "Tugboat Super 12000",
       subtitle: "Tugboat Super 12000 Puffs Rechargeable Mesh Vapes",
-      image: "/lost_mary.png",
+      image: "",
       href: "/collections/tugboat-vape",
     },
     {
       title: "Al Fakher Crown Bar",
       subtitle: "Al Fakher Crown Bar 8000 & 10000 Shisha Flavor Vapes",
-      image: "/premium_liquid.png",
+      image: "",
       href: "/collections/al-fakher-vape",
     },
     {
       title: "Fummo & Vozol Vapes",
       subtitle: "Fummo Target 10000 & Vozol Gear 10000 Outdoor Vapes",
-      image: "/lost_mary.png",
+      image: "",
       href: "/collections/fummo-vape",
     },
   ],
@@ -3037,25 +3037,25 @@ export const BOTTOM_GRID_CARDS = {
     {
       title: "Salt Nicotine Liquids",
       subtitle: "Premium Nic Salt E-Liquids in 20mg, 30mg & 50mg Strengths",
-      image: "/premium_liquid.png",
+      image: "",
       href: "/collections/salt-nicotine",
     },
     {
       title: "Freebase E-Liquids",
       subtitle: "High VG 60ml & 100ml Sub-Ohm E-Liquids in 3mg & 6mg",
-      image: "/premium_liquid.png",
+      image: "",
       href: "/collections/freebase-e-liquid",
     },
     {
       title: "Pod Salt E-Juice",
       subtitle: "British Nicotine Salt Liquids in Nexus & Core Series",
-      image: "/premium_liquid.png",
+      image: "",
       href: "/collections/pod-salt-vape",
     },
     {
       title: "VGOD Stig E-Liquids",
       subtitle: "VGOD Cubano Tobacco & Mighty Mint Salt Liquids",
-      image: "/premium_liquid.png",
+      image: "",
       href: "/collections/vgod-stig",
     },
   ],
@@ -3063,25 +3063,25 @@ export const BOTTOM_GRID_CARDS = {
     {
       title: "Uwell Caliburn Series",
       subtitle: "Caliburn G3, AK3 & GK3 Refillable Pod Systems",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/uwell-vape",
     },
     {
       title: "Vaporesso XROS Series",
       subtitle: "XROS 3, XROS Mini & Luxe Pod Kits with COREX Tech",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/vaporesso-vape",
     },
     {
       title: "OXVA Xlim Pod Kits",
       subtitle: "Xlim Pro & SQ Pro Pod Systems with OLED Display",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/oxva-vape",
     },
     {
       title: "Pod Cartridges & Coils",
       subtitle: "Replacement Pod Cartridges & Mesh Coils for All Kits",
-      image: "/vape_kit.png",
+      image: "",
       href: "/collections/pod-cartridge",
     },
   ],

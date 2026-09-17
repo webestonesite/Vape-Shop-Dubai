@@ -307,11 +307,43 @@ function backfillCollectionFamilies(templates: Record<string, Template>): void {
   }
 }
 
+function stripDummyImages<T>(val: T): T {
+  if (typeof val === "string") {
+    if (
+      val.includes("juul_menthol") ||
+      val.includes("juul_device") ||
+      val.includes("vape_kit") ||
+      val.includes("lost_mary") ||
+      val.includes("premium_liquid") ||
+      val.includes("hero_vape") ||
+      val.includes("blog_juul") ||
+      val.includes("blog_disposable") ||
+      val.includes("blog_eliquid") ||
+      val.includes("blog_pod") ||
+      val.includes("blog_authenticity")
+    ) {
+      return "" as unknown as T;
+    }
+    return val;
+  }
+  if (Array.isArray(val)) {
+    return val.map(stripDummyImages) as unknown as T;
+  }
+  if (isPlainObject(val)) {
+    const res: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(val)) {
+      res[k] = stripDummyImages(v);
+    }
+    return res as unknown as T;
+  }
+  return val;
+}
+
 export function normalizeSettings(stored: unknown): ThemeSettings {
-  if (!isPlainObject(stored)) return createDefaultSettings();
+  if (!isPlainObject(stored)) return stripDummyImages(createDefaultSettings());
 
   const version = typeof stored.version === "number" ? stored.version : 1;
-  if (version < 2) return migrateV1(stored);
+  if (version < 2) return stripDummyImages(migrateV1(stored));
 
   const defaults = createDefaultSettings();
   const rawTemplates = isPlainObject(stored.templates) ? stored.templates : {};
@@ -343,10 +375,10 @@ export function normalizeSettings(stored: unknown): ThemeSettings {
     if (normalized && normalized.order.length > 0) templates[key] = normalized;
   }
 
-  return {
+  return stripDummyImages({
     version: THEME_VERSION,
     header: fillMissing(defaults.header, stored.header),
     footer: fillMissing(defaults.footer, stored.footer),
     templates,
-  };
+  });
 }

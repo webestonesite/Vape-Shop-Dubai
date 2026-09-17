@@ -280,7 +280,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                           ) : (
                             <SmartImage
                               src={slide.image}
-                              fallbackSrc={slide.fallbackImage || "/vape_kit.png"}
+                              fallbackSrc={slide.fallbackImage || ""}
                               alt={slide.title}
                               width={420}
                               height={420}

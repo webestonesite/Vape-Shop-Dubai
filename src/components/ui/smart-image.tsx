@@ -41,7 +41,21 @@ export const SmartImage: React.FC<SmartImageProps> = ({
     event.currentTarget.style.opacity = "0";
   }, []);
 
-  if (!src || error) {
+  const isDummyImage =
+    !src ||
+    src.includes("juul_menthol") ||
+    src.includes("juul_device") ||
+    src.includes("vape_kit") ||
+    src.includes("lost_mary") ||
+    src.includes("premium_liquid") ||
+    src.includes("hero_vape") ||
+    src.includes("blog_juul") ||
+    src.includes("blog_disposable") ||
+    src.includes("blog_eliquid") ||
+    src.includes("blog_pod") ||
+    src.includes("blog_authenticity");
+
+  if (isDummyImage || error) {
     return (
       <div className={`bg-gradient-to-br from-muted/50 to-muted/20 rounded-xl flex items-center justify-center p-2 ${className}`}>
         <span className="text-[9px] font-bold text-muted-foreground/40 uppercase">Vape Shop</span>
