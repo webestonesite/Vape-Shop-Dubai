@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { parseCollectionSections } from "@/lib/theme/collection-sections";
+
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
 const ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
 const STOREFRONT_TOKEN =
@@ -68,6 +70,7 @@ query CollectionByHandle($handle: String!) {
     faqVerifiedMeta: metafield(namespace: "custom", key: "faq_verified") { value }
     seoGuideMeta: metafield(namespace: "custom", key: "seo_guide") { value }
     sectionSettingsMeta: metafield(namespace: "custom", key: "section_settings") { value }
+    pageSectionsMeta: metafield(namespace: "custom", key: "page_sections") { value }
     combinedDetailsMeta: metafield(namespace: "custom", key: "collection_details") { value }
     subCollectionsMeta: metafield(namespace: "custom", key: "sub_collections") { value }
     techSpecsMeta: metafield(namespace: "custom", key: "tech_specs") {
@@ -161,6 +164,7 @@ query CollectionByHandle($handle: String!) {
     faqVerifiedMeta: metafield(namespace: "custom", key: "faq_verified") { value }
     seoGuideMeta: metafield(namespace: "custom", key: "seo_guide") { value }
     sectionSettingsMeta: metafield(namespace: "custom", key: "section_settings") { value }
+    pageSectionsMeta: metafield(namespace: "custom", key: "page_sections") { value }
     combinedDetailsMeta: metafield(namespace: "custom", key: "collection_details") { value }
     subCollectionsMeta: metafield(namespace: "custom", key: "sub_collections") { value }
     techSpecsMeta: metafield(namespace: "custom", key: "tech_specs") {
@@ -211,6 +215,8 @@ export interface CollectionMeta {
   packagingCompareMeta?: any | null;
   authenticityGuideMeta?: any | null;
   collectionReviewsMeta?: any | null;
+  /** This collection's own section layout, when it has been customised. */
+  pageSections?: unknown | null;
 }
 
 export async function fetchCollection(handle: string): Promise<CollectionMeta | null> {
@@ -553,6 +559,7 @@ function mapCollection(col: Record<string, unknown>): CollectionMeta {
   const seoGuideMeta = (col.seoGuideMeta as { value?: string })?.value || null;
   const sectionSettingsMeta = (col.sectionSettingsMeta as { value?: string })?.value || null;
   const combinedDetailsMeta = (col.combinedDetailsMeta as { value?: string })?.value || null;
+  const pageSectionsMeta = (col.pageSectionsMeta as { value?: string })?.value || null;
 
   // ── 1. Combined Parent Metaobject (Single Metafield in Admin) ──
   let faqsFromParentSection: any = null;
@@ -686,6 +693,9 @@ function mapCollection(col: Record<string, unknown>): CollectionMeta {
     packagingCompareMeta,
     authenticityGuideMeta,
     collectionReviewsMeta,
+    // Validated here rather than on the page: an unparseable or stale layout
+    // becomes null, and the page falls back to the theme's collection template.
+    pageSections: parseCollectionSections(pageSectionsMeta),
   };
 }
 

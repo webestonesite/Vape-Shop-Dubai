@@ -17,65 +17,102 @@ import {
   Unlock,
   Battery,
   Zap,
-  Activity
+  Activity,
+  type LucideIcon,
 } from "lucide-react";
 
 interface JuulAppIntegrationSectionProps {
   className?: string;
 }
 
-export interface SectionHeadingSettings {
+export interface JuulAppFeature {
+  /** Which phone screen this card shows. Also picks the card's icon. */
+  screen: string;
+  title: string;
+  description: string;
+}
+
+export interface JuulAppIntegrationSettings {
   badgeText: string;
   heading: string;
   description: string;
+  activeBadge: string;
+  features: JuulAppFeature[];
 }
+
+/**
+ * Icon per screen, rather than per card.
+ *
+ * The phone mockup on the left is a demo of six fixed screens; a card is the
+ * label for one of them. Letting a "Battery Monitoring" card pick a bell icon
+ * would only ever make the pairing wrong, so the screen carries the icon.
+ */
+const SCREEN_ICONS: Record<string, LucideIcon> = {
+  bluetooth: Radio,
+  analytics: BarChart3,
+  lock: Lock,
+  battery: BatteryCharging,
+  notifications: Bell,
+  age: ShieldCheck,
+};
+
+const FALLBACK_FEATURES: JuulAppFeature[] = [
+  {
+    screen: "bluetooth",
+    title: "Instant Bluetooth Connect",
+    description: "Pair with your JUUL 2 device in seconds. Auto-reconnects every time.",
+  },
+  {
+    screen: "analytics",
+    title: "Usage Analytics",
+    description: "Track daily puff count, weekly trends, and nicotine intake in real-time.",
+  },
+  {
+    screen: "lock",
+    title: "Device Lock & Find",
+    description: "Remotely lock your JUUL if lost and locate it via Bluetooth proximity scan.",
+  },
+  {
+    screen: "battery",
+    title: "Battery Monitoring",
+    description: "Live battery status with low-battery push alerts before you run out.",
+  },
+  {
+    screen: "notifications",
+    title: "Smart Notifications",
+    description: "Get notified for pod refilling, battery level alerts, and usage limits.",
+  },
+  {
+    screen: "age",
+    title: "Age Verification Lock",
+    description: "Built-in smart age verification lock to prevent unauthorized access.",
+  },
+];
 
 export function JuulAppIntegrationSection({
   className = "",
   settings,
-}: JuulAppIntegrationSectionProps & { settings?: SectionHeadingSettings }) {
-  const [activeFeature, setActiveFeature] = useState<string>("analytics");
+}: JuulAppIntegrationSectionProps & { settings?: JuulAppIntegrationSettings }) {
+  const features =
+    settings?.features && settings.features.length > 0
+      ? settings.features
+      : FALLBACK_FEATURES;
+
+  // Tracked by position, not by screen: two cards may demo the same screen.
+  const [activeIndex, setActiveIndex] = useState<number>(() => {
+    const analytics = features.findIndex((feat) => feat.screen === "analytics");
+    return analytics === -1 ? 0 : analytics;
+  });
+  const activeFeature = features[activeIndex]?.screen ?? "analytics";
+
+  /** The mockup's own shortcut buttons jump to whichever card owns a screen. */
+  const setScreen = (screen: string) => {
+    const index = features.findIndex((feat) => feat.screen === screen);
+    if (index !== -1) setActiveIndex(index);
+  };
   const [podHistoryRange, setPodHistoryRange] = useState<"7" | "30" | "90">("30");
   const [isDeviceLocked, setIsDeviceLocked] = useState<boolean>(true);
 
-  const features = [
-    {
-      id: "bluetooth",
-      title: "Instant Bluetooth Connect",
-      description: "Pair with your JUUL 2 device in seconds. Auto-reconnects every time.",
-      icon: Radio,
-    },
-    {
-      id: "analytics",
-      title: "Usage Analytics",
-      description: "Track daily puff count, weekly trends, and nicotine intake in real-time.",
-      icon: BarChart3,
-    },
-    {
-      id: "lock",
-      title: "Device Lock & Find",
-      description: "Remotely lock your JUUL if lost and locate it via Bluetooth proximity scan.",
-      icon: Lock,
-    },
-    {
-      id: "battery",
-      title: "Battery Monitoring",
-      description: "Live battery status with low-battery push alerts before you run out.",
-      icon: BatteryCharging,
-    },
-    {
-      id: "notifications",
-      title: "Smart Notifications",
-      description: "Get notified for pod refilling, battery level alerts, and usage limits.",
-      icon: Bell,
-    },
-    {
-      id: "age",
-      title: "Age Verification Lock",
-      description: "Built-in smart age verification lock to prevent unauthorized access.",
-      icon: ShieldCheck,
-    },
-  ];
 
   return (
     <section className={`w-full ${className}`}>
@@ -420,31 +457,31 @@ export function JuulAppIntegrationSection({
                 {/* Phone Bottom Tab Navigation Bar */}
                 <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-slate-500 px-2">
                   <button
-                    onClick={() => setActiveFeature("analytics")}
+                    onClick={() => setScreen("analytics")}
                     className={`p-1.5 rounded-lg transition-colors ${activeFeature === "analytics" ? "text-primary bg-primary/10" : "hover:text-slate-300"}`}
                   >
                     <Eye className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => setActiveFeature("analytics")}
+                    onClick={() => setScreen("analytics")}
                     className={`p-1.5 rounded-lg transition-colors ${activeFeature === "analytics" ? "text-primary bg-primary/10" : "hover:text-slate-300"}`}
                   >
                     <TrendingUp className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => setActiveFeature("lock")}
+                    onClick={() => setScreen("lock")}
                     className={`p-1.5 rounded-lg transition-colors ${activeFeature === "lock" ? "text-primary bg-primary/10" : "hover:text-slate-300"}`}
                   >
                     <MapPin className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => setActiveFeature("bluetooth")}
+                    onClick={() => setScreen("bluetooth")}
                     className={`p-1.5 rounded-lg transition-colors ${activeFeature === "bluetooth" ? "text-primary bg-primary/10" : "hover:text-slate-300"}`}
                   >
                     <Radio className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => setActiveFeature("age")}
+                    onClick={() => setScreen("age")}
                     className={`p-1.5 rounded-lg transition-colors ${activeFeature === "age" ? "text-primary bg-primary/10" : "hover:text-slate-300"}`}
                   >
                     <Menu className="w-4 h-4" />
@@ -457,15 +494,15 @@ export function JuulAppIntegrationSection({
 
           {/* Right Column: 6 Interactive Feature Cards (2 Cols x 3 Rows on md+) */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {features.map((feat) => {
-              const Icon = feat.icon;
-              const isActive = activeFeature === feat.id;
+            {features.map((feat, index) => {
+              const Icon = SCREEN_ICONS[feat.screen] ?? BarChart3;
+              const isActive = activeIndex === index;
 
               return (
                 <button
-                  key={feat.id}
+                  key={index}
                   type="button"
-                  onClick={() => setActiveFeature(feat.id)}
+                  onClick={() => setActiveIndex(index)}
                   className={`text-left rounded-3xl p-6 transition-all duration-300 border cursor-pointer relative group flex flex-col justify-between ${isActive
                       ? "bg-primary/10 border-primary shadow-lg shadow-primary/10 scale-[1.02]"
                       : "bg-card border border-border/80 hover:border-primary/50 hover:bg-card hover:shadow-md"
@@ -474,7 +511,7 @@ export function JuulAppIntegrationSection({
                   {/* Active Screen Badge Pill for Usage Analytics card or active card */}
                   {isActive && (
                     <div className="absolute top-4 right-4 bg-primary text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm animate-pulse">
-                      ACTIVE SCREEN
+                      {settings?.activeBadge || "ACTIVE SCREEN"}
                     </div>
                   )}
 

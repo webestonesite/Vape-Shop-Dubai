@@ -24,6 +24,8 @@
  * `resolveTemplateKey()`.
  */
 
+import { CONDITION_LABELS, CONDITIONS } from "./conditions";
+
 export type TemplateType = "index" | "collection" | "product" | "page";
 
 /** A single placement of a section within a template. */
@@ -54,6 +56,12 @@ export interface SectionInstance {
  *   suffix    handle ends with value                 -vape
  *   contains  handle contains value                  juul
  *   wildcard  glob against the whole handle          juul-*-series
+ *   condition a named predicate from conditions.ts   handleIsJuul1
+ *
+ * `condition` exists because the real families aren't substrings: "JUUL but
+ * not JUUL 2", or "juices, liquids and nic salts but not freebase". Those
+ * rules were already written once, as the predicates that gate individual
+ * sections; a condition match points a whole template at one.
  *
  * This is what lets one template cover a family of collections, the way the
  * storefront's original hard-coded `handle.includes("juul")` rules did.
@@ -63,7 +71,8 @@ export type TemplateMatchType =
   | "prefix"
   | "suffix"
   | "contains"
-  | "wildcard";
+  | "wildcard"
+  | "condition";
 
 export interface TemplateMatch {
   type: TemplateMatchType;
@@ -85,6 +94,14 @@ export interface Template {
    * template keys still read correctly. `match` is authoritative.
    */
   handle?: string;
+  /**
+   * Tiebreaker when two equally specific rules both match a handle - higher
+   * wins. Only condition rules really need it: "contains juul" is measurably
+   * narrower than "contains vape", but `handleIncludesMyle` and
+   * `handleIncludesDisposable` are not comparable, and `myle-disposable`
+   * matches both. Defaults to 0.
+   */
+  priority?: number;
   /** URL the customizer previews this template at. */
   previewPath: string;
   /** Instance ids, in render order. */
@@ -177,13 +194,20 @@ export function pageKey(slug: string): string {
   return `page:${slug}`;
 }
 
-/** More specific rules win when several match the same URL. */
+/**
+ * More specific rules win when several match the same URL.
+ *
+ * Conditions rank below every handle pattern on purpose. They cover the broad
+ * built-in families, so anything a merchant writes by hand - even a loose
+ * "contains" - is the more deliberate statement and takes the page.
+ */
 const MATCH_SPECIFICITY: Record<TemplateMatchType, number> = {
   exact: 4,
   wildcard: 3,
   prefix: 2,
   suffix: 2,
   contains: 1,
+  condition: 0,
 };
 
 const REGEX_META = new Set([
@@ -227,6 +251,13 @@ export function matchesHandle(match: TemplateMatch, handle: string): boolean {
         // A pattern that won't compile shouldn't take the storefront down.
         return false;
       }
+    case "condition": {
+      // The value is a predicate name, so it keeps its original casing.
+      const predicate = CONDITIONS[match.value.trim()];
+      // An unknown predicate matches nothing, dropping the page to the default
+      // template - the same outcome as deleting the rule.
+      return predicate ? predicate({ handle: target }) : false;
+    }
     default:
       return false;
   }
@@ -256,6 +287,7 @@ export function resolveTemplateKey(
 
   let bestKey: string = type;
   let bestScore = -1;
+  let bestPriority = Number.NEGATIVE_INFINITY;
   let bestLength = -1;
 
   for (const [key, template] of Object.entries(templates)) {
@@ -265,15 +297,24 @@ export function resolveTemplateKey(
     if (!match || !matchesHandle(match, handle)) continue;
 
     const score = MATCH_SPECIFICITY[match.type] ?? 0;
+    const priority = template.priority ?? 0;
     const length = match.value.length;
 
-    if (
-      score > bestScore ||
-      (score === bestScore && length > bestLength) ||
-      (score === bestScore && length === bestLength && key < bestKey)
-    ) {
+    // Rule kind first, then the explicit tiebreaker, then the longer (narrower)
+    // pattern, then the key - so the outcome never depends on object order.
+    const better =
+      score !== bestScore
+        ? score > bestScore
+        : priority !== bestPriority
+          ? priority > bestPriority
+          : length !== bestLength
+            ? length > bestLength
+            : key < bestKey;
+
+    if (better) {
       bestKey = key;
       bestScore = score;
+      bestPriority = priority;
       bestLength = length;
     }
   }
@@ -306,6 +347,8 @@ export function describeMatch(match: TemplateMatch): string {
       return `handle contains “${match.value}”`;
     case "wildcard":
       return `handle matches “${match.value}”`;
+    case "condition":
+      return CONDITION_LABELS[match.value] ?? match.value;
     default:
       return match.value;
   }

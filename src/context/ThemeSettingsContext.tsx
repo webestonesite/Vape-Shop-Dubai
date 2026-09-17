@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { usePathname } from "next/navigation";
 
+import type { CollectionSectionsConfig } from "@/lib/theme/collection-sections";
 import { DEFAULT_THEME_SETTINGS } from "@/lib/theme/defaults";
 import {
   resolveTemplateKey,
@@ -38,14 +39,28 @@ export const PREVIEW_MESSAGES = {
   settings: "vs-preview:settings",
   /** parent → iframe: bring a section into view. */
   scrollTo: "vs-preview:scroll-to",
+  /**
+   * parent → iframe: the unsaved section layout for one collection, pushed by
+   * the collections editor. Scoped to a handle so a click-through to another
+   * collection inside the preview shows that page's real, saved content.
+   */
+  collectionSections: "vs-preview:collection-sections",
 } as const;
+
+/** An unsaved collection layout being previewed. */
+export interface CollectionSectionsDraft {
+  handle: string;
+  config: CollectionSectionsConfig;
+}
 
 interface ThemeSettingsContextValue {
   settings: ThemeSettings;
+  collectionDraft: CollectionSectionsDraft | null;
 }
 
 const ThemeSettingsContext = createContext<ThemeSettingsContextValue>({
   settings: DEFAULT_THEME_SETTINGS,
+  collectionDraft: null,
 });
 
 export const ThemeSettingsProvider: React.FC<{
@@ -53,6 +68,8 @@ export const ThemeSettingsProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ initial, children }) => {
   const [settings, setSettings] = useState<ThemeSettings>(initial);
+  const [collectionDraft, setCollectionDraft] =
+    useState<CollectionSectionsDraft | null>(null);
   const pathname = usePathname();
 
   // Adopt fresh server settings after a publish. Done during render rather
@@ -80,9 +97,16 @@ export const ThemeSettingsProvider: React.FC<{
         type?: string;
         settings?: ThemeSettings;
         sectionId?: string;
+        handle?: string;
+        config?: CollectionSectionsConfig;
       };
       if (data?.type === PREVIEW_MESSAGES.settings && data.settings) {
         setSettings(data.settings);
+      }
+      if (data?.type === PREVIEW_MESSAGES.collectionSections && data.handle) {
+        setCollectionDraft(
+          data.config ? { handle: data.handle, config: data.config } : null
+        );
       }
       if (data?.type === PREVIEW_MESSAGES.scrollTo && data.sectionId) {
         document
@@ -104,7 +128,10 @@ export const ThemeSettingsProvider: React.FC<{
     // settings the server sent for the new route.
   }, [pathname]);
 
-  const value = useMemo(() => ({ settings }), [settings]);
+  const value = useMemo(
+    () => ({ settings, collectionDraft }),
+    [settings, collectionDraft]
+  );
 
   return (
     <ThemeSettingsContext.Provider value={value}>
@@ -115,6 +142,20 @@ export const ThemeSettingsProvider: React.FC<{
 
 export function useThemeSettings(): ThemeSettings {
   return useContext(ThemeSettingsContext).settings;
+}
+
+/**
+ * The layout the collections editor is previewing for `handle`, if any.
+ *
+ * Null outside the editor, and null inside it while another collection is on
+ * screen — a preview only ever overrides the page it belongs to.
+ */
+export function useCollectionSectionsDraft(
+  handle: string | undefined
+): CollectionSectionsConfig | null {
+  const draft = useContext(ThemeSettingsContext).collectionDraft;
+  if (!handle || !draft || draft.handle !== handle) return null;
+  return draft.config;
 }
 
 export function useHeaderSettings() {

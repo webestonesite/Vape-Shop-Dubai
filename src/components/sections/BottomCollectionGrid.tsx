@@ -5,6 +5,18 @@ import Link from "next/link";
 import { ArrowRight, Layers, Truck, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCollectionImages, getHandleFromUrl } from "@/hooks/useCollectionImages";
 import { SmartImage } from "@/components/ui/smart-image";
+import { BOTTOM_GRID_CARDS } from "@/lib/theme/sections";
+
+/*
+ * The built-in card sets. They live in the section registry because the
+ * collection family templates start their own copies from them; here they are
+ * the fallback for any placement that hasn't been given cards of its own.
+ */
+const JUUL_CARDS = BOTTOM_GRID_CARDS.juul;
+const MYLE_CARDS = BOTTOM_GRID_CARDS.myle;
+const DISPOSABLE_CARDS = BOTTOM_GRID_CARDS.disposable;
+const EJUICE_CARDS = BOTTOM_GRID_CARDS.ejuice;
+const POD_SYSTEM_CARDS = BOTTOM_GRID_CARDS.podSystem;
 
 export interface BottomCardItem {
   title: string;
@@ -12,7 +24,6 @@ export interface BottomCardItem {
   badge?: string;
   image: string;
   href: string;
-  color: string;
 }
 
 interface CollectionCategorySection {
@@ -28,168 +39,14 @@ export interface BottomCollectionGridSettings {
   badgeText: string;
   heading: string;
   description: string;
+  /** Leave empty to pick the card set from the handle, as it always did. */
+  cards: BottomCardItem[];
 }
 
 interface BottomCollectionGridProps {
   handle: string;
   settings?: BottomCollectionGridSettings;
 }
-
-// Data definitions for all major categories
-const JUUL_CARDS: BottomCardItem[] = [
-  {
-    title: "JUUL 1 Series",
-    subtitle: "Classic JUUL 1 Devices, Virginia Tobacco & Menthol Pods (3% & 5%)",
-    image: "/juul_device.png",
-    href: "/collections/juul-1-series",
-    color: "from-blue-500/20 via-indigo-500/10 to-transparent",
-  },
-  {
-    title: "JUUL 2 Series",
-    subtitle: "Next-Gen JUUL 2 Starter Kit, Ruby Scheme & Crisp Menthol Pods",
-    image: "/juul_device.png",
-    href: "/collections/juul-2-series",
-    color: "from-sky-500/20 via-blue-500/10 to-transparent",
-  },
-  {
-    title: "JUUL Pods Offers",
-    subtitle: "Special Multi-Pack Bundle Deals on JUUL 1 & JUUL 2 Pods",
-    image: "/vape_kit.png",
-    href: "/collections/juul-pods-offers",
-    color: "from-amber-500/20 via-orange-500/10 to-transparent",
-  },
-];
-
-const MYLE_CARDS: BottomCardItem[] = [
-  {
-    title: "MYLE Meta V5 Pods",
-    subtitle: "Pre-filled Meta V5 Pods in Iced Mint, Peach & Tobacco Flavors",
-    image: "/vape_kit.png",
-    href: "/collections/myle-v5-pods",
-    color: "from-amber-500/20 via-orange-500/10 to-transparent",
-  },
-  {
-    title: "MYLE Meta V5 Devices",
-    subtitle: "Rechargeable Meta V5 Battery Devices in Jet Black & Rose Gold",
-    image: "/vape_kit.png",
-    href: "/collections/myle-v5-device",
-    color: "from-orange-500/20 via-red-500/10 to-transparent",
-  },
-  {
-    title: "MYLE Micro Disposables",
-    subtitle: "Compact MYLE Micro & Drip 2500+ Puffs Disposable Pods",
-    image: "/lost_mary.png",
-    href: "/collections/myle-disposable",
-    color: "from-emerald-500/20 via-teal-500/10 to-transparent",
-  },
-];
-
-const DISPOSABLE_CARDS: BottomCardItem[] = [
-  {
-    title: "Geek Bar Pulse 15000",
-    subtitle: "Geek Bar Pulse 15000 Puffs Dual Mesh & Full LED Screen",
-    image: "/lost_mary.png",
-    href: "/collections/geek-bar-disposable",
-    color: "from-rose-500/20 via-pink-500/10 to-transparent",
-  },
-  {
-    title: "Elf Bar Disposables",
-    subtitle: "Elf Bar BC5000, Ultra & Lowit Pod Disposables",
-    image: "/lost_mary.png",
-    href: "/collections/elf-bar-vape",
-    color: "from-emerald-500/20 via-teal-500/10 to-transparent",
-  },
-  {
-    title: "Lost Mary BM6000",
-    subtitle: "Lost Mary BM6000 & MO5000 Fruity Mesh Coil Vapes",
-    image: "/lost_mary.png",
-    href: "/collections/lost-mary-disposable",
-    color: "from-pink-500/20 via-purple-500/10 to-transparent",
-  },
-  {
-    title: "Tugboat Super 12000",
-    subtitle: "Tugboat Super 12000 Puffs Rechargeable Mesh Vapes",
-    image: "/lost_mary.png",
-    href: "/collections/tugboat-vape",
-    color: "from-teal-500/20 via-cyan-500/10 to-transparent",
-  },
-  {
-    title: "Al Fakher Crown Bar",
-    subtitle: "Al Fakher Crown Bar 8000 & 10000 Shisha Flavor Vapes",
-    image: "/premium_liquid.png",
-    href: "/collections/al-fakher-vape",
-    color: "from-purple-500/20 via-pink-500/10 to-transparent",
-  },
-  {
-    title: "Fummo & Vozol Vapes",
-    subtitle: "Fummo Target 10000 & Vozol Gear 10000 Outdoor Vapes",
-    image: "/lost_mary.png",
-    href: "/collections/fummo-vape",
-    color: "from-amber-500/20 via-orange-500/10 to-transparent",
-  },
-];
-
-const EJUICE_CARDS: BottomCardItem[] = [
-  {
-    title: "Salt Nicotine Liquids",
-    subtitle: "Premium Nic Salt E-Liquids in 20mg, 30mg & 50mg Strengths",
-    image: "/premium_liquid.png",
-    href: "/collections/salt-nicotine",
-    color: "from-blue-500/20 via-indigo-500/10 to-transparent",
-  },
-  {
-    title: "Freebase E-Liquids",
-    subtitle: "High VG 60ml & 100ml Sub-Ohm E-Liquids in 3mg & 6mg",
-    image: "/premium_liquid.png",
-    href: "/collections/freebase-e-liquid",
-    color: "from-purple-500/20 via-pink-500/10 to-transparent",
-  },
-  {
-    title: "Pod Salt E-Juice",
-    subtitle: "British Nicotine Salt Liquids in Nexus & Core Series",
-    image: "/premium_liquid.png",
-    href: "/collections/pod-salt-vape",
-    color: "from-cyan-500/20 via-teal-500/10 to-transparent",
-  },
-  {
-    title: "VGOD Stig E-Liquids",
-    subtitle: "VGOD Cubano Tobacco & Mighty Mint Salt Liquids",
-    image: "/premium_liquid.png",
-    href: "/collections/vgod-stig",
-    color: "from-red-500/20 via-amber-500/10 to-transparent",
-  },
-];
-
-const POD_SYSTEM_CARDS: BottomCardItem[] = [
-  {
-    title: "Uwell Caliburn Series",
-    subtitle: "Caliburn G3, AK3 & GK3 Refillable Pod Systems",
-    image: "/vape_kit.png",
-    href: "/collections/uwell-vape",
-    color: "from-cyan-500/20 via-blue-500/10 to-transparent",
-  },
-  {
-    title: "Vaporesso XROS Series",
-    subtitle: "XROS 3, XROS Mini & Luxe Pod Kits with COREX Tech",
-    image: "/vape_kit.png",
-    href: "/collections/vaporesso-vape",
-    color: "from-sky-500/20 via-indigo-500/10 to-transparent",
-  },
-  {
-    title: "OXVA Xlim Pod Kits",
-    subtitle: "Xlim Pro & SQ Pro Pod Systems with OLED Display",
-    image: "/vape_kit.png",
-    href: "/collections/oxva-vape",
-    color: "from-purple-500/20 via-violet-500/10 to-transparent",
-  },
-  {
-    title: "Pod Cartridges & Coils",
-    subtitle: "Replacement Pod Cartridges & Mesh Coils for All Kits",
-    image: "/vape_kit.png",
-    href: "/collections/pod-cartridge",
-    color: "from-amber-500/20 via-yellow-500/10 to-transparent",
-  },
-];
 
 function SubCollectionSectionSlider({
   badge,
@@ -522,10 +379,11 @@ export function BottomCollectionGrid({ handle, settings }: BottomCollectionGridP
     cards = DISPOSABLE_CARDS;
   }
 
-  // A non-empty setting wins over the handle-derived wording above.
+  // A non-empty setting wins over the handle-derived content above.
   if (settings?.badgeText) badgeText = settings.badgeText;
   if (settings?.heading) sectionTitle = settings.heading;
   if (settings?.description) sectionSub = settings.description;
+  if (settings?.cards && settings.cards.length > 0) cards = settings.cards;
 
   // Filter out the current collection to only show siblings
   cards = cards.filter((c) => {

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { listCollectionSections } from "@/lib/shopify/collection-sections";
+
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE;
 const ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
 const STOREFRONT_TOKEN =
@@ -43,9 +45,21 @@ function parse(json: unknown): CollectionOption[] {
     .sort((a, b) => a.title.localeCompare(b.title));
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!SHOPIFY_STORE) {
     return NextResponse.json({ collections: [] });
+  }
+
+  // `?sections=1` adds each collection's product count and whether it carries
+  // its own section layout — what the collections screen lists. It needs the
+  // Admin API (metafields aren't reliably visible to the Storefront token), so
+  // a failure here falls through to the plain list below rather than 500ing.
+  if (new URL(request.url).searchParams.has("sections") && ADMIN_API_TOKEN) {
+    try {
+      return NextResponse.json({ collections: await listCollectionSections() });
+    } catch (err) {
+      console.error("[admin] could not list collection layouts:", err);
+    }
   }
 
   try {

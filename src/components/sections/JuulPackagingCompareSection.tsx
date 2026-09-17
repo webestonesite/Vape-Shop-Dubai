@@ -3,18 +3,95 @@
 import React, { useState } from "react";
 import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, Layers, ShieldCheck, Award } from "lucide-react";
 
-export interface SectionHeadingSettings {
-  badgeText: string;
+export interface PackagingPoint {
+  label: string;
+  text: string;
+}
+
+export interface JuulPackagingCompareSettings {
   heading: string;
   description: string;
+
+  oldTabLabel: string;
+  oldTitle: string;
+  oldBadge: string;
+  oldImage: string;
+  oldPoints: PackagingPoint[];
+
+  newTabLabel: string;
+  newTitle: string;
+  newBadge: string;
+  newImage: string;
+  newPoints: PackagingPoint[];
 }
+
+const FALLBACK_OLD_POINTS: PackagingPoint[] = [
+  {
+    label: "Cardboard Sleeve:",
+    text: "Plain white matte paper box. Wears, tears, and fades with light handling.",
+  },
+  {
+    label: "Branding & Font:",
+    text: "Basic minimalist type. No clear generation label. The box does not always say \u201cJUUL 1\u201d outright.",
+  },
+  {
+    label: "Security Tracking:",
+    text: "No 3D holographic sticker on the top flap. High risk of convincing clones.",
+  },
+  {
+    label: "Batch Codes:",
+    text: "Printed lightly and often smudged. Hard to read and easy to fake.",
+  },
+];
+
+const FALLBACK_NEW_POINTS: PackagingPoint[] = [
+  {
+    label: "Cardboard Sleeve:",
+    text: "Premium glossy reinforced foil-laminated box. Scratch-resistant surface.",
+  },
+  {
+    label: "Branding & Font:",
+    text: "Bold embossed JUUL logo with explicit generation badges and nicotine concentration callouts.",
+  },
+  {
+    label: "Security Tracking:",
+    text: "High-security 3D holographic authentication sticker with QR code scan verification.",
+  },
+  {
+    label: "Batch Codes:",
+    text: "Laser-etched high-density QR code and crisp batch numbers on top & bottom flaps.",
+  },
+];
 
 export function JuulPackagingCompareSection({
   settings,
-}: { settings?: SectionHeadingSettings } = {}) {
+}: { settings?: JuulPackagingCompareSettings } = {}) {
   const [activeTab, setActiveTab] = useState<"old" | "new">("old");
 
   const isNew = activeTab === "new";
+
+  // Everything that differs between the two tabs, picked once.
+  const side = isNew
+    ? {
+        tabLabel: settings?.newTabLabel || "NEW PACKAGING",
+        title: settings?.newTitle || "New Packaging Specifications",
+        badge: settings?.newBadge || "NEW DESIGN",
+        image: settings?.newImage || "/juul_device.png",
+        points:
+          settings?.newPoints && settings.newPoints.length > 0
+            ? settings.newPoints
+            : FALLBACK_NEW_POINTS,
+      }
+    : {
+        tabLabel: settings?.oldTabLabel || "OLD PACKAGING",
+        title: settings?.oldTitle || "Old Packaging Specifications",
+        badge: settings?.oldBadge || "OLD DESIGN",
+        image: settings?.oldImage || "/juul_device.png",
+        points:
+          settings?.oldPoints && settings.oldPoints.length > 0
+            ? settings.oldPoints
+            : FALLBACK_OLD_POINTS,
+      };
 
   return (
     <div className="w-full">
@@ -62,7 +139,7 @@ export function JuulPackagingCompareSection({
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                OLD PACKAGING
+                {settings?.oldTabLabel || "OLD PACKAGING"}
               </button>
               <button
                 onClick={() => setActiveTab("new")}
@@ -72,7 +149,7 @@ export function JuulPackagingCompareSection({
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                NEW PACKAGING
+                {settings?.newTabLabel || "NEW PACKAGING"}
               </button>
             </div>
 
@@ -88,71 +165,33 @@ export function JuulPackagingCompareSection({
                 {isNew ? (
                   <>
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 animate-bounce" />
-                    <span className="text-emerald-600 dark:text-emerald-400">New Packaging Specifications</span>
+                    <span className="text-emerald-600 dark:text-emerald-400">{side.title}</span>
                   </>
                 ) : (
                   <>
                     <AlertCircle className="w-5 h-5 text-primary shrink-0" />
-                    <span className="text-primary">Old Packaging Specifications</span>
+                    <span className="text-primary">{side.title}</span>
                   </>
                 )}
               </div>
 
-              {!isNew ? (
-                <ul className="space-y-3.5 text-xs sm:text-sm text-foreground/90 font-medium leading-relaxed">
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
+              <ul className="space-y-3.5 text-xs sm:text-sm text-foreground/90 font-medium leading-relaxed">
+                {side.points.map((point, index) => (
+                  <li key={index} className="flex items-start gap-2.5">
+                    <span
+                      className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                        isNew ? "bg-emerald-500" : "bg-primary"
+                      }`}
+                    />
                     <div>
-                      <strong className="font-bold text-foreground">Cardboard Sleeve:</strong> Plain white matte paper box. Wears, tears, and fades with light handling.
+                      {point.label && (
+                        <strong className="font-bold text-foreground">{point.label}</strong>
+                      )}{" "}
+                      {point.text}
                     </div>
                   </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Branding & Font:</strong> Basic minimalist type. No clear generation label. The box does not always say &quot;JUUL 1&quot; outright.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Security Tracking:</strong> No 3D holographic sticker on the top flap. High risk of convincing clones.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Batch Codes:</strong> Printed lightly and often smudged. Hard to read and easy to fake.
-                    </div>
-                  </li>
-                </ul>
-              ) : (
-                <ul className="space-y-3.5 text-xs sm:text-sm text-foreground/90 font-medium leading-relaxed">
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Cardboard Sleeve:</strong> Premium glossy reinforced foil-laminated box. Scratch-resistant surface.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Branding & Font:</strong> Bold embossed JUUL logo with explicit generation badges and nicotine concentration callouts.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Security Tracking:</strong> High-security 3D holographic authentication sticker with QR code scan verification.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                    <div>
-                      <strong className="font-bold text-foreground">Batch Codes:</strong> Laser-etched high-density QR code and crisp batch numbers on top & bottom flaps.
-                    </div>
-                  </li>
-                </ul>
-              )}
+                ))}
+              </ul>
             </div>
 
           </div>
@@ -188,8 +227,8 @@ export function JuulPackagingCompareSection({
               {/* JUUL Pod Packaging Product Visual */}
               <div className="relative w-48 sm:w-56 h-64 sm:h-72 my-4 flex flex-col items-center justify-center p-4 bg-muted/20 rounded-2xl border border-border/40 group">
                 <img
-                  src="/juul_device.png"
-                  alt={isNew ? "JUUL 1 New Packaging" : "JUUL 1 Old Packaging"}
+                  src={side.image}
+                  alt={side.badge}
                   className="w-full h-full object-contain filter drop-shadow-xl transition-all duration-500 transform group-hover:scale-105"
                 />
                 
@@ -204,7 +243,7 @@ export function JuulPackagingCompareSection({
                     isNew ? "bg-emerald-600" : "bg-primary"
                   }`}
                 >
-                  {isNew ? "NEW DESIGN" : "OLD DESIGN"}
+                  {side.badge}
                 </span>
               </div>
             </div>

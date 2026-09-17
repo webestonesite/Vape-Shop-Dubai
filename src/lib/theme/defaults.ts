@@ -1,7 +1,19 @@
+import {
+  deriveCollectionFamilyTemplates,
+  deriveDefaultCollectionTemplate,
+} from "./collection-families";
 import { SECTION_REGISTRY } from "./sections";
 import type { SectionInstance, Template, ThemeSettings } from "./types";
 
-export const THEME_VERSION = 2;
+/**
+ * 3 — collections split from one conditional template into a template per
+ *     family.
+ * 4 — sections that used to hold their content in code became editable, and the
+ *     family templates carry the content that differs between them.
+ *
+ * `normalize.ts` carries an older store across without losing edits.
+ */
+export const THEME_VERSION = 4;
 
 /**
  * Factory defaults.
@@ -74,6 +86,51 @@ Prices are listed in AED and may change without notice. Orders are subject to st
 
 /* ── Templates ────────────────────────────────────────────────────── */
 
+/**
+ * Every section a collection page can carry, each with the condition that
+ * decides which collections show it.
+ *
+ * Nothing renders this. It is the single source the collection templates are
+ * derived from — `deriveDefaultCollectionTemplate` keeps what every collection
+ * shows, and `deriveCollectionFamilyTemplates` gives each family its own
+ * template holding the sections its condition selects. Adding a section here
+ * with the right `showWhen` puts it in the right family automatically.
+ */
+export const COLLECTION_BASE: Template = template({
+  type: "collection",
+  label: "Collection pages",
+  previewPath: "/collections/disposable-vape",
+  sections: [
+    inst("col-main", "collectionMain"),
+    inst("col-disp-showcase", "disposableShowcase", {
+      showWhen: "handleIncludesDisposable",
+    }),
+    inst("col-disp-compare", "disposableComparison", {
+      showWhen: "handleIncludesDisposable",
+    }),
+    inst("col-ejuice", "ejuiceShowcase", { showWhen: "handleIsEJuice" }),
+    inst("col-juul-flavors", "juulSignatureFlavors", {
+      showWhen: "handleIncludesJuul",
+    }),
+    inst("col-juul-packaging", "juulPackagingCompare", {
+      showWhen: "handleIsJuul1",
+    }),
+    inst("col-juul-specs", "juulTechSpecs", { showWhen: "handleIncludesJuul" }),
+    inst("col-bottom-grid", "bottomCollectionGrid", {
+      showWhen: "notBrandDirectory",
+    }),
+    inst("col-juul-app", "juulAppIntegration", { showWhen: "handleIsJuul2" }),
+    inst("col-myle-verification", "myleVerification", {
+      showWhen: "handleIncludesMyle",
+    }),
+    inst("col-whyshop", "whyShop"),
+    inst("col-faq", "faq"),
+    inst("col-reviews", "customerReviews"),
+    inst("col-brands", "brands", { showWhen: "notBrandDirectoryAndNotEJuice" }),
+    inst("col-whatsapp", "whatsapp"),
+  ],
+});
+
 function buildTemplates(): Record<string, Template> {
   return {
     /* ═══ Homepage ═══ */
@@ -101,41 +158,9 @@ function buildTemplates(): Record<string, Template> {
       ],
     }),
 
-    /* ═══ Collection (default for every handle) ═══ */
-    collection: template({
-      type: "collection",
-      label: "Collection pages",
-      previewPath: "/collections/disposable-vape",
-      sections: [
-        inst("col-main", "collectionMain"),
-        inst("col-disp-showcase", "disposableShowcase", {
-          showWhen: "handleIncludesDisposable",
-        }),
-        inst("col-disp-compare", "disposableComparison", {
-          showWhen: "handleIncludesDisposable",
-        }),
-        inst("col-ejuice", "ejuiceShowcase", { showWhen: "handleIsEJuice" }),
-        inst("col-juul-flavors", "juulSignatureFlavors", {
-          showWhen: "handleIncludesJuul",
-        }),
-        inst("col-juul-packaging", "juulPackagingCompare", {
-          showWhen: "handleIsJuul1",
-        }),
-        inst("col-juul-specs", "juulTechSpecs", { showWhen: "handleIncludesJuul" }),
-        inst("col-bottom-grid", "bottomCollectionGrid", {
-          showWhen: "notBrandDirectory",
-        }),
-        inst("col-juul-app", "juulAppIntegration", { showWhen: "handleIsJuul2" }),
-        inst("col-myle-verification", "myleVerification", {
-          showWhen: "handleIncludesMyle",
-        }),
-        inst("col-whyshop", "whyShop"),
-        inst("col-faq", "faq"),
-        inst("col-reviews", "customerReviews"),
-        inst("col-brands", "brands", { showWhen: "notBrandDirectoryAndNotEJuice" }),
-        inst("col-whatsapp", "whatsapp"),
-      ],
-    }),
+    /* ═══ Collections — the default plus one template per family ═══ */
+    collection: deriveDefaultCollectionTemplate(COLLECTION_BASE),
+    ...deriveCollectionFamilyTemplates(COLLECTION_BASE),
 
     /* ═══ Product (default for every handle) ═══ */
     product: template({

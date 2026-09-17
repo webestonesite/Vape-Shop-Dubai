@@ -60,11 +60,44 @@ each with its own question list.
 | Key | Applies to |
 | --- | --- |
 | `index` | The homepage |
-| `collection` | Every `/collections/[handle]` (and `/shop`, `/brand`) |
-| `collection:<rule>` | The collections matching a URL rule — overrides the above |
+| `collection` | Every `/collections/[handle]` in no family — the fallback |
+| `collection:condition--<family>` | One family of collections: JUUL, JUUL 2, MYLE, disposables, e-liquids, the brand directory |
+| `collection:<rule>` | The collections matching a URL rule — overrides both of the above |
 | `product` | Every `/product/[handle]` |
 | `product:<rule>` | The products matching a URL rule |
 | `page:<slug>` | A static page (`about-us`, `contact`, `privacy-policy`, `terms-conditions`, `shipping-delivery`) |
+
+### Collection families
+
+Collections don't all want the same page. JUUL collections carry a spec table
+and a flavour strip; disposables carry a comparison; the brand directory lists
+brands instead of products and wants neither.
+
+So collections get **one template per family**, each holding that family's
+sections and nothing else:
+
+| Template | Covers |
+| --- | --- |
+| Collection pages | Everything in no family — the fallback |
+| JUUL collections | Handles containing `juul`, except JUUL 2 |
+| JUUL 2 collections | Handles containing `juul-2` or `juul2` |
+| MYLE collections | Handles containing `myle` |
+| Disposable collections | Handles containing `disposable` |
+| E-liquid collections | Juices, liquids and nic salts — not freebase |
+| Brand directory | `brand` and `brands` |
+
+Open the dropdown, pick **JUUL collections**, and you're looking at exactly what
+a JUUL collection page renders. Nothing is hidden behind a condition you have to
+reason about.
+
+A collection belongs to **one** family: the highest-priority one it matches.
+`myle-disposable` is both MYLE and disposable, so the MYLE template keeps the
+two disposable sections conditional — that page gets them and `myle-v5-pods`
+doesn't. If some future handle spans two families that way, give it its own
+layout in **Admin → Collections** and add whatever it's missing.
+
+These six ship as defaults, so they can't be deleted — empty one out by hiding
+its sections instead.
 
 ### URL rules
 
@@ -78,6 +111,7 @@ so one template can cover a whole family of URLs:
 | Ends with | a shared suffix | `-vape` |
 | Contains | anywhere in the handle | `juul` |
 | Matches pattern | glob — `*` any run, `?` one char | `juul-*-series` |
+| Is a family | a built-in group, for families no pattern describes | JUUL 2 collections |
 
 Matching is case-insensitive and applies to the handle only (the part after
 `/collections/` or `/product/`).
@@ -85,12 +119,16 @@ Matching is case-insensitive and applies to the handle only (the part after
 **When several rules match the same URL, the most specific wins:**
 
 ```
-exact  >  pattern  >  starts/ends with  >  contains
+exact  >  pattern  >  starts/ends with  >  contains  >  family
 ```
 
-Ties break on the longer rule value, then alphabetically by key, so the result
-never depends on the order templates happen to be stored in. If nothing
-matches, the type default applies.
+Families rank last on purpose: they're the broad built-in grouping, so any rule
+you write by hand — even a loose "contains" — takes the page instead.
+
+Ties break on priority (a family rule you create outranks the built-in ones),
+then the longer rule value, then alphabetically by key, so the result never
+depends on the order templates happen to be stored in. If nothing matches, the
+type default applies.
 
 Create one from the template dropdown → **New collection template…**. The
 dialog lists which of your real URLs the rule captures as you type, and warns
@@ -100,20 +138,70 @@ when another rule overlaps.
 
 The storefront originally decided which sections to show with hard-coded rules
 — JUUL spec tables only on JUUL collections, the disposable comparison only on
-disposable ones. Those rules survive as **conditions** on the default
-templates, listed in `src/lib/theme/conditions.ts`. A conditional section shows
-a blue note in the customizer explaining when it appears.
+disposable ones. Those rules live on as **conditions**, listed in
+`src/lib/theme/conditions.ts`.
 
-**A rule-based template switches conditions off entirely for the URLs it
-covers.** Creating one is an explicit statement of what those pages should
-contain, so every enabled section in it renders — that's how you'd put the JUUL
-spec table on a non-JUUL collection, or strip a family of pages back to just a
-grid and an FAQ.
+For collections, almost all of them have moved up a level: the condition that
+used to gate a section now selects a whole template, which is what the family
+templates above are. A JUUL page reaches the JUUL template *because* of the
+condition, so its sections no longer need to ask.
 
-Which means the two mechanisms compose the way you'd want: the default template
-keeps its automatic per-handle behaviour for everything you haven't spoken for,
-and the moment you create a rule you get full manual control over exactly the
-URLs that rule names.
+A handful stay conditional, where one template covers pages on both sides of a
+rule — the disposable sections inside the MYLE template, the brand strip in the
+default template (hidden on freebase e-liquid pages). Those show a blue note in
+the customizer explaining when they appear. Product templates still work the
+original way.
+
+### Sections with content of their own
+
+Every collection section is editable. The ones that used to keep their content
+in the code — the brand carousels, the comparison tables, the spec grid, the
+flavour line-up, the verification steps, the app feature cards — now carry it as
+fields, so the copy, the rows and the cards are all yours to change.
+
+Two things stayed in code on purpose, because they are design rather than
+content: the hand-drawn illustrations (a step picks one by name) and the phone
+mockup screens in the JUUL 2 app section (a card picks a screen, which brings
+its own icon).
+
+Where a family genuinely differs, its template starts from its own content. The
+spec table reads 200 mAh on JUUL collections and 250 mAh on JUUL 2 ones; the
+related-collections grid starts from that family's collections. Edit either and
+your version is what sticks.
+
+---
+
+## One collection at a time
+
+Templates cover families. When a single collection needs something of its own,
+**Admin → Collections** edits that one page: the same sidebar, the same fields,
+the same live preview.
+
+The difference is where it's stored. A layout saved here is written **onto the
+collection in Shopify**, as a JSON metafield named `custom.page_sections`, not
+into the theme. So it travels with the collection, shows up in Shopify admin,
+survives a theme reset, and leaves every other collection alone.
+
+| | Theme customizer | Admin → Collections |
+| --- | --- | --- |
+| Scope | A family of collections | One collection |
+| Stored in | Theme settings | The collection's `custom.page_sections` metafield |
+| Saving | Autosaves to a draft, then **Publish** | Explicit **Save**, straight to Shopify |
+
+How it behaves:
+
+- **Opening a collection** starts from what that page renders today — the family
+  template's sections, minus anything that doesn't apply to this handle. Nothing
+  is saved until you press Save.
+- **Start over from a template** copies any template's sections in, replacing
+  what's on screen. A copy, not a link: later edits to that template won't reach
+  this collection.
+- **Save** gives the collection its own layout. The page stops following the
+  template from then on.
+- **Reset** deletes the metafield and puts the page back on its template.
+
+The collections list flags which collections already have their own layout, so
+it doubles as the record of what you've customised.
 
 ---
 
@@ -129,7 +217,8 @@ URLs that rule names.
 | Add a section | **Add section** at the bottom of the list |
 | Remove a section | Open it, then **Remove section** |
 | Layout for a set of URLs | Template dropdown → **New collection/product template…** |
-| Delete a template | Trash icon beside it in the template dropdown |
+| Delete a template | Trash icon beside it in the template dropdown (not for the built-in families) |
+| Layout for one collection | **Collections** button, top right → pick a collection |
 | Preview on tablet / phone | Device buttons, top centre |
 | Undo unpublished work | **Discard** |
 | Restore original content | **Reset to defaults** |
@@ -357,11 +446,29 @@ public/uploads/             ← uploaded images
   single rule, `resolveTemplateKey()` for precedence. Templates saved before
   rules existed carry a bare `handle`; the normaliser promotes those to an
   `exact` rule so both shapes resolve through one code path.
+- **Section content** lives in `src/lib/theme/sections.ts` alongside the fields
+  that edit it. A component keeps the same content as a `FALLBACK_` constant so
+  a placement saved before its section became editable still renders. Where a
+  family needs different content, `settingsOverrides` on the family supplies it.
+- **Collection families** are built in `src/lib/theme/collection-families.ts`.
+  One base template lists every collection section with the condition that gates
+  it; the default template and the six family templates are derived from it, so
+  adding a section in one place puts it in the right family. `condition` is a
+  match type in `types.ts`, resolved through the same predicates the sections
+  used.
+- **Per-collection layouts** live on the Shopify collection, not in the theme.
+  `src/lib/theme/collection-sections.ts` is the shape and the seeding;
+  `src/lib/shopify/collection-sections.ts` reads and writes the metafield (and
+  creates its definition, with Storefront API access, on first save). Only
+  settings that differ from a section's defaults are stored, so the metafield
+  stays small and later default changes still flow through.
 - **Migration and repair** live in `src/lib/theme/normalize.ts`. Older saved
   settings are migrated forward on read, missing fields are backfilled from
   defaults, and unknown section types are dropped rather than reaching the
   renderer. A template's `order` is authoritative: instances missing from it
-  are pruned, so a removed section can't reappear.
+  are pruned, so a removed section can't reappear. The v2 → v3 migration splits
+  a store's own collection template into the family templates, deriving each
+  from what that merchant had already written rather than from factory copy.
 - **Merchant copy is never rendered as HTML.** The text block turns blank lines
   into paragraphs and `- ` into bullets, all as text nodes.
 

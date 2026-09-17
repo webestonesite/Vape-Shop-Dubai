@@ -7,17 +7,19 @@ import { useCollectionImages } from "@/hooks/useCollectionImages";
 import { SmartImage } from "@/components/ui/smart-image";
 
 interface EJuiceBrand {
-  id: string;
+  id?: string;
   handle?: string;
   name: string;
   tagline: string;
   image: string;
-  tags: string[];
   description: string;
-  popularLineup: string;
+  /** Where the card links. Defaults to the collection filter it always used. */
+  href?: string;
+  tags?: string[];
+  popularLineup?: string;
 }
 
-const EJUICE_BRANDS: EJuiceBrand[] = [
+const FALLBACK_BRANDS: EJuiceBrand[] = [
   {
     id: "pod-salt",
     handle: "pod-salt-vape",
@@ -84,6 +86,8 @@ export interface EJuiceShowcaseSettings {
   badgeText: string;
   heading: string;
   description: string;
+  brands: EJuiceBrand[];
+  ctaLabel: string;
 }
 
 export function EJuiceBrandsShowcase({
@@ -97,6 +101,14 @@ export function EJuiceBrandsShowcase({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const collectionImages = useCollectionImages();
+
+  // Saved brands win; the built-in list keeps a placement made before this
+  // section had editable content from rendering an empty carousel.
+  const brands =
+    settings?.brands && settings.brands.length > 0
+      ? settings.brands
+      : FALLBACK_BRANDS;
+  const ctaLabel = settings?.ctaLabel || "View Collection";
 
   // Auto-scroll loop (pauses on mouse hover or drag)
   useEffect(() => {
@@ -122,7 +134,7 @@ export function EJuiceBrandsShowcase({
     if (sliderRef.current) {
       const scrollLeft = sliderRef.current.scrollLeft;
       const index = Math.round(scrollLeft / 340);
-      if (index !== activeIndex && index < EJUICE_BRANDS.length) {
+      if (index !== activeIndex && index < brands.length) {
         setActiveIndex(index);
       }
     }
@@ -248,10 +260,10 @@ export function EJuiceBrandsShowcase({
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {EJUICE_BRANDS.map((brand) => (
+        {brands.map((brand) => (
           <Link
-            key={brand.id}
-            href={`/collections/e-liquids?sub=${encodeURIComponent(brand.name)}`}
+            key={brand.handle || brand.name}
+            href={brand.href || `/collections/e-liquids?sub=${encodeURIComponent(brand.name)}`}
             draggable={false}
             className="w-[260px] sm:w-[300px] lg:w-[330px] snap-start flex-shrink-0 group relative bg-background border border-border/70 hover:border-primary/60 rounded-3xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 shadow-sm hover:shadow-xl overflow-hidden"
           >
@@ -282,7 +294,7 @@ export function EJuiceBrandsShowcase({
             {/* Bottom CTA Bar: VIEW COLLECTION */}
             <div className="mt-4 pt-3.5 border-t border-border/40 flex items-center justify-between">
               <span className="text-[11px] font-extrabold text-foreground uppercase tracking-wider group-hover:text-primary transition-colors">
-                View Collection
+                {ctaLabel}
               </span>
 
               <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-md shadow-primary/20 group-hover:scale-110 group-hover:bg-gold-shimmer transition-all duration-300">
@@ -294,9 +306,9 @@ export function EJuiceBrandsShowcase({
       </div>
 
       {/* Pagination Dots Indicator */}
-      {EJUICE_BRANDS.length > 1 && (
+      {brands.length > 1 && (
         <div className="flex items-center justify-center gap-2 mt-4 pt-2">
-          {EJUICE_BRANDS.map((_, idx) => (
+          {brands.map((_, idx) => (
             <button
               key={idx}
               onClick={() => scrollToSlide(idx)}

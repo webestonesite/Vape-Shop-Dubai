@@ -37,6 +37,29 @@ export interface SectionDef {
 
 /* ── Shared field fragments ───────────────────────────────────────── */
 
+/**
+ * Accent colour for a card or row.
+ *
+ * A named choice rather than a colour picker: these tints are paired with
+ * borders and backgrounds elsewhere in the design, and an arbitrary hex would
+ * break that pairing. Components map the name to classes.
+ */
+const accentField = (): FieldDef[] => [
+  {
+    type: "select",
+    key: "accent",
+    label: "Accent colour",
+    options: [
+      { label: "Emerald", value: "emerald" },
+      { label: "Amber", value: "amber" },
+      { label: "Blue", value: "blue" },
+      { label: "Purple", value: "purple" },
+      { label: "Rose", value: "rose" },
+      { label: "Teal", value: "teal" },
+    ],
+  },
+];
+
 const headingFields = (): FieldDef[] => [
   { type: "text", key: "eyebrow", label: "Eyebrow" },
   { type: "text", key: "heading", label: "Heading" },
@@ -312,7 +335,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         },
         fields: [
           { type: "text", key: "name", label: "Flavour Name" },
-          { type: "text", key: "color", label: "Accent Color Hex" },
+          { type: "color", key: "color", label: "Accent colour" },
           { type: "image", key: "img", label: "Flavour Image" },
           { type: "text", key: "query", label: "Filter Query / Search keyword" },
         ],
@@ -324,6 +347,9 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       description: "From premium pod systems to disposable vapes and salt e-liquids, shop trusted global vape brands in Dubai.",
       buttonText: "SEE ALL",
       buttonHref: "/shop",
+      // Without this key the normaliser has nothing to copy a saved list onto,
+      // and every flavour the merchant adds is dropped on the next read.
+      flavors: [],
     },
   },
 
@@ -1104,16 +1130,118 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "Disposable Brands Showcase",
     description: "Disposable brand highlight strip.",
     templates: ["collection"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "badgeText", label: "Badge text" },
       { type: "text", key: "heading", label: "Heading" },
       { type: "textarea", key: "description", label: "Description", rows: 3 },
+      {
+        type: "repeater",
+        key: "brands",
+        label: "Brands",
+        itemNoun: "brand",
+        itemLabelKey: "name",
+        min: 1,
+        max: 20,
+        defaultItem: {
+          name: "New brand",
+          handle: "",
+          image: "/vape_kit.png",
+          tagline: "",
+          description: "",
+          href: "",
+        },
+        fields: [
+          { type: "text", key: "name", label: "Brand name" },
+          {
+            type: "collection",
+            key: "handle",
+            label: "Collection",
+            help: "Its collection image is used for the card when one exists.",
+          },
+          {
+            type: "image",
+            key: "image",
+            label: "Fallback image",
+            help: "Shown when the collection has no image of its own.",
+          },
+          { type: "text", key: "tagline", label: "Tagline" },
+          { type: "textarea", key: "description", label: "Description", rows: 3 },
+          { type: "link", key: "href", label: "Card link" },
+        ],
+      },
+      { type: "text", key: "ctaLabel", label: "Card link text" },
     ],
     defaults: {
       badgeText: "Disposable Brand Guide",
       heading: "Popular Disposable Vape Brands in Dubai",
       description: "Explore leading disposable vape manufacturers in the UAE. Compare flagship models, puff capacities, and signature nicotine salt flavor profiles.",
+      ctaLabel: "View Collection",
+      brands: [
+        {
+          name: "Al Fakher",
+          handle: "al-fakher-vape",
+          image: "/premium_liquid.png",
+          tagline: "Authentic Shisha Flavors & Massive Puffs",
+          description: "Al Fakher Crown Bar and E-Hose disposable vape devices bring traditional shisha-inspired flavors into a modern portable vape format.",
+          href: "/collections/disposable-vape?sub=Al%20Fakher",
+        },
+        {
+          name: "Vozol",
+          handle: "vozol-vape",
+          image: "/lost_mary.png",
+          tagline: "Smart Display & Advanced Vapor Tech",
+          description: "Vozol disposable vapes combine sleek futuristic styling with robust battery life and advanced dual mesh coil technology.",
+          href: "/collections/disposable-vape?sub=Vozol",
+        },
+        {
+          name: "Tugboat",
+          handle: "tugboat-vape",
+          image: "/lost_mary.png",
+          tagline: "Dependable Performance & Everyday Comfort",
+          description: "Tugboat disposable vape devices are engineered for practical performance and simple operation with reliable flavor consistency.",
+          href: "/collections/disposable-vape?sub=Tugboat",
+        },
+        {
+          name: "Lost Mary",
+          handle: "lost-mary-disposable",
+          image: "/lost_mary.png",
+          tagline: "Compact Ergonomics & Rich Fruit Profiles",
+          description: "Lost Mary disposable vapes are celebrated for their compact ergonomic feel, stylish color gradient looks, and unique salt nicotine blends.",
+          href: "/collections/disposable-vape?sub=Lost%20Mary",
+        },
+        {
+          name: "HQD",
+          handle: "hqd-vape",
+          image: "/vape_kit.png",
+          tagline: "Ultra-Reliable Daily Vaping & Zero Upkeep",
+          description: "HQD provides reliable disposable e-cigarettes popular across Dubai for daily vaping with zero upkeep required.",
+          href: "/collections/disposable-vape?sub=HQD",
+        },
+        {
+          name: "Geek Bar",
+          handle: "geek-bar-disposable",
+          image: "/lost_mary.png",
+          tagline: "Pulse Boost Mode & Full Screen Displays",
+          description: "Geek Bar disposable vape products are designed for flavor-focused vapers seeking smooth airflow and modern device styling.",
+          href: "/collections/disposable-vape?sub=Geek%20Bar",
+        },
+        {
+          name: "Elf Bar",
+          handle: "elf-bar-vape",
+          image: "/lost_mary.png",
+          tagline: "World-Renowned Flavor Consistency & Quality",
+          description: "Elf Bar disposables set industry standards for flavor delivery and draw smoothness built with advanced Quaq mesh coil tech.",
+          href: "/collections/disposable-vape?sub=Elf%20Bar",
+        },
+        {
+          name: "Maskking",
+          handle: "maskking-vape",
+          image: "/vape_kit.png",
+          tagline: "Premium Metallic Finish & Intense Flavor Output",
+          description: "Maskking disposable vapes feature premium alloy construction and instant draw-activated heating beloved in Dubai.",
+          href: "/collections/disposable-vape?sub=Maskking",
+        },
+      ],
     },
   },
 
@@ -1122,14 +1250,86 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "Disposable Comparison",
     description: "Side-by-side disposable comparison tables.",
     templates: ["collection"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "puffHeading", label: "Puff-count table heading" },
+      { type: "text", key: "puffColumnPuffs", label: "Column 1 heading" },
+      { type: "text", key: "puffColumnBestFor", label: "Column 2 heading" },
+      { type: "text", key: "puffColumnDuration", label: "Column 3 heading" },
+      {
+        type: "repeater",
+        key: "puffRows",
+        label: "Puff-count rows",
+        itemNoun: "row",
+        itemLabelKey: "puffCount",
+        max: 12,
+        defaultItem: { puffCount: "", bestFor: "", duration: "" },
+        fields: [
+          { type: "text", key: "puffCount", label: "Puff count" },
+          { type: "text", key: "bestFor", label: "Best for" },
+          { type: "text", key: "duration", label: "Approx. duration" },
+        ],
+      },
+      { type: "text", key: "puffNote", label: "Footnote under the table" },
+
       { type: "text", key: "deviceHeading", label: "Comparison table heading" },
+      { type: "text", key: "featureColumnLabel", label: "Feature column heading" },
+      {
+        type: "text",
+        key: "deviceA",
+        label: "Device 1",
+        help: "Clear a device to drop its column from the table.",
+      },
+      { type: "text", key: "deviceB", label: "Device 2" },
+      { type: "text", key: "deviceC", label: "Device 3" },
+      {
+        type: "repeater",
+        key: "deviceRows",
+        label: "Comparison rows",
+        itemNoun: "row",
+        itemLabelKey: "feature",
+        max: 20,
+        defaultItem: { feature: "", a: "", b: "", c: "" },
+        fields: [
+          { type: "text", key: "feature", label: "Feature" },
+          { type: "text", key: "a", label: "Device 1 value" },
+          { type: "text", key: "b", label: "Device 2 value" },
+          { type: "text", key: "c", label: "Device 3 value" },
+        ],
+      },
     ],
     defaults: {
       puffHeading: "CHOOSING THE RIGHT PUFF COUNT",
+      puffColumnPuffs: "PUFF COUNT",
+      puffColumnBestFor: "BEST FOR",
+      puffColumnDuration: "APPROX. DURATION",
+      puffRows: [
+        { puffCount: "600–1,500 puffs", bestFor: "Occasional or light users", duration: "1–3 days" },
+        { puffCount: "2,000–4,000 puffs", bestFor: "Everyday moderate vaping", duration: "4–7 days" },
+        { puffCount: "5,000–8,000 puffs", bestFor: "Regular daily users", duration: "1–2 weeks" },
+        { puffCount: "10,000–15,000 puffs", bestFor: "Frequent vapers seeking longer use", duration: "2–3 weeks" },
+        { puffCount: "20,000–30,000+ puffs", bestFor: "Heavy users and extended usage", duration: "3–5 weeks" },
+      ],
+      puffNote:
+        "*Puff counts are based on standard draw length. Longer draws will reduce actual count.",
+
       deviceHeading: "SIDE-BY-SIDE COMPARISON",
+      featureColumnLabel: "FEATURE",
+      deviceA: "ELF BAR ICE KING PRO 40000",
+      deviceB: "AL FAKHER E-HOSE X 60000",
+      deviceC: "TUGBOAT T12000",
+      deviceRows: [
+        { feature: "Puff Count", a: "Up to 40,000 Puffs", b: "Up to 60,000 Puffs", c: "Up to 12,000 Puffs" },
+        { feature: "Nicotine", a: "50mg (5%)", b: "50mg (5%)", c: "50mg (5%)" },
+        { feature: "E-Liquid Capacity", a: "Approx. 40ml", b: "Approx. 60ml", c: "Approx. 18ml" },
+        { feature: "Battery Capacity", a: "Rechargeable 850mAh", b: "Rechargeable 900mAh", c: "Rechargeable 650mAh" },
+        { feature: "Charging Port", a: "USB Type-C", b: "USB Type-C", c: "USB Type-C" },
+        { feature: "Display Screen", a: "Smart LED Display", b: "Digital Display", c: "Battery Indicator" },
+        { feature: "Coil Technology", a: "Dual Mesh Coil", b: "Advanced Mesh Coil", c: "Mesh Coil" },
+        { feature: "Airflow Control", a: "Adjustable Airflow", b: "Adjustable Airflow", c: "Fixed Airflow" },
+        { feature: "Flavor Style", a: "Ice & Fruit Blends", b: "Shisha-Inspired Flavors", c: "Classic Fruit & Mint Flavors" },
+        { feature: "Best For", a: "Long-lasting premium vaping", b: "Maximum puff longevity", c: "Compact daily vaping" },
+        { feature: "Device Type", a: "Rechargeable Disposable", b: "Rechargeable Disposable", c: "Rechargeable Disposable" },
+      ],
     },
   },
 
@@ -1138,16 +1338,102 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "E-Juice Brands Showcase",
     description: "E-liquid brand highlight strip.",
     templates: ["collection"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "badgeText", label: "Badge text" },
       { type: "text", key: "heading", label: "Heading" },
       { type: "textarea", key: "description", label: "Description", rows: 3 },
+      {
+        type: "repeater",
+        key: "brands",
+        label: "Brands",
+        itemNoun: "brand",
+        itemLabelKey: "name",
+        min: 1,
+        max: 20,
+        defaultItem: {
+          name: "New brand",
+          handle: "",
+          image: "/vape_kit.png",
+          tagline: "",
+          description: "",
+          href: "",
+        },
+        fields: [
+          { type: "text", key: "name", label: "Brand name" },
+          {
+            type: "collection",
+            key: "handle",
+            label: "Collection",
+            help: "Its collection image is used for the card when one exists.",
+          },
+          {
+            type: "image",
+            key: "image",
+            label: "Fallback image",
+            help: "Shown when the collection has no image of its own.",
+          },
+          { type: "text", key: "tagline", label: "Tagline" },
+          { type: "textarea", key: "description", label: "Description", rows: 3 },
+          { type: "link", key: "href", label: "Card link" },
+        ],
+      },
+      { type: "text", key: "ctaLabel", label: "Card link text" },
     ],
     defaults: {
       badgeText: "E-Juice Brand Directory",
       heading: "Popular E-Juice & Nicotine Salt Brands in Dubai",
       description: "Explore authentic imported e-liquids across UAE. Compare nicotine strengths, VG/PG ratios, and signature fruit, menthol & tobacco flavors.",
+      ctaLabel: "View Collection",
+      brands: [
+        {
+          name: "Pod Salt",
+          handle: "pod-salt-vape",
+          image: "/premium_liquid.png",
+          tagline: "British Nicotine Salt Specialists & Hit Blends",
+          description: "Pod Salt is an award-winning British e-liquid brand renowned for its smooth nicotine salt formulation.",
+          href: "/collections/e-liquids?sub=Pod%20Salt",
+        },
+        {
+          name: "VGOD",
+          handle: "vgod-stig",
+          image: "/premium_liquid.png",
+          tagline: "USA Premium SaltNic & Signature Cubano Tobaccos",
+          description: "VGOD E-Liquids deliver high-potency flavor profiles and dense clouds. Famous for Cubano cigar tobacco.",
+          href: "/collections/e-liquids?sub=VGOD",
+        },
+        {
+          name: "Dr Vapes",
+          handle: "dr-vapes",
+          image: "/premium_liquid.png",
+          tagline: "Panther Series & Award-Winning Fruit Liquids",
+          description: "Dr Vapes UK creates iconic flavor blends like Pink Panther blackcurrant cotton candy and Blue Panther.",
+          href: "/collections/e-liquids?sub=Dr%20Vapes",
+        },
+        {
+          name: "Nasty Juice",
+          handle: "nasty-juice",
+          image: "/premium_liquid.png",
+          tagline: "Low Mint Signature Aluminum Tin Liquids",
+          description: "Nasty Juice is globally celebrated for signature low-mint fruity e-liquids like Asap Grape and Slow Blow.",
+          href: "/collections/e-liquids?sub=Nasty%20Juice",
+        },
+        {
+          name: "Silvaper",
+          handle: "silvaper-vape",
+          image: "/premium_liquid.png",
+          tagline: "Luxury Craft E-Liquids & Pure Flavor Extract",
+          description: "Silvaper offers handcrafted e-liquids featuring rich shisha double apple, icy grape mint, and berry fruit.",
+          href: "/collections/e-liquids?sub=Silvaper",
+        },
+        {
+          name: "Vape Pink & Propaganda",
+          handle: "vape-pink",
+          image: "/premium_liquid.png",
+          tagline: "Gourmet Dessert & Candy Fruit E-Juice",
+          description: "Gourmet e-liquids crafted for flavor enthusiasts seeking sweet dessert pastries and fruit chews.",
+          href: "/collections/e-liquids?sub=Vape%20Pink%20%26%20Propaganda",
+        },
+      ],
     },
   },
 
@@ -1156,14 +1442,123 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "JUUL Signature Flavors",
     description: "JUUL flavour line-up.",
     templates: ["collection"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "badgeText", label: "Badge text" },
       { type: "text", key: "heading", label: "Heading" },
+      {
+        type: "repeater",
+        key: "flavors",
+        label: "Flavours",
+        itemNoun: "flavour",
+        itemLabelKey: "name",
+        min: 1,
+        max: 16,
+        defaultItem: {
+          id: "",
+          name: "New flavour",
+          color: "#06b6d4",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 5%",
+          price: 0,
+          description: "",
+          image: "/juul_device.png",
+        },
+        fields: [
+          { type: "text", key: "name", label: "Flavour name" },
+          { type: "color", key: "color", label: "Accent colour" },
+          { type: "text", key: "podsPerPack", label: "Pods per pack" },
+          { type: "text", key: "strength", label: "Strength" },
+          {
+            type: "number",
+            key: "price",
+            label: "Price",
+            min: 0,
+            step: 1,
+            suffix: "AED",
+            help: "Shown on the card and used when it is added to the cart.",
+          },
+          { type: "textarea", key: "description", label: "Description", rows: 4 },
+          { type: "image", key: "image", label: "Image" },
+          {
+            type: "text",
+            key: "id",
+            label: "Cart id",
+            help: "Identifies the line in the cart. Keep it unique.",
+          },
+        ],
+      },
     ],
     defaults: {
       badgeText: "Official JUUL Flavor Lineup",
       heading: "Signature Flavors",
+      flavors: [
+        {
+          id: "juul-menthol-5",
+          name: "Menthol 5%",
+          color: "#06b6d4",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 5%",
+          price: 85.0,
+          description:
+            '"The JUUL 1 Menthol 5% delivers a crisp, cool menthol profile that stays clean and balanced from start to finish. Menthol lovers mostly prefer this flavour for its strong salt nicotine hit."',
+          image: "/juul_device.png",
+        },
+        {
+          id: "juul-virginia-5",
+          name: "Virginia Tobacco 5%",
+          color: "#d97706",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 5%",
+          price: 90.0,
+          description:
+            '"Tobacco flavors in the vaping market are a mixed bag. The JUUL Virginia Tobacco pod cartridge 5% is slightly sweet, slightly earthy and doesn\'t get harsh or flat as the pod runs down."',
+          image: "/juul_device.png",
+        },
+        {
+          id: "juul-menthol-3",
+          name: "Menthol 3%",
+          color: "#0284c7",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 3%",
+          price: 85.0,
+          description:
+            '"JUUL 1 pod refill cartridge is well appreciated among cooling effect lovers. Every puff delivers a subtle icy sensation of cool mint. Never tastes chemically or overpowered."',
+          image: "/juul_device.png",
+        },
+        {
+          id: "juul-virginia-3",
+          name: "Virginia Tobacco 3%",
+          color: "#b45309",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 3%",
+          price: 90.0,
+          description:
+            '"JUUL Classic tobacco vape flavor is designed to deliver a consistent, grounded tobacco experience from start to finish. A perfect choice for cigarette smokers looking for a clean alternative."',
+          image: "/juul_device.png",
+        },
+        {
+          id: "juul-mint-5",
+          name: "Classic Mint 5%",
+          color: "#10b981",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 5%",
+          price: 85.0,
+          description:
+            '"Refreshing peppermint flavor with a soothing icy exhale. One of the most popular JUUL pod flavors in Dubai for all-day vaping."',
+          image: "/juul_device.png",
+        },
+        {
+          id: "juul-mango-5",
+          name: "Mango 5% (Limited)",
+          color: "#f59e0b",
+          podsPerPack: "4 PODS PER PACK",
+          strength: "STRENGTH: 5%",
+          price: 120.0,
+          description:
+            '"Ripe tropical sweet mango flavor pod cartridge. Highly sought-after original flavor with rich nicotine salt satisfaction."',
+          image: "/juul_device.png",
+        },
+      ],
     },
   },
 
@@ -1172,15 +1567,96 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "JUUL Packaging Comparison",
     description: "Old vs new JUUL 1 packaging guide.",
     templates: ["collection"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "heading", label: "Heading" },
       { type: "textarea", key: "description", label: "Description", rows: 3 },
+
+      { type: "text", key: "oldTabLabel", label: "Old tab label" },
+      { type: "text", key: "oldTitle", label: "Old panel title" },
+      { type: "text", key: "oldBadge", label: "Old image badge" },
+      { type: "image", key: "oldImage", label: "Old packaging image" },
+      {
+        type: "repeater",
+        key: "oldPoints",
+        label: "Old packaging points",
+        itemNoun: "point",
+        itemLabelKey: "label",
+        max: 8,
+        defaultItem: { label: "", text: "" },
+        fields: [
+          { type: "text", key: "label", label: "Label" },
+          { type: "textarea", key: "text", label: "Detail", rows: 3 },
+        ],
+      },
+
+      { type: "text", key: "newTabLabel", label: "New tab label" },
+      { type: "text", key: "newTitle", label: "New panel title" },
+      { type: "text", key: "newBadge", label: "New image badge" },
+      { type: "image", key: "newImage", label: "New packaging image" },
+      {
+        type: "repeater",
+        key: "newPoints",
+        label: "New packaging points",
+        itemNoun: "point",
+        itemLabelKey: "label",
+        max: 8,
+        defaultItem: { label: "", text: "" },
+        fields: [
+          { type: "text", key: "label", label: "Label" },
+          { type: "textarea", key: "text", label: "Detail", rows: 3 },
+        ],
+      },
     ],
     defaults: {
       heading: "JUUL 1 Packaging: Old vs New",
       description:
         "To make fake JUUL products harder to sell in the UAE, JUUL redesigned the box. Here is what changed and what to look for before you buy.",
+
+      oldTabLabel: "OLD PACKAGING",
+      oldTitle: "Old Packaging Specifications",
+      oldBadge: "OLD DESIGN",
+      oldImage: "/juul_device.png",
+      oldPoints: [
+        {
+          label: "Cardboard Sleeve:",
+          text: "Plain white matte paper box. Wears, tears, and fades with light handling.",
+        },
+        {
+          label: "Branding & Font:",
+          text: "Basic minimalist type. No clear generation label. The box does not always say “JUUL 1” outright.",
+        },
+        {
+          label: "Security Tracking:",
+          text: "No 3D holographic sticker on the top flap. High risk of convincing clones.",
+        },
+        {
+          label: "Batch Codes:",
+          text: "Printed lightly and often smudged. Hard to read and easy to fake.",
+        },
+      ],
+
+      newTabLabel: "NEW PACKAGING",
+      newTitle: "New Packaging Specifications",
+      newBadge: "NEW DESIGN",
+      newImage: "/juul_device.png",
+      newPoints: [
+        {
+          label: "Cardboard Sleeve:",
+          text: "Premium glossy reinforced foil-laminated box. Scratch-resistant surface.",
+        },
+        {
+          label: "Branding & Font:",
+          text: "Bold embossed JUUL logo with explicit generation badges and nicotine concentration callouts.",
+        },
+        {
+          label: "Security Tracking:",
+          text: "High-security 3D holographic authentication sticker with QR code scan verification.",
+        },
+        {
+          label: "Batch Codes:",
+          text: "Laser-etched high-density QR code and crisp batch numbers on top & bottom flaps.",
+        },
+      ],
     },
   },
 
@@ -1189,17 +1665,43 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "JUUL Tech Specs",
     description: "Technical specification table.",
     templates: ["collection"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "badgeText", label: "Badge text" },
+      { type: "text", key: "heading", label: "Heading" },
+      { type: "textarea", key: "description", label: "Description", rows: 3 },
+      { type: "text", key: "certifiedNote", label: "Certified note" },
       {
-        type: "text",
-        key: "heading",
-        label: "Heading",
-        help: "Leave blank to keep the automatic JUUL 1 / JUUL 2 wording.",
+        type: "repeater",
+        key: "specs",
+        label: "Specifications",
+        itemNoun: "specification",
+        itemLabelKey: "label",
+        min: 1,
+        max: 12,
+        defaultItem: { icon: "Zap", accent: "emerald", label: "SPECIFICATION", value: "" },
+        fields: [
+          { type: "icon", key: "icon", label: "Icon" },
+          ...accentField(),
+          { type: "text", key: "label", label: "Label" },
+          { type: "text", key: "value", label: "Value" },
+        ],
       },
     ],
-    defaults: { badgeText: "Technical Specifications", heading: "" },
+    defaults: {
+      badgeText: "Technical Specifications",
+      heading: "Engineered for Excellence",
+      description:
+        "JUUL 1 Magnetic USB Charging Dock & Original USA Made JUUL Pods certified authentic in Dubai & UAE.",
+      certifiedNote: "Official JUUL UAE Certified Hardware",
+      specs: [
+        { icon: "Battery", accent: "emerald", label: "BATTERY CAPACITY", value: "200 mAh (Classic)" },
+        { icon: "Zap", accent: "amber", label: "CHARGING TYPE", value: "Magnetic USB Fast Dock" },
+        { icon: "Droplet", accent: "blue", label: "POD CAPACITY", value: "0.7 mL per Pod" },
+        { icon: "Cpu", accent: "purple", label: "CONNECTIVITY", value: "Draw-Activated (No Buttons)" },
+        { icon: "Activity", accent: "rose", label: "DRAW TYPE", value: "MTL (Mouth to Lung)" },
+        { icon: "Box", accent: "teal", label: "MATERIAL", value: "Premium Anodized Aluminum" },
+      ],
+    },
   },
 
   bottomCollectionGrid: {
@@ -1207,7 +1709,6 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "Related Collections Grid",
     description: "Five-category recommendation grid.",
     templates: ["index", "collection", "product", "page"],
-    contentInCode: true,
     fields: [
       {
         type: "text",
@@ -1217,8 +1718,29 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       },
       { type: "text", key: "heading", label: "Heading" },
       { type: "textarea", key: "description", label: "Description", rows: 2 },
+      {
+        type: "repeater",
+        key: "cards",
+        label: "Cards",
+        itemNoun: "card",
+        itemLabelKey: "title",
+        max: 12,
+        help: "Leave empty to show the collections that match the current page automatically. The card for the page being viewed is always skipped.",
+        defaultItem: {
+          title: "New collection",
+          subtitle: "",
+          image: "/vape_kit.png",
+          href: "",
+        },
+        fields: [
+          { type: "text", key: "title", label: "Title" },
+          { type: "textarea", key: "subtitle", label: "Subtitle", rows: 2 },
+          { type: "image", key: "image", label: "Image" },
+          { type: "link", key: "href", label: "Link" },
+        ],
+      },
     ],
-    defaults: { badgeText: "", heading: "", description: "" },
+    defaults: { badgeText: "", heading: "", description: "", cards: [] },
   },
 
   juulAppIntegration: {
@@ -1226,16 +1748,81 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "JUUL 2 App Integration",
     description: "JUUL 2 companion-app feature block.",
     templates: ["collection", "product"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "badgeText", label: "Badge text" },
       { type: "text", key: "heading", label: "Heading" },
       { type: "textarea", key: "description", label: "Description", rows: 3 },
+      { type: "text", key: "activeBadge", label: "Selected card badge" },
+      {
+        type: "repeater",
+        key: "features",
+        label: "Feature cards",
+        itemNoun: "feature",
+        itemLabelKey: "title",
+        min: 1,
+        max: 6,
+        help: "Each card selects one of the phone screens, which carries its own icon and demo.",
+        defaultItem: {
+          screen: "analytics",
+          title: "New feature",
+          description: "",
+        },
+        fields: [
+          {
+            type: "select",
+            key: "screen",
+            label: "Phone screen",
+            options: [
+              { label: "Bluetooth pairing", value: "bluetooth" },
+              { label: "Usage analytics", value: "analytics" },
+              { label: "Device lock & find", value: "lock" },
+              { label: "Battery monitoring", value: "battery" },
+              { label: "Smart notifications", value: "notifications" },
+              { label: "Age verification", value: "age" },
+            ],
+          },
+          { type: "text", key: "title", label: "Title" },
+          { type: "textarea", key: "description", label: "Description", rows: 3 },
+        ],
+      },
     ],
     defaults: {
       badgeText: "JUUL 2 Smart App Integration",
       heading: "Control Your JUUL 2 Directly From Your Phone",
       description: "Discover the smart vaping era. Pair your JUUL 2 via Bluetooth to monitor your battery health, track puff counts, lock your device remotely, and secure age verification in one tap.",
+      activeBadge: "ACTIVE SCREEN",
+      features: [
+        {
+          screen: "bluetooth",
+          title: "Instant Bluetooth Connect",
+          description: "Pair with your JUUL 2 device in seconds. Auto-reconnects every time.",
+        },
+        {
+          screen: "analytics",
+          title: "Usage Analytics",
+          description: "Track daily puff count, weekly trends, and nicotine intake in real-time.",
+        },
+        {
+          screen: "lock",
+          title: "Device Lock & Find",
+          description: "Remotely lock your JUUL if lost and locate it via Bluetooth proximity scan.",
+        },
+        {
+          screen: "battery",
+          title: "Battery Monitoring",
+          description: "Live battery status with low-battery push alerts before you run out.",
+        },
+        {
+          screen: "notifications",
+          title: "Smart Notifications",
+          description: "Get notified for pod refilling, battery level alerts, and usage limits.",
+        },
+        {
+          screen: "age",
+          title: "Age Verification Lock",
+          description: "Built-in smart age verification lock to prevent unauthorized access.",
+        },
+      ],
     },
   },
 
@@ -1244,14 +1831,66 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     label: "MYLE Verification Guide",
     description: "Anti-counterfeit verification steps.",
     templates: ["collection", "product"],
-    contentInCode: true,
     fields: [
       { type: "text", key: "badgeText", label: "Badge text" },
       { type: "text", key: "heading", label: "Heading" },
+      {
+        type: "repeater",
+        key: "steps",
+        label: "Steps",
+        itemNoun: "step",
+        itemLabelKey: "title",
+        min: 1,
+        max: 4,
+        help: "Each step keeps its illustration. Wrap words in **double asterisks** to bold them.",
+        defaultItem: {
+          illustration: "qr",
+          title: "NEW STEP",
+          description: "",
+        },
+        fields: [
+          {
+            type: "select",
+            key: "illustration",
+            label: "Illustration",
+            options: [
+              { label: "Peeling the QR tab", value: "qr" },
+              { label: "Verification screen", value: "scan" },
+              { label: "Rewards medal", value: "reward" },
+            ],
+          },
+          { type: "text", key: "title", label: "Title" },
+          { type: "textarea", key: "description", label: "Description", rows: 4 },
+        ],
+      },
+      { type: "text", key: "ctaLabel", label: "Button text" },
+      { type: "link", key: "ctaHref", label: "Button link", placeholder: "https://" },
     ],
     defaults: {
       badgeText: "Official UAE Verification",
       heading: "ANTI-COUNTERFEIT SYSTEM",
+      steps: [
+        {
+          illustration: "qr",
+          title: "FIND QR CODE",
+          description:
+            "Find the security code on your package by peeling off the tab on the side of the package to reveal the QR code.",
+        },
+        {
+          illustration: "scan",
+          title: "SCAN CODE",
+          description:
+            "Go online to **ac.mylevape.com** or scan the QR code in your phone with a QR code scanner and enter the 16 digit authenticity number in the fields provided. Please submit.",
+        },
+        {
+          illustration: "reward",
+          title: "RECEIVE REWARD POINTS",
+          description:
+            "For each product you authenticate, you will receive 5 Myle rewards point(s). After you scan your products QR code, your rewards point(s) will be automatically added to your rewards account.",
+        },
+      ],
+      ctaLabel: "Authenticate MYLE Product at ac.mylevape.com",
+      ctaHref: "https://ac.mylevape.com",
     },
   },
 
@@ -2186,3 +2825,220 @@ export function sectionsForTemplate(templateType: TemplateType): SectionDef[] {
     .filter((def) => def.templates.includes(templateType) && !def.required)
     .sort((a, b) => a.label.localeCompare(b.label));
 }
+
+/**
+ * What the JUUL Tech Specs section says on JUUL 2 collections.
+ *
+ * The section's own defaults describe JUUL 1, which is what most JUUL pages
+ * are. The JUUL 2 family template starts from these instead — see
+ * `collection-families.ts`. Both are merchant-editable from that point on.
+ */
+export const JUUL_2_TECH_SPECS = {
+  heading: "Next-Gen Smart Tech",
+  description:
+    "JUUL 2 Pod System features anti-counterfeit pod technology, smart battery indicators, and 1.2mL pre-filled nicotine salt pods.",
+  specs: [
+    { icon: "Battery", accent: "emerald", label: "BATTERY CAPACITY", value: "250 mAh (Rechargeable)" },
+    { icon: "Zap", accent: "amber", label: "CHARGING TYPE", value: "JUUL 2 Magnetic USB Dock" },
+    { icon: "Droplet", accent: "blue", label: "POD CAPACITY", value: "1.2 mL (+70% E-Liquid)" },
+    { icon: "Cpu", accent: "purple", label: "SMART FEATURES", value: "LED Battery & Pod Level Indicator" },
+    { icon: "Activity", accent: "rose", label: "NICOTINE STRENGTH", value: "18 mg/ml (1.8% Salt Nic)" },
+    { icon: "Box", accent: "teal", label: "MATERIAL & FINISH", value: "Slate Anodized Metal Body" },
+  ],
+} as const;
+
+/**
+ * The flavour line-up on JUUL 2 collections.
+ *
+ * Same reasoning as `JUUL_2_TECH_SPECS`: the section's own defaults describe
+ * JUUL 1 pods, and the JUUL 2 family template starts from these instead.
+ */
+export const JUUL_2_FLAVORS = {
+  flavors: [
+    {
+      id: "juul2-crisp-menthol",
+      name: "Crisp Menthol 18mg",
+      color: "#06b6d4",
+      podsPerPack: "2 PODS PER PACK",
+      strength: "STRENGTH: 18mg/ml",
+      price: 85.0,
+      description:
+        '"JUUL 2 Crisp Menthol features fresh green menthol flavor with a brisk cooling exhale. Engineered with anti-counterfeit chip technology."',
+      image: "/juul_device.png",
+    },
+    {
+      id: "juul2-virginia-tobacco",
+      name: "Virginia Tobacco 18mg",
+      color: "#d97706",
+      podsPerPack: "2 PODS PER PACK",
+      strength: "STRENGTH: 18mg/ml",
+      price: 90.0,
+      description:
+        '"Subtle, toasted tobacco flavor with sweet aromatic notes. Specially blended for JUUL 2 next-gen pod system."',
+      image: "/juul_device.png",
+    },
+    {
+      id: "juul2-ruby-scheme",
+      name: "Ruby Scheme 18mg",
+      color: "#ec4899",
+      podsPerPack: "2 PODS PER PACK",
+      strength: "STRENGTH: 18mg/ml",
+      price: 85.0,
+      description:
+        '"JUUL 2 Ruby Scheme combines wild red berry notes with a crisp cooling finish. Unique signature blend."',
+      image: "/juul_device.png",
+    },
+    {
+      id: "juul2-polar-menthol",
+      name: "Polar Menthol 18mg",
+      color: "#3b82f6",
+      podsPerPack: "2 PODS PER PACK",
+      strength: "STRENGTH: 18mg/ml",
+      price: 85.0,
+      description:
+        '"Deep, intense freezing menthol flavor with a powerful cooling hit designed for maximum satisfaction."',
+      image: "/juul_device.png",
+    },
+  ],
+};
+
+/**
+ * The related-collection cards each family shows.
+ *
+ * `bottomCollectionGrid` picks a set from the handle when its own `cards` are
+ * empty, which is what keeps the grid useful on the shop page and on any
+ * collection nobody has customised. The collection family templates start from
+ * the matching set instead, so those cards are editable where they apply.
+ */
+export const BOTTOM_GRID_CARDS = {
+  juul: [
+    {
+      title: "JUUL 1 Series",
+      subtitle: "Classic JUUL 1 Devices, Virginia Tobacco & Menthol Pods (3% & 5%)",
+      image: "/juul_device.png",
+      href: "/collections/juul-1-series",
+    },
+    {
+      title: "JUUL 2 Series",
+      subtitle: "Next-Gen JUUL 2 Starter Kit, Ruby Scheme & Crisp Menthol Pods",
+      image: "/juul_device.png",
+      href: "/collections/juul-2-series",
+    },
+    {
+      title: "JUUL Pods Offers",
+      subtitle: "Special Multi-Pack Bundle Deals on JUUL 1 & JUUL 2 Pods",
+      image: "/vape_kit.png",
+      href: "/collections/juul-pods-offers",
+    },
+  ],
+  myle: [
+    {
+      title: "MYLE Meta V5 Pods",
+      subtitle: "Pre-filled Meta V5 Pods in Iced Mint, Peach & Tobacco Flavors",
+      image: "/vape_kit.png",
+      href: "/collections/myle-v5-pods",
+    },
+    {
+      title: "MYLE Meta V5 Devices",
+      subtitle: "Rechargeable Meta V5 Battery Devices in Jet Black & Rose Gold",
+      image: "/vape_kit.png",
+      href: "/collections/myle-v5-device",
+    },
+    {
+      title: "MYLE Micro Disposables",
+      subtitle: "Compact MYLE Micro & Drip 2500+ Puffs Disposable Pods",
+      image: "/lost_mary.png",
+      href: "/collections/myle-disposable",
+    },
+  ],
+  disposable: [
+    {
+      title: "Geek Bar Pulse 15000",
+      subtitle: "Geek Bar Pulse 15000 Puffs Dual Mesh & Full LED Screen",
+      image: "/lost_mary.png",
+      href: "/collections/geek-bar-disposable",
+    },
+    {
+      title: "Elf Bar Disposables",
+      subtitle: "Elf Bar BC5000, Ultra & Lowit Pod Disposables",
+      image: "/lost_mary.png",
+      href: "/collections/elf-bar-vape",
+    },
+    {
+      title: "Lost Mary BM6000",
+      subtitle: "Lost Mary BM6000 & MO5000 Fruity Mesh Coil Vapes",
+      image: "/lost_mary.png",
+      href: "/collections/lost-mary-disposable",
+    },
+    {
+      title: "Tugboat Super 12000",
+      subtitle: "Tugboat Super 12000 Puffs Rechargeable Mesh Vapes",
+      image: "/lost_mary.png",
+      href: "/collections/tugboat-vape",
+    },
+    {
+      title: "Al Fakher Crown Bar",
+      subtitle: "Al Fakher Crown Bar 8000 & 10000 Shisha Flavor Vapes",
+      image: "/premium_liquid.png",
+      href: "/collections/al-fakher-vape",
+    },
+    {
+      title: "Fummo & Vozol Vapes",
+      subtitle: "Fummo Target 10000 & Vozol Gear 10000 Outdoor Vapes",
+      image: "/lost_mary.png",
+      href: "/collections/fummo-vape",
+    },
+  ],
+  ejuice: [
+    {
+      title: "Salt Nicotine Liquids",
+      subtitle: "Premium Nic Salt E-Liquids in 20mg, 30mg & 50mg Strengths",
+      image: "/premium_liquid.png",
+      href: "/collections/salt-nicotine",
+    },
+    {
+      title: "Freebase E-Liquids",
+      subtitle: "High VG 60ml & 100ml Sub-Ohm E-Liquids in 3mg & 6mg",
+      image: "/premium_liquid.png",
+      href: "/collections/freebase-e-liquid",
+    },
+    {
+      title: "Pod Salt E-Juice",
+      subtitle: "British Nicotine Salt Liquids in Nexus & Core Series",
+      image: "/premium_liquid.png",
+      href: "/collections/pod-salt-vape",
+    },
+    {
+      title: "VGOD Stig E-Liquids",
+      subtitle: "VGOD Cubano Tobacco & Mighty Mint Salt Liquids",
+      image: "/premium_liquid.png",
+      href: "/collections/vgod-stig",
+    },
+  ],
+  podSystem: [
+    {
+      title: "Uwell Caliburn Series",
+      subtitle: "Caliburn G3, AK3 & GK3 Refillable Pod Systems",
+      image: "/vape_kit.png",
+      href: "/collections/uwell-vape",
+    },
+    {
+      title: "Vaporesso XROS Series",
+      subtitle: "XROS 3, XROS Mini & Luxe Pod Kits with COREX Tech",
+      image: "/vape_kit.png",
+      href: "/collections/vaporesso-vape",
+    },
+    {
+      title: "OXVA Xlim Pod Kits",
+      subtitle: "Xlim Pro & SQ Pro Pod Systems with OLED Display",
+      image: "/vape_kit.png",
+      href: "/collections/oxva-vape",
+    },
+    {
+      title: "Pod Cartridges & Coils",
+      subtitle: "Replacement Pod Cartridges & Mesh Coils for All Kits",
+      image: "/vape_kit.png",
+      href: "/collections/pod-cartridge",
+    },
+  ],
+};

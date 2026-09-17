@@ -63,6 +63,11 @@ export interface IconFieldDef extends FieldBase {
   type: "icon";
 }
 
+/** A free colour, stored as a `#rrggbb` string. */
+export interface ColorFieldDef extends FieldBase {
+  type: "color";
+}
+
 /** Local date and time, stored as `YYYY-MM-DDTHH:mm`. */
 export interface DateTimeFieldDef extends FieldBase {
   type: "datetime";
@@ -109,6 +114,7 @@ export type FieldDef =
   | ToggleFieldDef
   | SelectFieldDef
   | IconFieldDef
+  | ColorFieldDef
   | CollectionFieldDef
   | ArticleFieldDef
   | DateTimeFieldDef

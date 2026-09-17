@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 
+import { COLLECTION_FAMILY_KEYS } from "@/lib/theme/collection-families";
 import { describeMatch, templateMatch, type Template } from "@/lib/theme/types";
 
 /**
@@ -122,9 +123,13 @@ export const TemplatePicker: React.FC<{
                         )}
                       </button>
 
-                      {/* Only overrides are deletable — the type defaults are
-                          the fallback every page relies on. */}
-                      {rule && (t.type === "collection" || t.type === "product") && (
+                      {/* Only merchant-made overrides are deletable. The type
+                          defaults are the fallback every page relies on, and
+                          the built-in families ship as defaults too — deleting
+                          one would just bring it back on the next save. */}
+                      {rule &&
+                        !COLLECTION_FAMILY_KEYS.has(key) &&
+                        (t.type === "collection" || t.type === "product") && (
                         <button
                           type="button"
                           onClick={() => onDeleteTemplate(key)}

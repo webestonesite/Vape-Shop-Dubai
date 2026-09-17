@@ -1,4 +1,10 @@
-import { createDefaultSettings, THEME_VERSION } from "./defaults";
+import {
+  backfillFamilyContent,
+  COLLECTION_FAMILIES,
+  deriveCollectionFamilyTemplates,
+  deriveDefaultCollectionTemplate,
+} from "./collection-families";
+import { COLLECTION_BASE, createDefaultSettings, THEME_VERSION } from "./defaults";
 import { SECTION_REGISTRY } from "./sections";
 import type {
   SectionInstance,
@@ -31,7 +37,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  * Arrays are taken verbatim — merging them element-wise would resurrect
  * repeater rows the merchant deliberately deleted.
  */
-function fillMissing<T>(base: T, override: unknown): T {
+export function fillMissing<T>(base: T, override: unknown): T {
   if (!isPlainObject(base)) return override === undefined ? base : (override as T);
   if (!isPlainObject(override)) return base;
 
@@ -253,6 +259,54 @@ function normalizeTemplate(raw: unknown, fallback: Template | undefined): Templa
   };
 }
 
+/* ── v2 → v3 migration ────────────────────────────────────────────── */
+
+/**
+ * Split a v2 store's single collection template into the v3 set.
+ *
+ * v2 had one collection template carrying every section, each gated by a
+ * `showWhen` condition. v3 promotes those conditions to templates: one per
+ * family, plus a default holding what every collection shows.
+ *
+ * The merchant's own template is the source, not the factory copy, so headings
+ * they rewrote, sections they disabled and the order they chose all survive —
+ * each lands in the families where its condition applied. Which sections render
+ * on which page is unchanged; only which template owns them moves.
+ */
+function splitStoredCollectionTemplate(
+  rawTemplates: Record<string, unknown>
+): Record<string, Template> {
+  // Filled in against the pre-split base, not against the new default template:
+  // that one has already had the family sections taken out of it, so a store
+  // whose saved template is partial would derive families with nothing in them.
+  const base = normalizeTemplate(rawTemplates.collection, COLLECTION_BASE);
+  if (!base) return {};
+
+  return {
+    collection: deriveDefaultCollectionTemplate(base),
+    ...deriveCollectionFamilyTemplates(base),
+  };
+}
+
+/* ── v3 → v4 migration ────────────────────────────────────────────── */
+
+/**
+ * Give family templates the content that belongs to their family.
+ *
+ * Only reaches templates written between the split and the content landing;
+ * a store migrating straight from v2 already has it, and anything the merchant
+ * has edited is left alone.
+ */
+function backfillCollectionFamilies(templates: Record<string, Template>): void {
+  const sectionDefaults = (type: string) => SECTION_REGISTRY[type]?.defaults;
+
+  for (const family of COLLECTION_FAMILIES) {
+    const template = templates[family.key];
+    if (!template) continue;
+    templates[family.key] = backfillFamilyContent(template, family, sectionDefaults);
+  }
+}
+
 export function normalizeSettings(stored: unknown): ThemeSettings {
   if (!isPlainObject(stored)) return createDefaultSettings();
 
@@ -263,12 +317,25 @@ export function normalizeSettings(stored: unknown): ThemeSettings {
   const rawTemplates = isPlainObject(stored.templates) ? stored.templates : {};
 
   const templates: Record<string, Template> = {};
+  const split = version < 3 ? splitStoredCollectionTemplate(rawTemplates) : null;
 
   // Defaults first, so a template the merchant never touched still exists.
-  for (const [key, fallback] of Object.entries(defaults.templates)) {
-    const normalized = normalizeTemplate(rawTemplates[key], fallback);
-    templates[key] = normalized ?? fallback;
+  for (const [key, defaultTemplate] of Object.entries(defaults.templates)) {
+    // A collection template produced by the v2 → v3 split is already built from
+    // the merchant's own content, so it replaces the stored copy outright
+    // rather than being merged back into the template it came from.
+    const migrated = split?.[key];
+    if (migrated) {
+      templates[key] = migrated;
+      continue;
+    }
+
+    const normalized = normalizeTemplate(rawTemplates[key], defaultTemplate);
+    templates[key] = normalized ?? defaultTemplate;
   }
+  // v3 shipped the family templates before the content that distinguishes them.
+  if (version === 3) backfillCollectionFamilies(templates);
+
   // Then merchant-created per-handle overrides.
   for (const [key, raw] of Object.entries(rawTemplates)) {
     if (templates[key]) continue;

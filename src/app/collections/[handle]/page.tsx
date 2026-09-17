@@ -30,7 +30,14 @@ import {
   instanceSettings,
   TemplateSections,
 } from "@/components/sections/SectionRenderer";
-import { useResolvedTemplate } from "@/context/ThemeSettingsContext";
+import {
+  useCollectionSectionsDraft,
+  useResolvedTemplate,
+} from "@/context/ThemeSettingsContext";
+import {
+  parseCollectionSections,
+  resolveCollectionSections,
+} from "@/lib/theme/collection-sections";
 import {
   Star,
   ShoppingCart,
@@ -390,6 +397,31 @@ function CollectionPageContent() {
   const { instances: templateInstances, isOverride: templateIsOverride } =
     useResolvedTemplate("collection", handle);
 
+  /*
+   * A collection can carry its own section layout in the `custom.page_sections`
+   * metafield, saved from the admin's collections editor. When it does, that
+   * layout replaces the theme's collection template for this page alone — order,
+   * visibility and copy all come from the collection itself.
+   *
+   * The preview draft wins over the saved metafield, so the editor shows unsaved
+   * edits live; with neither, the page renders the theme template exactly as it
+   * always has.
+   */
+  const previewSections = useCollectionSectionsDraft(handle);
+  const savedSections = useMemo(
+    () => parseCollectionSections((collectionMeta as any)?.pageSections),
+    [collectionMeta]
+  );
+  const { instances: sectionInstances, isOverride: sectionsAreOverride } = useMemo(
+    () =>
+      resolveCollectionSections(
+        previewSections ?? savedSections,
+        templateInstances,
+        templateIsOverride
+      ),
+    [previewSections, savedSections, templateInstances, templateIsOverride]
+  );
+
   const collectionInfo = useMemo(() => {
     const defaultTitle = handle
       ? handle.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
@@ -405,7 +437,7 @@ function CollectionPageContent() {
     else if (hLower.includes("pod-system") || hLower.includes("pod-kit") || hLower.includes("pod-cartridge") || hLower.includes("vape-coils")) categoryKey = "accessories";
 
     // Read collectionMain settings from Admin Customizer
-    const mainSettings = instanceSettings(templateInstances, "collectionMain");
+    const mainSettings = instanceSettings(sectionInstances, "collectionMain");
 
     // If Shopify data loaded, use it merged with customizer overrides
     if (collectionMeta && collectionMeta.title) {
@@ -453,7 +485,7 @@ function CollectionPageContent() {
       seo: null as { title: string; description: string } | null,
       categoryKey,
     };
-  }, [handle, collectionMeta]);
+  }, [handle, collectionMeta, sectionInstances]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && collectionInfo) {
@@ -677,7 +709,7 @@ function CollectionPageContent() {
   }, [collectionProducts, selectedSeries, selectedNicotines, selectedPuffs, selectedBrands, selectedCategories, inStockOnly, maxPrice, sortBy, subFilter, searchQuery, activePillFilter]);
 
   // Both come from the collection template's Product Grid section.
-  const mainSettings = instanceSettings(templateInstances, "collectionMain");
+  const mainSettings = instanceSettings(sectionInstances, "collectionMain");
   const ITEMS_PER_PAGE = Number(mainSettings.itemsPerPage) || 12;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -1248,13 +1280,13 @@ function CollectionPageContent() {
           </div>
         )}
 
-        {/* Everything below the product grid is controlled by the collection
-            template in the theme customizer: order, visibility, and — via a
-            per-handle override — exactly which sections a given collection
-            gets. Sections needing page data are passed in as slots. */}
+        {/* Everything below the product grid is controlled by this collection's
+            own layout when it has one (Admin → Collections, saved to the
+            collection's metafield), and by the theme's collection template
+            otherwise. Sections needing page data are passed in as slots. */}
         <TemplateSections
-          instances={templateInstances}
-          isOverride={templateIsOverride}
+          instances={sectionInstances}
+          isOverride={sectionsAreOverride}
           context={{ handle, collectionTitle: collectionInfo.title }}
           slots={{
             collectionMain: null,

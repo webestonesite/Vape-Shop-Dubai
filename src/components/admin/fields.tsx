@@ -55,6 +55,46 @@ export const TextInput: React.FC<{
   );
 };
 
+/**
+ * A swatch and the hex beside it.
+ *
+ * Both edit the same value: the picker for choosing, the text box for pasting a
+ * brand colour someone was given. Anything that isn't a valid hex is kept as
+ * typed - the merchant may be mid-edit - and the swatch just stops tracking.
+ */
+export const ColorInput: React.FC<{
+  label: string;
+  help?: string;
+  value: string;
+  onChange: (value: string) => void;
+}> = ({ label, help, value, onChange }) => {
+  const id = useId();
+  const isHex = /^#[0-9a-f]{6}$/i.test(value);
+
+  return (
+    <FieldShell label={label} help={help} htmlFor={id}>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          aria-label={`${label} colour picker`}
+          value={isHex ? value : "#000000"}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-slate-200 bg-white p-0.5"
+        />
+        <input
+          id={id}
+          type="text"
+          spellCheck={false}
+          className={`${inputClass} font-mono`}
+          placeholder="#06b6d4"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
+    </FieldShell>
+  );
+};
+
 export const TextAreaInput: React.FC<{
   label: string;
   help?: string;

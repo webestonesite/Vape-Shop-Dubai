@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import Link from "next/link";
 import {
   AlertCircle,
   ArrowLeft,
@@ -16,6 +17,7 @@ import {
   EyeOff,
   GripVertical,
   Info,
+  Layers,
   Loader2,
   Lock,
   MessageSquare,
@@ -35,7 +37,10 @@ import {
   PREVIEW_PARAM,
 } from "@/context/ThemeSettingsContext";
 import type { PublicUser } from "@/lib/auth/users";
-import { CONDITION_LABELS } from "@/lib/theme/conditions";
+import {
+  CONDITION_LABELS,
+  MERCHANT_CONDITION_PRIORITY,
+} from "@/lib/theme/conditions";
 import { SECTION_REGISTRY } from "@/lib/theme/sections";
 import {
   describeMatch,
@@ -322,6 +327,11 @@ export const Customizer: React.FC<{
           label,
           match,
           ...(match.type === "exact" ? { handle: match.value } : {}),
+          // A family rule the merchant wrote is a deliberate choice, so it wins
+          // wherever it overlaps one of the built-in family templates.
+          ...(match.type === "condition"
+            ? { priority: MERCHANT_CONDITION_PRIORITY }
+            : {}),
           previewPath: previewPath || base.previewPath,
         },
       },
@@ -431,6 +441,15 @@ export const Customizer: React.FC<{
             <ExternalLink className="h-4 w-4" />
           </a>
 
+          <Link
+            href="/admin/collections"
+            title="Customise a single collection page, saved onto that collection in Shopify"
+            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[12px] font-bold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+          >
+            <Layers className="h-3.5 w-3.5 text-orange-500" />
+            Collections
+          </Link>
+
           <button
             type="button"
             onClick={() => setIsReviewsOpen(true)}
@@ -518,14 +537,15 @@ export const Customizer: React.FC<{
                   {activeDef.description}
                 </p>
 
-                {activeInstance.showWhen && !templateRule && (
+                {activeInstance.showWhen && (
                   <div className="flex items-start gap-2 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-2 text-[11px] leading-snug text-sky-800">
                     <Info className="mt-px h-3.5 w-3.5 shrink-0" />
                     <span>
                       {CONDITION_LABELS[activeInstance.showWhen] ??
                         "This section only appears on some pages."}{" "}
-                      Create an override for a specific handle to control it
-                      directly.
+                      {templateRule
+                        ? "It stays conditional inside this template because the family covers pages on both sides of that rule."
+                        : "Create an override for a specific handle to control it directly."}
                     </span>
                   </div>
                 )}

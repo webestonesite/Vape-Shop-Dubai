@@ -58,6 +58,12 @@ export const CONDITIONS: Record<string, Predicate> = {
 
   handleIncludesMyle: (ctx) => handleOf(ctx).includes("myle"),
 
+  /** The brand directory itself, which lists brands instead of products. */
+  isBrandDirectory: (ctx) => {
+    const h = handleOf(ctx);
+    return h === "brand" || h === "brands";
+  },
+
   /** Everything except the brand directory listing. */
   notBrandDirectory: (ctx) => {
     const h = handleOf(ctx);
@@ -98,6 +104,7 @@ export const CONDITION_LABELS: Record<string, string> = {
   handleIsJuul1: "Only on JUUL collections that aren’t JUUL 2",
   handleIsJuul2: "Only on JUUL 2 collections",
   handleIncludesMyle: "Only on collections whose handle contains “myle”",
+  isBrandDirectory: "Only on the brand directory page",
   notBrandDirectory: "Hidden on the brand directory page",
   notBrandDirectoryAndNotEJuice: "Hidden on brand directory and e-juice collection pages",
   productIsJuul: "Only on JUUL products",
@@ -122,3 +129,29 @@ export function shouldRenderInstance(
   if (!predicate) return true;
   return predicate(ctx);
 }
+
+/**
+ * Conditions offered as template rules in the customizer, per template type.
+ *
+ * A subset of `CONDITIONS`: the ones that describe a family of pages. The
+ * negative helpers ("hidden on the brand directory") gate individual sections
+ * and would make confusing template rules, so they are left out.
+ */
+export const TEMPLATE_CONDITIONS: Record<"collection" | "product", string[]> = {
+  collection: [
+    "handleIncludesJuul",
+    "handleIsJuul1",
+    "handleIsJuul2",
+    "handleIncludesMyle",
+    "handleIncludesDisposable",
+    "handleIsEJuice",
+    "isBrandDirectory",
+  ],
+  product: ["productIsJuul", "productIsMyle", "productIsNotJuul", "productIsGeneric"],
+};
+
+/**
+ * Priority given to a condition template the merchant creates, above every
+ * built-in family, so their rule wins where the two overlap.
+ */
+export const MERCHANT_CONDITION_PRIORITY = 100;

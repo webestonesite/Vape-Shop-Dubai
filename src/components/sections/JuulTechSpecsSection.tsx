@@ -1,145 +1,79 @@
 "use client";
 
 import React from "react";
-import { Zap, Battery, Droplet, Cpu, Activity, Box, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Zap } from "lucide-react";
+
+import { resolveIcon } from "@/lib/theme/icons";
+
+import { ACCENT_TINTS } from "./accents";
 
 interface JuulTechSpecsSectionProps {
   handle: string;
 }
 
-export interface SectionHeadingSettings {
+export interface JuulTechSpec {
+  icon: string;
+  accent: string;
+  label: string;
+  value: string;
+}
+
+export interface JuulTechSpecsSettings {
   badgeText: string;
   heading: string;
   description: string;
+  certifiedNote: string;
+  specs: JuulTechSpec[];
 }
+
+/**
+ * JUUL 1 figures. The JUUL 2 collection template starts from its own set (see
+ * `JUUL_2_TECH_SPECS`); these are the fallback for a placement with no saved
+ * content at all, so the section is never empty.
+ */
+const FALLBACK_SPECS: JuulTechSpec[] = [
+  { icon: "Battery", accent: "emerald", label: "BATTERY CAPACITY", value: "200 mAh (Classic)" },
+  { icon: "Zap", accent: "amber", label: "CHARGING TYPE", value: "Magnetic USB Fast Dock" },
+  { icon: "Droplet", accent: "blue", label: "POD CAPACITY", value: "0.7 mL per Pod" },
+  { icon: "Cpu", accent: "purple", label: "CONNECTIVITY", value: "Draw-Activated (No Buttons)" },
+  { icon: "Activity", accent: "rose", label: "DRAW TYPE", value: "MTL (Mouth to Lung)" },
+  { icon: "Box", accent: "teal", label: "MATERIAL", value: "Premium Anodized Aluminum" },
+];
 
 export function JuulTechSpecsSection({
   handle,
   settings,
   techSpecsData,
-}: JuulTechSpecsSectionProps & { settings?: SectionHeadingSettings; techSpecsData?: any }) {
+}: JuulTechSpecsSectionProps & { settings?: JuulTechSpecsSettings; techSpecsData?: any }) {
   const isJuul2 = handle.toLowerCase().includes("juul-2");
 
-  const dynamicSpecs = techSpecsData
-    ? [
-        techSpecsData.battery && {
-          icon: Battery,
-          label: "BATTERY CAPACITY",
-          value: techSpecsData.battery,
-          iconBg: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-        },
-        techSpecsData.charging && {
-          icon: Zap,
-          label: "CHARGING SPEC",
-          value: techSpecsData.charging,
-          iconBg: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-        },
-        techSpecsData.capacity && {
-          icon: Droplet,
-          label: "POD / E-LIQUID CAPACITY",
-          value: techSpecsData.capacity,
-          iconBg: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-        },
-        techSpecsData.output && {
-          icon: Cpu,
-          label: "POWER OUTPUT",
-          value: techSpecsData.output,
-          iconBg: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-        },
-        techSpecsData.dimensions && {
-          icon: Box,
-          label: "DIMENSIONS & WEIGHT",
-          value: techSpecsData.dimensions,
-          iconBg: "bg-teal-500/10 text-teal-500 border-teal-500/20",
-        },
-        techSpecsData.extra_notes && {
-          icon: Activity,
-          label: "TECHNICAL HIGHLIGHTS",
-          value: techSpecsData.extra_notes,
-          iconBg: "bg-rose-500/10 text-rose-500 border-rose-500/20",
-        },
-      ].filter(Boolean)
+  const dynamicSpecs: JuulTechSpec[] | null = techSpecsData
+    ? ([
+        techSpecsData.battery && { icon: "Battery", accent: "emerald", label: "BATTERY CAPACITY", value: techSpecsData.battery },
+        techSpecsData.charging && { icon: "Zap", accent: "amber", label: "CHARGING SPEC", value: techSpecsData.charging },
+        techSpecsData.capacity && { icon: "Droplet", accent: "blue", label: "POD / E-LIQUID CAPACITY", value: techSpecsData.capacity },
+        techSpecsData.output && { icon: "Cpu", accent: "purple", label: "POWER OUTPUT", value: techSpecsData.output },
+        techSpecsData.dimensions && { icon: "Box", accent: "teal", label: "DIMENSIONS & WEIGHT", value: techSpecsData.dimensions },
+        techSpecsData.extra_notes && { icon: "Activity", accent: "rose", label: "TECHNICAL HIGHLIGHTS", value: techSpecsData.extra_notes },
+      ].filter(Boolean) as JuulTechSpec[])
     : null;
 
-  const specs = dynamicSpecs && dynamicSpecs.length > 0
-    ? dynamicSpecs
-    : isJuul2
-    ? [
-        {
-          icon: Battery,
-          label: "BATTERY CAPACITY",
-          value: "250 mAh (Rechargeable)",
-          iconBg: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-        },
-        {
-          icon: Zap,
-          label: "CHARGING TYPE",
-          value: "JUUL 2 Magnetic USB Dock",
-          iconBg: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-        },
-        {
-          icon: Droplet,
-          label: "POD CAPACITY",
-          value: "1.2 mL (+70% E-Liquid)",
-          iconBg: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-        },
-        {
-          icon: Cpu,
-          label: "SMART FEATURES",
-          value: "LED Battery & Pod Level Indicator",
-          iconBg: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-        },
-        {
-          icon: Activity,
-          label: "NICOTINE STRENGTH",
-          value: "18 mg/ml (1.8% Salt Nic)",
-          iconBg: "bg-rose-500/10 text-rose-500 border-rose-500/20",
-        },
-        {
-          icon: Box,
-          label: "MATERIAL & FINISH",
-          value: "Slate Anodized Metal Body",
-          iconBg: "bg-teal-500/10 text-teal-500 border-teal-500/20",
-        },
-      ]
-    : [
-        {
-          icon: Battery,
-          label: "BATTERY CAPACITY",
-          value: "200 mAh (Classic)",
-          iconBg: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-        },
-        {
-          icon: Zap,
-          label: "CHARGING TYPE",
-          value: "Magnetic USB Fast Dock",
-          iconBg: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-        },
-        {
-          icon: Droplet,
-          label: "POD CAPACITY",
-          value: "0.7 mL per Pod",
-          iconBg: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-        },
-        {
-          icon: Cpu,
-          label: "CONNECTIVITY",
-          value: "Draw-Activated (No Buttons)",
-          iconBg: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-        },
-        {
-          icon: Activity,
-          label: "DRAW TYPE",
-          value: "MTL (Mouth to Lung)",
-          iconBg: "bg-rose-500/10 text-rose-500 border-rose-500/20",
-        },
-        {
-          icon: Box,
-          label: "MATERIAL",
-          value: "Premium Anodized Aluminum",
-          iconBg: "bg-teal-500/10 text-teal-500 border-teal-500/20",
-        },
-      ];
+  const specs =
+    dynamicSpecs && dynamicSpecs.length > 0
+      ? dynamicSpecs
+      : settings?.specs && settings.specs.length > 0
+      ? settings.specs
+      : FALLBACK_SPECS;
+
+  // The wording still falls back to the JUUL 1 / JUUL 2 split for placements
+  // saved before this section had editable copy.
+  const heading =
+    settings?.heading || (isJuul2 ? "Next-Gen Smart Tech" : "Engineered for Excellence");
+  const description =
+    settings?.description ||
+    (isJuul2
+      ? "JUUL 2 Pod System features anti-counterfeit pod technology, smart battery indicators, and 1.2mL pre-filled nicotine salt pods."
+      : "JUUL 1 Magnetic USB Charging Dock & Original USA Made JUUL Pods certified authentic in Dubai & UAE.");
 
   return (
     <div className="w-full">
@@ -153,26 +87,27 @@ export function JuulTechSpecsSection({
             </div>
 
             <h2 className="text-3xl sm:text-5xl font-serif font-black text-foreground tracking-tight leading-tight">
-              {settings?.heading ||
-                (isJuul2 ? "Next-Gen Smart Tech" : "Engineered for Excellence")}
+              {heading}
             </h2>
 
             <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed">
-              {isJuul2
-                ? "JUUL 2 Pod System features anti-counterfeit pod technology, smart battery indicators, and 1.2mL pre-filled nicotine salt pods."
-                : "JUUL 1 Magnetic USB Charging Dock & Original USA Made JUUL Pods certified authentic in Dubai & UAE."}
+              {description}
             </p>
 
-            <div className="pt-2 flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Official JUUL UAE Certified Hardware</span>
-            </div>
+            {(settings?.certifiedNote ?? "Official JUUL UAE Certified Hardware") && (
+              <div className="pt-2 flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <ShieldCheck className="w-4 h-4" />
+                <span>
+                  {settings?.certifiedNote ?? "Official JUUL UAE Certified Hardware"}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* Right Column: 6 Grid Spec Cards */}
+          {/* Right Column: spec cards */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {specs.map((spec, idx) => {
-              const Icon = spec.icon;
+              const Icon = resolveIcon(spec.icon);
 
               return (
                 <div
@@ -180,7 +115,9 @@ export function JuulTechSpecsSection({
                   className="bg-background border border-border/80 hover:border-primary/50 rounded-2xl p-5 flex items-center gap-4 transition-all duration-300 hover:shadow-md group"
                 >
                   <div
-                    className={`w-12 h-12 rounded-xl border p-2.5 flex items-center justify-center shrink-0 ${spec.iconBg} group-hover:scale-110 transition-transform duration-300 shadow-sm`}
+                    className={`w-12 h-12 rounded-xl border p-2.5 flex items-center justify-center shrink-0 ${
+                      ACCENT_TINTS[spec.accent] ?? ACCENT_TINTS.emerald
+                    } group-hover:scale-110 transition-transform duration-300 shadow-sm`}
                   >
                     <Icon className="w-6 h-6" />
                   </div>

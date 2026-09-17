@@ -135,20 +135,28 @@ const JUUL2_FLAVORS: JuulFlavorItem[] = [
   },
 ];
 
-export interface SectionHeadingSettings {
+export interface JuulSignatureFlavorsSettings {
   badgeText: string;
   heading: string;
-  description: string;
+  flavors: JuulFlavorItem[];
 }
 
 export function JuulSignatureFlavorsSection({
   handle,
   settings,
-}: JuulSignatureFlavorsSectionProps & { settings?: SectionHeadingSettings }) {
+}: JuulSignatureFlavorsSectionProps & { settings?: JuulSignatureFlavorsSettings }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { addToCart, setIsCartOpen } = useCart();
   const isJuul2 = (handle || "").toLowerCase().includes("juul-2");
-  const flavorList = isJuul2 ? JUUL2_FLAVORS : JUUL1_FLAVORS;
+
+  // Saved flavours win. The JUUL 1 / JUUL 2 split stays as the fallback for a
+  // placement saved before this section had editable content.
+  const flavorList =
+    settings?.flavors && settings.flavors.length > 0
+      ? settings.flavors
+      : isJuul2
+        ? JUUL2_FLAVORS
+        : JUUL1_FLAVORS;
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {

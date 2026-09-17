@@ -7,17 +7,19 @@ import { useCollectionImages, getHandleFromUrl } from "@/hooks/useCollectionImag
 import { SmartImage } from "@/components/ui/smart-image";
 
 interface BrandInfo {
-  id: string;
+  id?: string;
   handle: string;
   name: string;
   tagline: string;
   image: string;
-  tags: string[];
   description: string;
-  popularModel: string;
+  /** Where the card links. Defaults to the collection filter it always used. */
+  href?: string;
+  tags?: string[];
+  popularModel?: string;
 }
 
-const DISPOSABLE_BRANDS: BrandInfo[] = [
+const FALLBACK_BRANDS: BrandInfo[] = [
   {
     id: "al-fakher",
     handle: "al-fakher-vape",
@@ -104,6 +106,8 @@ export interface BrandShowcaseSettings {
   badgeText: string;
   heading: string;
   description: string;
+  brands: BrandInfo[];
+  ctaLabel: string;
 }
 
 export function DisposableBrandsShowcase({
@@ -117,6 +121,14 @@ export function DisposableBrandsShowcase({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const collectionImages = useCollectionImages();
+
+  // Saved brands win; the built-in list keeps a placement made before this
+  // section had editable content from rendering an empty carousel.
+  const brands =
+    settings?.brands && settings.brands.length > 0
+      ? settings.brands
+      : FALLBACK_BRANDS;
+  const ctaLabel = settings?.ctaLabel || "View Collection";
 
   // Auto-scroll loop (pauses on mouse hover or drag)
   useEffect(() => {
@@ -142,7 +154,7 @@ export function DisposableBrandsShowcase({
     if (sliderRef.current) {
       const scrollLeft = sliderRef.current.scrollLeft;
       const index = Math.round(scrollLeft / 340);
-      if (index !== activeIndex && index < DISPOSABLE_BRANDS.length) {
+      if (index !== activeIndex && index < brands.length) {
         setActiveIndex(index);
       }
     }
@@ -268,10 +280,10 @@ export function DisposableBrandsShowcase({
           WebkitOverflowScrolling: "touch",
         }}
       >
-        {DISPOSABLE_BRANDS.map((brand) => (
+        {brands.map((brand) => (
           <Link
-            key={brand.id}
-            href={`/collections/disposable-vape?sub=${encodeURIComponent(brand.name)}`}
+            key={brand.handle || brand.name}
+            href={brand.href || `/collections/disposable-vape?sub=${encodeURIComponent(brand.name)}`}
             draggable={false}
             className="w-[260px] sm:w-[300px] lg:w-[330px] snap-start flex-shrink-0 group relative bg-background border border-border/70 hover:border-primary/60 rounded-3xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 shadow-sm hover:shadow-xl overflow-hidden"
           >
@@ -302,7 +314,7 @@ export function DisposableBrandsShowcase({
             {/* Bottom CTA Bar: VIEW COLLECTION */}
             <div className="mt-4 pt-3.5 border-t border-border/40 flex items-center justify-between">
               <span className="text-[11px] font-extrabold text-foreground uppercase tracking-wider group-hover:text-primary transition-colors">
-                View Collection
+                {ctaLabel}
               </span>
 
               <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-md shadow-primary/20 group-hover:scale-110 group-hover:bg-gold-shimmer transition-all duration-300">
@@ -314,9 +326,9 @@ export function DisposableBrandsShowcase({
       </div>
 
       {/* Pagination Dots Indicator */}
-      {DISPOSABLE_BRANDS.length > 1 && (
+      {brands.length > 1 && (
         <div className="flex items-center justify-center gap-2 mt-4 pt-2">
-          {DISPOSABLE_BRANDS.map((_, idx) => (
+          {brands.map((_, idx) => (
             <button
               key={idx}
               onClick={() => scrollToSlide(idx)}

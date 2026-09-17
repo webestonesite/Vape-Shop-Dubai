@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Check, X } from "lucide-react";
 
+import { CONDITION_LABELS, TEMPLATE_CONDITIONS } from "@/lib/theme/conditions";
 import {
   matchesHandle,
   templateKeyForMatch,
@@ -35,6 +36,12 @@ const MATCH_OPTIONS: {
     label: "Matches pattern",
     hint: "* is any run of characters, ? is one.",
     example: "juul-*-series",
+  },
+  {
+    value: "condition",
+    label: "Is a family",
+    hint: "A built-in group, for families a handle pattern can't describe.",
+    example: "",
   },
 ];
 
@@ -142,7 +149,9 @@ export const TemplateRuleDialog: React.FC<{
     const label =
       matchType === "exact"
         ? `${noun}: ${match.value}`
-        : `${noun}: ${option?.label.toLowerCase()} “${match.value}”`;
+        : matchType === "condition"
+          ? `${noun}: ${CONDITION_LABELS[match.value] ?? match.value}`
+          : `${noun}: ${option?.label.toLowerCase()} “${match.value}”`;
     onCreate(match, previewPath || `${basePath}${matched[0] ?? match.value}`, label);
   };
 
@@ -211,21 +220,38 @@ export const TemplateRuleDialog: React.FC<{
 
           <div>
             <label htmlFor="rule-value" className={labelClass}>
-              Value
+              {matchType === "condition" ? "Family" : "Value"}
             </label>
-            <div className="flex items-center gap-2">
-              <span className="shrink-0 text-[12px] font-semibold text-slate-400">
-                {basePath}
-              </span>
-              <input
+            {matchType === "condition" ? (
+              <select
                 id="rule-value"
                 autoFocus
                 className={inputClass}
-                placeholder={activeOption?.example}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
+              >
+                <option value="">Choose a family…</option>
+                {(TEMPLATE_CONDITIONS[type] ?? []).map((condition) => (
+                  <option key={condition} value={condition}>
+                    {CONDITION_LABELS[condition] ?? condition}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="shrink-0 text-[12px] font-semibold text-slate-400">
+                  {basePath}
+                </span>
+                <input
+                  id="rule-value"
+                  autoFocus
+                  className={inputClass}
+                  placeholder={activeOption?.example}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                />
+              </div>
+            )}
             {keyTaken && (
               <p className="mt-1.5 text-[11px] font-bold text-red-600">
                 A template with this exact rule already exists.
@@ -272,7 +298,8 @@ export const TemplateRuleDialog: React.FC<{
               <span>
                 Also matched by {overlapping.join(", ")}. The more specific rule
                 wins per URL — exact, then pattern, then starts/ends with, then
-                contains.
+                contains, then family. A rule you write by hand always beats a
+                built-in family template.
               </span>
             </div>
           )}
