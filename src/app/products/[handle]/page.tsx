@@ -623,6 +623,9 @@ export default function ProductPage() {
                 <img
                   src={activeImage}
                   alt={product.name}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                   className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
                 />
@@ -649,6 +652,8 @@ export default function ProductPage() {
                       <img
                         src={img}
                         alt={`${product.name} thumb ${idx + 1}`}
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-auto object-contain"
                         onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
                       />
