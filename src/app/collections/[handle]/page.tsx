@@ -408,57 +408,57 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     [previewSections, savedSections, templateInstances, templateIsOverride]
   );
 
-const CANONICAL_HANDLE_TITLES: Record<string, string> = {
-  "juul-vape-dubai": "Juul Vape Dubai",
-  "myle-vape-dubai": "Myle Vape Dubai",
-  "disposable-vape": "Disposable Vape",
-  "vape-e-juice": "Vape E-Juice",
-  "pod-system": "Pod System",
-  "juul-1-series": "JUUL 1 Series",
-  "juul-2-series": "JUUL 2 Series",
-  "juul-pods-offers": "JUUL Pods Offers",
-  "myle-v5-pods": "Myle V5 Pods",
-  "myle-v5-device": "Myle V5 Device",
-  "myle-disposable": "Myle Disposable",
-  "al-fakher-vape": "Al Fakher Vape",
-  "elf-bar-vape": "Elf Bar Vape",
-  "fummo-vape": "Fummo Vape",
-  "pod-salt-vape": "Pod Salt Vape",
-  "vapes-bars": "Vapes Bars",
-  "vozol-vape": "Vozol Vape",
-  "tugboat-vape": "Tugboat Vape",
-  "hqd-vape": "HQD Vape",
-  "lost-mary-disposable": "Lost Mary Vape",
-  "maskking-vape": "Maskking Vape",
-  "geek-bar-disposable": "Geek Bar Vape",
-  "yuoto-vape": "Yuoto Vape",
-  "relx-vape": "Relx Vape",
-  "nerd-vape": "Nerd Vape",
-  "vgod-stig": "VGOD Stig Vape",
-  "silvaper-vape": "Silvaper Vape",
-  "salt-nicotine": "Salt Nicotine",
-  "freebase-e-liquid": "Freebase E-Liquid",
-  "pod-kit": "Pod Kit",
-  "pod-cartridge": "Pod Cartridges",
-  "vape-coils": "Vape Coils",
-  "oxva-vape": "OXVA Vape",
-  "uwell-vape": "Uwell Vape",
-  "vaporesso-vape": "Vaporesso Vape",
-  "smok-vape": "Smok Vape",
-  "geek-vape": "GeekVape",
-  "voopoo-vape": "VooPoo Vape",
-  "best-seller-vape": "Best Sellers",
-  "flash-sale": "Flash Sale",
-  "brand": "Certified Vape Brands",
-};
+  const CANONICAL_HANDLE_TITLES: Record<string, string> = {
+    "juul-vape-dubai": "Juul Vape Dubai",
+    "myle-vape-dubai": "Myle Vape Dubai",
+    "disposable-vape": "Disposable Vape",
+    "vape-e-juice": "Vape E-Juice",
+    "pod-system": "Pod System",
+    "juul-1-series": "JUUL 1 Series",
+    "juul-2-series": "JUUL 2 Series",
+    "juul-pods-offers": "JUUL Pods Offers",
+    "myle-v5-pods": "Myle V5 Pods",
+    "myle-v5-device": "Myle V5 Device",
+    "myle-disposable": "Myle Disposable",
+    "al-fakher-vape": "Al Fakher Vape",
+    "elf-bar-vape": "Elf Bar Vape",
+    "fummo-vape": "Fummo Vape",
+    "pod-salt-vape": "Pod Salt Vape",
+    "vapes-bars": "Vapes Bars",
+    "vozol-vape": "Vozol Vape",
+    "tugboat-vape": "Tugboat Vape",
+    "hqd-vape": "HQD Vape",
+    "lost-mary-disposable": "Lost Mary Vape",
+    "maskking-vape": "Maskking Vape",
+    "geek-bar-disposable": "Geek Bar Vape",
+    "yuoto-vape": "Yuoto Vape",
+    "relx-vape": "Relx Vape",
+    "nerd-vape": "Nerd Vape",
+    "vgod-stig": "VGOD Stig Vape",
+    "silvaper-vape": "Silvaper Vape",
+    "salt-nicotine": "Salt Nicotine",
+    "freebase-e-liquid": "Freebase E-Liquid",
+    "pod-kit": "Pod Kit",
+    "pod-cartridge": "Pod Cartridges",
+    "vape-coils": "Vape Coils",
+    "oxva-vape": "OXVA Vape",
+    "uwell-vape": "Uwell Vape",
+    "vaporesso-vape": "Vaporesso Vape",
+    "smok-vape": "Smok Vape",
+    "geek-vape": "GeekVape",
+    "voopoo-vape": "VooPoo Vape",
+    "best-seller-vape": "Best Sellers",
+    "flash-sale": "Flash Sale",
+    "brand": "Certified Vape Brands",
+  };
 
   const collectionInfo = useMemo(() => {
     const hKey = (handle || "").toLowerCase();
     const defaultTitle = CANONICAL_HANDLE_TITLES[hKey]
       ? CANONICAL_HANDLE_TITLES[hKey]
       : handle
-      ? handle.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
-      : "Premium Vape Collections";
+        ? handle.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+        : "Premium Vape Collections";
 
     // Determine categoryKey from handle
     let categoryKey = (handle || "all").toLowerCase();
@@ -705,9 +705,9 @@ const CANONICAL_HANDLE_TITLES: Record<string, string> = {
         const cleanPill = activePillFilter.toLowerCase().replace("all", "").trim();
         if (cleanPill) {
           matchPill = prodNameLower.includes(cleanPill) ||
-                      prodBrandLower.includes(cleanPill) ||
-                      prodSectionLower.includes(cleanPill) ||
-                      prodCatLower.includes(cleanPill);
+            prodBrandLower.includes(cleanPill) ||
+            prodSectionLower.includes(cleanPill) ||
+            prodCatLower.includes(cleanPill);
         }
       }
 
@@ -850,7 +850,7 @@ const CANONICAL_HANDLE_TITLES: Record<string, string> = {
         {!(handle === "brand" || handle === "brands") && (
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
             <div className="bg-card border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-3.5 shadow-xs">
-              
+
               {/* Top Row: Breadcrumb & Title Badge */}
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-3">
                 <nav className="flex flex-wrap items-center gap-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -895,11 +895,10 @@ const CANONICAL_HANDLE_TITLES: Record<string, string> = {
                       onClick={() => {
                         setActivePillFilter(pill.query);
                       }}
-                      className={`shrink-0 text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 cursor-pointer shadow-2xs ${
-                        isActive
+                      className={`shrink-0 text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 cursor-pointer shadow-2xs ${isActive
                           ? "bg-primary text-white font-black scale-105 shadow-md border border-primary"
                           : "bg-background border border-border/70 text-foreground hover:border-primary hover:bg-primary/10 hover:text-primary hover:scale-105"
-                      }`}
+                        }`}
                     >
                       {pill.label}
                     </button>
@@ -1215,8 +1214,8 @@ const CANONICAL_HANDLE_TITLES: Record<string, string> = {
                                   }
                                 }}
                                 className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl text-xs font-bold transition-all cursor-pointer ${item === currentPage
-                                    ? "bg-primary text-white shadow-md scale-105 font-black"
-                                    : "bg-card border border-border text-foreground hover:bg-primary/10 hover:text-primary"
+                                  ? "bg-primary text-white shadow-md scale-105 font-black"
+                                  : "bg-card border border-border text-foreground hover:bg-primary/10 hover:text-primary"
                                   }`}
                               >
                                 {item}
