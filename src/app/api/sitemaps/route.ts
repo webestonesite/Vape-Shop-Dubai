@@ -2,23 +2,52 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.net";
+
+  const staticPages = [
+    "",
+    "/products",
+    "/shop",
+    "/collections/all",
+    "/collections/disposable-vape",
+    "/collections/juul-vape-dubai",
+    "/collections/myle-vape-dubai",
+    "/collections/vape-e-juice",
+    "/collections/pod-system",
+    "/collections/brand",
+    "/blog",
+    "/about-us",
+    "/contact",
+    "/shipping-delivery",
+    "/terms-conditions",
+    "/privacy-policy",
+  ];
+
+  let productUrls: string[] = [];
+  try {
+    const res = await fetch(`${siteUrl}/api/products`, { next: { revalidate: 3600 } });
+    if (res.ok) {
+      const products = await res.json();
+      if (Array.isArray(products)) {
+        productUrls = products.map((p: any) => `/products/${p.handle}`);
+      }
+    }
+  } catch {
+    // Fallback if products endpoint fails during build
+  }
+
+  const allUrls = Array.from(new Set([...staticPages, ...productUrls]));
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${siteUrl}/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/products</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>${siteUrl}/collections/all</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
+${allUrls
+  .map(
+    (path) => `  <url>
+    <loc>${siteUrl}${path}</loc>
+    <changefreq>${path === "" || path === "/products" ? "daily" : "weekly"}</changefreq>
+    <priority>${path === "" ? "1.0" : path.startsWith("/products/") ? "0.8" : "0.7"}</priority>
+  </url>`
+  )
+  .join("\n")}
 </urlset>`;
 
   return new NextResponse(xml, {
