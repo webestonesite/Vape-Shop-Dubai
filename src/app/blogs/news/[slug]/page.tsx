@@ -1,91 +1,289 @@
-"use client";
-
-import React from "react";
-import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
-import { Calendar, Clock, User, ChevronRight, ArrowLeft, Share2, MessageCircle, Copy, Check, BookOpen } from "lucide-react";
-import { BLOG_POSTS } from "../page";
+import {
+  Calendar,
+  Clock,
+  User,
+  ChevronRight,
+  ArrowLeft,
+} from "lucide-react";
 import { BlogImageWithSkeleton } from "@/components/ui/BlogImageWithSkeleton";
+import { ShareButtons } from "@/components/ui/ShareButtons";
 
-export default function SingleBlogNewsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const [copied, setCopied] = React.useState(false);
-  const slug = params?.slug as string;
+const SHOPIFY_STORE = process.env.SHOPIFY_STORE || "vap-shop-dubai.myshopify.com";
+const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
+const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN || "";
 
-  const fallbackPost = BLOG_POSTS.find((p) => p.slug === slug) || BLOG_POSTS[0];
-  const [article, setArticle] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
+const BLOG_HANDLES = ["news", "juul-pods", "disposables", "comparisons", "safety", "e-liquids", "uae-guides"];
 
-  React.useEffect(() => {
-    if (!slug) return;
-    async function loadArticle() {
+const storefrontArticleQuery = `
+query getArticleByHandle($blogHandle: String!, $articleHandle: String!) {
+  blogByHandle(handle: $blogHandle) {
+    articleByHandle(handle: $articleHandle) {
+      id
+      title
+      handle
+      excerpt
+      excerptHtml
+      contentHtml
+      publishedAt
+      authorV2 { name }
+      image { url altText }
+      blog { handle title }
+      seo { title description }
+    }
+  }
+}
+`;
+
+const adminArticlesQuery = `
+query getArticles {
+  articles(first: 250, reverse: true) {
+    nodes {
+      id title handle summary body publishedAt
+      author { name }
+      image { url altText width height }
+      blog { handle title }
+    }
+  }
+}
+`;
+
+interface ArticleData {
+  title: string;
+  handle: string;
+  excerpt: string;
+  contentHtml: string;
+  publishedAt: string;
+  author: string;
+  image: string;
+  blogHandle: string;
+  blogTitle: string;
+  seoTitle: string;
+  seoDescription: string;
+}
+
+interface RelatedArticle {
+  handle: string;
+  title: string;
+  image: string;
+  blogTitle: string;
+}
+
+/** Fetch single article server-side directly from Shopify */
+async function fetchArticle(slug: string): Promise<ArticleData | null> {
+  // Strategy 1: Storefront API — try multiple blog handles
+  if (STOREFRONT_TOKEN) {
+    for (const blogHandle of BLOG_HANDLES) {
       try {
-        const res = await fetch(`/api/articles/${encodeURIComponent(slug)}`);
+        const res = await fetch(
+          `https://${SHOPIFY_STORE}/api/2024-10/graphql.json`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+            },
+            body: JSON.stringify({
+              query: storefrontArticleQuery,
+              variables: { blogHandle, articleHandle: slug },
+            }),
+            next: { revalidate: 300 },
+          }
+        );
         if (res.ok) {
-          const data = await res.json();
-          if (data && data.title) {
-            setArticle(data);
+          const json = await res.json();
+          const node = json.data?.blogByHandle?.articleByHandle;
+          if (node && node.contentHtml) {
+            let author = node.authorV2?.name || "Vape Shop Dubai Editorial";
+            if (author.includes("@")) author = "Vape Shop Dubai Editorial";
+            return {
+              title: node.title,
+              handle: node.handle,
+              excerpt: node.excerpt || node.excerptHtml?.replace(/<[^>]+>/g, "").slice(0, 160) || "",
+              contentHtml: node.contentHtml,
+              publishedAt: node.publishedAt,
+              author,
+              image: node.image?.url || "",
+              blogHandle: node.blog?.handle || blogHandle,
+              blogTitle: node.blog?.title || "News",
+              seoTitle: node.seo?.title || node.title,
+              seoDescription: node.seo?.description || node.excerpt || "",
+            };
           }
         }
-      } catch (err) {
-        console.warn("Single article API fetch failed:", err);
-      } finally {
-        setLoading(false);
+      } catch {
+        // try next blog handle
       }
     }
-    loadArticle();
-  }, [slug]);
-
-  const rawArticleImage = article?.image;
-  const postImage = (rawArticleImage && rawArticleImage.trim() !== "") ? rawArticleImage : "";
-
-  const post = article ? { ...article, image: postImage } : { ...fallbackPost, image: "" };
-  const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== slug).slice(0, 3);
-
-  const handleCopyLink = () => {
-    if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  let authorDisplay = post.author || "Vape Shop Dubai Editorial";
-  if (authorDisplay.includes("@")) {
-    authorDisplay = "Vape Shop Dubai Editorial";
   }
+
+  // Strategy 2: Admin API
+  if (ADMIN_TOKEN) {
+    try {
+      const res = await fetch(
+        `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": ADMIN_TOKEN,
+          },
+          body: JSON.stringify({ query: adminArticlesQuery }),
+          next: { revalidate: 300 },
+        }
+      );
+      if (res.ok) {
+        const json = await res.json();
+        const nodes = json.data?.articles?.nodes || [];
+        const node = nodes.find((n: any) => n.handle?.toLowerCase() === slug.toLowerCase());
+        if (node) {
+          let author = node.author?.name || "Vape Shop Dubai Editorial";
+          if (author.includes("@")) author = "Vape Shop Dubai Editorial";
+          return {
+            title: node.title,
+            handle: node.handle,
+            excerpt: node.summary || (node.body ? node.body.replace(/<[^>]+>/g, "").slice(0, 160) : ""),
+            contentHtml: node.body || "",
+            publishedAt: node.publishedAt,
+            author,
+            image: node.image?.url || "",
+            blogHandle: node.blog?.handle || "news",
+            blogTitle: node.blog?.title || "News",
+            seoTitle: node.title,
+            seoDescription: node.summary || "",
+          };
+        }
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  return null;
+}
+
+/** Fetch related articles server-side */
+async function fetchRelatedArticles(excludeHandle: string): Promise<RelatedArticle[]> {
+  if (!ADMIN_TOKEN) return [];
+  try {
+    const res = await fetch(
+      `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": ADMIN_TOKEN,
+        },
+        body: JSON.stringify({ query: adminArticlesQuery }),
+        next: { revalidate: 600 },
+      }
+    );
+    if (res.ok) {
+      const json = await res.json();
+      const nodes = json.data?.articles?.nodes || [];
+      return nodes
+        .filter((n: any) => n.handle !== excludeHandle && n.image?.url && !n.handle.includes("__trashed") && !n.title.toLowerCase().includes("casino"))
+        .slice(0, 3)
+        .map((n: any) => ({
+          handle: n.handle,
+          title: n.title,
+          image: n.image.url,
+          blogTitle: n.blog?.title || "News",
+        }));
+    }
+  } catch {
+    // silent
+  }
+  return [];
+}
+
+function formatDate(dateStr?: string) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+function estimateReadTime(html: string): string {
+  const words = html.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min read`;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const article = await fetchArticle(slug);
+  if (!article) {
+    return { title: "Article Not Found | Vape Shop Dubai" };
+  }
+  return {
+    title: `${article.seoTitle || article.title} | Vape Shop Dubai`,
+    description: article.seoDescription || article.excerpt,
+    openGraph: {
+      title: article.seoTitle || article.title,
+      description: article.seoDescription || article.excerpt,
+      images: article.image ? [{ url: article.image }] : [],
+      type: "article",
+    },
+  };
+}
+
+export default async function SingleBlogNewsPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  // Fetch article + related in parallel — server-side, no loading state
+  const [article, relatedArticles] = await Promise.all([
+    fetchArticle(slug),
+    fetchRelatedArticles(slug),
+  ]);
+
+  if (!article) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex flex-col">
+        <Navbar />
+        <main className="flex-grow pt-24 pb-16">
+          <div className="max-w-4xl mx-auto px-4 text-center space-y-4">
+            <h1 className="text-3xl font-serif font-black">Article Not Found</h1>
+            <p className="text-muted-foreground">The article you are looking for does not exist or has been removed.</p>
+            <Link href="/blogs/news" className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-bold text-sm">
+              <ArrowLeft className="h-4 w-4" /> Back to All Articles
+            </Link>
+          </div>
+        </main>
+        <Footer />
+        <CartDrawer />
+      </div>
+    );
+  }
+
+  const displayDate = formatDate(article.publishedAt);
+  const readTime = article.contentHtml ? estimateReadTime(article.contentHtml) : "5 min read";
 
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title,
-    description: post.excerpt || post.title,
-    image: post.image || "https://vapeshopdubai.ae/Vape%20Shop%20Dubai%20logo%201.png",
-    author: {
-      "@type": "Organization",
-      name: authorDisplay,
-    },
+    headline: article.title,
+    description: article.excerpt || article.title,
+    image: article.image || "https://vapeshopdubai.ae/Vape%20Shop%20Dubai%20logo%201.png",
+    author: { "@type": "Organization", name: article.author },
     publisher: {
       "@type": "Organization",
       name: "Vape Shop Dubai",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://vapeshopdubai.ae/Vape%20Shop%20Dubai%20logo%201.png",
-      },
+      logo: { "@type": "ImageObject", url: "https://vapeshopdubai.ae/Vape%20Shop%20Dubai%20logo%201.png" },
     },
-    datePublished: post.date,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": typeof window !== "undefined" ? window.location.href : `https://vapeshopdubai.ae/blogs/news/${slug}`,
-    },
+    datePublished: article.publishedAt,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://vapeshopdubai.ae/blogs/news/${slug}` },
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20" suppressHydrationWarning>
+    <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -94,14 +292,14 @@ export default function SingleBlogNewsPage() {
       <Navbar />
 
       <main className="flex-grow pt-16 sm:pt-20 lg:pt-24 pb-16">
-        {/* Breadcrumb Navigation */}
+        {/* Breadcrumb */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors">Home</Link>
             <ChevronRight className="h-3 w-3" />
             <Link href="/blogs/news" className="hover:text-primary transition-colors">Blog &amp; News</Link>
             <ChevronRight className="h-3 w-3" />
-            <span className="text-foreground truncate max-w-[200px] sm:max-w-xs">{post.title}</span>
+            <span className="text-foreground truncate max-w-[200px] sm:max-w-xs">{article.title}</span>
           </nav>
 
           <div className="mt-6">
@@ -115,113 +313,102 @@ export default function SingleBlogNewsPage() {
           </div>
         </div>
 
-        {/* Article Header & Main Card */}
+        {/* Article */}
         <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-          <div className="bg-card border border-border/50 rounded-3xl p-6 sm:p-10 lg:p-12 shadow-sm space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-widest">
-                <span className="bg-primary/10 border border-primary/20 text-primary px-3 py-1 rounded-full text-[10px] font-black">
-                  {post.category || "Vaping Guide"}
-                </span>
-              </div>
+          <div className="bg-card border border-border/50 rounded-3xl p-6 sm:p-10 lg:p-12 shadow-sm space-y-8">
+            {/* Header */}
+            <div className="space-y-5">
+              <span className="inline-block bg-primary/10 border border-primary/20 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                {article.blogTitle || "Vaping Guide"}
+              </span>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-foreground leading-tight tracking-tight">
-                {post.title}
+                {article.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2 border-t border-border/30">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-3 border-t border-border/30">
                 <span className="flex items-center gap-1.5 font-bold text-foreground">
                   <User className="h-3.5 w-3.5 text-primary" />
-                  {authorDisplay}
+                  {article.author}
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-primary" />
-                  {post.date}
-                </span>
+                {displayDate && (
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5 text-primary" />
+                    {displayDate}
+                  </span>
+                )}
                 <span className="flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-primary" />
-                  {post.readTime || "5 min read"}
+                  {readTime}
                 </span>
               </div>
             </div>
 
-            {/* Clean Blog Cover Image with Pulse Skeleton */}
-            <BlogImageWithSkeleton
-              src={post.image}
-              alt={post.title}
-              priority={true}
-              containerClassName="aspect-video sm:aspect-[21/9] rounded-2xl border border-border/40"
-              className="w-full h-full object-cover"
-            />
+            {/* Cover Image */}
+            {article.image && (
+              <BlogImageWithSkeleton
+                src={article.image}
+                alt={article.title}
+                priority={true}
+                containerClassName="aspect-video sm:aspect-[21/9] rounded-2xl border border-border/40"
+                className="w-full h-full object-cover"
+              />
+            )}
 
-            {/* Content Body */}
-            {post.contentHtml ? (
+            {/* Content */}
+            {article.contentHtml ? (
               <div
-                className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground leading-relaxed text-base font-medium pt-4 prose-headings:font-serif prose-headings:font-black prose-headings:text-foreground prose-a:text-primary prose-a:font-bold hover:prose-a:underline prose-img:rounded-2xl"
-                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+                className="blog-content-body"
+                dangerouslySetInnerHTML={{ __html: article.contentHtml }}
               />
             ) : (
-              <div className="space-y-4 text-muted-foreground leading-relaxed text-base font-medium pt-4">
-                <p className="text-lg font-semibold text-foreground italic border-l-4 border-primary pl-4 py-1 bg-primary/5 rounded-r-xl">
-                  {post.excerpt}
-                </p>
-                <p>
-                  Vape Shop Dubai is committed to providing adult vapers across the UAE with 100% authentic devices, pod systems, e-liquids, and disposable vapes from trusted worldwide brands including JUUL, MYLE, Al Fakher, Lost Mary, and Pod Salt.
-                </p>
-                <p>
-                  Whether you are shopping for fast 2-hour express delivery in Dubai or same-day shipping to Abu Dhabi, Sharjah, Ajman, and across all Emirates, our inventory is backed by serial number authenticity verification and ESMA compliance.
+              <div className="space-y-5 text-muted-foreground leading-relaxed text-base font-medium pt-4">
+                <p className="text-lg font-semibold text-foreground italic border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded-r-xl">
+                  {article.excerpt}
                 </p>
               </div>
             )}
 
-            {/* Social Share & Action Footer */}
+            {/* Share */}
             <div className="pt-6 border-t border-border/40 flex flex-wrap items-center justify-between gap-4">
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Share this article</span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleCopyLink}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-background border border-border/60 hover:border-primary px-4 py-2 rounded-full transition-colors cursor-pointer"
-                >
-                  {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5 text-primary" />}
-                  {copied ? "Copied!" : "Copy Link"}
-                </button>
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-colors"
-                >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  WhatsApp
-                </a>
-              </div>
+              <span className="text-xs font-bold text-foreground uppercase tracking-wider">
+                Share this article
+              </span>
+              <ShareButtons />
             </div>
           </div>
         </article>
 
-        {/* Related Articles Section */}
-        {relatedPosts.length > 0 && (
+        {/* Related Articles */}
+        {relatedArticles.length > 0 && (
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl sm:text-2xl font-serif font-black text-foreground">Related Guides</h3>
+              <h3 className="text-xl sm:text-2xl font-serif font-black text-foreground">
+                Related Guides
+              </h3>
               <Link href="/blogs/news" className="text-xs font-extrabold text-primary hover:underline flex items-center gap-1">
                 View All <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((rel) => (
-                <div key={rel.slug} className="bg-card border border-border/50 rounded-2xl p-4 flex flex-col gap-3 shadow-2xs hover:shadow-md transition-all group">
-                  <Link href={`/blogs/news/${rel.slug}`} className="block rounded-2xl overflow-hidden">
+              {relatedArticles.map((rel) => (
+                <div
+                  key={rel.handle}
+                  className="bg-card border border-border/50 rounded-2xl p-4 flex flex-col gap-3 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all group"
+                >
+                  <Link href={`/blogs/news/${rel.handle}`} className="block rounded-2xl overflow-hidden">
                     <BlogImageWithSkeleton
                       src={rel.image}
                       alt={rel.title}
                       containerClassName="aspect-video rounded-xl border border-border/30"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </Link>
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">{rel.category}</span>
-                  <Link href={`/blogs/news/${rel.slug}`}>
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider">
+                    {rel.blogTitle}
+                  </span>
+                  <Link href={`/blogs/news/${rel.handle}`}>
                     <h4 className="font-serif font-black text-sm text-foreground group-hover:text-primary transition-colors line-clamp-2">
                       {rel.title}
                     </h4>
@@ -235,6 +422,157 @@ export default function SingleBlogNewsPage() {
 
       <Footer />
       <CartDrawer />
+
+      {/* Blog Content Premium Styles */}
+      <style>{`
+        .blog-content-body {
+          font-size: 1.05rem;
+          line-height: 1.85;
+          color: var(--muted-foreground, #555);
+          word-break: break-word;
+        }
+        .blog-content-body h1,
+        .blog-content-body h2,
+        .blog-content-body h3,
+        .blog-content-body h4,
+        .blog-content-body h5,
+        .blog-content-body h6 {
+          font-family: var(--font-serif, Georgia, serif);
+          font-weight: 900;
+          color: var(--foreground, #111);
+          margin-top: 2.2em;
+          margin-bottom: 0.8em;
+          line-height: 1.3;
+          letter-spacing: -0.01em;
+        }
+        .blog-content-body h1 { font-size: 2rem; }
+        .blog-content-body h2 {
+          font-size: 1.65rem;
+          padding-bottom: 0.5em;
+          border-bottom: 2px solid var(--border, #e5e7eb);
+        }
+        .blog-content-body h3 {
+          font-size: 1.35rem;
+          color: var(--primary, #ea580c);
+        }
+        .blog-content-body h4 { font-size: 1.15rem; }
+        .blog-content-body p {
+          margin-bottom: 1.4em;
+          font-weight: 450;
+        }
+        .blog-content-body a {
+          color: var(--primary, #ea580c);
+          font-weight: 700;
+          text-decoration: none;
+          border-bottom: 1px solid transparent;
+          transition: border-color 0.2s;
+        }
+        .blog-content-body a:hover {
+          border-bottom-color: var(--primary, #ea580c);
+        }
+        .blog-content-body strong,
+        .blog-content-body b {
+          font-weight: 800;
+          color: var(--foreground, #111);
+        }
+        .blog-content-body img {
+          border-radius: 1rem;
+          margin: 1.5em auto;
+          display: block;
+          max-width: 100%;
+          height: auto;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          border: 1px solid var(--border, #e5e7eb);
+        }
+        .blog-content-body ul,
+        .blog-content-body ol {
+          padding-left: 1.4em;
+          margin-bottom: 1.4em;
+        }
+        .blog-content-body ul { list-style: none; }
+        .blog-content-body ul li {
+          position: relative;
+          padding-left: 1.3em;
+          margin-bottom: 0.6em;
+          font-weight: 450;
+        }
+        .blog-content-body ul li::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0.55em;
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: var(--primary, #ea580c);
+          opacity: 0.7;
+        }
+        .blog-content-body ol { list-style: decimal; }
+        .blog-content-body ol li {
+          margin-bottom: 0.6em;
+          padding-left: 0.3em;
+          font-weight: 450;
+        }
+        .blog-content-body ol li::marker {
+          color: var(--primary, #ea580c);
+          font-weight: 800;
+        }
+        .blog-content-body blockquote {
+          border-left: 4px solid var(--primary, #ea580c);
+          padding: 1em 1.4em;
+          margin: 1.5em 0;
+          background: rgba(234,88,12,0.04);
+          border-radius: 0 0.75rem 0.75rem 0;
+          font-style: italic;
+          font-weight: 500;
+          color: var(--foreground, #111);
+        }
+        .blog-content-body table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1.5em 0;
+          font-size: 0.95rem;
+          border-radius: 0.75rem;
+          overflow: hidden;
+          border: 1px solid var(--border, #e5e7eb);
+        }
+        .blog-content-body th {
+          background: var(--muted, #f4f4f5);
+          font-weight: 800;
+          text-align: left;
+          padding: 0.8em 1em;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: var(--foreground, #111);
+        }
+        .blog-content-body td {
+          padding: 0.75em 1em;
+          border-top: 1px solid var(--border, #e5e7eb);
+        }
+        .blog-content-body tr:nth-child(even) td {
+          background: var(--muted, #f4f4f5);
+          opacity: 0.7;
+        }
+        .blog-content-body hr {
+          border: none;
+          height: 2px;
+          background: linear-gradient(to right, transparent, var(--border, #e5e7eb), transparent);
+          margin: 2.5em 0;
+        }
+        .blog-content-body > p:first-of-type {
+          font-size: 1.15rem;
+          font-weight: 500;
+          color: var(--foreground, #111);
+          line-height: 1.75;
+        }
+        @media (max-width: 640px) {
+          .blog-content-body { font-size: 0.98rem; line-height: 1.75; }
+          .blog-content-body h1 { font-size: 1.5rem; }
+          .blog-content-body h2 { font-size: 1.3rem; }
+          .blog-content-body h3 { font-size: 1.15rem; }
+        }
+      `}</style>
     </div>
   );
 }

@@ -322,6 +322,34 @@ export async function GET() {
       }
     }
 
+    // --- Filter spam/trashed articles ---
+    const SPAM_KEYWORDS = ["__trashed", "casino", "gambling", "poker", "blackjack", "sportsbook", "slots"];
+    articles = articles.filter((a) => {
+      const h = a.handle.toLowerCase();
+      const t = a.title.toLowerCase();
+      return !SPAM_KEYWORDS.some((kw) => h.includes(kw) || t.includes(kw));
+    });
+
+    // --- Deduplicate by handle (keep version with image) ---
+    const handleMap = new Map<string, ShopifyArticle>();
+    for (const a of articles) {
+      const key = a.handle.toLowerCase();
+      const existing = handleMap.get(key);
+      if (!existing) {
+        handleMap.set(key, a);
+      } else if (!existing.image && a.image) {
+        handleMap.set(key, a); // prefer version with image
+      }
+    }
+    articles = Array.from(handleMap.values());
+
+    // --- Sanitize author (hide emails) ---
+    for (const a of articles) {
+      if (a.author.includes("@")) {
+        a.author = "Vape Shop Dubai Editorial";
+      }
+    }
+
     // Merge built-in guides into the articles list (avoiding duplicate handles)
     const existingHandles = new Set(articles.map((a) => a.handle.toLowerCase()));
     for (const builtin of BUILTIN_ARTICLES) {

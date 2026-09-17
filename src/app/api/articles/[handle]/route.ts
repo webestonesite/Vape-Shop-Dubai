@@ -36,8 +36,40 @@ query getArticleByHandle($blogHandle: String!, $articleHandle: String!) {
 }
 `;
 
+// Admin API: fetch single article by searching all articles
+const adminArticlesQuery = `
+query getArticles {
+  articles(first: 250, reverse: true) {
+    nodes {
+      id
+      title
+      handle
+      summary
+      body
+      publishedAt
+      author {
+        name
+      }
+      image {
+        url
+        altText
+        width
+        height
+      }
+      blog {
+        handle
+        title
+      }
+    }
+  }
+}
+`;
+
 const singleArticleCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_TTL = 10 * 60 * 1000;
+
+// Blog handles to try for Storefront API lookups
+const BLOG_HANDLES = ["news", "juul-pods", "disposables", "comparisons", "safety", "e-liquids", "uae-guides"];
 
 export async function GET(
   _request: Request,
@@ -56,41 +88,99 @@ export async function GET(
       });
     }
 
-    // Try Storefront API first (blog handle = "news")
+    // --- Strategy 1: Storefront API by handle (try multiple blog handles) ---
     if (STOREFRONT_TOKEN) {
+      for (const blogHandle of BLOG_HANDLES) {
+        try {
+          const url = `https://${SHOPIFY_STORE}/api/2024-10/graphql.json`;
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+            },
+            body: JSON.stringify({
+              query: storefrontArticleByHandleQuery,
+              variables: { blogHandle, articleHandle: handle },
+            }),
+            next: { revalidate: 300 },
+          });
+
+          if (res.ok) {
+            const json = await res.json();
+            const node = json.data?.blogByHandle?.articleByHandle;
+            if (node && node.contentHtml) {
+              const articleData = {
+                id: node.id,
+                title: node.title,
+                handle: node.handle,
+                excerpt: node.excerpt || node.excerptHtml?.replace(/<[^>]+>/g, "").slice(0, 160) || "",
+                contentHtml: node.contentHtml || "",
+                publishedAt: node.publishedAt,
+                author: node.authorV2?.name || "Vape Shop Dubai Editorial",
+                image: node.image?.url || "",
+                blogHandle: node.blog?.handle || blogHandle,
+                blogTitle: node.blog?.title || "News & Vaping Guides",
+                seoTitle: node.seo?.title || node.title,
+                seoDescription: node.seo?.description || node.excerpt,
+              };
+
+              // Sanitize email authors
+              if (articleData.author.includes("@")) {
+                articleData.author = "Vape Shop Dubai Editorial";
+              }
+
+              singleArticleCache.set(handle, { data: articleData, timestamp: Date.now() });
+
+              return NextResponse.json(articleData, {
+                headers: { "Cache-Control": "public, max-age=600, stale-while-revalidate=1200" },
+              });
+            }
+          }
+        } catch (e) {
+          console.warn(`Storefront single article fetch error (blog: ${blogHandle}):`, e);
+        }
+      }
+    }
+
+    // --- Strategy 2: Admin API bulk fetch + find matching handle ---
+    if (ADMIN_TOKEN) {
       try {
-        const url = `https://${SHOPIFY_STORE}/api/2024-10/graphql.json`;
+        const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`;
         const res = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+            "X-Shopify-Access-Token": ADMIN_TOKEN,
           },
-          body: JSON.stringify({
-            query: storefrontArticleByHandleQuery,
-            variables: { blogHandle: "news", articleHandle: handle },
-          }),
-          next: { revalidate: 300 },
+          body: JSON.stringify({ query: adminArticlesQuery }),
+          next: { revalidate: 0 },
         });
 
         if (res.ok) {
           const json = await res.json();
-          const node = json.data?.blogByHandle?.articleByHandle;
+          const nodes = json.data?.articles?.nodes || [];
+          const node = nodes.find((n: any) => n.handle?.toLowerCase() === handle.toLowerCase());
           if (node) {
             const articleData = {
               id: node.id,
               title: node.title,
               handle: node.handle,
-              excerpt: node.excerpt || node.excerptHtml?.replace(/<[^>]+>/g, "").slice(0, 160) || "",
-              contentHtml: node.contentHtml || "",
+              excerpt: node.summary || (node.body ? node.body.replace(/<[^>]+>/g, "").slice(0, 160) : "") || "",
+              contentHtml: node.body || "",
               publishedAt: node.publishedAt,
-              author: node.authorV2?.name || "Vape Shop Dubai Editorial",
+              author: node.author?.name || "Vape Shop Dubai Editorial",
               image: node.image?.url || "",
               blogHandle: node.blog?.handle || "news",
               blogTitle: node.blog?.title || "News & Vaping Guides",
-              seoTitle: node.seo?.title || node.title,
-              seoDescription: node.seo?.description || node.excerpt,
+              seoTitle: node.title,
+              seoDescription: node.summary || "",
             };
+
+            // Sanitize email authors
+            if (articleData.author.includes("@")) {
+              articleData.author = "Vape Shop Dubai Editorial";
+            }
 
             singleArticleCache.set(handle, { data: articleData, timestamp: Date.now() });
 
@@ -100,11 +190,11 @@ export async function GET(
           }
         }
       } catch (e) {
-        console.warn("Storefront single article fetch error:", e);
+        console.warn("Admin single article fetch error:", e);
       }
     }
 
-    // Fallback to BUILTIN_ARTICLES if handle matches
+    // --- Strategy 3: Fallback to BUILTIN_ARTICLES ---
     const builtin = BUILTIN_ARTICLES.find(
       (a) => a.handle.toLowerCase() === handle.toLowerCase()
     );
@@ -121,3 +211,4 @@ export async function GET(
     return NextResponse.json({ error: error?.message || "Unknown error" }, { status: 500 });
   }
 }
+
