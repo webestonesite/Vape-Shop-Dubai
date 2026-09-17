@@ -930,7 +930,9 @@ export default function ProductPage() {
                   {product.descriptionHtml && (
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: product.descriptionHtml,
+                        __html: product.descriptionHtml
+                          .replace(/href="https?:\/\/(www\.)?(vapeuae\.shop|vapshopdubai\.ae|vapshop\.ae)?\/product\/([^"]+)"/gi, 'href="/products/$3"')
+                          .replace(/href="\/product\/([^"]+)"/gi, 'href="/products/$1"'),
                       }}
                     />
                   )}

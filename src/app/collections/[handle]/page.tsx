@@ -98,6 +98,8 @@ function cleanDescriptionHtml(html: string): string {
     return `<div class="overflow-x-auto my-8 rounded-2xl border border-primary/30 shadow-md bg-card">${updatedTable}</div>`;
   });
 
+  cleaned = cleaned.replace(/href="https?:\/\/(www\.)?(vapeuae\.shop|vapshopdubai\.ae|vapshop\.ae)?\/product\/([^"]+)"/gi, 'href="/products/$3"');
+  cleaned = cleaned.replace(/href="\/product\/([^"]+)"/gi, 'href="/products/$1"');
   cleaned = cleaned.replace(/href="https?:\/\/(www\.)?(vapeuae\.shop|vapshopdubai\.ae|vapshop\.ae)\/collections\/([^"]+)"/gi, 'href="/collections/$3"');
   cleaned = cleaned.replace(/href="https?:\/\/(www\.)?(vapeuae\.shop|vapshopdubai\.ae|vapshop\.ae)\/brand\/([^"]+)"/gi, 'href="/collections/$3"');
 
