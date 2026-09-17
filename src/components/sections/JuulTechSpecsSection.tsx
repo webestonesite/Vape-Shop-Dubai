@@ -16,10 +16,54 @@ export interface SectionHeadingSettings {
 export function JuulTechSpecsSection({
   handle,
   settings,
-}: JuulTechSpecsSectionProps & { settings?: SectionHeadingSettings }) {
+  techSpecsData,
+}: JuulTechSpecsSectionProps & { settings?: SectionHeadingSettings; techSpecsData?: any }) {
   const isJuul2 = handle.toLowerCase().includes("juul-2");
 
-  const specs = isJuul2
+  const dynamicSpecs = techSpecsData
+    ? [
+        techSpecsData.battery && {
+          icon: Battery,
+          label: "BATTERY CAPACITY",
+          value: techSpecsData.battery,
+          iconBg: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+        },
+        techSpecsData.charging && {
+          icon: Zap,
+          label: "CHARGING SPEC",
+          value: techSpecsData.charging,
+          iconBg: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+        },
+        techSpecsData.capacity && {
+          icon: Droplet,
+          label: "POD / E-LIQUID CAPACITY",
+          value: techSpecsData.capacity,
+          iconBg: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+        },
+        techSpecsData.output && {
+          icon: Cpu,
+          label: "POWER OUTPUT",
+          value: techSpecsData.output,
+          iconBg: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+        },
+        techSpecsData.dimensions && {
+          icon: Box,
+          label: "DIMENSIONS & WEIGHT",
+          value: techSpecsData.dimensions,
+          iconBg: "bg-teal-500/10 text-teal-500 border-teal-500/20",
+        },
+        techSpecsData.extra_notes && {
+          icon: Activity,
+          label: "TECHNICAL HIGHLIGHTS",
+          value: techSpecsData.extra_notes,
+          iconBg: "bg-rose-500/10 text-rose-500 border-rose-500/20",
+        },
+      ].filter(Boolean)
+    : null;
+
+  const specs = dynamicSpecs && dynamicSpecs.length > 0
+    ? dynamicSpecs
+    : isJuul2
     ? [
         {
           icon: Battery,

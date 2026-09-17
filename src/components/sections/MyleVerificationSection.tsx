@@ -11,7 +11,10 @@ export interface SectionHeadingSettings {
 
 export function MyleVerificationSection({
   settings,
-}: { settings?: SectionHeadingSettings } = {}) {
+  authenticityData,
+}: { settings?: SectionHeadingSettings; authenticityData?: any } = {}) {
+  const badgeText = authenticityData?.badge || settings?.badgeText || "Official UAE Verification";
+  const headingText = authenticityData?.heading || settings?.heading || "ANTI-COUNTERFEIT SYSTEM";
   return (
     <div className="w-full">
       <div className="bg-card border border-border/60 rounded-[2.5rem] p-6 sm:p-10 lg:p-14 relative overflow-hidden shadow-md transition-all duration-300">
@@ -22,11 +25,11 @@ export function MyleVerificationSection({
         <div className="text-center mb-10 sm:mb-12 space-y-3">
           <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] px-4 py-1.5 rounded-full">
             <ShieldCheck className="w-4 h-4 text-primary" />
-            <span>{settings?.badgeText || "Official UAE Verification"}</span>
+            <span>{badgeText}</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-black tracking-[0.2em] uppercase text-foreground">
-            {settings?.heading || "ANTI-COUNTERFEIT SYSTEM"}
+            {headingText}
           </h2>
         </div>
 

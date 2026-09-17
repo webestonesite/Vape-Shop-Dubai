@@ -95,6 +95,7 @@ interface CustomerReviewsSectionProps {
   productRating?: number;
   productReviewsCount?: number;
   productReviewsList?: Review[];
+  customReviews?: Review[];
   settings?: CustomerReviewsSettings;
   hideIfEmpty?: boolean;
 }
@@ -105,11 +106,14 @@ export function CustomerReviewsSection({
   productRating,
   productReviewsCount,
   productReviewsList,
+  customReviews,
   settings,
   hideIfEmpty,
 }: CustomerReviewsSectionProps) {
   const defaultList =
-    productReviewsList && productReviewsList.length > 0
+    customReviews && customReviews.length > 0
+      ? customReviews
+      : productReviewsList && productReviewsList.length > 0
       ? productReviewsList
       : settings?.reviews?.length
       ? settings.reviews
@@ -119,7 +123,9 @@ export function CustomerReviewsSection({
 
   React.useEffect(() => {
     const baseList =
-      productReviewsList && productReviewsList.length > 0
+      customReviews && customReviews.length > 0
+        ? customReviews
+        : productReviewsList && productReviewsList.length > 0
         ? productReviewsList
         : settings?.reviews?.length
         ? settings.reviews

@@ -45,28 +45,34 @@ const DEFAULT_FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
-export function FAQSection({ settings, productFaqs, hideIfEmpty }: { settings?: FaqSettings; productFaqs?: FaqItem[]; hideIfEmpty?: boolean }) {
+export function FAQSection({ settings, productFaqs, collectionFaqs, hideIfEmpty }: { settings?: FaqSettings; productFaqs?: FaqItem[]; collectionFaqs?: FaqSettings; hideIfEmpty?: boolean }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0); // First open by default
 
-  const badgeText = settings?.badgeText || "Customer Help & FAQs";
-  const heading = settings?.heading || "Frequently Asked Questions";
+  // Collection metafield overrides for header text
+  const badgeText = collectionFaqs?.badgeText || settings?.badgeText || "Customer Help & FAQs";
+  const heading = collectionFaqs?.heading || settings?.heading || "Frequently Asked Questions";
   const description =
+    collectionFaqs?.description ||
     settings?.description ||
     "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.";
   const deliveryBadge = settings?.deliveryBadge || "2-Hour Delivery";
-  const verifiedNote = settings?.verifiedNote || "Verified Answer for Dubai & UAE Customers";
+  const verifiedNote = collectionFaqs?.verifiedNote || settings?.verifiedNote || "Verified Answer for Dubai & UAE Customers";
 
-  const itemsToUse = hideIfEmpty
-    ? (productFaqs && productFaqs.length > 0 ? productFaqs : [])
-    : (productFaqs && productFaqs.length > 0)
-    ? productFaqs
-    : (settings?.items && settings.items.length > 0)
-    ? settings.items
-    : DEFAULT_FAQ_ITEMS;
+  // Priority: productFaqs → collectionFaqs.items → (if hideIfEmpty, stop here and return null) → settings.items → defaults
+  let faqs: FaqItem[] = [];
+  if (productFaqs && productFaqs.length > 0) {
+    faqs = productFaqs;
+  } else if (collectionFaqs?.items && collectionFaqs.items.length > 0) {
+    faqs = collectionFaqs.items;
+  } else if (hideIfEmpty) {
+    return null;
+  } else if (settings?.items && settings.items.length > 0) {
+    faqs = settings.items;
+  } else {
+    faqs = DEFAULT_FAQ_ITEMS;
+  }
 
-  const faqs = itemsToUse || [];
-
-  if (hideIfEmpty && faqs.length === 0) {
+  if (faqs.length === 0) {
     return null;
   }
 

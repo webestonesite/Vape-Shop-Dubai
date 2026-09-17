@@ -88,19 +88,19 @@ export function JuulCustomFeatureSection({
   settings,
   className = "",
   reverseLayout = false,
+  featureData,
 }: {
-  settings: JuulCustomFeatureSettings;
+  settings?: JuulCustomFeatureSettings;
   className?: string;
   reverseLayout?: boolean;
+  featureData?: any;
 }) {
-  const {
-    title = "JUUL Experience",
-    description = "",
-    buttonText = "",
-    buttonLink = "",
-    image = "",
-    bulletPoints = [],
-  } = settings || {};
+  const title = featureData?.heading || settings?.title || "Sleek, Compact & Pocket-Friendly Design";
+  const description = featureData?.description || settings?.description;
+  const image = featureData?.image_url || settings?.image || "/juul_device.png";
+  const buttonText = featureData?.button_text || settings?.buttonText || "Shop Collection";
+  const buttonLink = featureData?.button_url || settings?.buttonLink || "/collections/all";
+  const bulletPoints = featureData?.bulletPoints || settings?.bulletPoints || [];
 
   return (
     <section className={`w-full ${className}`}>
@@ -122,7 +122,7 @@ export function JuulCustomFeatureSection({
 
             {bulletPoints.length > 0 && (
               <ul className="space-y-4 pt-2">
-                {bulletPoints.map((point, idx) => (
+                {bulletPoints.map((point: any, idx: number) => (
                   <li key={idx} className="flex items-start gap-3">
                     <div className="bg-primary/10 p-1.5 rounded-full mt-0.5 shrink-0 border border-primary/20">
                       <Check className="w-3.5 h-3.5 text-primary" />

@@ -1300,10 +1300,9 @@ function CollectionPageContent() {
             ),
             faq: (settings: Record<string, unknown>) => (
               <FAQSection
-                settings={{
-                  ...settings,
-                  faqs: Array.isArray((collectionInfo as any)?.faqsJson) ? (collectionInfo as any).faqsJson : undefined,
-                } as never}
+                settings={settings as never}
+                collectionFaqs={(collectionInfo as any)?.faqsJson || undefined}
+                hideIfEmpty={true}
               />
             ),
             juulAppIntegration: (settings: Record<string, unknown>) => (
