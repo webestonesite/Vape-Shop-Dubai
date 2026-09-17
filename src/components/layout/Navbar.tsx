@@ -444,7 +444,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                 key={product.id}
                                 type="button"
                                 onClick={() => {
-                                  router.push(`/product/${product.handle}`);
+                                  router.push(`/products/${product.handle}`);
                                   setShowSuggestions(false);
                                 }}
                                 className="w-full flex items-center gap-3 px-4 py-2 hover:bg-muted/60 transition-colors cursor-pointer text-left"
@@ -577,7 +577,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           key={product.id}
                           type="button"
                           onClick={() => {
-                            router.push(`/product/${product.handle}`);
+                            router.push(`/products/${product.handle}`);
                             setShowSuggestions(false);
                             setIsMobileMenuOpen(false);
                           }}

@@ -339,6 +339,7 @@ export const CollectionInput: React.FC<{
     if (!value) return [];
     return value.split(",").map((s) => {
       const part = s.trim();
+      if (part.includes("/products/")) return part.split("/products/").pop()?.split("?")[0] || part;
       if (part.includes("/product/")) return part.split("/product/").pop()?.split("?")[0] || part;
       if (part.includes("/collections/")) return part.split("/collections/").pop()?.split("?")[0] || part;
       return part;
@@ -347,7 +348,7 @@ export const CollectionInput: React.FC<{
 
   // Determine mode automatically on initial load
   useEffect(() => {
-    if (value && (value.includes(",") || value.includes("/product/") || (products && products.some((p) => p.handle === value)))) {
+    if (value && (value.includes(",") || value.includes("/products/") || value.includes("/product/") || (products && products.some((p) => p.handle === value)))) {
       setMode("products");
     }
   }, [value, products]);

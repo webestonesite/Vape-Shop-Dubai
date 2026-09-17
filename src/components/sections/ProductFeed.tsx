@@ -211,7 +211,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
           </div>
         )}
 
-        <Link href={`/product/${product.handle}`} className="block relative z-10 w-full h-full flex items-center justify-center">
+        <Link href={`/products/${product.handle}`} className="block relative z-10 w-full h-full flex items-center justify-center">
           <Image
             key={displayedImage}
             src={displayedImage}
@@ -295,7 +295,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
         </span>
 
         {/* Product Title */}
-        <Link href={`/product/${product.handle}`} className="hover:text-primary transition-colors block">
+        <Link href={`/products/${product.handle}`} className="hover:text-primary transition-colors block">
           <h3 className="text-base sm:text-lg font-body text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2 min-h-[44px] sm:min-h-[50px]">
             {product.name}
           </h3>
@@ -393,7 +393,11 @@ function parseHandlesFromInput(input: string): { type: "collection" | "products"
   let isProductMode = false;
 
   for (const part of parts) {
-    if (part.includes("/product/")) {
+    if (part.includes("/products/")) {
+      isProductMode = true;
+      const h = part.split("/products/").pop()?.split("?")[0]?.split("#")[0] || "";
+      if (h) cleanHandles.push(h.toLowerCase());
+    } else if (part.includes("/product/")) {
       isProductMode = true;
       const h = part.split("/product/").pop()?.split("?")[0]?.split("#")[0] || "";
       if (h) cleanHandles.push(h.toLowerCase());
@@ -421,11 +425,11 @@ function rowViewAllHref(row: ProductFeedRow): string {
   const target = (row.collectionHandle || "").trim();
   if (!target) return "";
 
-  if (target.startsWith("/") && !target.includes("/product/")) return target;
+  if (target.startsWith("/") && !target.includes("/products/") && !target.includes("/product/")) return target;
 
   const parsed = parseHandlesFromInput(target);
   if (parsed.type === "products" && parsed.handles.length === 1) {
-    return `/product/${parsed.handles[0]}`;
+    return `/products/${parsed.handles[0]}`;
   }
   if (parsed.type === "products" && parsed.handles.length > 1) {
     return `/collections/all`;
@@ -439,7 +443,7 @@ function rowViewAllHref(row: ProductFeedRow): string {
 function productMatchesRow(product: Product, row: ProductFeedRow, allProducts: Product[] = []): boolean {
   if (row.productHandles && row.productHandles.length > 0) {
     const targetHandles = row.productHandles
-      .map((h) => (h.includes("/product/") ? h.split("/product/").pop()?.split("?")[0] || h : h))
+      .map((h) => (h.includes("/products/") ? h.split("/products/").pop()?.split("?")[0] || h : h.includes("/product/") ? h.split("/product/").pop()?.split("?")[0] || h : h))
       .map((h) => h.trim().toLowerCase());
 
     const prodHandle = (product.handle || "").toLowerCase();
@@ -455,7 +459,11 @@ function productMatchesRow(product: Product, row: ProductFeedRow, allProducts: P
   let containsProductUrl = false;
 
   for (const part of rawParts) {
-    if (part.includes("/product/")) {
+    if (part.includes("/products/")) {
+      containsProductUrl = true;
+      const h = part.split("/products/").pop()?.split("?")[0]?.split("#")[0] || "";
+      if (h) cleanHandles.push(h.toLowerCase());
+    } else if (part.includes("/product/")) {
       containsProductUrl = true;
       const h = part.split("/product/").pop()?.split("?")[0]?.split("#")[0] || "";
       if (h) cleanHandles.push(h.toLowerCase());

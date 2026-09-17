@@ -77,7 +77,7 @@ export const TemplateRuleDialog: React.FC<{
   const [previewOverride, setPreviewOverride] = useState<string | null>(null);
   const [productHandles, setProductHandles] = useState<string[]>([]);
 
-  const basePath = type === "collection" ? "/collections/" : "/product/";
+  const basePath = type === "collection" ? "/collections/" : "/products/";
 
   // Collections have no list endpoint, but the merchant's own menu is a good
   // sample of real handles. Products do, so fetch a sample of those.

@@ -8,7 +8,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 /**
- * `/product` — the product template's preview URL.
+ * `/products` — the product template's preview URL.
  *
  * The customizer needs one address that renders *a* product page without
  * knowing any of the store's handles, since the default product template
@@ -36,7 +36,7 @@ export default function ProductIndexPage() {
         if (cancelled) return;
 
         const query = window.location.search;
-        router.replace(`/product/${handle}${query}`);
+        router.replace(`/products/${handle}${query}`);
       } catch {
         if (!cancelled) setNotFound(true);
       }

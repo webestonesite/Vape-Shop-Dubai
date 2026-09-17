@@ -71,7 +71,7 @@ WEBSITE LINKS:
 
 CRITICAL FORMATTING RULES:
 - NEVER use ** or any markdown formatting. Write plain text only.
-- When mentioning a specific product, include its product link: ${siteUrl}/product/{product-handle}
+- When mentioning a specific product, include its product link: ${siteUrl}/products/{product-handle}
 - Answer ONLY what the customer asked.
 - Keep replies SHORT and DIRECT like a WhatsApp chat.
 
@@ -159,7 +159,7 @@ STORE POLICIES:
           const orData = await orRes.json();
           let reply = orData.choices?.[0]?.message?.content;
           if (reply && reply.trim()) {
-            reply = reply.replace(/\/products\//g, "/product/");
+            reply = reply.replace(/\/product\//g, "/products/");
             reply = reply.replace(/\*/g, "");
             return NextResponse.json({ reply: reply.trim() });
           }

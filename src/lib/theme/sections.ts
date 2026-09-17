@@ -391,7 +391,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
             type: "collection",
             key: "collectionHandle",
             label: "Collection or Product URL / Handle",
-            help: "Collection URL/handle (e.g. 'disposable-vapes' or '/collections/disposable-vapes') to show collection products, OR Product URL/handle (e.g. 'juul-2-starter-kit-dubai' or '/product/juul-2-starter-kit-dubai' or comma-separated URLs) to show specific product(s).",
+            help: "Collection URL/handle (e.g. 'disposable-vapes' or '/collections/disposable-vapes') to show collection products, OR Product URL/handle (e.g. 'juul-2-starter-kit-dubai' or '/products/juul-2-starter-kit-dubai' or comma-separated URLs) to show specific product(s).",
           },
           {
             type: "number",

@@ -232,7 +232,7 @@ export const WhatsAppFloating: React.FC = () => {
                           part.match(/^https?:\/\//) ? (
                             <a
                               key={i}
-                              href={part.replace(/\/products\//g, "/product/")}
+                              href={part}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-primary underline hover:text-amber-400 font-semibold break-all inline-flex items-center gap-1 my-0.5"
@@ -241,7 +241,7 @@ export const WhatsAppFloating: React.FC = () => {
                                 ? "📁 View Collection Page →"
                                 : part.includes("/blog")
                                   ? "📰 Read Blog & Guides →"
-                                  : part.includes("/product/")
+                                  : (part.includes("/products/") || part.includes("/product/"))
                                     ? "🔗 Open Product Page →"
                                     : (part.length > 40 ? part.slice(0, 40) + '...' : part)}
                             </a>

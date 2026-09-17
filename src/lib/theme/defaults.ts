@@ -169,7 +169,7 @@ function buildTemplates(): Record<string, Template> {
     product: template({
       type: "product",
       label: "Product pages",
-      previewPath: "/product/",
+      previewPath: "/products/",
       sections: [
         inst("prod-main", "productMain"),
         inst("prod-juul-menthol", "juulCrispMenthol", { showWhen: "productIsJuul" }),

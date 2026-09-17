@@ -15,7 +15,7 @@
  *   collection                     default for every /collections/[handle]
  *   collection:juul-1-series       exact-handle override
  *   collection:contains--juul      URL-rule override, covers a whole family
- *   product                        default for every /product/[handle]
+ *   product                        default for every /products/[handle]
  *   product:<rule>                 same rules, for product pages
  *   page:about-us                  a static page
  *

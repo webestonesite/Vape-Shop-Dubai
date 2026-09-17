@@ -209,7 +209,7 @@ export default function ProductPage() {
     if (typeof window !== "undefined") {
       const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
       const domain = isLocal ? "https://vapeshopdubai.net" : window.location.origin;
-      setShareUrl(`${domain}/product/${handle}`);
+      setShareUrl(`${domain}/products/${handle}`);
     }
   }, [handle]);
 
@@ -243,9 +243,9 @@ export default function ProductPage() {
     if (typeof window !== "undefined") {
       const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
       const domain = isLocal ? "https://vapeshopdubai.net" : window.location.origin;
-      return `${domain}/product/${handle}`;
+      return `${domain}/products/${handle}`;
     }
-    return `https://vapeshopdubai.net/product/${handle}`;
+    return `https://vapeshopdubai.net/products/${handle}`;
   };
 
   const handleFacebookShare = async () => {
@@ -482,7 +482,7 @@ export default function ProductPage() {
             getBreadcrumbSchema([
               { name: "Home", item: "/" },
               { name: product.category, item: `/collections/${product.category}` },
-              { name: product.name, item: `/product/${product.handle}` },
+              { name: product.name, item: `/products/${product.handle}` },
             ])
           ),
         }}

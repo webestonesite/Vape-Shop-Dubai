@@ -124,7 +124,7 @@ export function getProductSchema(product: {
   category?: string;
   isSoldOut?: boolean;
 }) {
-  const productUrl = `${SITE_URL}/product/${product.handle}`;
+  const productUrl = `${SITE_URL}/products/${product.handle}`;
   const cleanDescription = (product.descriptionHtml || product.name)
     .replace(/<[^>]*>?/gm, "")
     .slice(0, 300)
@@ -212,7 +212,7 @@ export function getItemListSchema(title: string, products: { name: string; handl
     "itemListElement": products.map((p, idx) => ({
       "@type": "ListItem",
       "position": idx + 1,
-      "url": `${SITE_URL}/product/${p.handle}`,
+      "url": `${SITE_URL}/products/${p.handle}`,
       "name": p.name,
       "image": p.image,
     })),
