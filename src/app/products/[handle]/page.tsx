@@ -403,25 +403,12 @@ export default function ProductPage() {
     return (
       <div className="relative flex flex-col min-h-screen bg-background text-foreground">
         <Navbar onSearchChange={setSearchQuery} onCategorySelect={setActiveCategory} activeCategory={activeCategory} />
-        <main className="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 pt-[110px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
-            <div className="animate-pulse flex flex-col gap-4">
-              <div className="bg-muted/70 dark:bg-muted/40 rounded-[2rem] aspect-square w-full border border-border/40 shadow-xs flex items-center justify-center p-8">
-                <div className="w-28 h-28 rounded-full bg-primary/10 animate-ping" />
-              </div>
-              <div className="flex gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-muted/70 dark:bg-muted/40 rounded-xl h-20 w-20 flex-shrink-0 border border-border/40" />
-                ))}
-              </div>
-            </div>
-            <div className="animate-pulse flex flex-col gap-6">
-              <div className="h-4 bg-muted/70 dark:bg-muted/40 rounded-full w-1/4" />
-              <div className="h-10 bg-muted/70 dark:bg-muted/40 rounded-2xl w-3/4" />
-              <div className="h-6 bg-muted/70 dark:bg-muted/40 rounded-full w-1/2" />
-              <div className="h-28 bg-muted/70 dark:bg-muted/40 rounded-2xl w-full" />
-              <div className="h-14 bg-muted/70 dark:bg-muted/40 rounded-2xl w-full mt-auto" />
-            </div>
+        <main className="flex-grow flex flex-col items-center justify-center min-h-[50vh] pt-[110px] pb-16">
+          <div className="flex flex-col items-center gap-4 bg-card/60 backdrop-blur-md border border-primary/20 p-8 rounded-3xl shadow-lg">
+            <div className="w-10 h-10 rounded-full border-3 border-primary/25 border-t-primary animate-spin" />
+            <span className="text-xs font-black uppercase tracking-widest text-primary animate-pulse">
+              Loading Product...
+            </span>
           </div>
         </main>
         <Footer />

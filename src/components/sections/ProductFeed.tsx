@@ -203,16 +203,6 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
       <div className="relative bg-muted/20 rounded-[1.3rem] sm:rounded-[1.8rem] h-52 sm:h-72 lg:h-80 p-3 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
         <div className="absolute w-56 h-56 rounded-full bg-primary/5 filter blur-2xl pointer-events-none" />
         
-        {/* Loading Skeleton Shimmer */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 z-0 flex flex-col items-center justify-center bg-muted/40 animate-pulse p-4">
-            <div className="w-24 h-36 bg-primary/10 rounded-2xl animate-pulse mb-2 border border-primary/10 flex items-center justify-center shadow-inner">
-              <Package className="w-8 h-8 text-primary/40 animate-bounce" />
-            </div>
-            <div className="w-20 h-2 bg-primary/20 rounded-full animate-pulse" />
-          </div>
-        )}
-
         <Link
           href={`/products/${product.handle}`}
           prefetch={true}
