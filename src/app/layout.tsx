@@ -45,10 +45,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Vape Shop Dubai | Juul, MYLE, Disposable Vapes & Pod Kits",
-    template: "%s | Vape Shop Dubai",
+    default: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+    template: "%s",
   },
-  description: "Shop a trusted Vape Shop Dubai for Juul, MYLE, disposable vapes, pod kits, and nicotine salts with same-day delivery and cash on delivery across the UAE.",
+  description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
   keywords: [
     "Vape Shop Dubai",
     "Buy Vape UAE",
@@ -75,8 +75,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: "Vape Shop Dubai",
-    title: "Vape Shop Dubai | Premium Luxury Vape Store",
-    description: "2-Hour Express Vape Delivery across Dubai. 100% authentic devices, pod kits, and e-liquids.",
+    title: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+    description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
     images: [
       {
         url: `${SITE_URL}/hero_vape.png`,
@@ -88,8 +88,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vape Shop Dubai | Premium Luxury Vape Store",
-    description: "2-Hour Express Vape Delivery across Dubai. 100% authentic devices, pod kits, and e-liquids.",
+    title: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+    description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
     images: [`${SITE_URL}/hero_vape.png`],
   },
   robots: {
