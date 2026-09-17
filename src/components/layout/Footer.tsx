@@ -37,70 +37,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="relative mt-2 sm:mt-3 lg:mt-4 bg-card text-foreground font-sans border-t border-border/50" suppressHydrationWarning>
-      {/* ── 1. Top Trust Features (Seamless Luxury Banner) ──── */}
-      <div className="py-6 sm:py-8 bg-muted/10 border-b border-border/50">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-card border border-orange-500/20 shadow-xl shadow-orange-500/5 p-6 sm:p-8 lg:p-10">
-            
-            {/* Extremely Subtle Background Decor */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-orange-100/40 via-transparent to-transparent dark:from-orange-900/10"></div>
-              <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_right,_var(--tw-gradient-stops))] from-orange-100/40 via-transparent to-transparent dark:from-orange-900/10"></div>
-            </div>
-
-            {/* Grid Items */}
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-orange-500/10 dark:divide-orange-500/20 mb-6 lg:mb-8">
-              {settings.trustItems.map((item, idx) => {
-                const microBadges = [
-                  "⚡ EXPRESS 1-2H",
-                  "🛡️ 100% GENUINE",
-                  "💳 COD & CARD",
-                  "⏱️ 24/7 DISPATCH",
-                ];
-                const tag = microBadges[idx % microBadges.length];
-
-                return (
-                  <div
-                    key={idx}
-                    className="group relative flex items-center gap-5 lg:px-8 py-4 sm:py-2 first:pl-0 last:pr-0 transition-all duration-300"
-                  >
-                    {/* Circular Orange Icon Container */}
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white dark:bg-card text-orange-600 shadow-[0_0_15px_rgba(249,115,22,0.1)] border border-orange-200 dark:border-orange-500/30 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.2)]">
-                      <ThemeIcon name={item.icon} className="h-6 w-6 sm:h-7 sm:w-7 stroke-[2]" />
-                    </div>
-
-                    {/* Content Details */}
-                    <div className="min-w-0 flex-1">
-                      <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-orange-600 uppercase mb-1">
-                        <span>{tag}</span>
-                      </div>
-                      <h4 className="text-sm sm:text-[15px] font-black text-foreground tracking-tight leading-snug group-hover:text-orange-600 transition-colors">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs font-medium text-muted-foreground mt-0.5 leading-snug">
-                        {item.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Bottom Divider Text */}
-            <div className="relative z-10 flex items-center justify-center w-full mt-2 pt-6 lg:pt-0">
-              <div className="w-full flex items-center justify-center gap-4 text-[9px] sm:text-[10px] font-black tracking-widest text-muted-foreground uppercase opacity-70">
-                <div className="w-12 sm:w-24 h-px bg-gradient-to-r from-transparent to-border"></div>
-                <span className="tracking-[0.2em]">PREMIUM VAPES</span>
-                <span className="text-border mx-1">|</span>
-                <span className="tracking-[0.2em]">FASTER DAYS</span>
-                <span className="text-border mx-1">|</span>
-                <span className="tracking-[0.2em]">DUBAI</span>
-                <div className="w-12 sm:w-24 h-px bg-gradient-to-l from-transparent to-border"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* ── Top Trust Features removed per user request ──── */}
 
       {/* ── 2. Main Footer Directory (Organized & Balanced) ──── */}
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
