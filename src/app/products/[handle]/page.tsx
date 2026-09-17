@@ -308,19 +308,24 @@ export default function ProductPage() {
           setSelectedVariant(firstAvailable);
         }
 
-        // Fetch similar products
-        const allRes = await fetch("/api/products");
-        if (allRes.ok) {
-          const allData = await allRes.json();
-          const filtered = allData
-            .filter((p: any) => p.category === data.category && p.handle !== data.handle)
-            .slice(0, relatedLimitRef.current);
-          setSimilarProducts(filtered);
-        }
+        // Unblock main product UI immediately
+        setLoading(false);
+
+        // Fetch similar products asynchronously without blocking main product view
+        fetch("/api/products")
+          .then((r) => r.ok ? r.json() : [])
+          .then((allData) => {
+            if (Array.isArray(allData)) {
+              const filtered = allData
+                .filter((p: any) => p.category === data.category && p.handle !== data.handle)
+                .slice(0, relatedLimitRef.current);
+              setSimilarProducts(filtered);
+            }
+          })
+          .catch(() => {});
       } catch (err: any) {
         console.error("Error loading product:", err);
         setError(err.message || "Failed to load product details");
-      } finally {
         setLoading(false);
       }
     }
@@ -381,22 +386,24 @@ export default function ProductPage() {
     return (
       <div className="relative flex flex-col min-h-screen bg-background text-foreground">
         <Navbar onSearchChange={setSearchQuery} onCategorySelect={setActiveCategory} activeCategory={activeCategory} />
-        <main className="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
+        <main className="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 pt-[110px]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
             <div className="animate-pulse flex flex-col gap-4">
-              <div className="bg-muted rounded-[2rem] aspect-square w-full" />
+              <div className="bg-muted/70 dark:bg-muted/40 rounded-[2rem] aspect-square w-full border border-border/40 shadow-xs flex items-center justify-center p-8">
+                <div className="w-28 h-28 rounded-full bg-primary/10 animate-ping" />
+              </div>
               <div className="flex gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-muted rounded-xl h-20 w-20 flex-shrink-0" />
+                  <div key={i} className="bg-muted/70 dark:bg-muted/40 rounded-xl h-20 w-20 flex-shrink-0 border border-border/40" />
                 ))}
               </div>
             </div>
             <div className="animate-pulse flex flex-col gap-6">
-              <div className="h-4 bg-muted rounded w-1/4" />
-              <div className="h-10 bg-muted rounded w-3/4" />
-              <div className="h-6 bg-muted rounded w-1/2" />
-              <div className="h-24 bg-muted rounded w-full" />
-              <div className="h-12 bg-muted rounded w-full mt-auto" />
+              <div className="h-4 bg-muted/70 dark:bg-muted/40 rounded-full w-1/4" />
+              <div className="h-10 bg-muted/70 dark:bg-muted/40 rounded-2xl w-3/4" />
+              <div className="h-6 bg-muted/70 dark:bg-muted/40 rounded-full w-1/2" />
+              <div className="h-28 bg-muted/70 dark:bg-muted/40 rounded-2xl w-full" />
+              <div className="h-14 bg-muted/70 dark:bg-muted/40 rounded-2xl w-full mt-auto" />
             </div>
           </div>
         </main>

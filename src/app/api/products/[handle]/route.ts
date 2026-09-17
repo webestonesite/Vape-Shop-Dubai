@@ -322,6 +322,7 @@ export async function GET(
             query: storefrontQuery,
             variables: { handle },
           }),
+          next: { revalidate: 60 },
         });
 
         if (response.ok) {
@@ -346,6 +347,7 @@ export async function GET(
           query: adminQuery,
           variables: { handle },
         }),
+        next: { revalidate: 60 },
       });
 
       if (response.ok) {
@@ -909,6 +911,10 @@ export async function GET(
       }),
       section,
       brand: detectBrand(node.title, node.vendor),
+    }, {
+      headers: {
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      },
     });
   } catch (error: any) {
     console.error("Error in GET product by handle:", error);
