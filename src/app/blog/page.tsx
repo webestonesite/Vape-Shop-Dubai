@@ -29,7 +29,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "August 2, 2026",
     readTime: "5 min read",
-    image: "/blog_juul_guide.png",
+    image: "",
     featured: true,
   },
   {
@@ -40,7 +40,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Specialist Team",
     date: "July 28, 2026",
     readTime: "7 min read",
-    image: "/blog_disposable_vapes.png",
+    image: "",
   },
   {
     slug: "best-places-to-buy-juul-1-series",
@@ -50,7 +50,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "July 20, 2026",
     readTime: "6 min read",
-    image: "/blog_juul_guide.png",
+    image: "",
   },
   {
     slug: "juul-2-dubai-complete-guide-2026",
@@ -60,7 +60,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "August 2, 2026",
     readTime: "5 min read",
-    image: "/blog_juul_guide.png",
+    image: "",
   },
   {
     slug: "top-10-longest-lasting-disposable-vapes-uae",
@@ -70,7 +70,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Specialist Team",
     date: "July 28, 2026",
     readTime: "7 min read",
-    image: "/blog_disposable_vapes.png",
+    image: "",
   },
   {
     slug: "myle-v5-vs-juul-2-which-should-you-buy",
@@ -80,7 +80,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Vape Shop Dubai Editorial",
     date: "July 20, 2026",
     readTime: "6 min read",
-    image: "/blog_pod_comparison.png",
+    image: "",
   },
   {
     slug: "how-to-verify-authentic-vape-products-dubai",
@@ -90,7 +90,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Quality Assurance Team",
     date: "July 15, 2026",
     readTime: "4 min read",
-    image: "/blog_authenticity_guide.png",
+    image: "",
   },
   {
     slug: "best-salt-nicotine-e-liquids-dubai-summer-2026",
@@ -100,7 +100,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Flavor Sommelier",
     date: "July 10, 2026",
     readTime: "5 min read",
-    image: "/blog_eliquid_flavors.png",
+    image: "",
   },
   {
     slug: "vaping-regulations-delivery-guidelines-uae-2026",
@@ -110,7 +110,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: "Compliance Team",
     date: "July 01, 2026",
     readTime: "6 min read",
-    image: "/blog_authenticity_guide.png",
+    image: "",
   },
 ];
 
@@ -140,11 +140,8 @@ export default function BlogPage() {
           const data = await res.json();
           if (data.articles && data.articles.length > 0) {
             const mapped: BlogPost[] = data.articles.map((item: any, idx: number) => {
-              const matchingBuiltin = BLOG_POSTS.find((p) => p.slug === item.handle);
               const rawImage = typeof item.image === "string" ? item.image : item.image?.url;
-              const image = (rawImage && rawImage.trim() !== "" && rawImage !== "/hero_vape.png")
-                ? rawImage
-                : (matchingBuiltin?.image || "");
+              const image = (rawImage && rawImage.trim() !== "") ? rawImage : "";
 
               return {
                 slug: item.handle,

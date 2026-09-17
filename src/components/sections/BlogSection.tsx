@@ -56,11 +56,8 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
           const data = await res.json();
           if (data.articles && data.articles.length > 0) {
             const mapped: BlogPost[] = data.articles.map((item: any, idx: number) => {
-              const matchingBuiltin = BLOG_POSTS.find((p) => p.slug === item.handle);
               const rawImg = typeof item.image === "string" ? item.image : item.image?.url;
-              const image = (rawImg && rawImg.trim() !== "" && rawImg !== "/hero_vape.png")
-                ? rawImg
-                : (matchingBuiltin?.image || BLOG_POSTS[idx % BLOG_POSTS.length]?.image || "");
+              const image = (rawImg && rawImg.trim() !== "") ? rawImg : "";
 
               return {
                 slug: item.handle || `article-${idx}`,

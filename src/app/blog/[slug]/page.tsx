@@ -41,11 +41,9 @@ export default function SingleBlogPage() {
   }, [slug]);
 
   const rawArticleImage = article?.image;
-  const postImage = (rawArticleImage && rawArticleImage !== "/hero_vape.png" && rawArticleImage.trim() !== "")
-    ? rawArticleImage
-    : (fallbackPost?.image || "");
+  const postImage = (rawArticleImage && rawArticleImage.trim() !== "") ? rawArticleImage : "";
 
-  const post = article ? { ...article, image: postImage } : fallbackPost;
+  const post = article ? { ...article, image: postImage } : { ...fallbackPost, image: "" };
   const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== slug).slice(0, 3);
 
   const handleCopyLink = () => {
