@@ -60,14 +60,10 @@ export default function NotFound() {
         {/* Right Side: Text & Actions */}
         <div className="w-full lg:w-[55%] flex flex-col items-center lg:items-center text-center space-y-6 lg:pl-10">
           
-          {/* Huge 404 Text */}
-          <div className="font-bebas text-[9rem] sm:text-[12rem] xl:text-[15rem] leading-[0.8] text-[#1a1a1a] drop-shadow-xl flex items-center justify-center tracking-tighter">
+          {/* Huge 404 Text with Eye-Catching Neon Color Shift & Pulse Glow */}
+          <div className="font-bebas text-[9rem] sm:text-[12rem] xl:text-[15rem] leading-[0.8] flex items-center justify-center tracking-tighter select-none animate-404-blink transition-all duration-300">
             <span>4</span>
-            <div className="relative mx-1">
-              <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#ff8c3a] to-[#e0630b] drop-shadow-[0_0_15px_rgba(249,115,22,0.5)] px-1 relative z-10">0</span>
-              {/* Extra glow behind the zero */}
-              <div className="absolute inset-0 bg-orange-500 blur-xl opacity-30 rounded-full z-0 transform scale-75"></div>
-            </div>
+            <span className="mx-1">0</span>
             <span>4</span>
           </div>
 
