@@ -35,8 +35,13 @@ export async function generateMetadata(): Promise<Metadata> {
         const json = await res.json();
         const blog = json.data?.blog;
         if (blog) {
-          title = blog.seo?.title || blog.title || title;
-          description = blog.seo?.description || description;
+          const rawTitle = blog.seo?.title || blog.title;
+          if (rawTitle && rawTitle !== "News" && rawTitle.length >= 15) {
+            title = rawTitle;
+          } else {
+            title = "Vape News & UAE Vaping Guides | Vape Shop Dubai";
+          }
+          if (blog.seo?.description) description = blog.seo.description;
         }
       }
     } catch (e) {

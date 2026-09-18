@@ -219,11 +219,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) {
     return { title: "Article Not Found | Vape Shop Dubai" };
   }
+  let baseTitle = article.seoTitle || article.title;
+  let fullTitle = baseTitle;
+  if (!fullTitle.toLowerCase().includes("vape shop dubai") && fullTitle.length <= 45) {
+    fullTitle = `${fullTitle} | Vape Shop Dubai`;
+  }
+  if (fullTitle.length > 65) {
+    fullTitle = fullTitle.replace(/\s*\|\s*Vape Shop Dubai/gi, "");
+    if (fullTitle.length > 65) {
+      fullTitle = fullTitle.slice(0, 62) + "...";
+    }
+  }
+
   return {
-    title: `${article.seoTitle || article.title} | Vape Shop Dubai`,
+    title: fullTitle,
     description: article.seoDescription || article.excerpt,
     openGraph: {
-      title: article.seoTitle || article.title,
+      title: fullTitle,
       description: article.seoDescription || article.excerpt,
       images: article.image ? [{ url: article.image }] : [],
       type: "article",

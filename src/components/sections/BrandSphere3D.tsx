@@ -359,9 +359,9 @@ export function BrandSphere3D({
             </span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-serif font-black text-foreground tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-serif font-black text-foreground tracking-tight leading-tight">
             Explore Official <span className="text-primary">Vape Brands</span>
-          </h2>
+          </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
             Select any certified brand to view 100% authentic devices, pods, and e-liquids with 2-hour express delivery across Dubai and same-day delivery in UAE.
