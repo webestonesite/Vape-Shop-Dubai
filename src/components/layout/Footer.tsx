@@ -151,28 +151,25 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               
-              {pages.length > 0 ? (
-                pages.map((page) => (
-                  <li key={page.id}>
-                    <Link
-                      href={`/pages/${page.handle}`}
-                      className="group flex items-center gap-1 text-xs sm:text-sm font-extrabold text-foreground/80 hover:text-primary transition-all duration-200"
-                    >
-                      <ChevronRight className="h-3.5 w-3.5 text-primary opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200 shrink-0" />
-                      <span className="group-hover:translate-x-1 transition-transform duration-200">
-                        {page.title}
-                      </span>
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                // Fallback / Skeletons while loading
-                <>
-                  {[1, 2, 3, 4].map((i) => (
-                    <li key={i} className="h-5 bg-muted/50 rounded-md animate-pulse w-3/4"></li>
-                  ))}
-                </>
-              )}
+              {[
+                { title: "About Us", handle: "about-us" },
+                { title: "Contact Us", handle: "contact" },
+                { title: "Refund & Return Policy", handle: "refund-returns" },
+                { title: "Shipping Guidelines", handle: "shipping-guidelines" },
+                ...pages.filter(p => !["about-us", "contact", "refund-returns", "shipping-guidelines"].includes(p.handle))
+              ].map((page) => (
+                <li key={page.handle}>
+                  <Link
+                    href={`/pages/${page.handle}`}
+                    className="group flex items-center gap-1 text-xs sm:text-sm font-extrabold text-foreground/80 hover:text-primary transition-all duration-200"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5 text-primary opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200 shrink-0" />
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">
+                      {page.title}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
