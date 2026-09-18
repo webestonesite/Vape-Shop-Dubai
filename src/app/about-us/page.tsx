@@ -1,10 +1,9 @@
-"use client";
+import AboutUsPage from "@/app/pages/about-us/page";
+import type { Metadata } from "next";
 
-import { StaticPageTemplate } from "@/components/layout/StaticPageTemplate";
+export const metadata: Metadata = {
+  title: "About Us | Vape Shop Dubai",
+  description: "In the vibrant world of vaping, authenticity is paramount. Vape Shop Dubai proudly stands as your trusted gateway to 100% genuine products across the UAE.",
+};
 
-/**
- * Content comes from the `page:about-us` template in the theme customizer.
- */
-export default function Page() {
-  return <StaticPageTemplate slug="about-us" title="About Us" />;
-}
+export default AboutUsPage;

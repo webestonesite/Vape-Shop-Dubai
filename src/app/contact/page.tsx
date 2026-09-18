@@ -1,10 +1,4 @@
-"use client";
+import ContactPage from "@/app/pages/contact/page";
 
-import { StaticPageTemplate } from "@/components/layout/StaticPageTemplate";
+export default ContactPage;
 
-/**
- * Content comes from the `page:contact` template in the theme customizer.
- */
-export default function Page() {
-  return <StaticPageTemplate slug="contact" title="Contact" />;
-}
