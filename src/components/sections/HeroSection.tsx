@@ -72,18 +72,10 @@ const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
   return (
     <div
       className={`flex-1 border rounded-[2.5rem] p-6 sm:p-8 flex gap-5 items-center justify-between relative overflow-hidden group card-shadow hover:card-shadow-hover transition-all duration-300 hover:-translate-y-1.5 cursor-pointer min-h-[260px] sm:min-h-[290px] ${
-        isPrimary ? "bg-primary border-primary" : "bg-card border-border/60"
+        isPrimary ? "bg-primary border-primary" : "bg-white dark:bg-card border-border/60"
       }`}
       onClick={() => router.push(card.href || "/shop")}
     >
-      <div
-        className={`hidden sm:block absolute w-44 h-44 rounded-full filter blur-3xl pointer-events-none ${
-          isPrimary
-            ? "top-0 right-0 bg-white/10"
-            : "bottom-0 right-0 bg-orange-50 dark:bg-primary/5"
-        }`}
-      />
-
       {/* Left content */}
       <div className="flex flex-col justify-center flex-grow min-w-0 z-10 gap-4 py-1">
         <div>
@@ -121,7 +113,7 @@ const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
       </div>
 
       {/* Right product image */}
-      <div className="w-[120px] sm:w-[140px] h-[160px] sm:h-[190px] flex-shrink-0 relative flex items-center justify-center z-10 overflow-hidden mix-blend-multiply">
+      <div className="w-[120px] sm:w-[140px] h-[160px] sm:h-[190px] flex-shrink-0 relative flex items-center justify-center z-10 overflow-hidden">
         {card.image && (
           <SmartImage
             src={card.image}
@@ -227,10 +219,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
 
           {/* ── Left: Main Slide Panel ──────────── col 1-8 */}
-          <div className="lg:col-span-8 relative bg-card border border-border/60 rounded-[2.5rem] overflow-hidden card-shadow min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex flex-col justify-between">
-            {/* BG glow */}
-            <div className="hidden lg:block absolute top-[-10%] right-[-5%] w-[450px] h-[450px] rounded-full bg-primary/8 filter blur-[100px] pointer-events-none" />
-
+          <div className="lg:col-span-8 relative bg-white dark:bg-card border border-border/60 rounded-[2.5rem] overflow-hidden card-shadow min-h-[420px] sm:min-h-[480px] lg:min-h-[520px] flex flex-col justify-between">
             <Carousel
               setApi={setApi}
               opts={{
@@ -256,7 +245,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                     {/* Center grid */}
                     <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
                       {/* Product image (Placed TOP on mobile, RIGHT on desktop) */}
-                      <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none mix-blend-multiply">
+                      <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
                         {slide.image && (
                           idx === 0 ? (
                             <Image
