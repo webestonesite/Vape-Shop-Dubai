@@ -28,6 +28,22 @@ import { useFooterSettings } from "@/context/ThemeSettingsContext";
 
 export const Footer: React.FC = () => {
   const settings = useFooterSettings();
+  const [pages, setPages] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    async function fetchPages() {
+      try {
+        const res = await fetch("/api/pages");
+        if (res.ok) {
+          const data = await res.json();
+          setPages(data.pages || []);
+        }
+      } catch (err) {
+        console.error("Error fetching footer pages", err);
+      }
+    }
+    fetchPages();
+  }, []);
 
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
@@ -123,25 +139,40 @@ export const Footer: React.FC = () => {
             </div>
 
             <ul className="space-y-2.5">
-              {[
-                { label: "Shop", href: "/shop" },
-                { label: "About Us", href: "/pages/about-us" },
-                { label: "Contact Us", href: "/pages/contact" },
-                { label: "Refund & Return Policy", href: "/pages/privacy-policy" },
-                { label: "Shipping Guidelines", href: "/pages/shipping-delivery" },
-              ].map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="group flex items-center gap-1 text-xs sm:text-sm font-extrabold text-foreground/80 hover:text-primary transition-all duration-200"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5 text-primary opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200 shrink-0" />
-                    <span className="group-hover:translate-x-1 transition-transform duration-200">
-                      {link.label}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  href="/shop"
+                  className="group flex items-center gap-1 text-xs sm:text-sm font-extrabold text-foreground/80 hover:text-primary transition-all duration-200"
+                >
+                  <ChevronRight className="h-3.5 w-3.5 text-primary opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200 shrink-0" />
+                  <span className="group-hover:translate-x-1 transition-transform duration-200">
+                    Shop
+                  </span>
+                </Link>
+              </li>
+              
+              {pages.length > 0 ? (
+                pages.map((page) => (
+                  <li key={page.id}>
+                    <Link
+                      href={`/pages/${page.handle}`}
+                      className="group flex items-center gap-1 text-xs sm:text-sm font-extrabold text-foreground/80 hover:text-primary transition-all duration-200"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5 text-primary opacity-0 -ml-3 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200 shrink-0" />
+                      <span className="group-hover:translate-x-1 transition-transform duration-200">
+                        {page.title}
+                      </span>
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                // Fallback / Skeletons while loading
+                <>
+                  {[1, 2, 3, 4].map((i) => (
+                    <li key={i} className="h-5 bg-muted/50 rounded-md animate-pulse w-3/4"></li>
+                  ))}
+                </>
+              )}
             </ul>
           </div>
 
