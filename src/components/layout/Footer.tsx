@@ -156,7 +156,7 @@ export const Footer: React.FC = () => {
                 { title: "Contact Us", handle: "contact" },
                 { title: "Refund & Return Policy", handle: "refund-returns" },
                 { title: "Shipping Guidelines", handle: "shipping-guidelines" },
-                ...pages.filter(p => !["about-us", "contact", "refund-returns", "shipping-guidelines"].includes(p.handle))
+                ...pages.filter(p => !["about-us", "contact", "refund-returns", "refund_returns", "shipping-guidelines"].includes(p.handle))
               ].map((page) => (
                 <li key={page.handle}>
                   <Link
