@@ -7,7 +7,7 @@ export const revalidate = 300; // 5 minutes
 
 async function getPageByHandle(handle: string) {
   const SHOPIFY_STORE = process.env.SHOPIFY_STORE || "vap-shop-dubai.myshopify.com";
-  const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
+  const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || process.env.SHOPIFY_API_KEY || "";
 
   const query = `
     query getPage($handle: String!) {
