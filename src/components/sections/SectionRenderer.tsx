@@ -72,7 +72,7 @@ export type SectionSlots = Record<string, SectionSlot>;
 
 /** Standard page gutter shared by most sections. */
 export const SECTION_CONTAINER =
-  "max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3 cv-auto";
+  "max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-1.5 sm:py-2 cv-auto";
 
 /** Sections that lay out their own full-bleed container. */
 const FULL_BLEED = new Set(["hero"]);
