@@ -74,7 +74,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
       : "(max-width: 640px) 360px, 640px");
 
   return (
-    <div className="relative overflow-hidden inline-block w-full h-full">
+    <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
       {!loaded && (
         <div className="absolute inset-0 bg-muted/80 animate-pulse flex items-center justify-center z-10 pointer-events-none rounded-xl" />
       )}
@@ -85,7 +85,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
           alt={alt}
           width={width}
           height={height}
-          className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
+          className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 mx-auto`}
           sizes={effectiveSizes}
           quality={75}
           priority={priority}
@@ -103,7 +103,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
           alt={typeof alt === "string" ? alt : ""}
           width={typeof width === "number" ? width : undefined}
           height={typeof height === "number" ? height : undefined}
-          className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
+          className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 mx-auto`}
           draggable={draggable}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={fetchPriority}

@@ -237,7 +237,7 @@ function SubCollectionSectionSlider({
                 height={192}
                 sizes="(max-width: 640px) 270px, 340px"
                 draggable={false}
-                className="max-w-full max-h-full w-auto h-auto object-contain filter drop-shadow-xl group-hover:scale-108 transition-transform duration-500 pointer-events-none"
+                className="max-w-full max-h-full w-auto h-auto object-contain filter drop-shadow-xl group-hover:scale-108 transition-transform duration-500 pointer-events-none mx-auto my-auto block"
               />
             </div>
 
