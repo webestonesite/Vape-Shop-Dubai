@@ -1972,6 +1972,16 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         showIf: { key: "showBreadcrumb", equals: ["true"] },
       },
 
+      /* ── Gallery & Video ── */
+      { type: "toggle", key: "showProductVideo", label: "Show product video" },
+      {
+        type: "text",
+        key: "defaultVideoUrl",
+        label: "Default / fallback video URL",
+        help: "YouTube or MP4 URL. Sourced from Shopify first, falls back to this if product has no video.",
+        showIf: { key: "showProductVideo", equals: ["true"] },
+      },
+
       /* ── Title row ── */
       { type: "toggle", key: "showRating", label: "Show star rating" },
       {
@@ -2161,6 +2171,9 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       breadcrumbHomeLabel: "HOME",
       breadcrumbShopLabel: "PRODUCTS",
       breadcrumbShopHref: "/shop",
+
+      showProductVideo: true,
+      defaultVideoUrl: "",
 
       showRating: true,
       reviewCountTemplate: "({count} reviews)",

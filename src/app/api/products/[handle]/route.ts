@@ -33,6 +33,40 @@ query getProductByHandle($handle: String!) {
       }
     }
     faqAccordion: metafield(namespace: "custom", key: "faq_accordion") { value }
+    youtubeVideoMeta: metafield(namespace: "custom", key: "youtube_video_url") { value }
+    videoMeta: metafield(namespace: "custom", key: "video_url") { value }
+    productVideoMeta: metafield(namespace: "custom", key: "product_video") { value }
+    productVideoUrlMeta: metafield(namespace: "custom", key: "product_video_url") { value }
+    videoKeyMeta: metafield(namespace: "custom", key: "video") { value }
+    youtubeMeta: metafield(namespace: "custom", key: "youtube") { value }
+    allMetafields: metafields(first: 50) {
+      edges {
+        node {
+          namespace
+          key
+          value
+        }
+      }
+    }
+    media(first: 10) {
+      edges {
+        node {
+          mediaContentType
+          ... on ExternalVideo {
+            id
+            embedUrl
+            host
+          }
+          ... on Video {
+            id
+            sources {
+              url
+              mimeType
+            }
+          }
+        }
+      }
+    }
     images(first: 10) {
       edges {
         node {
@@ -209,6 +243,40 @@ query getProductByHandle($handle: String!) {
           node {
             ... on Metaobject {
               fields { key value }
+            }
+          }
+        }
+      }
+    }
+    youtubeVideoMeta: metafield(namespace: "custom", key: "youtube_video_url") { value }
+    videoMeta: metafield(namespace: "custom", key: "video_url") { value }
+    productVideoMeta: metafield(namespace: "custom", key: "product_video") { value }
+    productVideoUrlMeta: metafield(namespace: "custom", key: "product_video_url") { value }
+    videoKeyMeta: metafield(namespace: "custom", key: "video") { value }
+    youtubeMeta: metafield(namespace: "custom", key: "youtube") { value }
+    allMetafields: metafields(first: 50) {
+      edges {
+        node {
+          namespace
+          key
+          value
+        }
+      }
+    }
+    media(first: 10) {
+      edges {
+        node {
+          mediaContentType
+          ... on ExternalVideo {
+            id
+            embedUrl
+            host
+          }
+          ... on Video {
+            id
+            sources {
+              url
+              mimeType
             }
           }
         }
@@ -867,6 +935,62 @@ export async function GET(
     const seoTitle = node.seo?.title || node.title;
     const seoDescription = node.seo?.description || cleanDesc.slice(0, 160);
 
+    let videoUrl: string | undefined = undefined;
+    if (node.youtubeVideoMeta?.value) {
+      videoUrl = String(node.youtubeVideoMeta.value).trim();
+    } else if (node.videoMeta?.value) {
+      videoUrl = String(node.videoMeta.value).trim();
+    } else if (node.productVideoMeta?.value) {
+      videoUrl = String(node.productVideoMeta.value).trim();
+    } else if (node.productVideoUrlMeta?.value) {
+      videoUrl = String(node.productVideoUrlMeta.value).trim();
+    } else if (node.videoKeyMeta?.value) {
+      videoUrl = String(node.videoKeyMeta.value).trim();
+    } else if (node.youtubeMeta?.value) {
+      videoUrl = String(node.youtubeMeta.value).trim();
+    }
+
+    if (!videoUrl && node.allMetafields?.edges) {
+      for (const edge of node.allMetafields.edges) {
+        const key = edge?.node?.key?.toLowerCase() || "";
+        const val = edge?.node?.value ? String(edge.node.value).trim() : "";
+        if (key.includes("video") || key.includes("youtube") || key.includes("vimeo")) {
+          if (val) {
+            videoUrl = val;
+            break;
+          }
+        }
+        if (/https?:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com|[^\s"'<>]+\.mp4)/i.test(val)) {
+          videoUrl = val;
+          break;
+        }
+      }
+    } else if (node.media?.edges && Array.isArray(node.media.edges)) {
+      const mediaEdges = node.media.edges;
+      const externalVideo = mediaEdges.find((e: any) => e?.node?.mediaContentType === "EXTERNAL_VIDEO")?.node;
+      if (externalVideo?.embedUrl) {
+        videoUrl = externalVideo.embedUrl;
+      } else {
+        const videoNode = mediaEdges.find((e: any) => e?.node?.mediaContentType === "VIDEO")?.node;
+        if (videoNode?.sources?.length) {
+          videoUrl = videoNode.sources[0]?.url;
+        }
+      }
+    }
+
+    // Fallback: extract embedded YouTube or MP4 link from product description HTML if present
+    if (!videoUrl && node.descriptionHtml) {
+      const ytMatch = node.descriptionHtml.match(/https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)[a-zA-Z0-9_-]+/i);
+      if (ytMatch) {
+        videoUrl = ytMatch[0];
+      } else {
+        const mp4Match = node.descriptionHtml.match(/https?:\/\/[^\s"'<>]+\.mp4[^\s"'<>]*/i);
+        if (mp4Match) {
+          videoUrl = mp4Match[0];
+        }
+      }
+    }
+
     return NextResponse.json({
       id: node.id,
       name: node.title,
@@ -887,6 +1011,7 @@ export async function GET(
       juulFeature2: parsedJuulFeature2,
       image,
       images,
+      videoUrl,
       tag: node.badge?.value || (isSoldOut ? "Sold Out" : comparePrice > price ? "Sale" : undefined),
       tagColor: comparePrice > price ? "sale" : undefined,
       isPopular: node.tags?.includes("Popular") || node.tags?.includes("popular"),

@@ -28,8 +28,11 @@ import {
   PackageCheck,
   Zap,
   X,
-  Search
+  Search,
+  Play
 } from "lucide-react";
+import { ProductVideoPlayer } from "@/components/products/ProductVideoPlayer";
+import { getYouTubeDetails } from "@/lib/youtube";
 import { WhatsAppContactSection } from "@/components/sections/WhatsAppContactSection";
 import { ProductCard } from "@/components/sections/ProductFeed";
 import { ProductSectionCarousel } from "@/components/sections/ProductSectionCarousel";
@@ -96,6 +99,7 @@ interface ProductDetails {
   reviews: number;
   image: string;
   images: string[];
+  videoUrl?: string;
   tag?: string;
   tagColor?: string;
   isPopular: boolean;
@@ -127,12 +131,13 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeImage, setActiveImage] = useState("");
+  const [activeMediaType, setActiveMediaType] = useState<"image" | "video">("image");
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFlavorModalOpen, setIsFlavorModalOpen] = useState(false);
   const [flavorSearchQuery, setFlavorSearchQuery] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"description" | "shipping" | "returns">("description");
+  const [activeTab, setActiveTab] = useState<"description" | "video" | "shipping" | "returns">("description");
   const [similarProducts, setSimilarProducts] = useState<any[]>([]);
   const { instances: templateInstances, isOverride: templateIsOverride } =
     useResolvedTemplate("product", handle);
@@ -292,6 +297,7 @@ export default function ProductPage() {
     if (cached) {
       setProduct(cached);
       setActiveImage(cached.image);
+      setActiveMediaType("image");
       if (cached.variants && cached.variants.length > 1) {
         setSelectedVariant(null);
       } else if (cached.variants) {
@@ -313,6 +319,7 @@ export default function ProductPage() {
         const data = await res.json();
         setProduct(data);
         setActiveImage(data.image);
+        setActiveMediaType("image");
         setCachedProduct(handle, data);
 
         // Select first available variant only if there is 1 option.
@@ -498,10 +505,15 @@ export default function ProductPage() {
     );
   }
 
+  const showVideoSetting = flag("showProductVideo");
+  const customizerDefaultVideo = text("defaultVideoUrl", "");
+  const effectiveVideoUrl = product.videoUrl || (showVideoSetting ? customizerDefaultVideo : "");
+
   // A tab the merchant has since hidden must not leave the panel blank.
   const effectiveTab =
     (activeTab === "shipping" && !showShippingTab) ||
-    (activeTab === "returns" && !showReturnsTab)
+    (activeTab === "returns" && !showReturnsTab) ||
+    (activeTab === "video" && !effectiveVideoUrl)
       ? "description"
       : activeTab;
 
@@ -617,51 +629,104 @@ export default function ProductPage() {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
-            {/* Left Column: Image Gallery (Clean Premium Display Frame) */}
+            {/* Left Column: Image & Video Gallery (Clean Premium Display Frame) */}
             <div className="lg:col-span-6 flex flex-col gap-4 w-full lg:sticky lg:top-28">
-              <div className="relative bg-card border border-border/70 rounded-[2.5rem] p-6 sm:p-8 flex items-center justify-center aspect-square overflow-hidden shadow-lg hover:shadow-xl hover:border-primary/40 transition-all duration-500 group">
-                <img
-                  src={activeImage}
-                  alt={product.name}
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                />
-                
-                {product.tag && (
-                  <div className="absolute top-4 left-4 bg-primary text-white text-[10px] sm:text-xs font-black tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md z-10">
-                    {product.tag}
-                  </div>
-                )}
-              </div>
+              {(() => {
+                const ytDetails = effectiveVideoUrl ? getYouTubeDetails(effectiveVideoUrl) : null;
+                const videoThumbSrc = ytDetails?.thumbnailUrl || product.image;
 
-              {/* Thumbnails Carousel */}
-              {product.images && product.images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
-                  {product.images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveImage(img)}
-                      className={`h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer ${activeImage === img
-                        ? "border-primary ring-2 ring-primary/30 shadow-md scale-105"
-                        : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
-                        }`}
-                    >
-                      <img
-                        src={img}
-                        alt={`${product.name} thumb ${idx + 1}`}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-auto object-contain"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
+                return (
+                  <>
+                    <div className="relative bg-card border border-border/70 rounded-[2.5rem] p-6 sm:p-8 flex items-center justify-center aspect-square overflow-hidden shadow-lg hover:shadow-xl hover:border-primary/40 transition-all duration-500 group">
+                      {effectiveVideoUrl && activeMediaType === "video" ? (
+                        <ProductVideoPlayer
+                          videoUrl={effectiveVideoUrl}
+                          title={product.name}
+                          fallbackImage={product.image}
+                          autoPlay={true}
+                        />
+                      ) : (
+                        <img
+                          src={activeImage}
+                          alt={product.name}
+                          loading="eager"
+                          fetchPriority="high"
+                          decoding="async"
+                          className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
+                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                        />
+                      )}
 
+                      {product.tag && activeMediaType === "image" && (
+                        <div className="absolute top-4 left-4 bg-primary text-white text-[10px] sm:text-xs font-black tracking-widest uppercase px-3.5 py-1 rounded-full shadow-md z-10">
+                          {product.tag}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Thumbnails Carousel */}
+                    {((product.images && product.images.length > 1) || effectiveVideoUrl) && (
+                      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
+                        {product.images?.map((img, idx) => (
+                          <button
+                            key={`img-${idx}`}
+                            onClick={() => {
+                              setActiveMediaType("image");
+                              setActiveImage(img);
+                            }}
+                            aria-label={`View ${product.name} photo ${idx + 1}`}
+                            className={`h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer ${
+                              activeMediaType === "image" && activeImage === img
+                                ? "border-primary ring-2 ring-primary/30 shadow-md scale-105"
+                                : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
+                            }`}
+                          >
+                            <img
+                              src={img}
+                              alt={`${product.name} thumb ${idx + 1}`}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-auto object-contain"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                            />
+                          </button>
+                        ))}
+
+                        {/* Video Thumbnail */}
+                        {effectiveVideoUrl && (
+                          <button
+                            key="thumb-video"
+                            onClick={() => setActiveMediaType("video")}
+                            aria-label={`Watch video of ${product.name}`}
+                            className={`relative h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-1 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer group ${
+                              activeMediaType === "video"
+                                ? "border-primary ring-2 ring-primary/30 shadow-md scale-105"
+                                : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
+                            }`}
+                          >
+                            <img
+                              src={videoThumbSrc}
+                              alt={`${product.name} video thumbnail`}
+                              loading="lazy"
+                              decoding="async"
+                              className="h-full w-full object-cover rounded-xl filter brightness-90 group-hover:brightness-100"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/35 group-hover:bg-black/20 transition-colors">
+                              <div className="w-7 h-7 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform ring-2 ring-white/40">
+                                <Play className="w-3.5 h-3.5 fill-white ml-0.5" />
+                              </div>
+                            </div>
+                            <span className="absolute bottom-1 right-1 bg-black/85 text-[8px] font-bold text-white px-1 py-0.5 rounded leading-none">
+                              VIDEO
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             {/* Right Column: Product Info & Actions */}
@@ -981,6 +1046,7 @@ export default function ProductPage() {
             <div className="flex border-b border-border/40 gap-8 sm:gap-12 pb-4 overflow-x-auto">
               {([
                 { key: "description" as const, label: text("descriptionTabLabel", "Product Description"), shown: true },
+                { key: "video" as const, label: text("videoTabLabel", "Product Video"), shown: !!effectiveVideoUrl },
                 { key: "shipping" as const, label: "Shipping & Return", shown: showShippingTab },
               ])
                 .filter((tab) => tab.shown && tab.label)
@@ -1019,6 +1085,33 @@ export default function ProductPage() {
                       }}
                     />
                   )}
+                </div>
+              )}
+
+              {effectiveTab === "video" && effectiveVideoUrl && (
+                <div className="max-w-4xl mx-auto py-2 sm:py-4 px-2 sm:px-4">
+                  {/* Eyebrow & Title & Subtitle matching reference mockup */}
+                  <div className="text-center space-y-1.5 sm:space-y-2 mb-6 sm:mb-8">
+                    <span className="text-[11px] sm:text-xs font-black uppercase tracking-widest text-primary block">
+                      Product Video
+                    </span>
+                    <h3 className="text-xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                      Watch the product in action
+                    </h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto font-medium leading-relaxed">
+                      See how {product.name} looks, what&apos;s inside the box, and how to use it.
+                    </p>
+                  </div>
+
+                  {/* Video Player Display Container matching reference mockup */}
+                  <div className="w-full aspect-video rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-border/80 bg-black">
+                    <ProductVideoPlayer
+                      videoUrl={effectiveVideoUrl}
+                      title={product.name}
+                      fallbackImage={product.image}
+                      autoPlay={false}
+                    />
+                  </div>
                 </div>
               )}
 
