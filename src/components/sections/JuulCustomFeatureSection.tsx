@@ -95,12 +95,16 @@ export function JuulCustomFeatureSection({
   reverseLayout?: boolean;
   featureData?: any;
 }) {
-  const title = featureData?.heading || settings?.title || "Sleek, Compact & Pocket-Friendly Design";
+  const title = featureData?.heading || settings?.title || "";
   const description = featureData?.description || settings?.description;
   const image = featureData?.image_url || settings?.image || "";
-  const buttonText = featureData?.button_text || settings?.buttonText || "Shop Collection";
-  const buttonLink = featureData?.button_url || settings?.buttonLink || "/collections/all";
+  const buttonText = featureData?.button_text || settings?.buttonText || "";
+  const buttonLink = featureData?.button_url || settings?.buttonLink || "";
   const bulletPoints = featureData?.bulletPoints || settings?.bulletPoints || [];
+
+  if (!title && !description && !image && bulletPoints.length === 0) {
+    return null;
+  }
 
   return (
     <section className={`w-full ${className}`}>
