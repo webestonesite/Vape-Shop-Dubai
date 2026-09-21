@@ -3,7 +3,7 @@
  * Strictly adheres to Schema.org and Google Search Central Guidelines.
  */
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://vapshopdubai.ae");
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vapshopdubai.ae";
 export const STORE_NAME = "Vape Shop Dubai";
 export const STORE_LOGO = `${SITE_URL}/logo.png`;
 
