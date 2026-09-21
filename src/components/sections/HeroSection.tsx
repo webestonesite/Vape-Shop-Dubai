@@ -65,9 +65,22 @@ const SlideHeadline: React.FC<{ title: string; as: "h1" | "h2" }> = ({ title, as
   );
 };
 
-const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
+const DEFAULT_SLIDE_IMAGES = [
+  "/Slider/myle_slider.webp",
+  "/Slider/disposable_slider.webp",
+  "/Slider/pod_kits_slider.webp",
+  "/Slider/e_liquid_slider.webp",
+];
+
+const DEFAULT_PROMO_IMAGES = [
+  "/Slider/juul_1_slider.webp",
+  "/Slider/juul_2_slider.webp",
+];
+
+const PromoCard: React.FC<{ card: HeroPromoCard; index: number }> = ({ card, index }) => {
   const router = useRouter();
   const isPrimary = card.style === "primary";
+  const imageSrc = card.image || DEFAULT_PROMO_IMAGES[index % DEFAULT_PROMO_IMAGES.length];
 
   return (
     <div
@@ -114,9 +127,9 @@ const PromoCard: React.FC<{ card: HeroPromoCard }> = ({ card }) => {
 
       {/* Right product image */}
       <div className="w-[120px] sm:w-[140px] h-[160px] sm:h-[190px] flex-shrink-0 relative flex items-center justify-center z-10 overflow-hidden">
-        {card.image && (
+        {imageSrc && (
           <SmartImage
-            src={card.image}
+            src={imageSrc}
             alt={card.title}
             width={140}
             height={190}
@@ -229,96 +242,103 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
               className="w-full flex-grow flex flex-col"
             >
               <CarouselContent className="flex-grow flex m-0 cursor-grab active:cursor-grabbing select-none">
-                {slides.map((slide, idx) => (
-                  <CarouselItem
-                    key={idx}
-                    className="basis-full p-6 sm:p-8 lg:p-10 min-h-[360px] sm:min-h-[420px] lg:min-h-[460px] flex flex-col justify-between"
-                  >
-                    {/* Tag badge */}
-                    <div className="mb-2 sm:mb-3">
-                      <span className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
-                        <span className="w-2 h-2 rounded-full bg-primary badge-live flex-shrink-0" />
-                        {slide.tag}
-                      </span>
-                    </div>
+                {slides.map((slide, idx) => {
+                  const slideImg =
+                    slide.image ||
+                    slide.fallbackImage ||
+                    DEFAULT_SLIDE_IMAGES[idx % DEFAULT_SLIDE_IMAGES.length];
 
-                    {/* Center grid */}
-                    <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
-                      {/* Product image (Placed TOP on mobile, RIGHT on desktop) */}
-                      <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
-                        {slide.image && (
-                          idx === 0 ? (
-                            <Image
-                              src={slide.image}
-                              alt={slide.title}
-                              width={420}
-                              height={420}
-                              priority
-                              draggable={false}
-                              sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
-                              className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
-                            />
-                          ) : (
-                            <SmartImage
-                              src={slide.image}
-                              fallbackSrc={slide.fallbackImage || ""}
-                              alt={slide.title}
-                              width={420}
-                              height={420}
-                              draggable={false}
-                              sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
-                              className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
-                            />
-                          )
-                        )}
+                  return (
+                    <CarouselItem
+                      key={idx}
+                      className="basis-full p-6 sm:p-8 lg:p-10 min-h-[360px] sm:min-h-[420px] lg:min-h-[460px] flex flex-col justify-between"
+                    >
+                      {/* Tag badge */}
+                      <div className="mb-2 sm:mb-3">
+                        <span className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
+                          <span className="w-2 h-2 rounded-full bg-primary badge-live flex-shrink-0" />
+                          {slide.tag}
+                        </span>
                       </div>
 
-                      {/* Text content (Placed BELOW image on mobile, LEFT on desktop) */}
-                      <div className="md:w-[55%] md:order-1 space-y-3 sm:space-y-4">
-                        <div>
-                          <p className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-primary uppercase mb-2 sm:mb-2.5">
-                            {slide.accent}
+                      {/* Center grid */}
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
+                        {/* Product image (Placed TOP on mobile, RIGHT on desktop) */}
+                        <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
+                          {slideImg && (
+                            idx === 0 ? (
+                              <Image
+                                src={slideImg}
+                                alt={slide.title}
+                                width={420}
+                                height={420}
+                                priority
+                                draggable={false}
+                                sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
+                                className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
+                              />
+                            ) : (
+                              <SmartImage
+                                src={slideImg}
+                                fallbackSrc={slide.fallbackImage || DEFAULT_SLIDE_IMAGES[idx % DEFAULT_SLIDE_IMAGES.length]}
+                                alt={slide.title}
+                                width={420}
+                                height={420}
+                                draggable={false}
+                                sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
+                                className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
+                              />
+                            )
+                          )}
+                        </div>
+
+                        {/* Text content (Placed BELOW image on mobile, LEFT on desktop) */}
+                        <div className="md:w-[55%] md:order-1 space-y-3 sm:space-y-4">
+                          <div>
+                            <p className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-primary uppercase mb-2 sm:mb-2.5">
+                              {slide.accent}
+                            </p>
+                            <SlideHeadline title={slide.title} as="h2" />
+                          </div>
+                          <p className="text-xs sm:text-base text-muted-foreground leading-relaxed font-normal whitespace-pre-line max-w-xl line-clamp-3 sm:line-clamp-none">
+                            {slide.description}
                           </p>
-                          <SlideHeadline title={slide.title} as="h2" />
-                        </div>
-                        <p className="text-xs sm:text-base text-muted-foreground leading-relaxed font-normal whitespace-pre-line max-w-xl line-clamp-3 sm:line-clamp-none">
-                          {slide.description}
-                        </p>
 
-                        {/* Stats */}
-                        <div className="flex gap-6 sm:gap-8 pt-1 sm:pt-2">
-                          <div>
-                            <p className="text-3xl sm:text-4xl font-serif text-foreground leading-none">
-                              {slide.stat1Value}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-0.5 sm:mt-1">
-                              {slide.stat1Label}
-                            </p>
+                          {/* Stats */}
+                          <div className="flex gap-6 sm:gap-8 pt-1 sm:pt-2">
+                            <div>
+                              <p className="text-3xl sm:text-4xl font-serif text-foreground leading-none">
+                                {slide.stat1Value}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-0.5 sm:mt-1">
+                                {slide.stat1Label}
+                              </p>
+                            </div>
+                            <div className="w-px bg-border/60" />
+                            <div>
+                              <p className="text-3xl sm:text-4xl font-serif text-foreground leading-none">
+                                {slide.stat2Value}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-0.5 sm:mt-1">
+                                {slide.stat2Label}
+                              </p>
+                            </div>
                           </div>
-                          <div className="w-px bg-border/60" />
-                          <div>
-                            <p className="text-3xl sm:text-4xl font-serif text-foreground leading-none">
-                              {slide.stat2Value}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-0.5 sm:mt-1">
-                              {slide.stat2Label}
-                            </p>
-                          </div>
-                        </div>
 
-                        {/* Button */}
-                        <div className="pt-2">
-                          <button
-                            onClick={() => router.push(slide.ctaHref || "/shop")}
-                            className="inline-flex items-center gap-2.5 bg-primary text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-xs sm:text-base font-extrabold tracking-wide hover:bg-gold-shimmer transition-all duration-300 primary-glow hover:scale-[1.03] active:scale-95 cursor-pointer shadow-md"
-                          >
-                            {slide.buttonText} <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                          </button>
+                          {/* Button */}
+                          <div className="pt-2">
+                            <button
+                              onClick={() => router.push(slide.ctaHref || "/shop")}
+                              className="inline-flex items-center gap-2.5 bg-primary text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-xs sm:text-base font-extrabold tracking-wide hover:bg-gold-shimmer transition-all duration-300 primary-glow hover:scale-[1.03] active:scale-95 cursor-pointer shadow-md"
+                            >
+                              {slide.buttonText} <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CarouselItem>
-                ))}
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
             </Carousel>
 
@@ -355,7 +375,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
           {hero.promoCards.length > 0 && (
             <div className="lg:col-span-4 flex flex-col gap-5">
               {hero.promoCards.map((card, idx) => (
-                <PromoCard key={idx} card={card} />
+                <PromoCard key={idx} card={card} index={idx} />
               ))}
             </div>
           )}

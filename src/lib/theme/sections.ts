@@ -172,29 +172,42 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       autoplaySeconds: 6,
       slides: [
         {
-          title: "VAPE SHOP DUBAI",
-          accent: "Vape Shop Dubai Delivery in UAE",
+          title: "MYLE Devices & Pods",
+          accent: "Premium Pod Systems",
           description:
-            "Discover the best vaping experience in Dubai with Vape Shop Dubai! Explore a wide range of premium vapes, disposables, e-liquids, and accessories. Enjoy fast 3-hour delivery across Dubai, Sharjah, and Abu Dhabi.",
-          image:
-            "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/myle_slider.webp?v=1786640992",
-          fallbackImage: "",
-          tag: "⚡ 3-Hour Delivery",
-          buttonText: "Shop Collection",
-          ctaHref: "/shop",
-          stat1Value: "3 Hrs",
-          stat1Label: "Express Delivery",
-          stat2Value: "100%",
-          stat2Label: "Authentic",
+            "Shop authentic MYLE V5, V4, and Meta systems from a trusted vape shop Dubai customers turn to for genuine products, strong flavor delivery, and everyday convenience.",
+          image: "/Slider/myle_slider.webp",
+          fallbackImage: "/Slider/myle_slider.webp",
+          tag: "🔥 Premium Pod Systems",
+          buttonText: "Shop MYLE Collection",
+          ctaHref: "/collections/myle-vape-dubai",
+          stat1Value: "5%",
+          stat1Label: "Nicotine Strength",
+          stat2Value: "V5",
+          stat2Label: "Series",
+        },
+        {
+          title: "Disposable Vapes in Dubai",
+          accent: "Premium Disposables",
+          description:
+            "Looking for the best disposable vape in UAE? Shop popular picks like Lost Mary, Al Fakher Crown Bar, Tugboat, BECO, and more at a trusted vape shop Dubai.",
+          image: "/Slider/disposable_slider.webp",
+          fallbackImage: "/Slider/disposable_slider.webp",
+          tag: "💰 From 40 AED Only",
+          buttonText: "Shop Disposables",
+          ctaHref: "/collections/disposable-vape",
+          stat1Value: "15K",
+          stat1Label: "Max Puffs",
+          stat2Value: "40",
+          stat2Label: "AED Starting",
         },
         {
           title: "JUUL 2 PODS DUBAI",
-          accent: "Juul 2 Pods Vape Shop Dubai Delivery in UAE",
+          accent: "Juul 2 Pods Vape Shop Dubai",
           description:
-            "Experience next-level flavor and satisfaction with Juul 2 Pods, available at Vape Shop Dubai. Offering richer taste, enhanced airflow, and sleek design. Fast delivery across Dubai, Sharjah, and Abu Dhabi!",
-          image:
-            "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/juul_2_slider.webp?v=1786641001",
-          fallbackImage: "",
+            "Experience next-level flavor and satisfaction with Juul 2 Pods, available at Vape Shop Dubai. Offering richer taste, enhanced airflow, and sleek design.",
+          image: "/Slider/juul_2_slider.webp",
+          fallbackImage: "/Slider/juul_2_slider.webp",
           tag: "🔥 UK Genuine Stock",
           buttonText: "Shop JUUL 2",
           ctaHref: "/collections/juul-2-series",
@@ -202,22 +215,6 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           stat1Label: "Nicotine Salt",
           stat2Value: "UK",
           stat2Label: "Import",
-        },
-        {
-          title: "MYLE META V5 PODS DUBAI",
-          accent: "Myle Meta V5 Pods Vape Shop Dubai",
-          description:
-            "Elevate your vaping experience with Myle Meta V5 Pods, now at Vape Shop Dubai. Featuring advanced technology, rich flavors, and leak-resistant design. Order today for fast delivery across Dubai and the UAE!",
-          image:
-            "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/myle_slider.webp?v=1786640992",
-          fallbackImage: "",
-          tag: "✨ Authentic V5",
-          buttonText: "Shop MYLE V5",
-          ctaHref: "/collections/myle-vape-dubai",
-          stat1Value: "5%",
-          stat1Label: "Nicotine Strength",
-          stat2Value: "V5",
-          stat2Label: "Series",
         },
       ],
       promoCards: [
@@ -227,8 +224,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           subtitle: "Original USA Stock · 3% & 5% Nic",
           buttonText: "Shop JUUL 1",
           href: "/collections/juul-1-series",
-          image:
-            "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/juul_1_slider.webp?v=1786641000",
+          image: "/Slider/juul_1_slider.webp",
           style: "light",
         },
         {
@@ -237,8 +233,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           subtitle: "Authentic UK Stock · 18mg Nic",
           buttonText: "Shop JUUL 2",
           href: "/collections/juul-2-series",
-          image:
-            "https://cdn.shopify.com/s/files/1/0684/3488/6727/files/juul_2_slider.webp?v=1786641001",
+          image: "/Slider/juul_2_slider.webp",
           style: "primary",
         },
       ],
