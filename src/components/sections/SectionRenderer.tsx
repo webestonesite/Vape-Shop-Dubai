@@ -1,7 +1,4 @@
-"use client";
-
 import React from "react";
-import dynamic from "next/dynamic";
 
 import { shouldRenderInstance, type SectionContext } from "@/lib/theme/conditions";
 import type { SectionInstance } from "@/lib/theme/types";
@@ -21,40 +18,14 @@ import {
   ContactFormSection,
   type ContactFormSettings,
 } from "./ContactFormSection";
-import type { BrandsSettings } from "./AuthorizedDealers";
-import type { CategoriesSettings } from "./Categories";
-import type { FaqSettings } from "./FAQSection";
-import type { WhatsAppSettings } from "./WhatsAppContactSection";
-import type { WhyShopSettings } from "./WhyShopWithUs";
-import type { BlogSettings } from "./BlogSection";
-import { useIsIdle } from "@/hooks/use-is-idle";
-
-/**
- * Turns a stored section instance into rendered markup.
- *
- * Two kinds of section exist:
- *
- *  - **Registry sections** — self-contained, driven entirely by their saved
- *    settings. Rendered here.
- *  - **Slot sections** — need data the page owns (the product being viewed,
- *    the filtered collection, local UI state). The page passes them in via
- *    `slots`, pre-rendered; this module only decides *whether* and *where*
- *    they appear.
- *
- * That split is what lets the 1500-line collection and product pages take part
- * in the customizer without being rewritten.
- */
-
-/* Below-fold sections are code-split, matching how the homepage loaded them
-   before templates existed. */
-const Categories = dynamic(() => import("./Categories").then((m) => ({ default: m.Categories })), { ssr: false });
-const AuthorizedDealers = dynamic(() => import("./AuthorizedDealers").then((m) => ({ default: m.AuthorizedDealers })), { ssr: false });
-const WhyShopWithUs = dynamic(() => import("./WhyShopWithUs").then((m) => ({ default: m.WhyShopWithUs })), { ssr: false });
-const FAQSection = dynamic(() => import("./FAQSection").then((m) => ({ default: m.FAQSection })));
-const WhatsAppContactSection = dynamic(() => import("./WhatsAppContactSection").then((m) => ({ default: m.WhatsAppContactSection })), { ssr: false });
-const BlogSection = dynamic(() => import("./BlogSection").then((m) => ({ default: m.BlogSection })));
-const FlavorsWheel = dynamic(() => import("./FlavorsWheel").then((m) => ({ default: m.FlavorsWheel })), { ssr: false });
-const BrandSphere3D = dynamic(() => import("./BrandSphere3D").then((m) => ({ default: m.BrandSphere3D })));
+import { BrandsSettings, AuthorizedDealers } from "./AuthorizedDealers";
+import { CategoriesSettings, Categories } from "./Categories";
+import { FaqSettings, FAQSection } from "./FAQSection";
+import { WhatsAppSettings, WhatsAppContactSection } from "./WhatsAppContactSection";
+import { WhyShopSettings, WhyShopWithUs } from "./WhyShopWithUs";
+import { BlogSettings, BlogSection } from "./BlogSection";
+import { FlavorsWheel } from "./FlavorsWheel";
+import { BrandSphere3D } from "./BrandSphere3D";
 
 /**
  * Sections the page renders itself, keyed by section type.
@@ -77,12 +48,11 @@ export const SECTION_CONTAINER =
 /** Sections that lay out their own full-bleed container. */
 const FULL_BLEED = new Set(["hero"]);
 
-
 function renderRegistrySection(
-  instance: SectionInstance,
-  isIdle: boolean
+  instance: SectionInstance
 ): React.ReactNode {
   const s = instance.settings;
+  const isIdle = true; // Always true for server components
 
   switch (instance.type) {
     case "hero":
@@ -142,12 +112,6 @@ export interface TemplateSectionsProps {
   containerClassName?: string;
 }
 
-/**
- * Renders a resolved template's sections in order.
- *
- * Each is tagged with `data-section-id` so the customizer can scroll the
- * preview to whatever the merchant is editing.
- */
 export const TemplateSections: React.FC<TemplateSectionsProps> = ({
   instances,
   isOverride,
@@ -155,7 +119,6 @@ export const TemplateSections: React.FC<TemplateSectionsProps> = ({
   slots = {},
   containerClassName = SECTION_CONTAINER,
 }) => {
-  const isIdle = useIsIdle();
   return (
     <>
       {instances.map((instance) => {
@@ -170,7 +133,7 @@ export const TemplateSections: React.FC<TemplateSectionsProps> = ({
           ? typeof slot === "function"
             ? slot(instance.settings)
             : slot
-          : renderRegistrySection(instance, isIdle);
+          : renderRegistrySection(instance);
 
         if (!node) return null;
 
