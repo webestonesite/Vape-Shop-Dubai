@@ -88,7 +88,7 @@ function renderRegistrySection(
     case "hero":
       return <HeroSection settings={s as unknown as HeroSettings} />;
     case "brandDirectoryShowcase":
-      return <BrandSphere3D settings={s as any} />;
+      return isIdle ? <BrandSphere3D settings={s as any} /> : <div style={{ height: "500px" }} />;
     case "categories":
       return isIdle ? <Categories settings={s as unknown as CategoriesSettings} /> : <div style={{ height: "300px" }} />;
     case "brands":

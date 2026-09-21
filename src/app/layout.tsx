@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeSettingsProvider } from "@/context/ThemeSettingsContext";
 import { getThemeSettings } from "@/lib/theme/get-settings";
-import { WhatsAppFloating } from "@/components/layout/WhatsAppFloating";
+import { LazyWhatsApp } from "@/components/layout/LazyWhatsApp";
 import { CanonicalHead } from "@/components/layout/CanonicalHead";
 import {
   getOrganizationSchema,
@@ -21,13 +21,7 @@ const playfair = Playfair_Display({
   adjustFontFallback: true,
 });
 
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-  adjustFontFallback: true,
-});
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -115,7 +109,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${bebasNeue.variable} ${inter.variable} h-full antialiased overflow-x-hidden max-w-full`}
+      className={`${playfair.variable} ${inter.variable} h-full antialiased overflow-x-hidden max-w-full`}
       suppressHydrationWarning
     >
       <head>
@@ -124,6 +118,8 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+        {/* Preload LCP hero image for instant first paint */}
+        <link rel="preload" as="image" type="image/webp" href="/Slider/myle_slider.webp" fetchPriority="high" />
         
         {/* Root Google JSON-LD Schemas */}
         <script
@@ -148,7 +144,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <CartProvider>
               {children}
-              <WhatsAppFloating />
+              <LazyWhatsApp />
             </CartProvider>
           </ThemeProvider>
         </ThemeSettingsProvider>

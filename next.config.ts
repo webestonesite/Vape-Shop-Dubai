@@ -19,7 +19,9 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  experimental: {},
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   transpilePackages: ["firebase-admin", "jwks-rsa", "jose"],
   async headers() {
     return [

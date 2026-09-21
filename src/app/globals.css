@@ -470,12 +470,7 @@ h3.tracking-tight,
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ─── Mobile Safety & Responsiveness Base Rules ────── */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-  -webkit-overflow-scrolling: touch;
-}
+
 
 /* NOTE: the `img { max-width: 100%; height: auto }` reset that used to live here
    was removed. Tailwind's preflight already ships it inside `@layer base`; this
@@ -492,11 +487,7 @@ html, body {
   }
 }
 
-/* Content-Visibility Optimization for Instant Below-the-Fold Offscreen Skips */
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
-}
+
 
 /* ─── 404 Eye-Catching Color Pulse & Glow Animation ─── */
 @keyframes colorBlinkGlow {

@@ -29,20 +29,27 @@ import { useFooterSettings } from "@/context/ThemeSettingsContext";
 export const Footer: React.FC = () => {
   const settings = useFooterSettings();
   const [pages, setPages] = React.useState<any[]>([]);
+  const footerRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
-    async function fetchPages() {
-      try {
-        const res = await fetch("/api/pages");
-        if (res.ok) {
-          const data = await res.json();
-          setPages(data.pages || []);
+    if (!footerRef.current) return;
+    let fetched = false;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !fetched) {
+          fetched = true;
+          observer.disconnect();
+          fetch("/api/pages")
+            .then((res) => (res.ok ? res.json() : { pages: [] }))
+            .then((data) => setPages(data.pages || []))
+            .catch(() => {});
         }
-      } catch (err) {
-        console.error("Error fetching footer pages", err);
-      }
-    }
-    fetchPages();
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(footerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   const scrollToTop = () => {
@@ -52,7 +59,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative mt-2 sm:mt-3 lg:mt-4 bg-card text-foreground font-sans border-t border-border/50" suppressHydrationWarning>
+    <footer ref={footerRef} className="relative mt-2 sm:mt-3 lg:mt-4 bg-card text-foreground font-sans border-t border-border/50" suppressHydrationWarning>
       {/* ── Top Trust Features removed per user request ──── */}
 
       {/* ── 2. Main Footer Directory (Organized & Balanced) ──── */}
