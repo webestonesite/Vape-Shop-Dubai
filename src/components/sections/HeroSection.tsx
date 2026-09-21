@@ -273,7 +273,6 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                                 width={420}
                                 height={420}
                                 priority
-                                unoptimized
                                 draggable={false}
                                 sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
                                 className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"

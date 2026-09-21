@@ -118,9 +118,6 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
-        {/* Preload LCP hero image for instant first paint */}
-        <link rel="preload" as="image" type="image/webp" href="/Slider/myle_slider.webp" fetchPriority="high" />
-        
         {/* Root Google JSON-LD Schemas */}
         <script
           type="application/ld+json"
