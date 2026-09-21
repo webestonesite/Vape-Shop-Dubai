@@ -257,7 +257,7 @@ export const WhatsAppFloating: React.FC = () => {
                             <ShieldCheck className="w-3 h-3 text-emerald-400" /> Sales Man
                           </span>
                           <span className="text-[9px] text-zinc-500">
-                            vapeshopdubai.ae
+                            {typeof window !== 'undefined' ? window.location.hostname.replace('www.', '') : 'vapeshopdubai.ae'}
                           </span>
                         </div>
                       )}

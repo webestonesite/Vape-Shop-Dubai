@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { SITE_URL } from "@/lib/seo-schemas";
+import { FALLBACK_SITE_URL } from "@/lib/seo-schemas";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "HTML Sitemap | Vape Shop Dubai",
   description: "Navigate all pages, collections, products, and expert guides of Vape Shop Dubai easily with our comprehensive HTML Sitemap.",
 };
 
-const getProducts = async () => {
+const getProducts = async (siteUrl: string) => {
   try {
-    const res = await fetch(`${SITE_URL}/api/products`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${siteUrl}/api/products`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
@@ -18,9 +19,9 @@ const getProducts = async () => {
   }
 };
 
-const getArticles = async () => {
+const getArticles = async (siteUrl: string) => {
   try {
-    const res = await fetch(`${SITE_URL}/api/articles`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${siteUrl}/api/articles`, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.articles && Array.isArray(data.articles) ? data.articles : [];
@@ -30,7 +31,12 @@ const getArticles = async () => {
 };
 
 export default async function HTMLSitemap() {
-  const [products, articles] = await Promise.all([getProducts(), getArticles()]);
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || 'https';
+  const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+
+  const [products, articles] = await Promise.all([getProducts(siteUrl), getArticles(siteUrl)]);
 
   const mainPages = [
     { title: "Home", path: "/" },

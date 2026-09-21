@@ -40,7 +40,8 @@ export async function POST(req: Request) {
     const hostHeader = req.headers.get("host") || "";
     const originHeader = req.headers.get("origin") || "";
     const protocol = hostHeader.includes("localhost") ? "http" : "https";
-    const siteUrl = originHeader || (hostHeader ? `${protocol}://${hostHeader}` : "https://vapeshopdubai.ae");
+    const fallbackHost = hostHeader ? `${protocol}://${hostHeader}` : (process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.webestone.net");
+    const siteUrl = originHeader || fallbackHost;
 
     // INTENTION THINKING PAUSE FOR THOUGHTFUL ANALYSIS
     await new Promise((resolve) => setTimeout(resolve, 1500));

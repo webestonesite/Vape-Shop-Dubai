@@ -31,11 +31,12 @@ async function fetchPageContent(url) {
 }
 
 async function main() {
+  const storeUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://vapeshopdubai.webestone.net';
   const urls = [
-    'https://vapshopdubai.ae/pages/about-us',
-    'https://vapshopdubai.ae/pages/contact',
-    'https://vapshopdubai.ae/pages/refund_returns',
-    'https://vapshopdubai.ae/pages/shipping-guidelines'
+    `${storeUrl}/pages/about-us`,
+    `${storeUrl}/pages/contact`,
+    `${storeUrl}/pages/refund_returns`,
+    `${storeUrl}/pages/shipping-guidelines`
   ];
   
   for (const url of urls) {

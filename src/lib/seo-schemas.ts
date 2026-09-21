@@ -3,24 +3,24 @@
  * Strictly adheres to Schema.org and Google Search Central Guidelines.
  */
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vapshopdubai.ae";
+export const FALLBACK_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.webestone.net";
 export const STORE_NAME = "Vape Shop Dubai";
-export const STORE_LOGO = `${SITE_URL}/logo.png`;
 
 // 1. Organization Schema
-export function getOrganizationSchema() {
+export function getOrganizationSchema(siteUrl: string = FALLBACK_SITE_URL) {
+  const storeLogo = `${siteUrl}/logo.png`;
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": `${SITE_URL}/#organization`,
+    "@id": `${siteUrl}/#organization`,
     "name": STORE_NAME,
-    "url": SITE_URL,
+    "url": siteUrl,
     "logo": {
       "@type": "ImageObject",
-      "url": STORE_LOGO,
+      "url": storeLogo,
       "caption": STORE_NAME,
     },
-    "image": STORE_LOGO,
+    "image": storeLogo,
     "description": "Premium luxury vape store in Dubai offering authentic devices, pod kits, disposables, and e-liquids with 2-hour express delivery.",
     "address": {
       "@type": "PostalAddress",
@@ -42,22 +42,22 @@ export function getOrganizationSchema() {
 }
 
 // 2. WebSite Schema (Sitelinks Searchbox)
-export function getWebSiteSchema() {
+export function getWebSiteSchema(siteUrl: string = FALLBACK_SITE_URL) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": `${SITE_URL}/#website`,
-    "url": SITE_URL,
+    "@id": `${siteUrl}/#website`,
+    "url": siteUrl,
     "name": STORE_NAME,
     "description": "Buy authentic vape devices, JUUL, Myle, and disposable vapes in Dubai with 2-hour delivery.",
     "publisher": {
-      "@id": `${SITE_URL}/#organization`,
+      "@id": `${siteUrl}/#organization`,
     },
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": `${SITE_URL}/shop?search={search_term_string}`,
+        "urlTemplate": `${siteUrl}/shop?search={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
@@ -65,14 +65,15 @@ export function getWebSiteSchema() {
 }
 
 // 3. LocalBusiness / Store Schema
-export function getLocalBusinessSchema() {
+export function getLocalBusinessSchema(siteUrl: string = FALLBACK_SITE_URL) {
+  const storeLogo = `${siteUrl}/logo.png`;
   return {
     "@context": "https://schema.org",
     "@type": "Store",
-    "@id": `${SITE_URL}/#store`,
+    "@id": `${siteUrl}/#store`,
     "name": STORE_NAME,
-    "image": STORE_LOGO,
-    "url": SITE_URL,
+    "image": storeLogo,
+    "url": siteUrl,
     "telephone": "+971582839787",
     "priceRange": "$$",
     "address": {
@@ -123,8 +124,8 @@ export function getProductSchema(product: {
   brand?: string;
   category?: string;
   isSoldOut?: boolean;
-}) {
-  const productUrl = `${SITE_URL}/products/${product.handle}`;
+}, siteUrl: string = FALLBACK_SITE_URL) {
+  const productUrl = `${siteUrl}/products/${product.handle}`;
   const cleanDescription = product.descriptionHtml
     ? product.descriptionHtml.replace(/<[^>]*>?/gm, "").slice(0, 300).trim()
     : `Buy ${product.name} in Dubai, UAE. Premium authentic ${product.brand || product.category || "vape"} product with fast express delivery.`;
@@ -172,7 +173,7 @@ export function getProductSchema(product: {
 }
 
 // 5. BreadcrumbList Schema
-export function getBreadcrumbSchema(items: { name: string; item?: string }[]) {
+export function getBreadcrumbSchema(items: { name: string; item?: string }[], siteUrl: string = FALLBACK_SITE_URL) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -180,7 +181,7 @@ export function getBreadcrumbSchema(items: { name: string; item?: string }[]) {
       "@type": "ListItem",
       "position": idx + 1,
       "name": crumb.name,
-      ...(crumb.item ? { "item": crumb.item.startsWith("http") ? crumb.item : `${SITE_URL}${crumb.item}` } : {}),
+      ...(crumb.item ? { "item": crumb.item.startsWith("http") ? crumb.item : `${siteUrl}${crumb.item}` } : {}),
     })),
   };
 }
@@ -202,7 +203,7 @@ export function getFAQSchema(faqs: { question: string; answer: string }[]) {
 }
 
 // 7. ItemList Schema (Category / Collections)
-export function getItemListSchema(title: string, products: { name: string; handle: string; price: number; image: string }[]) {
+export function getItemListSchema(title: string, products: { name: string; handle: string; price: number; image: string }[], siteUrl: string = FALLBACK_SITE_URL) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -211,7 +212,7 @@ export function getItemListSchema(title: string, products: { name: string; handl
     "itemListElement": products.map((p, idx) => ({
       "@type": "ListItem",
       "position": idx + 1,
-      "url": `${SITE_URL}/products/${p.handle}`,
+      "url": `${siteUrl}/products/${p.handle}`,
       "name": p.name,
       "image": p.image,
     })),

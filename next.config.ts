@@ -6,8 +6,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.shopify.com" },
       { protocol: "https", hostname: "*.shopify.com" },
-      { protocol: "https", hostname: "*.shipon.tech" },
-      { protocol: "https", hostname: "vapshopdubai.ae" },
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "*.ytimg.com" },

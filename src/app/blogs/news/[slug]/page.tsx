@@ -278,20 +278,26 @@ export default async function SingleBlogNewsPage({
   const displayDate = formatDate(article.publishedAt);
   const readTime = article.contentHtml ? estimateReadTime(article.contentHtml) : "5 min read";
 
+  const { headers } = await import("next/headers");
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || 'https';
+  const siteUrl = host ? `${protocol}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.webestone.net");
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: article.title,
     description: article.excerpt || article.title,
-    image: article.image || "https://vapeshopdubai.ae/Vape%20Shop%20Dubai%20logo%201.png",
+    image: article.image || `${siteUrl}/Vape%20Shop%20Dubai%20logo%201.png`,
     author: { "@type": "Organization", name: article.author },
     publisher: {
       "@type": "Organization",
       name: "Vape Shop Dubai",
-      logo: { "@type": "ImageObject", url: "https://vapeshopdubai.ae/Vape%20Shop%20Dubai%20logo%201.png" },
+      logo: { "@type": "ImageObject", url: `${siteUrl}/Vape%20Shop%20Dubai%20logo%201.png` },
     },
     datePublished: article.publishedAt,
-    mainEntityOfPage: { "@type": "WebPage", "@id": `https://vapeshopdubai.ae/blogs/news/${slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blogs/news/${slug}` },
   };
 
   return (

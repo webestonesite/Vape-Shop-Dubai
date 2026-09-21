@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
-import { SITE_URL } from "@/lib/seo-schemas";
+import { FALLBACK_SITE_URL } from "@/lib/seo-schemas";
+import { headers } from "next/headers";
 
-export async function GET() {
-  const siteUrl = SITE_URL;
+export async function GET(req: Request) {
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || 'https';
+  const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
 
   const staticPages = [
     "",

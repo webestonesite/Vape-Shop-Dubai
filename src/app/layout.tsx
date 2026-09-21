@@ -6,12 +6,13 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeSettingsProvider } from "@/context/ThemeSettingsContext";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { LazyWhatsApp } from "@/components/layout/LazyWhatsApp";
+import { headers } from "next/headers";
 import { CanonicalHead } from "@/components/layout/CanonicalHead";
 import {
   getOrganizationSchema,
   getWebSiteSchema,
   getLocalBusinessSchema,
-  SITE_URL,
+  FALLBACK_SITE_URL,
 } from "@/lib/seo-schemas";
 
 const playfair = Playfair_Display({
@@ -20,8 +21,6 @@ const playfair = Playfair_Display({
   display: "swap",
   adjustFontFallback: true,
 });
-
-
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,74 +35,86 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
-    template: "%s",
-  },
-  description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
-  keywords: [
-    "Vape Shop Dubai",
-    "Buy Vape UAE",
-    "JUUL 2 Dubai",
-    "Disposable Vape Dubai",
-    "Myle Dubai",
-    "Vape Delivery Dubai",
-    "Al Fakher Crown Bar",
-    "Pod Salt Dubai",
-    "E-Juice Dubai"
-  ],
-  authors: [{ name: "Vape Shop Dubai" }],
-  creator: "Vape Shop Dubai",
-  publisher: "Vape Shop Dubai",
-  icons: {
-    icon: "/favicon_v2.png",
-    apple: "/favicon_v2.png",
-  },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: SITE_URL,
-    siteName: "Vape Shop Dubai",
-    title: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || 'https';
+  const SITE_URL = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+      template: "%s",
+    },
     description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
-    images: [
-      {
-        url: `${SITE_URL}/hero_vape.png`,
-        width: 1200,
-        height: 630,
-        alt: "Vape Shop Dubai",
-      },
+    keywords: [
+      "Vape Shop Dubai",
+      "Buy Vape UAE",
+      "JUUL 2 Dubai",
+      "Disposable Vape Dubai",
+      "Myle Dubai",
+      "Vape Delivery Dubai",
+      "Al Fakher Crown Bar",
+      "Pod Salt Dubai",
+      "E-Juice Dubai"
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
-    description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
-    images: [`${SITE_URL}/hero_vape.png`],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    authors: [{ name: "Vape Shop Dubai" }],
+    creator: "Vape Shop Dubai",
+    publisher: "Vape Shop Dubai",
+    icons: {
+      icon: "/favicon_v2.png",
+      apple: "/favicon_v2.png",
+    },
+    openGraph: {
+      type: "website",
+      locale: "en_US",
+      url: SITE_URL,
+      siteName: "Vape Shop Dubai",
+      title: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+      description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
+      images: [
+        {
+          url: `${SITE_URL}/hero_vape.png`,
+          width: 1200,
+          height: 630,
+          alt: "Vape Shop Dubai",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Juul Dubai, UAE | Buy Juul Online | Vape Shop Dubai",
+      description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
+      images: [`${SITE_URL}/hero_vape.png`],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-};
+  };
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const orgSchema = getOrganizationSchema();
-  const websiteSchema = getWebSiteSchema();
-  const storeSchema = getLocalBusinessSchema();
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = headersList.get('x-forwarded-proto') || 'https';
+  const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+
+  const orgSchema = getOrganizationSchema(siteUrl);
+  const websiteSchema = getWebSiteSchema(siteUrl);
+  const storeSchema = getLocalBusinessSchema(siteUrl);
   const themeSettings = await getThemeSettings();
 
   return (
