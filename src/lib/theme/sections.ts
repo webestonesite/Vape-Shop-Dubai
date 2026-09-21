@@ -2833,6 +2833,12 @@ export const FOOTER_FIELDS: FieldDef[] = [
   { type: "text", key: "phone", label: "Phone" },
   { type: "text", key: "email", label: "Email" },
   { type: "text", key: "hoursNote", label: "Opening hours note" },
+  { type: "text", key: "socialHeading", label: "Social media section heading" },
+  { type: "link", key: "facebookUrl", label: "Facebook URL" },
+  { type: "link", key: "instagramUrl", label: "Instagram URL" },
+  { type: "link", key: "twitterUrl", label: "X / Twitter URL" },
+  { type: "link", key: "pinterestUrl", label: "Pinterest URL" },
+  { type: "link", key: "youtubeUrl", label: "YouTube URL" },
   { type: "textarea", key: "healthWarning", label: "Health warning", rows: 3 },
   {
     type: "repeater",

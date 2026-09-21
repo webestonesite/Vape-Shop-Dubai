@@ -159,6 +159,12 @@ export interface FooterSettings {
   phone: string;
   email: string;
   hoursNote: string;
+  socialHeading?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  twitterUrl?: string;
+  pinterestUrl?: string;
+  youtubeUrl?: string;
   healthWarning: string;
   paymentBadges: { icon: string; label: string }[];
   copyright: string;

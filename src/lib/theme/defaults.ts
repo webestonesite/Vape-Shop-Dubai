@@ -426,6 +426,12 @@ const DEFAULT_FOOTER: ThemeSettings["footer"] = {
   phone: "+971 58 283 9787",
   email: "vapshopdubai@gmail.com",
   hoursNote: "24/7 Delivery & Support across Dubai",
+  socialHeading: "Connect With Us",
+  facebookUrl: "https://www.facebook.com/juuldubai",
+  instagramUrl: "https://www.instagram.com/vape_shops_dubai/?hl=en",
+  twitterUrl: "https://x.com/vapshopdubai",
+  pinterestUrl: "https://www.pinterest.com/juuldubai/",
+  youtubeUrl: "https://youtube.com/@vapshopdubai",
   healthWarning:
     "UAE 21+ ONLY: Products contain nicotine, an addictive chemical. For adult smokers (21+) in the UAE. Keep out of reach of children and pets.",
   paymentBadges: [
