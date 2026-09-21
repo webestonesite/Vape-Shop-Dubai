@@ -267,16 +267,16 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                         <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
                           {slideImg && (
                             idx === 0 ? (
-                              <Image
-                                src={slideImg}
-                                alt={slide.title}
-                                width={420}
-                                height={420}
-                                priority
-                                draggable={false}
-                                sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
-                                className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
-                              />
+                              <picture className="relative z-10 w-auto max-w-full flex justify-center pointer-events-none">
+                                <source media="(max-width: 640px)" srcSet={slideImg.startsWith('/Slider/') ? slideImg.replace('.webp', '_mobile.webp') : slideImg} />
+                                <img
+                                  src={slideImg}
+                                  alt={slide.title}
+                                  fetchPriority="high"
+                                  draggable={false}
+                                  className="sm:animate-float max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
+                                />
+                              </picture>
                             ) : (
                               <SmartImage
                                 src={slideImg}
