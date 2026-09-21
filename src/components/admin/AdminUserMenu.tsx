@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, LogOut, Users } from "lucide-react";
+import { ChevronDown, LogOut, Users, Monitor } from "lucide-react";
 
 import type { PublicUser } from "@/lib/auth/users";
 
@@ -72,13 +72,22 @@ export const AdminUserMenu: React.FC<{ user: PublicUser }> = ({ user }) => {
           </div>
 
           {user.role === "admin" && (
-            <Link
-              href="/admin/users"
-              className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] font-semibold text-slate-600 transition-colors hover:bg-slate-50"
-            >
-              <Users className="h-3.5 w-3.5" />
-              Manage users
-            </Link>
+            <>
+              <Link
+                href="/admin/users"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              >
+                <Users className="h-3.5 w-3.5" />
+                Manage users
+              </Link>
+              <Link
+                href="/admin/redirects"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              >
+                <Monitor className="h-3.5 w-3.5" />
+                Redirects
+              </Link>
+            </>
           )}
 
           <button
