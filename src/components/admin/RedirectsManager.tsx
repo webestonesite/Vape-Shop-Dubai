@@ -21,11 +21,11 @@ export const RedirectsManager: React.FC<Props> = ({ initialRedirects }) => {
       setError("Both Source and Destination paths are required.");
       return;
     }
-    
+
     // Auto-prefix with / if missing (unless it's an absolute URL)
     let source = newSource.trim();
     if (!source.startsWith("/") && !source.startsWith("http")) source = "/" + source;
-    
+
     let dest = newDestination.trim();
     if (!dest.startsWith("/") && !dest.startsWith("http")) dest = "/" + dest;
 
@@ -58,7 +58,7 @@ export const RedirectsManager: React.FC<Props> = ({ initialRedirects }) => {
         body: JSON.stringify({ redirects }),
       });
       if (!res.ok) throw new Error("Failed to save redirects.");
-      
+
       setSuccess("Redirects saved successfully.");
       setTimeout(() => setSuccess(null), 3000);
     } catch (err: any) {
@@ -72,10 +72,10 @@ export const RedirectsManager: React.FC<Props> = ({ initialRedirects }) => {
     <div className="space-y-6">
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-bold text-slate-800">Add New Redirect</h2>
-        
+
         {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>}
         {success && <div className="mb-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-600">{success}</div>}
-        
+
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
           <div className="flex-1 space-y-2">
             <label className="text-sm font-semibold text-slate-700">Old Path (Source)</label>
@@ -90,7 +90,7 @@ export const RedirectsManager: React.FC<Props> = ({ initialRedirects }) => {
               />
             </div>
           </div>
-          
+
           <div className="hidden sm:flex mb-2 items-center justify-center">
             <ArrowRight className="h-5 w-5 text-slate-300" />
           </div>

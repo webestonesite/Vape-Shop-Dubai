@@ -4,6 +4,7 @@ import { findUserById } from "@/lib/auth/users";
 import { RedirectsManager } from "@/components/admin/RedirectsManager";
 import { getRedirects } from "@/lib/redirects/store";
 
+
 export const dynamic = "force-dynamic";
 
 export default async function AdminRedirectsPage() {
