@@ -333,13 +333,8 @@ export default function CheckoutPage() {
                   Payment Method
                 </label>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* COD */}
-                  <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
-                    paymentMethod === "Cash on Delivery"
-                      ? "border-primary bg-primary/5"
-                      : "border-border/60 hover:border-primary/50 bg-background"
-                  }`}>
+                <div className="flex flex-col gap-2">
+                  <label className="border border-primary bg-primary/5 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                         <DollarSign className="h-4 w-4" />
@@ -353,36 +348,15 @@ export default function CheckoutPage() {
                       type="radio"
                       name="paymentMethod"
                       value="Cash on Delivery"
-                      checked={paymentMethod === "Cash on Delivery"}
-                      onChange={() => setPaymentMethod("Cash on Delivery")}
+                      checked={true}
+                      readOnly
                       className="accent-primary"
                     />
                   </label>
-
-                  {/* Card on Delivery */}
-                  <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
-                    paymentMethod === "Card on Delivery"
-                      ? "border-primary bg-primary/5"
-                      : "border-border/60 hover:border-primary/50 bg-background"
-                  }`}>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                        <CreditCard className="h-4 w-4" />
-                      </div>
-                      <div className="text-left">
-                        <p className="text-xs font-bold text-foreground">Card on Delivery</p>
-                        <p className="text-[10px] text-muted-foreground">Rider will bring Card Machine</p>
-                      </div>
-                    </div>
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="Card on Delivery"
-                      checked={paymentMethod === "Card on Delivery"}
-                      onChange={() => setPaymentMethod("Card on Delivery")}
-                      className="accent-primary"
-                    />
-                  </label>
+                  
+                  <p className="text-[11px] text-red-500 font-bold px-2">
+                    * Note: If Card or Link Payment then 5% VAT Required.
+                  </p>
                 </div>
               </div>
 
