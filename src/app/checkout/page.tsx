@@ -354,7 +354,7 @@ export default function CheckoutPage() {
                     />
                   </label>
                   
-                  <p className="text-[11px] text-red-500 font-bold px-2">
+                  <p className="text-[11px] text-yellow-600 font-bold px-2">
                     * Note: If Card or Link Payment then 5% VAT Required.
                   </p>
                 </div>
