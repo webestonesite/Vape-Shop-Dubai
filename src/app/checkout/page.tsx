@@ -428,6 +428,13 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              <div className="text-[11px] text-muted-foreground mt-4 text-center leading-relaxed">
+                By placing your order, you agree to our{" "}
+                <Link href="/terms-conditions" className="text-primary hover:underline font-medium">Terms & Conditions</Link>
+                {" "}and{" "}
+                <Link href="/privacy-policy" className="text-primary hover:underline font-medium">Privacy Policy</Link>.
+              </div>
+
               {/* Submit button */}
               <button
                 type="submit"
