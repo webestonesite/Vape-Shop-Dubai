@@ -428,13 +428,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="text-[11px] text-muted-foreground mt-4 text-center leading-relaxed">
-                By placing your order, you agree to our{" "}
-                <Link href="/terms-conditions" className="text-primary hover:underline font-medium">Terms & Conditions</Link>
-                {" "}and{" "}
-                <Link href="/privacy-policy" className="text-primary hover:underline font-medium">Privacy Policy</Link>.
-              </div>
-
               {/* Submit button */}
               <button
                 type="submit"
@@ -497,6 +490,12 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-sm font-bold text-foreground pt-3 border-t border-border/40">
                 <span>Total Amount</span>
                 <span className="text-primary font-mono text-lg">{(cartTotal + (shippingType === "free" ? 0 : 30)).toLocaleString()} AED</span>
+              </div>
+              <div className="text-[11px] text-muted-foreground pt-4 pb-1 text-right leading-relaxed">
+                By placing your order, you agree to our{" "}
+                <Link href="/terms-conditions" className="text-primary hover:underline font-medium">Terms & Conditions</Link>
+                {" "}and{" "}
+                <Link href="/privacy-policy" className="text-primary hover:underline font-medium">Privacy Policy</Link>.
               </div>
             </div>
 
