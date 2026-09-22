@@ -201,7 +201,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
     >
       {/* Large Image Area */}
       <div className="relative bg-muted/20 rounded-[1.3rem] sm:rounded-[1.8rem] h-52 sm:h-72 lg:h-80 p-3 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
-        <div className="absolute w-56 h-56 rounded-full bg-primary/5 filter blur-2xl pointer-events-none" />
+        <div className="hidden sm:block absolute w-56 h-56 rounded-full bg-primary/5 filter blur-2xl pointer-events-none" />
         
         {/* Loading Skeleton Shimmer */}
         {!imageLoaded && (

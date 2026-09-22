@@ -127,8 +127,8 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
       {isFlashSale && (
         <>
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-amber-400 to-primary animate-pulse" />
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/15 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
+          <div className="hidden sm:block absolute -top-24 -right-24 w-96 h-96 bg-primary/15 blur-[120px] rounded-full pointer-events-none" />
+          <div className="hidden sm:block absolute -bottom-24 -left-24 w-96 h-96 bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
         </>
       )}
 
@@ -142,7 +142,7 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
         opts={{
           align: "center",
           loop: false,
-          dragFree: true,
+          dragFree: false,
           containScroll: "trimSnaps",
           breakpoints: {
             "(min-width: 640px)": { align: "start" },
