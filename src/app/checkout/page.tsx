@@ -232,7 +232,7 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-5">
               {/* Full Name */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
@@ -428,20 +428,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Submit button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-primary to-orange-500 text-white font-bold py-4 rounded-xl text-xs uppercase tracking-wider shadow cursor-pointer hover:brightness-105 transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Processing Order...
-                  </>
-                ) : (
-                  <>Confirm and Place Order (COD)</>
-                )}
-              </button>
             </form>
           </div>
 
@@ -498,6 +484,22 @@ export default function CheckoutPage() {
                 <Link href="/privacy-policy" className="text-primary hover:underline font-medium">Privacy Policy</Link>.
               </div>
             </div>
+
+            {/* Submit button */}
+            <button
+              form="checkout-form"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-primary to-orange-500 text-white font-bold py-4 rounded-xl text-xs uppercase tracking-wider shadow cursor-pointer hover:brightness-105 transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Processing Order...
+                </>
+              ) : (
+                <>Confirm and Place Order (COD)</>
+              )}
+            </button>
 
             <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 mt-6">
               <p className="text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1.5">
