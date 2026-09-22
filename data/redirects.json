@@ -1,0 +1,924 @@
+{
+  "redirects": [
+    {
+      "id": "c9c37305-bd71-4a63-ba62-25965b1d8e1b",
+      "source": "/product/juul-pods-uae-mango",
+      "destination": "/products/juul-pods-uae-mango"
+    },
+    {
+      "id": "60421aa7-a343-4375-bf51-5f85df35bcf8",
+      "source": "/product-category/juul-2-device",
+      "destination": "/collections/juul-2-device"
+    },
+    {
+      "id": "0c4bf6d1-52ce-421f-b982-4471f450b393",
+      "source": "/product-category/juul-device",
+      "destination": "/collections/juul-device"
+    },
+    {
+      "id": "19239822-8ad9-4e26-9d47-0e0eeb1cb024",
+      "source": "/product-category/myle-meta-box",
+      "destination": "/collections/myle-meta-box"
+    },
+    {
+      "id": "46c1164c-a33e-46c3-b4c7-3a5e9c5e1e7e",
+      "source": "/product/juul-pods-uae-berry",
+      "destination": "/products/juul-pods-uae-berry"
+    },
+    {
+      "id": "247cd8f3-fcb7-4bb7-8e4f-09c48d2c0858",
+      "source": "/product-category/myle-meta-bar",
+      "destination": "/collections/myle-meta-bar"
+    },
+    {
+      "id": "8218fa8d-c57f-4aad-9947-f96697e3312b",
+      "source": "/product-category/juul-pods",
+      "destination": "/collections/juul-pods"
+    },
+    {
+      "id": "cdfb2718-f522-4030-9aa3-f8cef3bc02f4",
+      "source": "/product-category/myle-meta-9000-puffs",
+      "destination": "/collections/myle-meta-9000-puffs"
+    },
+    {
+      "id": "11a44999-f33a-4be1-ae5a-af3394ff385c",
+      "source": "/product/geek-bar-pulse-25000-puffs",
+      "destination": "/products/geek-bar-pulse-25000-puffs"
+    },
+    {
+      "id": "f53df938-36b0-4661-bc03-c49a047735b1",
+      "source": "/product/tugboat-royal-13000-puffs",
+      "destination": "/products/tugboat-royal-13000-puffs"
+    },
+    {
+      "id": "934ad4d7-a1ec-4793-97fd-8a7c4edaae69",
+      "source": "/product/vgod-4k-4000-puffs",
+      "destination": "/products/vgod-4k-4000-puffs"
+    },
+    {
+      "id": "08e970d4-ccca-4680-a080-b629f4363515",
+      "source": "/product-tag/juul-pods-amazon",
+      "destination": "/collections"
+    },
+    {
+      "id": "2f7125ed-527c-4b7a-b9f7-a0fcba8e2ac5",
+      "source": "/product/juul-pods-uae-mint",
+      "destination": "/products/juul-pods-uae-mint"
+    },
+    {
+      "id": "fec0d815-ca60-43f0-9ed8-3b07087f9dd7",
+      "source": "/product/isgo-bar-10000-puffs",
+      "destination": "/products/isgo-bar-10000-puffs"
+    },
+    {
+      "id": "d68a6ade-62ea-4527-83c7-6f86d28b0361",
+      "source": "/shop/page/2",
+      "destination": "/collections"
+    },
+    {
+      "id": "3bc32fa8-ab0e-4a6e-b2b7-075bb8958609",
+      "source": "/product/meta-box-iced-mint",
+      "destination": "/products/meta-box-iced-mint"
+    },
+    {
+      "id": "b5d45bb5-e17b-47a4-8abe-96de3f382ed2",
+      "source": "/product/nerd-clouds-20000-puffs",
+      "destination": "/products/nerd-clouds-20000-puffs"
+    },
+    {
+      "id": "d6e82d33-319a-4a69-83da-84620c405986",
+      "source": "/product/nerd-alien-12k-puffs",
+      "destination": "/products/nerd-alien-12k-puffs"
+    },
+    {
+      "id": "4d8d3cea-0b48-4018-9623-a1e6b5f58ab7",
+      "source": "/product-category/disposable-vape/page/6",
+      "destination": "/collections/disposable-vape"
+    },
+    {
+      "id": "1a474e1d-30bd-4d05-b079-49f200fbdff8",
+      "source": "/product-category/myle-micro-bar",
+      "destination": "/collections/myle-micro-bar"
+    },
+    {
+      "id": "5b48893b-cbd2-443f-8b3c-4894f14919ac",
+      "source": "/product/vnsn-max-20000-puffs",
+      "destination": "/products/vnsn-max-20000-puffs"
+    },
+    {
+      "id": "8045f075-336b-4fe9-af3e-c7e3fed08221",
+      "source": "/product/meta-box-pineapple-coconut-strawberry",
+      "destination": "/products/meta-box-pineapple-coconut-strawberry"
+    },
+    {
+      "id": "4f2cbaaa-88a4-4f97-ba9d-9ca86a7be7df",
+      "source": "/product/meta-box-white-grape-ice",
+      "destination": "/products/meta-box-white-grape-ice"
+    },
+    {
+      "id": "ea0c4edd-8901-405c-a990-6299717c249f",
+      "source": "/product/tesla-bar-xt-40000-puffs-50mg",
+      "destination": "/products/tesla-bar-xt-40000-puffs-50mg"
+    },
+    {
+      "id": "e68ea1c5-c14f-4a24-a67c-50455139981b",
+      "source": "/product/meta-box-peach-ice",
+      "destination": "/products/meta-box-peach-ice"
+    },
+    {
+      "id": "ef1e2c4a-b682-4028-b6b9-825ff24bba94",
+      "source": "/product/yuoto-kjv-16000-puffs",
+      "destination": "/products/yuoto-kjv-16000-puffs"
+    },
+    {
+      "id": "9a56bef3-b0b0-44f9-abe8-bcbd39171a81",
+      "source": "/product-tag/buy-juul-pods-in-bulk",
+      "destination": "/collections"
+    },
+    {
+      "id": "4fc6fbe9-ae45-4660-9c65-ae9638490ecc",
+      "source": "/product/meta-box-french-vanilla",
+      "destination": "/products/meta-box-french-vanilla"
+    },
+    {
+      "id": "36980158-1807-4f0f-93b0-e2690986be55",
+      "source": "/product/micro-bar-iced-quad-berry",
+      "destination": "/products/micro-bar-iced-quad-berry"
+    },
+    {
+      "id": "44f607ea-fff8-4d0e-a39c-946340c61030",
+      "source": "/product-tag/juul-ruby-menthol",
+      "destination": "/collections"
+    },
+    {
+      "id": "ed9ea7a2-ccd3-4f33-b18d-3acc5f4e2372",
+      "source": "/product/geek-bar-hero-20000-puffs",
+      "destination": "/products/geek-bar-hero-20000-puffs"
+    },
+    {
+      "id": "d7ce0bfd-1988-49e3-b48c-5f051ed90b9f",
+      "source": "/product-tag/juul-2-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "a6176cc2-c1c3-46eb-aa49-4f8e8e408174",
+      "source": "/product-category/myle-drip-disposable",
+      "destination": "/collections/myle-drip-disposable"
+    },
+    {
+      "id": "2dae1bb2-0419-4a86-b8c4-87d058fa5670",
+      "source": "/product-category/myle-meta-box/page/2",
+      "destination": "/collections/myle-meta-box"
+    },
+    {
+      "id": "b8c3cabf-d7a8-45d7-9e61-b237f88de27a",
+      "source": "/product/myle-meta-iced-watermelon-9000-puffs",
+      "destination": "/products/myle-meta-iced-watermelon-9000-puffs"
+    },
+    {
+      "id": "134075aa-e401-42fa-a303-515516ae08f9",
+      "source": "/product-tag/myle-sharjah",
+      "destination": "/collections"
+    },
+    {
+      "id": "27d67251-e96b-41ba-87d7-9aef4c9564a9",
+      "source": "/product/geek-bar-23000-puffs",
+      "destination": "/products/geek-bar-23000-puffs"
+    },
+    {
+      "id": "39f850f6-ca70-4fda-acf1-3f80dd481055",
+      "source": "/product-category/myle-disposable/page/3",
+      "destination": "/collections/myle-disposable"
+    },
+    {
+      "id": "45327072-1567-4b41-8733-168d1dc659af",
+      "source": "/product/tesiyi-ultra-shisha-6mg-nicotine-35000-puffs",
+      "destination": "/products/tesiyi-ultra-shisha-6mg-nicotine-35000-puffs"
+    },
+    {
+      "id": "d04fa1fe-fe46-4943-ae68-c4440ec0e0d8",
+      "source": "/product-tag/juul-pods-virginia-tobacco",
+      "destination": "/collections"
+    },
+    {
+      "id": "2146f91c-0555-4885-ae48-eb339ccc6fe8",
+      "source": "/product/vnsn-quake-10000-puffs",
+      "destination": "/products/vnsn-quake-10000-puffs"
+    },
+    {
+      "id": "c84a8f05-0a18-47ab-9078-22c30e36197e",
+      "source": "/product/isgo-vegas-2800-puffs",
+      "destination": "/products/isgo-vegas-2800-puffs"
+    },
+    {
+      "id": "1f395642-90da-4310-993f-57e20a0ffcb1",
+      "source": "/product-tag/juul-pods-flavors-amazon",
+      "destination": "/collections"
+    },
+    {
+      "id": "d22c174d-d0e8-4235-970e-df8a74ab915e",
+      "source": "/product/meta-box-skittlez",
+      "destination": "/products/meta-box-skittlez"
+    },
+    {
+      "id": "ce3fe344-3417-4caa-b62c-0b536f8cd121",
+      "source": "/product/micro-bar-blue-razz",
+      "destination": "/products/micro-bar-blue-razz"
+    },
+    {
+      "id": "0d51b367-31a1-4ff2-b3f8-976e21fd73d4",
+      "source": "/product-category/disposable-vape/page/3",
+      "destination": "/collections/disposable-vape"
+    },
+    {
+      "id": "c79847ff-dacc-4c34-b8e8-38f3d7a80849",
+      "source": "/product-category/disposable-vape/page/4",
+      "destination": "/collections/disposable-vape"
+    },
+    {
+      "id": "7acf3c56-421d-4e14-8caa-e4352bcf9c4d",
+      "source": "/product/micro-bar-iced-mint",
+      "destination": "/products/micro-bar-iced-mint"
+    },
+    {
+      "id": "b0c74dbf-8f8e-471d-948f-013b021da881",
+      "source": "/product/isgo-tokyo-4000-puffs",
+      "destination": "/products/isgo-tokyo-4000-puffs"
+    },
+    {
+      "id": "6b2ac27f-9825-4f1a-9e8f-6fd2e6004453",
+      "source": "/product/meta-bar-iced-mint",
+      "destination": "/products/meta-bar-iced-mint"
+    },
+    {
+      "id": "aac87c20-ad84-4654-b3ff-57664ee089e8",
+      "source": "/where-to-buy-maskking-vape-in-dubai",
+      "destination": "/blogs/news/where-to-buy-maskking-vape-in-dubai"
+    },
+    {
+      "id": "3dc11a04-e13f-4228-b26f-35614251cdec",
+      "source": "/product-tag/myle-pod-price",
+      "destination": "/collections"
+    },
+    {
+      "id": "48e0b1ed-8ba7-4e38-bb08-d438bac59b5f",
+      "source": "/product-tag/juul-2-pods-abu-dhabi",
+      "destination": "/collections"
+    },
+    {
+      "id": "eb3e609b-8107-4cde-99d3-c0dd96a0a192",
+      "source": "/product-tag/juul-2-polar-menthol",
+      "destination": "/collections"
+    },
+    {
+      "id": "54bd4207-a549-4ea8-b795-3c6523efe0a2",
+      "source": "/product/isgo-paris-30000-puffs",
+      "destination": "/products/isgo-paris-30000-puffs"
+    },
+    {
+      "id": "0e3e220f-0fe2-4ec7-b951-0b21052e539c",
+      "source": "/product/myle-meta-miami-mint-9000-puffs",
+      "destination": "/products/myle-meta-miami-mint-9000-puffs"
+    },
+    {
+      "id": "cac8f95e-b264-45df-b9d0-b6868ce74a4c",
+      "source": "/product/meta-bar-lush-ice",
+      "destination": "/products/meta-bar-lush-ice"
+    },
+    {
+      "id": "922a8352-36e1-40ce-bb48-fa83739a5e87",
+      "source": "/product/meta-box-sweet-tobacco",
+      "destination": "/products/meta-box-sweet-tobacco"
+    },
+    {
+      "id": "49b3ea8c-cd4e-455e-bf0e-ac71627a0128",
+      "source": "/product/yuoto-digi-15000-puffs",
+      "destination": "/products/yuoto-digi-15000-puffs"
+    },
+    {
+      "id": "a7465239-cac7-4fd7-8f3f-e834d41616f8",
+      "source": "/product-tag/myle-emirates-mall",
+      "destination": "/collections"
+    },
+    {
+      "id": "b6e1332d-345e-45b8-96a6-8bd927f1544f",
+      "source": "/product/fummo-spin-10000-puffs",
+      "destination": "/products/fummo-spin-10000-puffs"
+    },
+    {
+      "id": "c3b3720f-6fe6-4858-8ae4-99b1a0a391ed",
+      "source": "/product/vudu-filter-2500-puffs",
+      "destination": "/products/vudu-filter-2500-puffs"
+    },
+    {
+      "id": "217d1df4-5dbe-4b98-a47d-433046ca2af3",
+      "source": "/product/micro-bar-pink-lemonade",
+      "destination": "/products/micro-bar-pink-lemonade"
+    },
+    {
+      "id": "05008c50-bfe1-492e-9284-97771c3f5f0d",
+      "source": "/product/vapes-bars-ghost-shisha",
+      "destination": "/products/vapes-bars-ghost-shisha"
+    },
+    {
+      "id": "4aff3f46-4a22-4e49-91a1-888eb81bb608",
+      "source": "/product-tag/vozol-disposable-best-flavor",
+      "destination": "/collections"
+    },
+    {
+      "id": "d357adf7-7ca2-456c-88ea-19bb7a3598aa",
+      "source": "/product-tag/buy-juul-mango-pod",
+      "destination": "/collections"
+    },
+    {
+      "id": "638268b4-fa42-4953-8a24-9d098b729bf3",
+      "source": "/product/vapes-bars-7000-puffs",
+      "destination": "/products/vapes-bars-7000-puffs"
+    },
+    {
+      "id": "cdb5b4f5-7532-4deb-bd2f-6b689a1848e5",
+      "source": "/product/meta-box-malaysian-mango",
+      "destination": "/products/meta-box-malaysian-mango"
+    },
+    {
+      "id": "0296b23f-e06b-469c-a2b3-832e31a8ea72",
+      "source": "/product/elf-bar-ice-king-30000-puffs",
+      "destination": "/products/elf-bar-ice-king-30000-puffs"
+    },
+    {
+      "id": "b80d8e48-79be-4ec8-80f1-7f58e1af6787",
+      "source": "/product-tag/summer-menthol-juul-2-pod",
+      "destination": "/collections"
+    },
+    {
+      "id": "b0a41ee8-1308-4094-aed8-2fd8c4905e3d",
+      "source": "/product/meta-box-lush-ice",
+      "destination": "/products/meta-box-lush-ice"
+    },
+    {
+      "id": "f0430e07-dba9-4d9c-8530-9270d762712f",
+      "source": "/product-tag/new-juul-device",
+      "destination": "/collections"
+    },
+    {
+      "id": "f41dacbf-c062-4e8c-adf4-3076baeabb17",
+      "source": "/product/elf-bar-2600-puffs",
+      "destination": "/products/elf-bar-2600-puffs"
+    },
+    {
+      "id": "d098934f-bbf3-4cc0-a252-90e580429add",
+      "source": "/product-tag/juul-dubai-duty-free",
+      "destination": "/collections"
+    },
+    {
+      "id": "b0526b79-2797-449e-8b3b-e1f0b62120a6",
+      "source": "/product/micro-bar-sweet-tobacco",
+      "destination": "/products/micro-bar-sweet-tobacco"
+    },
+    {
+      "id": "d44ad315-6495-41b6-9434-28858812b0fe",
+      "source": "/product-tag/buy-juul-pods-online",
+      "destination": "/collections"
+    },
+    {
+      "id": "743cd722-0220-42db-904f-749215b53480",
+      "source": "/product/meta-box-red-apple",
+      "destination": "/products/meta-box-red-apple"
+    },
+    {
+      "id": "92902434-9e6d-45bb-855c-7dd6ef337fbf",
+      "source": "/product-tag/myle-shop-near-me/page/3",
+      "destination": "/collections"
+    },
+    {
+      "id": "a0ef3343-e971-4fad-97ee-b2d440bbf894",
+      "source": "/product-tag/best-juul-compatible-pods",
+      "destination": "/collections"
+    },
+    {
+      "id": "17aef31b-2090-4b5c-ba78-5971641d82f7",
+      "source": "/product-tag/myle-disposable-vape",
+      "destination": "/collections"
+    },
+    {
+      "id": "678a6e45-7d94-4a4c-94f3-f9e4293fd8a2",
+      "source": "/product/tesla-bar-25000-puffs-50mg",
+      "destination": "/products/tesla-bar-25000-puffs-50mg"
+    },
+    {
+      "id": "21265c04-ee63-422e-863c-ff934972136d",
+      "source": "/product/nerd-crystal-5500-puffs",
+      "destination": "/products/nerd-crystal-5500-puffs"
+    },
+    {
+      "id": "aec02018-8072-4ef5-89ad-640fb7e9eb5d",
+      "source": "/product/isgo-dram-box-6000-puffs",
+      "destination": "/products/isgo-dram-box-6000-puffs"
+    },
+    {
+      "id": "0daf4321-9cb5-42cb-b5e2-c33c89b91e71",
+      "source": "/10-best-vape-brands-in-dubai-for-quality-performance-2026",
+      "destination": "/blogs/news/10-best-vape-brands-in-dubai-for-quality-performance-2026"
+    },
+    {
+      "id": "5f5ac941-1e5a-4d87-823d-e78dc1a97373",
+      "source": "/product-tag/buy-myle-meta-box",
+      "destination": "/collections"
+    },
+    {
+      "id": "90d049ed-625e-4d1d-9c1c-fe9f73bfa1b6",
+      "source": "/product-tag/juul-2-pods-near-mjuul-2-pods-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "64b7f208-c61b-4068-a957-820e4fe2ca77",
+      "source": "/product-tag/juul-dubai-mall",
+      "destination": "/collections"
+    },
+    {
+      "id": "b4c3e6b6-504e-4ee3-af34-5fc8f3ebebad",
+      "source": "/product/micro-bar-strawberry-slushy",
+      "destination": "/products/micro-bar-strawberry-slushy"
+    },
+    {
+      "id": "ff7b7e29-2fc4-4fce-9ca8-af5850d11196",
+      "source": "/product/myle-drip-bano",
+      "destination": "/products/myle-drip-bano"
+    },
+    {
+      "id": "e616bdb8-fba6-468d-8fd5-94dcd02e79f6",
+      "source": "/product/tugboat-master-10000-puffs",
+      "destination": "/products/tugboat-master-10000-puffs"
+    },
+    {
+      "id": "2fc4146e-f612-48f6-bb85-72390649dd06",
+      "source": "/product/podsalt-nexus-2000-puffs",
+      "destination": "/products/podsalt-nexus-2000-puffs"
+    },
+    {
+      "id": "969e2f8c-80e6-47e8-a532-2a68eff82361",
+      "source": "/product/myle-drip-white-gummy",
+      "destination": "/products/myle-drip-white-gummy"
+    },
+    {
+      "id": "153fef5d-3261-439e-a312-6192379cc9b4",
+      "source": "/product/micro-bar-banana-ice",
+      "destination": "/products/micro-bar-banana-ice"
+    },
+    {
+      "id": "f261fb2b-34c9-46f7-830f-34451501cf9b",
+      "source": "/product-tag/myle-meta-bar-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "3618d70d-91c1-47dd-9d77-adb6cc998d3e",
+      "source": "/product/isgo-paris-1500-puffs",
+      "destination": "/products/isgo-paris-1500-puffs"
+    },
+    {
+      "id": "9b3ae3a5-adde-4c76-addf-a120e4a9a673",
+      "source": "/product-tag/juul-vape-amazon",
+      "destination": "/collections"
+    },
+    {
+      "id": "a534bbbe-1ec8-4d18-90c5-7a554001408c",
+      "source": "/product-category/myle-micro-bar/page/2",
+      "destination": "/collections/myle-micro-bar"
+    },
+    {
+      "id": "bcae2433-2199-4f3b-9840-c41069c2ac8f",
+      "source": "/product-tag/vozol-20000",
+      "destination": "/collections"
+    },
+    {
+      "id": "f148d169-d1b2-47c0-86b3-b3f0db8ba22e",
+      "source": "/product-tag/juul-2-pods-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "b3afe5a7-3860-49bf-afbc-d906fec992db",
+      "source": "/product-tag/myle-meta-device-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "64e6d57d-ed5e-40c4-8081-77951cc4cf6e",
+      "source": "/product-tag/buy-juul-near-me",
+      "destination": "/collections"
+    },
+    {
+      "id": "ff1a5afe-7b6f-452b-babd-41fcef3c1397",
+      "source": "/product-tag/buy-juul-pods",
+      "destination": "/collections"
+    },
+    {
+      "id": "a0d6cba7-7a43-482f-a874-92d1fee2fa9e",
+      "source": "/product-category/disposable-vape/page/2",
+      "destination": "/collections/disposable-vape"
+    },
+    {
+      "id": "65827da1-1ba8-4c5d-b1da-4210f6e7b61f",
+      "source": "/product-tag/vozol-vape",
+      "destination": "/collections"
+    },
+    {
+      "id": "00fd6fa6-0825-4732-8078-20b07d2340b0",
+      "source": "/where-to-buy-juul-pods-near-you",
+      "destination": "/blogs/news/where-to-buy-juul-pods-near-you"
+    },
+    {
+      "id": "ffd1e062-7274-477b-b51f-10bb93502461",
+      "source": "/product-tag/geek-bar-disposable",
+      "destination": "/collections"
+    },
+    {
+      "id": "19fd05d6-b812-4c04-a8ba-e7363e4ead55",
+      "source": "/product/tugboat-pulse-20000-puffs",
+      "destination": "/products/tugboat-pulse-20000-puffs"
+    },
+    {
+      "id": "93741257-5fbf-443d-9710-90a3d99aa605",
+      "source": "/product/meta-box-iced-tropical-fruit",
+      "destination": "/products/meta-box-iced-tropical-fruit"
+    },
+    {
+      "id": "d635c57d-5e7a-43a5-9a50-093addbb926d",
+      "source": "/product/myle-drip-prime-pear",
+      "destination": "/products/myle-drip-prime-pear"
+    },
+    {
+      "id": "e58b17d7-3dd8-476b-b649-5d884585d9a4",
+      "source": "/product-tag/juul-pods-price",
+      "destination": "/collections"
+    },
+    {
+      "id": "5ddd1727-2de1-45ce-8dcd-61fd97149542",
+      "source": "/product/elf-bar-5000-puffs-disposable-vape",
+      "destination": "/products/elf-bar-5000-puffs-disposable-vape"
+    },
+    {
+      "id": "d31db842-b586-402e-aef4-d16cc825aa26",
+      "source": "/product-tag/myle-meta-bar-2500-puffs",
+      "destination": "/collections"
+    },
+    {
+      "id": "8bf05f29-d7ec-4c41-8d58-9b3972d37415",
+      "source": "/product-tag/juul-device-amazon",
+      "destination": "/collections"
+    },
+    {
+      "id": "98dbf50c-0bdc-49d6-b715-c0cde67e10cd",
+      "source": "/product/myle-meta-sweet-peach-9000-puffs",
+      "destination": "/products/myle-meta-sweet-peach-9000-puffs"
+    },
+    {
+      "id": "5a264170-b242-4ea0-a318-ac3029878b38",
+      "source": "/product-category/uwell-vape/page/2",
+      "destination": "/collections/uwell-vape"
+    },
+    {
+      "id": "9f8c141c-df6a-41bd-a24f-3436c7017b89",
+      "source": "/product-tag/myle-price-in-uae",
+      "destination": "/collections"
+    },
+    {
+      "id": "af6f83ab-74b3-4cfd-9e67-cd75355478df",
+      "source": "/product-tag/myle-drip-2500-puffs",
+      "destination": "/collections"
+    },
+    {
+      "id": "334ba4be-98ef-42e2-83fc-226bce667b55",
+      "source": "/product-tag/myle-shop-near-me",
+      "destination": "/collections"
+    },
+    {
+      "id": "bcfe8a68-995d-45c6-bd5a-aaf546d52510",
+      "source": "/product/myle-meta-lush-ice-9000-puffs",
+      "destination": "/products/myle-meta-lush-ice-9000-puffs"
+    },
+    {
+      "id": "9b1cb735-56a2-4786-8ae9-2586cfcfe26c",
+      "source": "/product/myle-drip-mango-ice",
+      "destination": "/products/myle-drip-mango-ice"
+    },
+    {
+      "id": "c30b1d00-9fe7-4734-8ced-dcb8f188dc27",
+      "source": "/wishlist",
+      "destination": "/"
+    },
+    {
+      "id": "51510300-ed2b-4d8a-a7a1-2669e278bc43",
+      "source": "/product/meta-bar-georgia-peach",
+      "destination": "/products/meta-bar-georgia-peach"
+    },
+    {
+      "id": "4f1fd8a1-ce63-4e19-9076-adca42326259",
+      "source": "/product-tag/vozol-vape-uae",
+      "destination": "/collections"
+    },
+    {
+      "id": "ca6ff2f4-b835-47c6-9b04-6233f07d2a4a",
+      "source": "/product-tag/juul-vape-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "42cdd137-84ab-4ba7-b01a-6f6361c154ba",
+      "source": "/product-tag/myle-shop-near-me/page/2",
+      "destination": "/collections"
+    },
+    {
+      "id": "88a0d49a-bd0c-4f9b-bc2d-3e1c1b6b49a3",
+      "source": "/product-tag/buy-juul-pods-dubai",
+      "destination": "/collections"
+    },
+    {
+      "id": "326b1697-d23c-4161-bc04-1c86ccc831d5",
+      "source": "/product-tag/myle-meta-box/page/2",
+      "destination": "/collections"
+    },
+    {
+      "id": "5d3cfdf2-2d5e-4d84-a10f-41a0050846d5",
+      "source": "/product/beco-osens-xl-disposable-10000-puffs-50mg",
+      "destination": "/products/beco-osens-xl-disposable-10000-puffs-50mg"
+    },
+    {
+      "id": "3d44bbe7-cf9d-498b-98bf-6c44ce159d09",
+      "source": "/product-tag/juul-shop-sports-city",
+      "destination": "/collections"
+    },
+    {
+      "id": "84920965-6c43-4bc2-a5f4-252eef2b96d9",
+      "source": "/product/myle-meta-cuban-tobacco-9000-puffs",
+      "destination": "/products/myle-meta-cuban-tobacco-9000-puffs"
+    },
+    {
+      "id": "7478e60c-bb81-44d1-b257-5aab79032c3c",
+      "source": "/product/myle-micro-bar-blueberry",
+      "destination": "/products/myle-micro-bar-blueberry"
+    },
+    {
+      "id": "4a12a6c8-4c4e-4b1d-9d21-2e04d10ce589",
+      "source": "/product/vnsn-quake-ultra-30000-puffs-50mg",
+      "destination": "/products/vnsn-quake-ultra-30000-puffs-50mg"
+    },
+    {
+      "id": "40a44f4e-3244-4803-939c-e9dbf7c3305c",
+      "source": "/product-category/juul-2-kit",
+      "destination": "/collections/juul-2-kit"
+    },
+    {
+      "id": "c3eafbab-1927-4bbc-be3f-19051b571e5f",
+      "source": "/product/micro-bar-prime-pear",
+      "destination": "/products/micro-bar-prime-pear"
+    },
+    {
+      "id": "255677c2-a11c-4625-8184-1d366d432332",
+      "source": "/product-category/juul-1-kit",
+      "destination": "/collections/juul-1-kit"
+    },
+    {
+      "id": "e3bce1d2-24b0-40c3-9a19-bc8b09faaf56",
+      "source": "/product/micro-bar-true-tobacco",
+      "destination": "/products/micro-bar-true-tobacco"
+    },
+    {
+      "id": "a946afd1-2117-4577-9924-9b13e476e95d",
+      "source": "/product/myle-meta-iced-tropical-fruit-9000-puffs",
+      "destination": "/products/myle-meta-iced-tropical-fruit-9000-puffs"
+    },
+    {
+      "id": "52a80650-f4d2-4131-a181-bece0472cdc1",
+      "source": "/product/elfbar-e-shisha-luxe-30000-puffs-disposable-vape",
+      "destination": "/products/elfbar-e-shisha-luxe-30000-puffs-disposable-vape"
+    },
+    {
+      "id": "88ce2c5a-ad35-48c9-9432-24c7e722a79e",
+      "source": "/product/meta-bar-red-apple",
+      "destination": "/products/meta-bar-red-apple"
+    },
+    {
+      "id": "f5205659-3408-4e42-a3dd-1ec5bb7f5f0a",
+      "source": "/product/meta-bar-sweet-tobacco",
+      "destination": "/products/meta-bar-sweet-tobacco"
+    },
+    {
+      "id": "a4f16c80-ca7b-4c31-a1f5-2723c55a55b4",
+      "source": "/product-tag/juul-2-device",
+      "destination": "/collections"
+    },
+    {
+      "id": "d9e550b5-ed97-44ca-92db-14e63dfdc97a",
+      "source": "/product-tag/myle-drip-los-ice-uae",
+      "destination": "/collections"
+    },
+    {
+      "id": "e008c82e-cca9-4c1f-a1dc-412345847474",
+      "source": "/product-category/disposable-vape/page/5",
+      "destination": "/collections/disposable-vape"
+    },
+    {
+      "id": "f4ff971b-4030-4c8a-85db-48be95bc3339",
+      "source": "/product/myle-meta-box-5000-puffs-50mg",
+      "destination": "/products/myle-meta-box-5000-puffs-50mg"
+    },
+    {
+      "id": "793ca049-03c1-4530-ae6f-5f41e96f42ba",
+      "source": "/product/myle-drip-sweet-mango",
+      "destination": "/products/myle-drip-sweet-mango"
+    },
+    {
+      "id": "9d7589f4-11a8-482a-a58a-7bb03eff8d87",
+      "source": "/product-tag/myle-disposable",
+      "destination": "/collections"
+    },
+    {
+      "id": "2e43aadf-8f2d-4f78-b507-e434b2321ac0",
+      "source": "/product/tugboat-super-16000-puffs-battery-pack-550mah-in-dubai",
+      "destination": "/products/tugboat-super-16000-puffs-battery-pack-550mah-in-dubai"
+    },
+    {
+      "id": "ca3b8a59-e8ca-41dd-8a70-0593055ea6a7",
+      "source": "/product-tag/buy-juul-vape",
+      "destination": "/collections"
+    },
+    {
+      "id": "abee4f7b-eede-4e89-addd-a19269c5e5fd",
+      "source": "/product/meta-box-georgia-peach",
+      "destination": "/products/meta-box-georgia-peach"
+    },
+    {
+      "id": "43cd9bf6-1af2-48bb-b311-0a6f88cd1b02",
+      "source": "/product/tugboat-super-16000-pod-cartridges",
+      "destination": "/products/tugboat-super-16000-pod-cartridges"
+    },
+    {
+      "id": "4fdaacaf-7d9c-4b37-8898-9e55f417f054",
+      "source": "/product-tag/juul-2-device-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "d2f7334e-6429-419e-b79a-accd408da9d8",
+      "source": "/product/myle-drip-los-ice",
+      "destination": "/products/myle-drip-los-ice"
+    },
+    {
+      "id": "1641f0a8-2157-41b5-9eac-a6d15ba3ac5a",
+      "source": "/product-tag/jol-pod-dubai",
+      "destination": "/collections"
+    },
+    {
+      "id": "6463eee8-327e-4a0d-b3d0-5a1612648c45",
+      "source": "/product-tag/juul-2-crisp-menthol",
+      "destination": "/collections"
+    },
+    {
+      "id": "83c74aea-6b6c-4616-8a2d-75af8a8c7cff",
+      "source": "/product/meta-box-blueberry-lemon",
+      "destination": "/products/meta-box-blueberry-lemon"
+    },
+    {
+      "id": "28f3996f-82d6-4169-893b-cfc20b79519a",
+      "source": "/product/micro-bar-mega-melon",
+      "destination": "/products/micro-bar-mega-melon"
+    },
+    {
+      "id": "c0518ac1-c93e-4333-826a-19d6dcfd4822",
+      "source": "/product/uwell-caliburn-g5-pod-kit",
+      "destination": "/products/uwell-caliburn-g5-pod-kit"
+    },
+    {
+      "id": "008294e0-d107-4c00-a88c-144879fa7040",
+      "source": "/product/vozol-gear-shisha-25000-puffs-3mg",
+      "destination": "/products/vozol-gear-shisha-25000-puffs-3mg"
+    },
+    {
+      "id": "cc6c72fa-550e-4a04-9736-26fc896a5336",
+      "source": "/product-tag/juul-2-pod-autumn-tobacco",
+      "destination": "/collections"
+    },
+    {
+      "id": "594c679d-619c-48da-ad05-004f21208637",
+      "source": "/product/geek-bar-pulse-15000-puffs",
+      "destination": "/products/geek-bar-pulse-15000-puffs"
+    },
+    {
+      "id": "91394f68-0ada-4656-b99b-5f9883467cda",
+      "source": "/product/myle-meta-lemon-mint-9000-puffs",
+      "destination": "/products/myle-meta-lemon-mint-9000-puffs"
+    },
+    {
+      "id": "1b4e1a14-eb46-4ef1-9f7a-6b7c1c0b6a3a",
+      "source": "/product-category/uncategorized",
+      "destination": "/collections/uncategorized"
+    },
+    {
+      "id": "57ac144f-eb9b-4259-976e-0675097311a6",
+      "source": "/product/myle-meta-strawberry-ice-9000-puffs",
+      "destination": "/products/myle-meta-strawberry-ice-9000-puffs"
+    },
+    {
+      "id": "9856cb65-2645-49b1-a8ff-d6fda29652de",
+      "source": "/product-tag/juul-shop-near-me",
+      "destination": "/collections"
+    },
+    {
+      "id": "517a7eaf-d12f-4d96-bfe2-eb2ba711851a",
+      "source": "/product/hayati-pro-ultra-s-50000-puffs-20mg",
+      "destination": "/products/hayati-pro-ultra-s-50000-puffs-20mg"
+    },
+    {
+      "id": "d8b393af-4eee-4b7e-a3f7-9c81d8b5526e",
+      "source": "/product-tag/myle-drip-review",
+      "destination": "/collections"
+    },
+    {
+      "id": "d625d25f-3233-49d9-9487-4623cf28d111",
+      "source": "/product-tag/myle-disposable-price",
+      "destination": "/collections"
+    },
+    {
+      "id": "a7b8fd4d-70c3-47de-9db3-9b143d4ea293",
+      "source": "/product/meta-box-melon-honeydew",
+      "destination": "/products/meta-box-melon-honeydew"
+    },
+    {
+      "id": "04a2462b-f70f-4bda-9c45-74eada9579b4",
+      "source": "/product/vozol-gear-10000-puffs-disposable-vape-50mg",
+      "destination": "/products/vozol-gear-10000-puffs-disposable-vape-50mg"
+    },
+    {
+      "id": "f05a47f4-65c4-4405-b396-449bb83012bc",
+      "source": "/product/pod-salt-nexus-12000-puffs",
+      "destination": "/products/pod-salt-nexus-12000-puffs"
+    },
+    {
+      "id": "60531898-e887-4905-b21f-80151ee0983c",
+      "source": "/product/myle-meta-iced-mint-9000-puffs",
+      "destination": "/products/myle-meta-iced-mint-9000-puffs"
+    },
+    {
+      "id": "20ac740b-68b4-4ce5-acbe-8abb784ee27b",
+      "source": "/product/myle-drip-green-apple-ice",
+      "destination": "/products/myle-drip-green-apple-ice"
+    },
+    {
+      "id": "ff3a1421-5abe-42e1-a6fe-52ed053c8f8f",
+      "source": "/product-tag/myle-meta-bar-online",
+      "destination": "/collections"
+    },
+    {
+      "id": "8a130ec8-eef1-401c-be94-8db5f580fd9d",
+      "source": "/product/myle-meta-frozen-mango-9000-puffs",
+      "destination": "/products/myle-meta-frozen-mango-9000-puffs"
+    },
+    {
+      "id": "d7e13eb2-f569-4d74-a5d5-b7aaa21f317a",
+      "source": "/vozol-vape-guide-2026",
+      "destination": "/blogs/news/vozol-vape-guide-2026"
+    },
+    {
+      "id": "c535381b-ccf6-4b54-9fab-7171ac196c4b",
+      "source": "/product/elf-bar-ew9000-prefilled-pod-kit-9000-puffs-50mg-disposable-vape",
+      "destination": "/products/elf-bar-ew9000-prefilled-pod-kit-9000-puffs-50mg-disposable-vape"
+    },
+    {
+      "id": "03047b45-9565-4af3-b589-b3c0cbd3f785",
+      "source": "/product-tag/myle-meta-box-price/page/2",
+      "destination": "/collections"
+    },
+    {
+      "id": "af24f66a-fa1f-472e-8651-7bc24b410591",
+      "source": "/product-tag/juul-shop-ras-al-khaimah",
+      "destination": "/collections"
+    },
+    {
+      "id": "40fcfd96-c6de-4c2f-a539-34900cda58e5",
+      "source": "/product/micro-bar-red-apple",
+      "destination": "/products/micro-bar-red-apple"
+    },
+    {
+      "id": "4585bd9f-e122-4804-b312-10996fccb1aa",
+      "source": "/product-tag/myle-1500-puffs-disposable/page/2",
+      "destination": "/collections"
+    },
+    {
+      "id": "ca77ed86-2a4d-4aed-bb11-6fdb240a4439",
+      "source": "/product/myle-drip-sweet-tobacco",
+      "destination": "/products/myle-drip-sweet-tobacco"
+    },
+    {
+      "id": "2ec3e49b-c96b-4835-aafd-58f694f34185",
+      "source": "/product/juul-2-pods-virginia-tobacco",
+      "destination": "/products/juul-2-pods-virginia-tobacco"
+    },
+    {
+      "id": "2757933e-93be-4dbf-a975-3c19f6764b3c",
+      "source": "/product-category/pod-cartridge",
+      "destination": "/collections/pod-cartridge"
+    },
+    {
+      "id": "28f70130-b98f-45de-94c0-0f1bbb8fc146",
+      "source": "/all",
+      "destination": "/shop"
+    }
+  ]
+}

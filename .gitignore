@@ -46,6 +46,9 @@ lighthouse-report.json
 # theme customizer — merchant-editable content and credentials live here, and
 # are environment-specific rather than part of the codebase
 /data
+!/data/redirects.json
+!/data/theme-published.json
+!/data/theme-draft.json
 # theme customizer — uploaded media
 /public/uploads
 
