@@ -53,6 +53,30 @@ export default function CheckoutPage() {
   };
   const isEmailInvalid = email.trim().length > 0 && !isValidEmail(email);
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    
+    if (val.startsWith("+971 ")) {
+      setPhone(val);
+    } else if (val === "+971") {
+      // If they backspaced the space, restore it
+      setPhone("+971 ");
+    } else {
+      // If they cleared it, pasted over it, or tried to delete the prefix
+      const digits = val.replace(/[^\d]/g, "");
+      let clean = digits;
+      
+      // Handle pasted numbers gracefully by stripping any existing country code / local zero
+      if (clean.startsWith("971")) {
+        clean = clean.substring(3);
+      } else if (clean.startsWith("05")) {
+        clean = clean.substring(1);
+      }
+      
+      setPhone("+971 " + clean);
+    }
+  };
+
   // Prevent accessing checkout with empty cart
   useEffect(() => {
     // We only redirect if cart is empty after hydration has completed
@@ -245,9 +269,9 @@ export default function CheckoutPage() {
                 <input
                   type="tel"
                   required
-                  placeholder="e.g. +971 50 123 4567 or 0501234567"
+                  placeholder="e.g. +971 50 123 4567"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={handlePhoneChange}
                   disabled={loading}
                   className={`w-full bg-background border ${
                     isPhoneInvalid
