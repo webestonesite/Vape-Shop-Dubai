@@ -48,6 +48,11 @@ export default function CheckoutPage() {
     phone !== "+971 " && 
     !isValidUAEPhone(phone);
 
+  const isValidEmail = (emailStr: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr);
+  };
+  const isEmailInvalid = email.trim().length > 0 && !isValidEmail(email);
+
   // Prevent accessing checkout with empty cart
   useEffect(() => {
     // We only redirect if cart is empty after hydration has completed
@@ -78,6 +83,11 @@ export default function CheckoutPage() {
 
     if (!isValidUAEPhone(cleanPhone)) {
       setFormError("Please enter a valid UAE phone number (e.g. +971 50 123 4567).");
+      return;
+    }
+
+    if (email.trim().length > 0 && !isValidEmail(email)) {
+      setFormError("Please enter a valid email address.");
       return;
     }
 
@@ -214,8 +224,17 @@ export default function CheckoutPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className="w-full bg-background border border-border/60 hover:border-primary/50 focus:border-primary rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all"
+                  className={`w-full bg-background border ${
+                    isEmailInvalid
+                      ? "border-red-500 focus:border-red-600"
+                      : "border-border/60 hover:border-primary/50 focus:border-primary"
+                  } rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all`}
                 />
+                {isEmailInvalid && (
+                  <span className="text-[10px] text-red-500 block font-semibold">
+                    Please enter a valid email address.
+                  </span>
+                )}
               </div>
 
               {/* Phone */}
