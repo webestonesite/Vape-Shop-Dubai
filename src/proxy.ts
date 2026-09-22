@@ -27,7 +27,7 @@ async function getRedirectsList(): Promise<Array<{ source: string; destination: 
     if (Array.isArray(parsed.redirects)) {
       cachedRedirects = parsed.redirects;
       lastMtime = mtime;
-      return cachedRedirects;
+      return parsed.redirects;
     }
   } catch (error) {
     console.error("Failed to read redirects.json in proxy:", error);
