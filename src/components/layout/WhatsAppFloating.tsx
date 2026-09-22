@@ -183,37 +183,10 @@ export const WhatsAppFloating: React.FC = () => {
                 <X className="w-4 h-4 text-white" />
               </button>
             </div>
-
-            {/* Mode Switcher Tabs */}
-            <div className="grid grid-cols-2 bg-black/20 p-1 rounded-xl gap-1 text-xs font-bold">
-              <button
-                onClick={() => setActiveTab("ai")}
-                className={`py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${activeTab === "ai"
-                  ? "bg-white text-foreground shadow-sm font-extrabold"
-                  : "text-white/80 hover:text-white"
-                  }`}
-              >
-                <Bot className="w-3.5 h-3.5" />
-                <span>LIVE CHAT</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("whatsapp")}
-                className={`py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${activeTab === "whatsapp"
-                  ? "bg-white text-foreground shadow-sm font-extrabold"
-                  : "text-white/80 hover:text-white"
-                  }`}
-              >
-                <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
-                <span>WhatsApp</span>
-              </button>
-            </div>
           </div>
 
-          {/* Tab 1: AI Assistant Chat */}
-          {activeTab === "ai" && (
-            <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-              {/* Message Thread */}
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+            {/* Message Thread */}
               <div className="flex-1 min-h-0 p-3.5 space-y-3.5 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-white/10">
                 {messages.map((m, idx) => (
                   <div
@@ -321,66 +294,13 @@ export const WhatsAppFloating: React.FC = () => {
                   </button>
                 </div>
                 <button
-                  onClick={() => { setActiveTab("whatsapp"); }}
+                  onClick={() => handleWhatsAppSend()}
                   className="text-[10px] text-zinc-500 hover:text-emerald-400 transition-colors flex items-center justify-center gap-1 cursor-pointer"
                 >
                   <User className="w-3 h-3" /> Talk to a human instead →
                 </button>
               </div>
             </div>
-          )}
-
-          {/* Tab 2: Direct WhatsApp */}
-          {activeTab === "whatsapp" && (
-            <div className="p-5 flex-grow flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 text-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 text-2xl">
-                    💬
-                  </div>
-                  <h4 className="font-serif font-bold text-sm text-white">Direct WhatsApp Ordering</h4>
-                  <p className="text-xs text-zinc-400 mt-1">
-                    Connect instantly with our Dubai sales team on WhatsApp. 2-Hour Express Delivery active!
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Quick WhatsApp Topics</p>
-                  <button
-                    onClick={() => handleWhatsAppSend("Hi! I want to order JUUL 2 Pods for express Dubai delivery.")}
-                    className="w-full text-left bg-white/5 hover:bg-emerald-500/10 border border-white/10 rounded-xl p-3 text-xs text-zinc-300 hover:text-emerald-400 transition-all cursor-pointer flex items-center justify-between"
-                  >
-                    <span>🍇 Order JUUL 2 Pods</span>
-                    <span>→</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleWhatsAppSend("Hi! I want to order Disposable Vapes (Al Fakher / Vozol / Geek Bar).")}
-                    className="w-full text-left bg-white/5 hover:bg-emerald-500/10 border border-white/10 rounded-xl p-3 text-xs text-zinc-300 hover:text-emerald-400 transition-all cursor-pointer flex items-center justify-between"
-                  >
-                    <span>💨 Order Disposable Vapes</span>
-                    <span>→</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleWhatsAppSend("Hello! Can I pay Cash on Delivery (COD) for my order?")}
-                    className="w-full text-left bg-white/5 hover:bg-emerald-500/10 border border-white/10 rounded-xl p-3 text-xs text-zinc-300 hover:text-emerald-400 transition-all cursor-pointer flex items-center justify-between"
-                  >
-                    <span>💵 Inquire Cash on Delivery</span>
-                    <span>→</span>
-                  </button>
-                </div>
-              </div>
-
-              <button
-                onClick={() => handleWhatsAppSend()}
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg"
-              >
-                <MessageCircle className="w-4 h-4 fill-white" />
-                <span>Open WhatsApp (+971 58 283 9787)</span>
-              </button>
-            </div>
-          )}
         </div>
       )}
 
