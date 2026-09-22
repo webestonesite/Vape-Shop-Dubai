@@ -15,7 +15,8 @@ export const WhatsAppFloating: React.FC = () => {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [activeTab, setActiveTab] = useState<"ai" | "whatsapp">("ai");
 
@@ -46,15 +47,15 @@ export const WhatsAppFloating: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isOpen && activeTab === "ai") {
+    if (isChatOpen && activeTab === "ai") {
       scrollToBottom();
       setUnreadCount(0);
     }
-  }, [messages, isOpen, activeTab]);
+  }, [messages, isChatOpen, activeTab]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!isOpen) setShowTooltip(true);
+      if (!isChatOpen && !isMenuOpen) setShowTooltip(true);
     }, 4000);
 
     const hideTimer = setTimeout(() => {
@@ -65,26 +66,32 @@ export const WhatsAppFloating: React.FC = () => {
       clearTimeout(timer);
       clearTimeout(hideTimer);
     };
-  }, [isOpen]);
+  }, [isChatOpen, isMenuOpen]);
 
   // Close dashboard when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dashboardRef.current && !dashboardRef.current.contains(event.target as Node)) {
-        const target = event.target as HTMLElement;
-        if (!target.closest(".whatsapp-floating-btn")) {
-          setIsOpen(false);
-        }
+      const target = event.target as HTMLElement;
+      
+      // If clicking inside the dashboard, don't close
+      if (dashboardRef.current && dashboardRef.current.contains(event.target as Node)) {
+        return;
+      }
+      
+      // If clicking outside both dashboard and floating buttons, close everything
+      if (!target.closest(".whatsapp-floating-btn") && !target.closest(".speed-dial-btn")) {
+        setIsChatOpen(false);
+        setIsMenuOpen(false);
       }
     };
 
-    if (isOpen) {
+    if (isChatOpen || isMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isChatOpen, isMenuOpen]);
 
   const handleSendAIMessage = async (textToSend?: string) => {
     const query = (textToSend || inputMessage).trim();
@@ -128,7 +135,8 @@ export const WhatsAppFloating: React.FC = () => {
     const msg = text || "Hello Vape Shop Dubai! I would like to inquire about vape delivery and products.";
     const encoded = encodeURIComponent(msg);
     window.open(`https://wa.me/971582839787?text=${encoded}`, "_blank", "noopener,noreferrer");
-    setIsOpen(false);
+    setIsChatOpen(false);
+    setIsMenuOpen(false);
   };
 
   const quickPrompts = [
@@ -143,7 +151,7 @@ export const WhatsAppFloating: React.FC = () => {
   return (
     <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
       {/* ── Chat Dashboard Window ── */}
-      {isOpen && (
+      {isChatOpen && (
         <div
           ref={dashboardRef}
           className="mb-4 w-[340px] sm:w-[380px] h-[520px] bg-[#121214]/95 border border-white/10 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-md overflow-hidden flex flex-col animate-slide-up origin-bottom-right"
@@ -169,7 +177,7 @@ export const WhatsAppFloating: React.FC = () => {
               </div>
 
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => setIsChatOpen(false)}
                 className="w-7 h-7 rounded-full hover:bg-white/15 flex items-center justify-center transition-all cursor-pointer"
               >
                 <X className="w-4 h-4 text-white" />
@@ -376,9 +384,42 @@ export const WhatsAppFloating: React.FC = () => {
         </div>
       )}
 
+      {/* ── Speed Dial Menu ── */}
+      {isMenuOpen && !isChatOpen && (
+        <div className="flex flex-col gap-3 mb-4 items-end animate-slide-up origin-bottom">
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              setIsChatOpen(true);
+              setActiveTab("ai");
+            }}
+            className="speed-dial-btn flex items-center gap-3 group cursor-pointer"
+          >
+            <span className="bg-zinc-950/90 text-white text-[11px] font-semibold px-3 py-1.5 rounded-xl border border-white/10 shadow-lg backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+              Live Chat
+            </span>
+            <div className="w-12 h-12 rounded-full bg-primary hover:bg-gold-shimmer text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+              <Bot className="w-5 h-5" />
+            </div>
+          </button>
+          
+          <button
+            onClick={() => handleWhatsAppSend()}
+            className="speed-dial-btn flex items-center gap-3 group cursor-pointer"
+          >
+            <span className="bg-zinc-950/90 text-white text-[11px] font-semibold px-3 py-1.5 rounded-xl border border-white/10 shadow-lg backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+              Direct WhatsApp
+            </span>
+            <div className="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+              <MessageCircle className="w-5 h-5" />
+            </div>
+          </button>
+        </div>
+      )}
+
       {/* ── Floating Trigger Button ── */}
       <div className="flex items-center gap-3">
-        {!isOpen && (
+        {!isChatOpen && !isMenuOpen && (
           <div
             className={`bg-zinc-950/90 text-white text-[11px] font-semibold px-3 py-1.5 rounded-xl border border-white/10 shadow-lg backdrop-blur-sm transition-all duration-300 transform origin-right ${showTooltip ? "opacity-100 translate-x-0 scale-100" : "opacity-0 translate-x-4 scale-75 pointer-events-none"
               }`}
@@ -392,27 +433,31 @@ export const WhatsAppFloating: React.FC = () => {
 
         <button
           onClick={() => {
-            setIsOpen(!isOpen);
+            if (isChatOpen) {
+              setIsChatOpen(false);
+            } else {
+              setIsMenuOpen(!isMenuOpen);
+            }
             setShowTooltip(false);
           }}
           className="whatsapp-floating-btn relative w-14 h-14 rounded-full bg-primary hover:bg-gold-shimmer text-white flex items-center justify-center shadow-[0_4px_20px_rgba(232,82,26,0.35)] hover:shadow-[0_4px_25px_rgba(232,82,26,0.5)] hover:scale-[1.07] active:scale-95 transition-all duration-300 cursor-pointer group"
-          aria-label="Toggle live chat assistant"
+          aria-label="Toggle support options"
         >
-          {!isOpen && (
+          {!isChatOpen && !isMenuOpen && (
             <span className="absolute -inset-1 rounded-full border-2 border-primary/25 animate-ping pointer-events-none" />
           )}
 
-          {isOpen ? (
+          {isChatOpen || isMenuOpen ? (
             <X className="w-6 h-6 transition-transform duration-300 rotate-90" />
           ) : (
-            <Bot className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
+            <MessageCircle className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
           )}
 
-          {!isOpen && unreadCount > 0 ? (
+          {!isChatOpen && !isMenuOpen && unreadCount > 0 ? (
             <span className="absolute top-0 right-0 flex h-5 w-5 -translate-y-1 translate-x-1 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white shadow ring-2 ring-primary animate-bounce">
               {unreadCount}
             </span>
-          ) : !isOpen ? (
+          ) : !isChatOpen && !isMenuOpen ? (
             <span className="absolute top-0.5 right-0.5 block h-3 w-3 rounded-full ring-2 ring-primary bg-emerald-500" />
           ) : null}
         </button>
