@@ -42,18 +42,12 @@ export default function NotFound() {
         <div className="w-full lg:w-[45%] flex justify-center lg:justify-start items-end relative h-[420px] lg:h-[800px] mb-8 lg:mb-0 lg:pl-10 -mt-12 lg:-mt-32 xl:-mt-48">
           <div className="relative w-full h-full mx-auto lg:mx-0 scale-125 lg:scale-[1.5] xl:scale-[1.85] origin-bottom lg:-ml-5 xl:-ml-10">
             <Image
-              src="/vape_404_character.png"
+              src="/vape_404_character_v2.png"
               alt="Sad Vape Character"
               fill
               className="object-contain object-bottom drop-shadow-2xl"
               priority
             />
-          </div>
-          {/* Absolute text on the left block (OOPS) - visible on large screens */}
-          <div className="absolute bottom-16 lg:bottom-32 left-4 lg:left-0 z-20 hidden lg:flex flex-col transform -rotate-12 select-none opacity-20 lg:-ml-10 xl:-ml-20">
-            <span className="font-bebas text-4xl xl:text-6xl text-[#111] leading-none tracking-wider">OOPS...</span>
-            <span className="font-bebas text-4xl xl:text-6xl text-[#111] leading-none tracking-wider">THIS PAGE</span>
-            <span className="font-bebas text-4xl xl:text-6xl text-[#111] leading-none tracking-wider">IS MISSING</span>
           </div>
         </div>
 
