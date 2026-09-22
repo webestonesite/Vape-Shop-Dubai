@@ -1,5 +1,47 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import fs from "fs";
+import path from "path";
+import staticData from "./data/redirects.json";
+
+export const runtime = "nodejs";
+
+let cachedRedirects: Array<{ source: string; destination: string }> | null = null;
+let lastMtime = 0;
+
+function getRedirectsList(): Array<{ source: string; destination: string }> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "redirects.json");
+    if (fs.existsSync(filePath)) {
+      const stats = fs.statSync(filePath);
+      const mtime = stats.mtimeMs;
+      if (cachedRedirects && mtime === lastMtime) {
+        return cachedRedirects;
+      }
+      const content = fs.readFileSync(filePath, "utf-8");
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed.redirects)) {
+        const redirectsArr: Array<{ source: string; destination: string }> = parsed.redirects;
+        cachedRedirects = redirectsArr;
+        lastMtime = mtime;
+        return cachedRedirects;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to read redirects.json in middleware:", error);
+  }
+  const fallback = (staticData as { redirects: Array<{ source: string; destination: string }> })?.redirects;
+  return Array.isArray(fallback) ? fallback : [];
+}
+
+function normalizePath(pathStr: string): string {
+  if (!pathStr) return "";
+  let p = pathStr.trim().toLowerCase();
+  if (p.length > 1 && p.endsWith("/")) {
+    p = p.slice(0, -1);
+  }
+  return p;
+}
 
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
@@ -9,30 +51,33 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith("/api") ||
     url.pathname.startsWith("/_next") ||
     url.pathname.startsWith("/admin") ||
-    url.pathname === "/favicon.ico"
+    url.pathname === "/favicon.ico" ||
+    /\.(png|jpg|jpeg|gif|webp|svg|ico|css|js|woff2?|map)$/i.test(url.pathname)
   ) {
     return NextResponse.next();
   }
 
-  try {
-    // Fetch active redirects from the public API
-    // Using a short cache revalidation so we don't fetch on every single page load
-    const redirectsRes = await fetch(`${url.origin}/api/redirects`, {
-      next: { revalidate: 60 } // Cache for 60 seconds
-    });
-    
-    if (redirectsRes.ok) {
-      const data = await redirectsRes.json();
-      const redirects = data.redirects || [];
-      
-      const match = redirects.find((r: any) => r.source === url.pathname);
-      if (match) {
-        return NextResponse.redirect(new URL(match.destination, request.url), 301);
+  const redirects = getRedirectsList();
+  if (redirects.length === 0) {
+    return NextResponse.next();
+  }
+
+  const currentPath = normalizePath(url.pathname);
+  const match = redirects.find((r) => normalizePath(r.source) === currentPath);
+
+  if (match && match.destination) {
+    const destNormalized = normalizePath(match.destination);
+    // Prevent infinite redirect loop if source and destination are identical
+    if (destNormalized !== currentPath) {
+      let destUrl: URL;
+      if (match.destination.startsWith("http://") || match.destination.startsWith("https://")) {
+        destUrl = new URL(match.destination);
+      } else {
+        const destPath = match.destination.startsWith("/") ? match.destination : "/" + match.destination;
+        destUrl = new URL(destPath + url.search, request.url);
       }
+      return NextResponse.redirect(destUrl, 301);
     }
-  } catch (error) {
-    // If fetch fails, just continue normal routing so the site doesn't break
-    console.error("Middleware redirects check failed:", error);
   }
 
   return NextResponse.next();
@@ -41,11 +86,9 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * Match all request paths except for static files
      */
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
+
