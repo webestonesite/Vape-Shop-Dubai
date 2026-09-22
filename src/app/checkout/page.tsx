@@ -36,6 +36,18 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
 
+  const isValidUAEPhone = (phoneStr: string) => {
+    const cleaned = phoneStr.replace(/[^\d+]/g, "");
+    if (cleaned.startsWith("+971") && cleaned.length === 13) return true;
+    if (cleaned.startsWith("05") && cleaned.length === 10) return true;
+    return false;
+  };
+  const isPhoneInvalid = 
+    phone.trim().length > 0 && 
+    phone !== "+971" && 
+    phone !== "+971 " && 
+    !isValidUAEPhone(phone);
+
   // Prevent accessing checkout with empty cart
   useEffect(() => {
     // We only redirect if cart is empty after hydration has completed
@@ -64,8 +76,8 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (cleanPhone.length < 9) {
-      setFormError("Please enter a valid phone number (e.g. +971 50 123 4567 or 0501234567).");
+    if (!isValidUAEPhone(cleanPhone)) {
+      setFormError("Please enter a valid UAE phone number (e.g. +971 50 123 4567).");
       return;
     }
 
@@ -218,9 +230,21 @@ export default function CheckoutPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   disabled={loading}
-                  className="w-full bg-background border border-border/60 hover:border-primary/50 focus:border-primary rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all font-mono"
+                  className={`w-full bg-background border ${
+                    isPhoneInvalid
+                      ? "border-red-500 focus:border-red-600"
+                      : "border-border/60 hover:border-primary/50 focus:border-primary"
+                  } rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all font-mono`}
                 />
-                <span className="text-[10px] text-muted-foreground block">Required for order verification call & delivery coordination.</span>
+                {isPhoneInvalid ? (
+                  <span className="text-[10px] text-red-500 block font-semibold">
+                    Invalid format. Please enter a valid UAE number (e.g., +971 50 123 4567).
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-muted-foreground block">
+                    Required for order verification call & delivery coordination.
+                  </span>
+                )}
               </div>
 
               {/* Emirate / City Dropdown */}
