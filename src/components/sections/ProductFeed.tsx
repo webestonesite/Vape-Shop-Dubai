@@ -200,7 +200,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
       className="group relative bg-card border-2 border-primary/20 hover:border-primary rounded-[1.8rem] sm:rounded-[2.2rem] p-3 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col w-full h-full overflow-hidden"
     >
       {/* Large Image Area */}
-      <div className="relative bg-muted/20 rounded-[1.3rem] sm:rounded-[1.8rem] h-52 sm:h-72 lg:h-80 p-3 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
+      <div className="relative bg-muted/20 rounded-[1.3rem] sm:rounded-[1.8rem] h-52 sm:h-72 lg:h-80 p-1 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
         <div className="hidden sm:block absolute w-56 h-56 rounded-full bg-primary/5 filter blur-2xl pointer-events-none" />
         
         {/* Loading Skeleton Shimmer */}
@@ -217,21 +217,20 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
           href={`/products/${product.handle}`}
           prefetch={true}
           onMouseEnter={() => prefetchProduct(product.handle)}
-          className="block relative z-10 w-full h-full flex items-center justify-center"
+          className="block relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-0"
         >
           <Image
             key={displayedImage}
             src={displayedImage}
             alt={product.name}
-            width={260}
-            height={260}
-            sizes="(max-width: 640px) 160px, (max-width: 1024px) 230px, 260px"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 230px, 260px"
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.opacity = "0";
               setImageLoaded(true);
             }}
-            className={`h-[160px] sm:h-[230px] lg:h-[260px] max-h-full w-auto object-contain filter drop-shadow-md transition-all duration-300 ${
+            className={`object-contain filter drop-shadow-md transition-all duration-300 ${
               imageLoaded ? "opacity-100" : "opacity-0"
             } ${hovered ? "scale-105" : "scale-100"}`}
           />
