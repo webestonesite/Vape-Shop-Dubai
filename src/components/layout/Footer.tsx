@@ -200,21 +200,21 @@ export const Footer: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="flex flex-col gap-2.5">
                 <a
                   href={`tel:${settings.phone.replace(/[^\d+]/g, "")}`}
-                  className="flex items-center gap-2.5 p-3 rounded-2xl bg-muted/40 border border-border/40 text-foreground hover:text-primary hover:border-primary/40 transition-colors truncate"
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-muted/40 border border-border/40 text-foreground hover:text-primary hover:border-primary/40 transition-colors"
                 >
                   <Phone className="h-4 w-4 text-primary shrink-0" />
-                  <span className="font-black text-xs tracking-wider truncate">{settings.phone}</span>
+                  <span className="font-black text-xs tracking-wider break-all sm:break-normal">{settings.phone}</span>
                 </a>
 
                 <a
                   href={`mailto:${settings.email}`}
-                  className="flex items-center gap-2.5 p-3 rounded-2xl bg-muted/40 border border-border/40 text-foreground hover:text-primary hover:border-primary/40 transition-colors truncate"
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-muted/40 border border-border/40 text-foreground hover:text-primary hover:border-primary/40 transition-colors"
                 >
                   <Mail className="h-4 w-4 text-primary shrink-0" />
-                  <span className="font-bold text-xs truncate">{settings.email}</span>
+                  <span className="font-bold text-xs break-all sm:break-normal">{settings.email}</span>
                 </a>
               </div>
 
