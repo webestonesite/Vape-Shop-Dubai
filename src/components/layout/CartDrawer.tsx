@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import {
   Sheet,
@@ -13,6 +13,7 @@ import {
 
 export const CartDrawer: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const {
     cart,
     isCartOpen,
@@ -21,6 +22,11 @@ export const CartDrawer: React.FC = () => {
     removeFromCart,
     cartTotal,
   } = useCart();
+
+  // Always close drawer on route change
+  useEffect(() => {
+    setIsCartOpen(false);
+  }, [pathname, setIsCartOpen]);
 
   // Generate WhatsApp message and redirect
   const handleWhatsAppCheckout = () => {
