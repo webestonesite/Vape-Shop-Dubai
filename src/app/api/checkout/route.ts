@@ -52,6 +52,18 @@ mutation draftOrderComplete($id: ID!, $paymentPending: Boolean) {
 }
 `;
 
+// Helper function to convert local UAE phone numbers (0501234567, 055 123 4567, etc.) to E.164 format (+971...)
+function formatUAEPhone(phone?: string): string | undefined {
+  if (!phone) return undefined;
+  let cleaned = phone.replace(/[^\d+]/g, "");
+  if (!cleaned) return undefined;
+  if (cleaned.startsWith("+")) return cleaned;
+  if (cleaned.startsWith("971")) return `+${cleaned}`;
+  if (cleaned.startsWith("0")) return `+971${cleaned.substring(1)}`;
+  if (cleaned.length === 9 && cleaned.startsWith("5")) return `+971${cleaned}`;
+  return `+${cleaned}`;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -71,8 +83,9 @@ export async function POST(request: Request) {
     const firstName = nameParts[0] || "Customer";
     const lastName = nameParts.slice(1).join(" ") || ".";
 
-    const customerEmail = shippingAddress.email ? shippingAddress.email.trim() : undefined;
-    const customerPhone = shippingAddress.phone.trim();
+    const customerEmail = shippingAddress.email && shippingAddress.email.trim() ? shippingAddress.email.trim() : undefined;
+    const rawPhone = shippingAddress.phone ? shippingAddress.phone.trim() : "";
+    const customerPhone = formatUAEPhone(rawPhone);
 
     let orderName = `VSD-${Math.floor(100000 + Math.random() * 900000)}`;
     let checkoutUrl = "";
@@ -146,7 +159,7 @@ export async function POST(request: Request) {
             } else {
               return {
                 title: item.name || "Vape Product",
-                originalUnitPrice: parseFloat(item.price || "0"),
+                originalUnitPrice: parseFloat(item.price || "0").toFixed(2),
                 quantity: parseInt(item.quantity || "1", 10),
               };
             }
@@ -172,10 +185,11 @@ export async function POST(request: Request) {
               phone: customerPhone,
               country: "United Arab Emirates",
             },
-            note: `Customer Name: ${rawName}\nPhone: ${customerPhone}\nDelivery Address: ${shippingAddress.address1}, ${shippingAddress.city}\nPayment Method: ${paymentMethod}`,
+            note: `Customer Name: ${rawName}\nPhone: ${rawPhone} (Formatted: ${customerPhone || "N/A"})\nDelivery Address: ${shippingAddress.address1}, ${shippingAddress.city}\nPayment Method: ${paymentMethod}`,
             customAttributes: [
               { key: "Customer Name", value: rawName },
-              { key: "Customer Phone", value: customerPhone },
+              { key: "Customer Phone", value: rawPhone },
+              { key: "Formatted Phone", value: customerPhone || rawPhone },
               { key: "Delivery Address", value: `${shippingAddress.address1}, ${shippingAddress.city}` },
               { key: "Payment Method", value: paymentMethod },
               { key: "Checkout Source", value: "Headless Web Store" },
@@ -226,6 +240,10 @@ export async function POST(request: Request) {
 
           if (!completeRes.ok) return null;
           const compJson = await completeRes.json();
+          const compErrors = compJson.data?.draftOrderComplete?.userErrors;
+          if (compErrors && compErrors.length > 0) {
+            console.error("Shopify draftOrderComplete userErrors:", JSON.stringify(compErrors));
+          }
           return compJson.data?.draftOrderComplete?.draftOrder?.order || null;
         };
 
