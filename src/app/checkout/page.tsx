@@ -31,6 +31,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("Dubai");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
+  const [shippingType, setShippingType] = useState("standard");
 
   // UX states
   const [loading, setLoading] = useState(false);
@@ -76,6 +77,13 @@ export default function CheckoutPage() {
       setPhone("+971 " + clean);
     }
   };
+
+  // Enforce standard shipping if cart total drops below 300
+  useEffect(() => {
+    if (cartTotal < 300 && shippingType === "free") {
+      setShippingType("standard");
+    }
+  }, [cartTotal, shippingType]);
 
   // Prevent accessing checkout with empty cart
   useEffect(() => {
@@ -140,7 +148,11 @@ export default function CheckoutPage() {
           city: city,
         },
         paymentMethod: paymentMethod,
-        lineItems: lineItems
+        lineItems: lineItems,
+        shippingLine: {
+          title: shippingType === "free" ? "Free Express Delivery" : "Standard Delivery",
+          price: shippingType === "free" ? 0 : 30,
+        }
       };
 
       const response = await fetch("/api/checkout", {
@@ -327,6 +339,62 @@ export default function CheckoutPage() {
                 />
               </div>
 
+              {/* Shipping Method */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Shipping Method
+                </label>
+                
+                <div className="flex flex-col gap-3">
+                  <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
+                    shippingType === "standard"
+                      ? "border-primary bg-primary/5"
+                      : "border-border/60 hover:border-primary/50 bg-background"
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <div className="text-left">
+                        <p className="text-xs font-bold text-foreground">Standard Delivery</p>
+                        <p className="text-[10px] text-muted-foreground">30.00 AED</p>
+                      </div>
+                    </div>
+                    <input
+                      type="radio"
+                      name="shippingType"
+                      value="standard"
+                      checked={shippingType === "standard"}
+                      onChange={() => setShippingType("standard")}
+                      className="accent-primary"
+                    />
+                  </label>
+
+                  {cartTotal >= 300 && (
+                    <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
+                      shippingType === "free"
+                        ? "border-primary bg-primary/5"
+                        : "border-border/60 hover:border-primary/50 bg-background"
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-foreground flex items-center gap-2">
+                            Free Express Delivery 
+                            <span className="bg-primary text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">Qualified</span>
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">0.00 AED</p>
+                        </div>
+                      </div>
+                      <input
+                        type="radio"
+                        name="shippingType"
+                        value="free"
+                        checked={shippingType === "free"}
+                        onChange={() => setShippingType("free")}
+                        className="accent-primary"
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+
               {/* Payment Method */}
               <div className="space-y-3 pt-2">
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -415,11 +483,13 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Shipping Fee</span>
-                <span className="text-primary font-bold uppercase tracking-wider text-[10px]">Free Express Delivery</span>
+                <span className="text-primary font-bold uppercase tracking-wider text-[10px]">
+                  {shippingType === "free" ? "Free Express Delivery" : "30.00 AED"}
+                </span>
               </div>
               <div className="flex justify-between text-sm font-bold text-foreground pt-3 border-t border-border/40">
                 <span>Total Amount</span>
-                <span className="text-primary font-mono text-lg">{cartTotal.toLocaleString()} AED</span>
+                <span className="text-primary font-mono text-lg">{(cartTotal + (shippingType === "free" ? 0 : 30)).toLocaleString()} AED</span>
               </div>
             </div>
 

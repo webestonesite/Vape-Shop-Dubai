@@ -195,6 +195,10 @@ export async function POST(request: Request) {
               { key: "Checkout Source", value: "Headless Web Store" },
             ],
             tags: ["Headless Order", paymentMethod === "Cash on Delivery" ? "COD" : "Card on Delivery"],
+            shippingLine: body.shippingLine || {
+              title: "Free Express Delivery",
+              price: 0,
+            },
           };
         };
 
