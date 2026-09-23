@@ -314,9 +314,6 @@ const NavbarContent: React.FC<NavbarProps> = ({
                   className="h-8 w-auto sm:h-10"
                 />
               )}
-              {header.logoText && !header.logoImage && (
-                <span className="font-bold text-lg hidden sm:block">{header.logoText}</span>
-              )}
             </div>
 
             {/* Desktop Nav Links */}
