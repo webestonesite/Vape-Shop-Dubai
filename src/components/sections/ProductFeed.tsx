@@ -307,7 +307,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
           onMouseEnter={() => prefetchProduct(product.handle)}
           className="hover:text-primary transition-colors block"
         >
-          <h3 className="text-base sm:text-lg font-body text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2 min-h-[44px] sm:min-h-[50px]">
+          <h3 className="text-base sm:text-lg font-body text-foreground group-hover:text-primary transition-colors leading-snug">
             {product.name}
           </h3>
         </Link>
