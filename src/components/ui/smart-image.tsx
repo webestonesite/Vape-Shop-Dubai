@@ -57,7 +57,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
 
   if (isDummyImage || error) {
     return (
-      <div className={`bg-gradient-to-br from-muted/50 to-muted/20 rounded-xl flex items-center justify-center p-2 ${className}`}>
+      <div className={`bg-gradient-to-br from-muted/50 to-muted/20 rounded-xl flex items-center justify-center p-2 w-full h-full`}>
         <span className="text-[9px] font-bold text-muted-foreground/40 uppercase">Vape Shop</span>
       </div>
     );
@@ -93,7 +93,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
           draggable={draggable}
           onLoad={() => setLoaded(true)}
           onError={handleError}
-          style={{ width: "auto", height: "auto", ...rest.style }}
+          style={rest.style}
           {...rest}
         />
       ) : (
@@ -109,6 +109,8 @@ export const SmartImage: React.FC<SmartImageProps> = ({
           fetchPriority={fetchPriority}
           onLoad={() => setLoaded(true)}
           onError={handleError}
+          style={rest.style}
+          {...rest}
         />
       )}
     </div>

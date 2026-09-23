@@ -30,7 +30,7 @@
               "href": "/collections/juul-2-series"
             },
             {
-              "label": "JUUL Pods",
+              "label": "JUUL Pods Offers",
               "href": "/collections/juul-pods-offers"
             }
           ]
@@ -344,8 +344,8 @@
                   "title": "MYLE Devices & Pods",
                   "accent": "Premium Pod Systems",
                   "description": "Shop authentic MYLE V5, V4, and Meta systems from a trusted vape shop Dubai customers turn to for genuine products, strong flavor delivery, and everyday convenience.\nChoose from 5% nicotine strength pods, long-lasting battery life, and compact designs that make MYLE a favorite for adults looking for a premium pod kit vape shop experience in the UAE. Order online from a top-rated vape shop UAE with fast vape delivery Dubai and easy checkout.",
-                  "image": "/Slider/myle_slider.webp",
-                  "fallbackImage": "/Slider/myle_slider.webp",
+                  "image": "",
+                  "fallbackImage": "",
                   "tag": "🔥 Premium Pod Systems",
                   "buttonText": "Shop MYLE Collection",
                   "ctaHref": "/collections/myle-vape-dubai",
@@ -358,8 +358,8 @@
                   "title": "Disposable Vapes in Dubai",
                   "accent": "Premium Disposables",
                   "description": "Looking for the best disposable vape in UAE? Shop popular picks like Lost Mary, Al Fakher Crown Bar, Tugboat, BECO, and more at a trusted vape shop Dubai customers use for fast service and genuine products.\nChoose high-puff options with up to 15,000 puffs, starting from just 40 AED. If you want to order disposable vape in UAE with cash on delivery and quick delivery across Dubai, this is the one to check.",
-                  "image": "/Slider/disposable_slider.webp",
-                  "fallbackImage": "/Slider/disposable_slider.webp",
+                  "image": "",
+                  "fallbackImage": "",
                   "tag": "💰 From 40 AED Only",
                   "buttonText": "Shop Disposables",
                   "ctaHref": "/collections/disposable-vape",
@@ -372,8 +372,8 @@
                   "title": "Pod Systems & Kits in Dubai",
                   "accent": "Vape Devices & Pods",
                   "description": "Are you looking for a best pod kit vape shop, a place that has refillable and pre-filled pod kits Dubai from major brands like Uwell, Geekvape, Vaporesso, OXVA and Voopoo. All these device comes in small portable, easy use body that is designed for immense taste through the usage of proper pods, coils and nicotine salt eliquids.\nBuy Dubai vapers' most-trusted vape kits at a trusted vape shop Dubai for real product delivery every single day and across the UAE.",
-                  "image": "/Slider/pod_kits_slider.webp",
-                  "fallbackImage": "/Slider/pod_kits_slider.webp",
+                  "image": "",
+                  "fallbackImage": "",
                   "tag": "⚡ High Performance Kits",
                   "buttonText": "Shop Pod Systems",
                   "ctaHref": "/collections/pod-system",
@@ -386,8 +386,8 @@
                   "title": "Premium E-Liquids & Salts in Dubai",
                   "accent": "Nicotine Salts & Freebase",
                   "description": "Shop premium e-liquids and nicotine salt options from trusted brands like Nasty Juice, Pod Salt, Tokyo, and RufPuf at a reliable vape shop Dubai customers use for quality and choice. Choose from 0mg to 50mg nicotine strength, with over 80 flavors ready for adult vapers who want smooth flavor and solid performance.\nIf you’re looking for a pod salt shop, a best vape pod salt selection, or a trusted online vape store UAE, this is a simple place to buy vape online Dubai with fast delivery across the UAE.",
-                  "image": "/Slider/e_liquid_slider.webp",
-                  "fallbackImage": "/Slider/e_liquid_slider.webp",
+                  "image": "",
+                  "fallbackImage": "",
                   "tag": "⭐ 80+ Flavors Available",
                   "buttonText": "Shop E-Liquids",
                   "ctaHref": "/collections/vape-e-juice",
@@ -404,7 +404,7 @@
                   "subtitle": "Original USA stock. 3% & 5% nic. Shop genuine JUUL 1 from a trusted vape shop Dubai.",
                   "buttonText": "Shop JUUL 1",
                   "href": "/collections/juul-1-series",
-                  "image": "/Slider/juul_1_slider.webp",
+                  "image": "",
                   "style": "light"
                 },
                 {
@@ -413,7 +413,7 @@
                   "subtitle": "Authentic UK stock. 18mg nic. Get JUUL 2 from a reliable vape shop UAE.",
                   "buttonText": "Shop JUUL 2",
                   "href": "/collections/juul-2-series",
-                  "image": "/Slider/juul_2_slider.webp",
+                  "image": "",
                   "style": "primary"
                 }
               ]
@@ -6663,6 +6663,6 @@
       }
     }
   },
-  "updatedAt": "2026-09-20T16:24:25.526Z",
+  "updatedAt": "2026-09-23T12:51:07.466Z",
   "updatedBy": "shipontalukdar.webestone@gmail.com"
 }

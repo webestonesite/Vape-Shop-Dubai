@@ -288,7 +288,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
             {/* Logo */}
             <div
               suppressHydrationWarning
-              className="flex-shrink-0 cursor-pointer select-none"
+              className="flex-shrink-0 cursor-pointer select-none flex items-center gap-2"
               onClick={() => {
                 if (pathname === "/") {
                   onCategorySelect?.("all");
@@ -298,14 +298,25 @@ const NavbarContent: React.FC<NavbarProps> = ({
                 }
               }}
             >
-              <Image
-                src="/Vape%20Shop%20Dubai%20logo%201.png"
-                alt="Vape Shop Dubai"
-                width={219}
-                height={40}
-                priority
-                className="h-8 w-auto sm:h-10"
-              />
+              {header.logoImage ? (
+                <img
+                  src={header.logoImage}
+                  alt={header.logoText || "Vape Shop Dubai"}
+                  className="h-8 w-auto sm:h-10 object-contain"
+                />
+              ) : (
+                <Image
+                  src="/Vape%20Shop%20Dubai%20logo%201.png"
+                  alt={header.logoText || "Vape Shop Dubai"}
+                  width={219}
+                  height={40}
+                  priority
+                  className="h-8 w-auto sm:h-10"
+                />
+              )}
+              {header.logoText && !header.logoImage && (
+                <span className="font-bold text-lg hidden sm:block">{header.logoText}</span>
+              )}
             </div>
 
             {/* Desktop Nav Links */}

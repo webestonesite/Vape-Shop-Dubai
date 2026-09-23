@@ -2749,6 +2749,9 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
 export const HEADER_FIELDS: FieldDef[] = [
   { type: "toggle", key: "announcementEnabled", label: "Show announcement bar" },
   { type: "textarea", key: "announcementText", label: "Announcement text", rows: 2 },
+  { type: "image", key: "logoImage", label: "Logo Image" },
+  { type: "text", key: "logoText", label: "Logo text" },
+  { type: "text", key: "logoSubText", label: "Logo subtext" },
   {
     type: "repeater",
     key: "menu",
@@ -2779,6 +2782,7 @@ export const HEADER_FIELDS: FieldDef[] = [
 
 /** Fields for the footer, which renders on every page. */
 export const FOOTER_FIELDS: FieldDef[] = [
+  { type: "image", key: "logoImage", label: "Logo Image" },
   {
     type: "repeater",
     key: "trustItems",

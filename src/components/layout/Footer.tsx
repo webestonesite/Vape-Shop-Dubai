@@ -69,13 +69,21 @@ export const Footer: React.FC = () => {
           {/* Column 1: Brand Info & Support Box (3 cols) */}
           <div className="lg:col-span-3 space-y-5">
             <Link href="/" className="inline-block group relative">
-              <Image
-                src="/Vape Shop Dubai logo 1.png"
-                alt="Vape Shop Dubai"
-                width={200}
-                height={50}
-                className="h-9 w-auto relative z-10 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
-              />
+              {settings.logoImage ? (
+                <img
+                  src={settings.logoImage}
+                  alt="Vape Shop Dubai"
+                  className="h-9 w-auto relative z-10 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300 object-contain"
+                />
+              ) : (
+                <Image
+                  src="/Vape Shop Dubai logo 1.png"
+                  alt="Vape Shop Dubai"
+                  width={200}
+                  height={50}
+                  className="h-9 w-auto relative z-10 drop-shadow-sm group-hover:drop-shadow-md transition-all duration-300"
+                />
+              )}
               <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </Link>
 

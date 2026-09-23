@@ -272,7 +272,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
         {(product.isSoldOut || product.tag) && (
           <div className={`absolute top-3 left-3 text-[10px] font-bold tracking-wide px-3 py-1.5 rounded-full pointer-events-none z-20 shadow-xs ${
             product.isSoldOut
-              ? "bg-[#2D2A26]"
+              ? "bg-[#2D2A26] text-white"
               : isSale
               ? "bg-primary text-white"
               : "bg-card/95 text-primary border border-primary/20"

@@ -125,6 +125,7 @@ export interface NavItem {
 export interface HeaderSettings {
   announcementEnabled: boolean;
   announcementText: string;
+  logoImage?: string;
   logoText: string;
   logoSubText: string;
   menu: NavItem[];
@@ -147,6 +148,7 @@ export interface FooterColumn {
 }
 
 export interface FooterSettings {
+  logoImage?: string;
   trustItems: FooterTrustItem[];
   description: string;
   whatsappLabel: string;
