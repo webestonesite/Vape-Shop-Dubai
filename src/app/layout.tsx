@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeSettingsProvider } from "@/context/ThemeSettingsContext";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { LazyWhatsApp } from "@/components/layout/LazyWhatsApp";
-import { headers } from "next/headers";
 import { CanonicalHead } from "@/components/layout/CanonicalHead";
 import {
   getOrganizationSchema,
@@ -36,10 +35,8 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'https';
-  const SITE_URL = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+  // Use the constant production URL — avoids headers() which forces dynamic rendering.
+  const SITE_URL = FALLBACK_SITE_URL;
 
   return {
     metadataBase: new URL(SITE_URL),
