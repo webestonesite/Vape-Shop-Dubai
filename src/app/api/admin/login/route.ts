@@ -1,7 +1,24 @@
 import { NextResponse } from "next/server";
 import { setSessionCookie } from "@/lib/auth/session";
+import rateLimit from "@/lib/rate-limit";
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500,
+});
 
 export async function POST(request: Request) {
+  // Strict rate limit for admin login (5 attempts per minute)
+  const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
+  try {
+    await limiter.check(5, ip);
+  } catch {
+    return NextResponse.json(
+      { error: "Too many login attempts. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   let body: { idToken?: string };
   try {
     body = await request.json();
