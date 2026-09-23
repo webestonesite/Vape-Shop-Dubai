@@ -164,7 +164,6 @@ interface ProductFeedProps {
 export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Product; onAddToCart: (p: Product) => void; onBuyNow: (p: Product) => void }) {
   const [hovered, setHovered] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const isSale = product.tagColor === "sale";
 
   const allImagesList = useMemo(() => {
@@ -202,16 +201,6 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
       {/* Large Image Area */}
       <div className="relative bg-muted/20 rounded-[1.3rem] sm:rounded-[1.8rem] h-52 sm:h-72 lg:h-80 p-1 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
         <div className="hidden sm:block absolute w-56 h-56 rounded-full bg-primary/5 filter blur-2xl pointer-events-none" />
-        
-        {/* Loading Skeleton Shimmer */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 z-0 flex flex-col items-center justify-center bg-muted/40 animate-pulse p-4">
-            <div className="w-24 h-36 bg-primary/10 rounded-2xl animate-pulse mb-2 border border-primary/10 flex items-center justify-center shadow-inner">
-              <Package className="w-8 h-8 text-primary/40 animate-bounce" />
-            </div>
-            <div className="w-20 h-2 bg-primary/20 rounded-full animate-pulse" />
-          </div>
-        )}
 
         <Link
           href={`/products/${product.handle}`}
@@ -225,14 +214,12 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 230px, 260px"
-            onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.opacity = "0";
-              setImageLoaded(true);
             }}
             className={`object-contain filter drop-shadow-md transition-all duration-300 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
-            } ${hovered ? "scale-105" : "scale-100"}`}
+              hovered ? "scale-105" : "scale-100"
+            }`}
           />
         </Link>
 

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
@@ -651,15 +652,19 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           autoPlay={true}
                         />
                       ) : (
-                        <img
-                          src={activeImage}
-                          alt={product.name}
-                          loading="eager"
-                          fetchPriority="high"
-                          decoding="async"
-                          className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
-                          onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                        />
+                        <div className="relative w-[90%] h-[90%]">
+                          {activeImage && (
+                            <Image
+                              src={activeImage}
+                              alt={product.name}
+                              fill
+                              priority
+                              sizes="(max-width: 1024px) 100vw, 50vw"
+                              className="object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                            />
+                          )}
+                        </div>
                       )}
 
                       {product.tag && activeMediaType === "image" && (
@@ -686,14 +691,16 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                                 : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
                             }`}
                           >
-                            <img
-                              src={img}
-                              alt={`${product.name} thumb ${idx + 1}`}
-                              loading="lazy"
-                              decoding="async"
-                              className="h-full w-auto object-contain"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                            />
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={img}
+                                alt={`${product.name} thumb ${idx + 1}`}
+                                fill
+                                sizes="80px"
+                                className="object-contain"
+                                onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                              />
+                            </div>
                           </button>
                         ))}
 
@@ -709,14 +716,18 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                                 : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
                             }`}
                           >
-                            <img
-                              src={videoThumbSrc}
-                              alt={`${product.name} video thumbnail`}
-                              loading="lazy"
-                              decoding="async"
-                              className="h-full w-full object-cover rounded-xl filter brightness-90 group-hover:brightness-100"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
-                            />
+                            <div className="relative w-full h-full">
+                              {videoThumbSrc && (
+                                <Image
+                                  src={videoThumbSrc}
+                                  alt={`${product.name} video thumbnail`}
+                                  fill
+                                  sizes="80px"
+                                  className="object-cover rounded-xl filter brightness-90 group-hover:brightness-100"
+                                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                                />
+                              )}
+                            </div>
                             <div className="absolute inset-0 flex items-center justify-center bg-black/35 group-hover:bg-black/20 transition-colors">
                               <div className="w-7 h-7 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform ring-2 ring-white/40">
                                 <Play className="w-3.5 h-3.5 fill-white ml-0.5" />
