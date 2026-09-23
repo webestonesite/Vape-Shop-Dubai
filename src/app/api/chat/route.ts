@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { fetchLiveWebsiteProducts, LiveProductItem } from "@/lib/getStoreProducts";
+import rateLimit from "@/lib/rate-limit";
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500,
+});
 
 function cleanTitleForHuman(title: string): string {
   return title
@@ -30,6 +36,17 @@ function getRelevantProductsForPrompt(userMessage: string, liveProducts: LivePro
 
 export async function POST(req: Request) {
   try {
+    // Basic rate limit by IP (15 requests per minute for chat)
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    try {
+      await limiter.check(15, ip);
+    } catch {
+      return NextResponse.json(
+        { error: "Too many messages. Please wait a moment." },
+        { status: 429 }
+      );
+    }
+
     console.log("KEYS:", { OR: !!process.env.OPENROUTER_API_KEY, GROQ: !!process.env.GROQ_API_KEY, NV: !!process.env.NVIDIA_API_KEY });
     const { messages } = await req.json();
     if (!messages || !Array.isArray(messages)) {

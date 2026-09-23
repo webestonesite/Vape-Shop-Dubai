@@ -1,4 +1,10 @@
 import { NextResponse } from "next/server";
+import rateLimit from "@/lib/rate-limit";
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500, // Max 500 users per second
+});
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE || "vap-shop-dubai.myshopify.com";
 const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
@@ -66,6 +72,17 @@ function formatUAEPhone(phone?: string): string | undefined {
 
 export async function POST(request: Request) {
   try {
+    // Basic rate limit by IP (10 requests per minute)
+    const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
+    try {
+      await limiter.check(10, ip);
+    } catch {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { shippingAddress, paymentMethod, lineItems } = body;
 
