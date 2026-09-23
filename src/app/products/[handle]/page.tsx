@@ -906,12 +906,12 @@ export default function ProductPage() {
                             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                             <div className="text-left min-w-0">
                               <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block leading-tight">
-                                {text("variantLabel", `${optionName} Option:`)}
+                                {`${optionName} Option:`}
                               </span>
                               <span className="text-xs sm:text-sm font-extrabold text-foreground truncate block mt-0.5">
                                 {selectedVariant
                                   ? selectedVariant.title
-                                  : text("variantPlaceholder", `Select ${optionName}`)}
+                                  : `Select ${optionName}`}
                               </span>
                             </div>
                           </div>
@@ -970,7 +970,7 @@ export default function ProductPage() {
                         >
                           <ShoppingCart className="h-4.5 w-4.5 text-primary" />{" "}
                           {!selectedVariant
-                            ? text("selectVariantLabel", `Select ${optionName} First`)
+                            ? `Select ${optionName} First`
                             : text("addToCartLabel", "Add to Cart")}
                         </button>
 
@@ -981,7 +981,7 @@ export default function ProductPage() {
                         >
                           <Truck className="h-4.5 w-4.5" />{" "}
                           {!selectedVariant
-                            ? text("selectVariantLabel", `Select ${optionName} First`)
+                            ? `Select ${optionName} First`
                             : text("buyNowLabel", "Buy It Now")}
                         </button>
                       </div>
@@ -1314,7 +1314,7 @@ export default function ProductPage() {
                   {product.name}
                 </span>
                 <h3 className="text-xl sm:text-2xl font-serif font-black text-foreground mt-0.5">
-                  {text("variantModalHeading", `Select ${product.options?.[0]?.name || "Flavor"} Option`)}
+                  {`Select ${product.options?.[0]?.name || "Flavor"} Option`}
                 </h3>
               </div>
               <button
@@ -1332,7 +1332,7 @@ export default function ProductPage() {
                 <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder={text("variantSearchPlaceholder", `Search ${product.options?.[0]?.name?.toLowerCase() || "flavor"} name...`)}
+                  placeholder={`Search ${product.options?.[0]?.name?.toLowerCase() || "flavor"} name...`}
                   value={flavorSearchQuery}
                   onChange={(e) => setFlavorSearchQuery(e.target.value)}
                   className="w-full bg-muted/20 border border-border/60 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-bold text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
@@ -1423,7 +1423,7 @@ export default function ProductPage() {
               <ShoppingCart className="w-3.5 h-3.5" />
               <span>
                 {!selectedVariant
-                  ? text("variantPlaceholder", `Select ${product.options?.[0]?.name || "Flavor"}`)
+                  ? `Select ${product.options?.[0]?.name || "Flavor"}`
                   : text("addToCartLabel", "Add to Cart")}
               </span>
             </button>
