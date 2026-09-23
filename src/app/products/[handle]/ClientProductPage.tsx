@@ -132,6 +132,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
   const [product, setProduct] = useState<ProductDetails | null>(initialProduct || null);
   const [loading, setLoading] = useState(!initialProduct);
   const [error, setError] = useState("");
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
   const [activeImage, setActiveImage] = useState(initialProduct?.image || "");
   const [activeMediaType, setActiveMediaType] = useState<"image" | "video">("image");
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(() => {
@@ -653,15 +654,26 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                         />
                       ) : (
                         <div className="relative w-[90%] h-[90%]">
+                          {/* Fast Smooth Shimmer */}
+                          {!mainImageLoaded && (
+                            <div className="absolute inset-0 z-0 flex items-center justify-center bg-muted/30 animate-pulse rounded-3xl" />
+                          )}
                           {activeImage && (
                             <Image
                               src={activeImage}
                               alt={product.name}
                               fill
                               priority
-                              sizes="(max-width: 1024px) 100vw, 50vw"
-                              className="object-contain filter drop-shadow-2xl group-hover:scale-102 transition-transform duration-500 pointer-events-none"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
+                              quality={60}
+                              sizes="(max-width: 768px) 100vw, 600px"
+                              className={`object-contain filter drop-shadow-2xl group-hover:scale-102 transition-all duration-500 pointer-events-none z-10 ${
+                                mainImageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
+                              }`}
+                              onLoad={() => setMainImageLoaded(true)}
+                              onError={(e) => { 
+                                (e.currentTarget as HTMLImageElement).style.opacity = "0"; 
+                                setMainImageLoaded(true);
+                              }}
                             />
                           )}
                         </div>

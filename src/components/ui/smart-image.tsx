@@ -21,6 +21,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
   draggable,
   ...rest
 }) => {
+  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
   const handleError = useCallback((event: React.SyntheticEvent<HTMLImageElement>) => {
@@ -62,19 +63,27 @@ export const SmartImage: React.FC<SmartImageProps> = ({
 
   return (
     <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
-      {/* Loading state removed to prevent LCP delay */}
+      {!loaded && (
+        <div className="absolute inset-0 z-0 flex items-center justify-center bg-muted/30 animate-pulse rounded-xl pointer-events-none" />
+      )}
       <Image
         src={src}
         alt={alt}
         width={width}
         height={height}
-        className={`${className} mx-auto`}
+        className={`${className} mx-auto z-10 transition-all duration-500 ${
+          loaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
+        }`}
         sizes={effectiveSizes}
-        quality={80}
+        quality={70}
         priority={priority}
         fetchPriority={fetchPriority}
         draggable={draggable}
-        onError={handleError}
+        onLoad={() => setLoaded(true)}
+        onError={(e) => {
+          handleError(e);
+          setLoaded(true);
+        }}
         style={rest.style}
         {...rest}
       />

@@ -164,6 +164,7 @@ interface ProductFeedProps {
 export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Product; onAddToCart: (p: Product) => void; onBuyNow: (p: Product) => void }) {
   const [hovered, setHovered] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const isSale = product.tagColor === "sale";
 
   const allImagesList = useMemo(() => {
@@ -208,18 +209,25 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
           onMouseEnter={() => prefetchProduct(product.handle)}
           className="block relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-0"
         >
+          {/* Fast Smooth Shimmer */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 z-0 flex items-center justify-center bg-muted/30 animate-pulse rounded-[1.3rem] sm:rounded-[1.8rem]" />
+          )}
           <Image
             key={displayedImage}
             src={displayedImage}
             alt={product.name}
             fill
+            quality={60}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 230px, 260px"
+            onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.opacity = "0";
+              setImageLoaded(true);
             }}
-            className={`object-contain filter drop-shadow-md transition-all duration-300 ${
+            className={`object-contain filter drop-shadow-md transition-all duration-500 z-10 ${
               hovered ? "scale-105" : "scale-100"
-            }`}
+            } ${imageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"}`}
           />
         </Link>
 
