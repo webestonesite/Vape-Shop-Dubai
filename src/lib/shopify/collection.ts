@@ -1,4 +1,4 @@
-
+import { NextResponse } from "next/server";
 import { parseCollectionSections } from "@/lib/theme/collection-sections";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
