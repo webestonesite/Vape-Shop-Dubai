@@ -135,6 +135,10 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
   const [mainImageLoaded, setMainImageLoaded] = useState(false);
   const [activeImage, setActiveImage] = useState(initialProduct?.image || "");
   const [activeMediaType, setActiveMediaType] = useState<"image" | "video">("image");
+
+  useEffect(() => {
+    setMainImageLoaded(false);
+  }, [activeImage]);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(() => {
     if (!initialProduct) return null;
     if (initialProduct.variants && initialProduct.variants.length > 1) return null;

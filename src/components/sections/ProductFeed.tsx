@@ -519,16 +519,17 @@ export interface ProductFeedSettings {
 
 
 export const ProductFeed: React.FC<
-  ProductFeedProps & { settings?: ProductFeedSettings }
+  ProductFeedProps & { settings?: ProductFeedSettings; initialProducts?: Product[] }
 > = ({
   settings,
   searchQuery,
   activeCategory,
   onCategorySelect,
+  initialProducts,
 }) => {
   const { addToCart, setIsCartOpen } = useCart();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<Product[]>(initialProducts || []);
+  const [loading, setLoading] = useState<boolean>(!initialProducts || initialProducts.length === 0);
 
   useEffect(() => {
     async function loadProducts() {

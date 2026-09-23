@@ -10,6 +10,7 @@ import type { FaqItem } from "@/components/sections/FAQSection";
 import { TemplateSections, SECTION_CONTAINER } from "@/components/sections/SectionRenderer";
 import { HomeProductFeedSlot } from "@/components/layout/HomeProductFeedSlot";
 import { HomeCustomerReviewsSlot } from "@/components/layout/HomeCustomerReviewsSlot";
+import { getAllProducts } from "@/lib/shopify/products-fetch";
 
 export default async function Home() {
   const settings = await getThemeSettings();
@@ -27,6 +28,7 @@ export default async function Home() {
 
   const faqSchema = getFAQSchema(questions);
   const breadcrumbSchema = getBreadcrumbSchema([{ name: "Home", item: "/" }]);
+  const initialProducts = await getAllProducts();
 
   return (
     <HomeStateProvider>
@@ -51,7 +53,7 @@ export default async function Home() {
             isOverride={isOverride}
             context={{}}
             slots={{
-              productFeed: (settings) => <HomeProductFeedSlot settings={settings} />,
+              productFeed: (settings) => <HomeProductFeedSlot settings={settings} initialProducts={initialProducts} />,
               customerReviews: (settings) => <HomeCustomerReviewsSlot settings={settings} />
             }}
             containerClassName={SECTION_CONTAINER}
