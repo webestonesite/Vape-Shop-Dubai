@@ -268,7 +268,7 @@ export function EJuiceBrandsShowcase({
             className="w-[260px] sm:w-[300px] lg:w-[330px] snap-start flex-shrink-0 group relative bg-background border border-border/70 hover:border-primary/60 rounded-3xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 shadow-sm hover:shadow-xl overflow-hidden"
           >
             {/* Top Product Image Display Area - Clean Premium Studio Showcase */}
-            <div className="w-full h-40 sm:h-48 rounded-2xl bg-gradient-to-b from-muted/30 via-muted/15 to-transparent border border-border/60 p-3 sm:p-4 flex items-center justify-center relative mb-3.5 overflow-hidden shrink-0 group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-300">
+            <div className="w-full h-40 sm:h-48 rounded-2xl bg-gradient-to-b from-muted/30 via-muted/15 to-transparent border border-border/60 p-2 sm:p-3 flex items-center justify-center relative mb-3.5 overflow-hidden shrink-0 group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-300">
               <SmartImage
                 src={brand.handle && collectionImages[brand.handle] ? collectionImages[brand.handle] : brand.image}
                 fallbackSrc=""
@@ -277,7 +277,7 @@ export function EJuiceBrandsShowcase({
                 height={192}
                 sizes="(max-width: 640px) 260px, 330px"
                 draggable={false}
-                className="max-w-full max-h-full w-auto h-auto object-contain filter drop-shadow-xl group-hover:scale-108 transition-transform duration-500 pointer-events-none mx-auto my-auto block"
+                className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-108 transition-transform duration-500 pointer-events-none mx-auto my-auto block mix-blend-darken dark:mix-blend-normal dark:bg-white dark:rounded-xl"
               />
             </div>
 

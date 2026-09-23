@@ -228,7 +228,7 @@ function SubCollectionSectionSlider({
             } snap-start group relative bg-card border-2 border-border/80 hover:border-primary/70 rounded-[1.75rem] p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 shadow-md hover:shadow-2xl hover:shadow-primary/10 overflow-hidden`}
           >
             {/* Top Product Image Display Area - Clean Premium Studio Showcase */}
-            <div className="w-full h-40 sm:h-48 rounded-2xl bg-gradient-to-b from-muted/30 via-muted/15 to-transparent border border-border/60 p-3 sm:p-4 flex items-center justify-center relative mb-3.5 overflow-hidden shrink-0 group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-300">
+            <div className="w-full h-40 sm:h-48 rounded-2xl bg-gradient-to-b from-muted/30 via-muted/15 to-transparent border border-border/60 p-2 sm:p-3 flex items-center justify-center relative mb-3.5 overflow-hidden shrink-0 group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-300">
               <SmartImage
                 src={(getHandleFromUrl(card.href) ? collectionImages[getHandleFromUrl(card.href)!] : undefined) || card.image}
                 fallbackSrc=""
@@ -237,7 +237,7 @@ function SubCollectionSectionSlider({
                 height={192}
                 sizes="(max-width: 640px) 270px, 340px"
                 draggable={false}
-                className="max-w-full max-h-full w-auto h-auto object-contain filter drop-shadow-xl group-hover:scale-108 transition-transform duration-500 pointer-events-none mx-auto my-auto block"
+                className="max-w-full max-h-full w-auto h-auto object-contain group-hover:scale-108 transition-transform duration-500 pointer-events-none mx-auto my-auto block mix-blend-darken dark:mix-blend-normal dark:bg-white dark:rounded-xl"
               />
             </div>
 
