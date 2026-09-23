@@ -3,18 +3,6 @@
 import Image, { type ImageProps } from "next/image";
 import React, { useState, useCallback } from "react";
 
-const OPTIMIZED_HOSTS = ["cdn.shopify.com"];
-
-function canOptimize(src: string): boolean {
-  if (!src) return false;
-  if (src.startsWith("/")) return true;
-  try {
-    return OPTIMIZED_HOSTS.includes(new URL(src).hostname);
-  } catch {
-    return false;
-  }
-}
-
 type SmartImageProps = Omit<ImageProps, "src"> & {
   src: string;
   fallbackSrc?: string;
@@ -78,41 +66,22 @@ export const SmartImage: React.FC<SmartImageProps> = ({
       {!loaded && (
         <div className="absolute inset-0 bg-muted/80 animate-pulse flex items-center justify-center z-10 pointer-events-none rounded-xl" />
       )}
-
-      {canOptimize(src) ? (
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 mx-auto`}
-          sizes={effectiveSizes}
-          quality={75}
-          priority={priority}
-          fetchPriority={fetchPriority}
-          draggable={draggable}
-          onLoad={() => setLoaded(true)}
-          onError={handleError}
-          style={rest.style}
-          {...rest}
-        />
-      ) : (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={typeof alt === "string" ? alt : ""}
-          width={typeof width === "number" ? width : undefined}
-          height={typeof height === "number" ? height : undefined}
-          className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 mx-auto`}
-          draggable={draggable}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={fetchPriority}
-          onLoad={() => setLoaded(true)}
-          onError={handleError}
-          style={rest.style}
-          {...rest}
-        />
-      )}
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={`${className} ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-300 mx-auto`}
+        sizes={effectiveSizes}
+        quality={80}
+        priority={priority}
+        fetchPriority={fetchPriority}
+        draggable={draggable}
+        onLoad={() => setLoaded(true)}
+        onError={handleError}
+        style={rest.style}
+        {...rest}
+      />
     </div>
   );
 };

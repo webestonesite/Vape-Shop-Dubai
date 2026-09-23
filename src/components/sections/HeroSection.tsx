@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -267,16 +267,31 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                         <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
                           {slideImg && (
                             idx === 0 ? (
-                              <picture className="relative z-10 w-auto max-w-full flex justify-center pointer-events-none">
-                                <source media="(max-width: 640px)" srcSet={slideImg.startsWith('/Slider/') ? slideImg.replace('.webp', '_mobile.webp') : slideImg} />
-                                <img
-                                  src={slideImg}
-                                  alt={slide.title}
-                                  fetchPriority="high"
-                                  draggable={false}
-                                  className="sm:animate-float max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
-                                />
-                              </picture>
+                              (() => {
+                                const common = { alt: slide.title, priority: true, quality: 80 };
+                                const { props: mobile } = getImageProps({
+                                  ...common,
+                                  src: slideImg.startsWith('/Slider/') ? slideImg.replace('.webp', '_mobile.webp') : slideImg,
+                                  width: 400,
+                                  height: 400,
+                                });
+                                const { props: desktop } = getImageProps({
+                                  ...common,
+                                  src: slideImg,
+                                  width: 800,
+                                  height: 800,
+                                });
+                                return (
+                                  <picture className="relative z-10 w-auto max-w-full flex justify-center pointer-events-none">
+                                    <source media="(max-width: 640px)" srcSet={mobile.srcSet} />
+                                    <source media="(min-width: 641px)" srcSet={desktop.srcSet} />
+                                    <img
+                                      {...desktop}
+                                      className="sm:animate-float max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
+                                    />
+                                  </picture>
+                                );
+                              })()
                             ) : (
                               <SmartImage
                                 src={slideImg}
