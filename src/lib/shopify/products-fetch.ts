@@ -113,7 +113,7 @@ async function fetchShopifyProducts() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ query: storefrontQuery }),
-        next: { revalidate: 10 },
+        next: { revalidate: 3600 },
       });
 
       if (response.ok) {
@@ -137,7 +137,7 @@ async function fetchShopifyProducts() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query: adminQuery }),
-      next: { revalidate: 10 },
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {

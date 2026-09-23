@@ -12,8 +12,14 @@ import { HomeProductFeedSlot } from "@/components/layout/HomeProductFeedSlot";
 import { HomeCustomerReviewsSlot } from "@/components/layout/HomeCustomerReviewsSlot";
 import { getAllProducts } from "@/lib/shopify/products-fetch";
 
+export const revalidate = 3600; // Cache the full home page at the CDN edge for 1 hour
+
 export default async function Home() {
-  const settings = await getThemeSettings();
+  // Run both data fetches in parallel to minimize TTFB
+  const [settings, initialProducts] = await Promise.all([
+    getThemeSettings(),
+    getAllProducts(),
+  ]);
   const key = resolveTemplateKey(settings.templates, "index");
   const template = settings.templates[key];
   const instances = template.order
@@ -28,7 +34,6 @@ export default async function Home() {
 
   const faqSchema = getFAQSchema(questions);
   const breadcrumbSchema = getBreadcrumbSchema([{ name: "Home", item: "/" }]);
-  const initialProducts = await getAllProducts();
 
   return (
     <HomeStateProvider>

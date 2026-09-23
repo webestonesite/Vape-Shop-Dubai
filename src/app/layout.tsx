@@ -107,10 +107,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers();
-  const host = headersList.get('host');
-  const protocol = headersList.get('x-forwarded-proto') || 'https';
-  const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+  // Use the constant site URL so the layout can be statically optimised.
+  // CanonicalHead (client component) will correct the canonical URL at runtime.
+  const siteUrl = FALLBACK_SITE_URL;
 
   const orgSchema = getOrganizationSchema(siteUrl);
   const websiteSchema = getWebSiteSchema(siteUrl);
