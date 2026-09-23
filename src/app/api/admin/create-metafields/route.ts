@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE;
 const ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
@@ -25,10 +26,18 @@ mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
 `;
 
 export async function GET(request: NextRequest) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   return createVideoMetafields();
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   return createVideoMetafields();
 }
 

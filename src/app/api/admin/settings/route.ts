@@ -35,6 +35,9 @@ export async function GET() {
 /** PUT — save the draft without going live. */
 export async function PUT(request: Request) {
   const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   let body: { settings?: unknown };
   try {
@@ -65,6 +68,9 @@ export async function PUT(request: Request) {
 /** POST — publish / discard / reset, chosen by the `action` field. */
 export async function POST(request: Request) {
   const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   let body: { action?: string; settings?: unknown };
   try {
