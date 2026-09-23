@@ -74,6 +74,10 @@ query getProductByHandle($handle: String!) {
         }
       }
     }
+    options {
+      name
+      values
+    }
     variants(first: 50) {
       edges {
         node {
@@ -288,6 +292,10 @@ query getProductByHandle($handle: String!) {
           url
         }
       }
+    }
+    options {
+      name
+      values
     }
     variants(first: 50) {
       edges {
@@ -1022,6 +1030,7 @@ export async function GET(
       shortDescription: node.shortDescription?.value || undefined,
       specsTable,
       faqAccordion,
+      options: node.options?.map((o: any) => ({ name: o.name, values: o.values })) || [],
       variants: variants.map((v: any) => {
         const vPrice = typeof v.price === 'object' ? v.price?.amount : v.price;
         const vCompare = typeof v.compareAtPrice === 'object' ? v.compareAtPrice?.amount : v.compareAtPrice;

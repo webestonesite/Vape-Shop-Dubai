@@ -116,6 +116,7 @@ interface ProductDetails {
   finalThoughts?: any;
   juulFeature1?: any;
   juulFeature2?: any;
+  options?: { name: string, values: string[] }[];
   variants: Variant[];
   section?: string;
   brand?: string;
@@ -891,94 +892,99 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {/* Single Line Grid Row: Select Flavor & Quantity Selector */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-stretch">
-                {/* Flavor Selection Trigger (takes 8 cols) */}
-                {product.variants && product.variants.length > 1 ? (
-                  <div className="sm:col-span-8 bg-card border border-border/80 rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3 overflow-hidden">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                      <div className="text-left min-w-0">
-                        <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block leading-tight">
-                          {text("variantLabel", "Flavor Option:")}
+              {/* Dynamic Option Name */}
+              {(() => {
+                const optionName = product.options?.[0]?.name || "Flavor";
+                return (
+                  <>
+                    {/* Single Line Grid Row: Select Flavor & Quantity Selector */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-stretch">
+                      {/* Flavor Selection Trigger (takes 8 cols) */}
+                      {product.variants && product.variants.length > 1 ? (
+                        <div className="sm:col-span-8 bg-card border border-border/80 rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3 overflow-hidden">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                            <div className="text-left min-w-0">
+                              <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block leading-tight">
+                                {text("variantLabel", `${optionName} Option:`)}
+                              </span>
+                              <span className="text-xs sm:text-sm font-extrabold text-foreground truncate block mt-0.5">
+                                {selectedVariant
+                                  ? selectedVariant.title
+                                  : text("variantPlaceholder", `Select ${optionName}`)}
+                              </span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setIsFlavorModalOpen(true)}
+                            className="bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/25 text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-2 rounded-xl transition-all duration-300 shrink-0 shadow-2xs cursor-pointer flex items-center gap-1"
+                          >
+                            <span>{text("variantButtonLabel", "Select")}</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ) : null}
+
+                      {/* Quantity Selector (takes 4 cols if variants exist, 12 if not) */}
+                      <div className={`${product.variants && product.variants.length > 1 ? "sm:col-span-4" : "sm:col-span-12"} bg-card border border-border/80 rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-2`}>
+                        <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+                          {text("quantityLabel", "Qty:")}
                         </span>
-                        <span className="text-xs sm:text-sm font-extrabold text-foreground truncate block mt-0.5">
-                          {selectedVariant
-                            ? selectedVariant.title
-                            : text("variantPlaceholder", "Select Flavor")}
-                        </span>
+                        <div className="flex items-center border border-border rounded-xl bg-muted/30 overflow-hidden h-9">
+                          <button
+                            onClick={() => handleQuantityChange(quantity - 1)}
+                            className="px-2.5 h-full hover:bg-muted transition-colors flex items-center justify-center cursor-pointer text-foreground font-bold"
+                          >
+                            <Minus className="h-3.5 w-3.5" />
+                          </button>
+                          <span className="w-7 text-center text-xs font-black text-foreground">{quantity}</span>
+                          <button
+                            onClick={() => handleQuantityChange(quantity + 1)}
+                            className="px-2.5 h-full hover:bg-muted transition-colors flex items-center justify-center cursor-pointer text-foreground font-bold"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setIsFlavorModalOpen(true)}
-                      className="bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/25 text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-2 rounded-xl transition-all duration-300 shrink-0 shadow-2xs cursor-pointer flex items-center gap-1"
-                    >
-                      <span>{text("variantButtonLabel", "Select")}</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ) : null}
+                    {/* Total Calculated Price Banner */}
+                    <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs flex items-center justify-between gap-4">
+                      <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                        {text("totalPriceLabel", "Total Price:")}
+                      </span>
+                      <p className="text-2xl sm:text-3xl font-serif font-black text-primary">
+                        Dhs. {((selectedVariant ? selectedVariant.price : product.price) * quantity).toLocaleString()}
+                      </p>
+                    </div>
 
-                {/* Quantity Selector (takes 4 cols if variants exist, 12 if not) */}
-                <div className={`${product.variants && product.variants.length > 1 ? "sm:col-span-4" : "sm:col-span-12"} bg-card border border-border/80 rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-2`}>
-                  <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                    {text("quantityLabel", "Qty:")}
-                  </span>
-                  <div className="flex items-center border border-border rounded-xl bg-muted/30 overflow-hidden h-9">
-                    <button
-                      onClick={() => handleQuantityChange(quantity - 1)}
-                      className="px-2.5 h-full hover:bg-muted transition-colors flex items-center justify-center cursor-pointer text-foreground font-bold"
-                    >
-                      <Minus className="h-3.5 w-3.5" />
-                    </button>
-                    <span className="w-7 text-center text-xs font-black text-foreground">{quantity}</span>
-                    <button
-                      onClick={() => handleQuantityChange(quantity + 1)}
-                      className="px-2.5 h-full hover:bg-muted transition-colors flex items-center justify-center cursor-pointer text-foreground font-bold"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
+                    {/* Luxury Action Buttons */}
+                    <div className="space-y-3 pt-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <button
+                          onClick={handleAddToCart}
+                          disabled={!!product.isSoldOut || (selectedVariant !== null && !selectedVariant.availableForSale)}
+                          className="bg-card hover:bg-primary/10 border-2 border-primary/60 text-foreground hover:text-primary font-black tracking-wider py-4 px-4 rounded-2xl text-xs sm:text-sm uppercase flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                        >
+                          <ShoppingCart className="h-4.5 w-4.5 text-primary" />{" "}
+                          {!selectedVariant
+                            ? text("selectVariantLabel", `Select ${optionName} First`)
+                            : text("addToCartLabel", "Add to Cart")}
+                        </button>
 
-              {/* Total Calculated Price Banner */}
-              <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs flex items-center justify-between gap-4">
-                <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                  {text("totalPriceLabel", "Total Price:")}
-                </span>
-                <p className="text-2xl sm:text-3xl font-serif font-black text-primary">
-                  Dhs. {((selectedVariant ? selectedVariant.price : product.price) * quantity).toLocaleString()}
-                </p>
-              </div>
-
-              {/* Luxury Action Buttons */}
-              <div className="space-y-3 pt-1">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <button
-                    onClick={handleAddToCart}
-                    disabled={!!product.isSoldOut || (selectedVariant !== null && !selectedVariant.availableForSale)}
-                    className="bg-card hover:bg-primary/10 border-2 border-primary/60 text-foreground hover:text-primary font-black tracking-wider py-4 px-4 rounded-2xl text-xs sm:text-sm uppercase flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-                  >
-                    <ShoppingCart className="h-4.5 w-4.5 text-primary" />{" "}
-                    {!selectedVariant
-                      ? text("selectVariantLabel", "Select Flavor First")
-                      : text("addToCartLabel", "Add to Cart")}
-                  </button>
-
-                  <button
-                    onClick={handleBuyNow}
-                    disabled={!!product.isSoldOut || (selectedVariant !== null && !selectedVariant.availableForSale)}
-                    className="bg-primary hover:bg-gold-shimmer text-white font-black tracking-wider py-4 px-4 rounded-2xl text-xs sm:text-sm uppercase flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-98 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
-                  >
-                    <Truck className="h-4.5 w-4.5" />{" "}
-                    {!selectedVariant
-                      ? text("selectVariantLabel", "Select Flavor First")
-                      : text("buyNowLabel", "Buy It Now")}
-                  </button>
-                </div>
+                        <button
+                          onClick={handleBuyNow}
+                          disabled={!!product.isSoldOut || (selectedVariant !== null && !selectedVariant.availableForSale)}
+                          className="bg-primary hover:bg-gold-shimmer text-white font-black tracking-wider py-4 px-4 rounded-2xl text-xs sm:text-sm uppercase flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-98 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
+                        >
+                          <Truck className="h-4.5 w-4.5" />{" "}
+                          {!selectedVariant
+                            ? text("selectVariantLabel", `Select ${optionName} First`)
+                            : text("buyNowLabel", "Buy It Now")}
+                        </button>
+                      </div>
 
                 {/* Wishlist Toggle Button */}
                 {flag("showWishlist") && (
@@ -1305,7 +1311,7 @@ export default function ProductPage() {
                   {product.name}
                 </span>
                 <h3 className="text-xl sm:text-2xl font-serif font-black text-foreground mt-0.5">
-                  {text("variantModalHeading", "Select Flavor Option")}
+                  {text("variantModalHeading", `Select ${product.options?.[0]?.name || "Flavor"} Option`)}
                 </h3>
               </div>
               <button
@@ -1323,7 +1329,7 @@ export default function ProductPage() {
                 <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder={text("variantSearchPlaceholder", "Search flavor name...")}
+                  placeholder={text("variantSearchPlaceholder", `Search ${product.options?.[0]?.name?.toLowerCase() || "flavor"} name...`)}
                   value={flavorSearchQuery}
                   onChange={(e) => setFlavorSearchQuery(e.target.value)}
                   className="w-full bg-muted/20 border border-border/60 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-bold text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
@@ -1414,7 +1420,7 @@ export default function ProductPage() {
               <ShoppingCart className="w-3.5 h-3.5" />
               <span>
                 {!selectedVariant
-                  ? text("variantPlaceholder", "Select Flavor")
+                  ? text("variantPlaceholder", `Select ${product.options?.[0]?.name || "Flavor"}`)
                   : text("addToCartLabel", "Add to Cart")}
               </span>
             </button>
