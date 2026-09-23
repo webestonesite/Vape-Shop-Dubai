@@ -1005,6 +1005,9 @@ export default function ProductPage() {
                 </button>
                 )}
               </div>
+            </>
+          );
+        })()}
 
             </div>
           </div>
