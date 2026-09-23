@@ -343,19 +343,6 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
         // Unblock main product UI immediately
         setLoading(false);
-
-        // Fetch similar products asynchronously without blocking main product view
-        fetch("/api/products")
-          .then((r) => r.ok ? r.json() : [])
-          .then((allData) => {
-            if (Array.isArray(allData)) {
-              const filtered = allData
-                .filter((p: any) => p.category === data.category && p.handle !== data.handle)
-                .slice(0, relatedLimitRef.current);
-              setSimilarProducts(filtered);
-            }
-          })
-          .catch(() => {});
       } catch (err: any) {
         console.error("Error loading product:", err);
         if (!cached) {
@@ -366,7 +353,23 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
     }
 
     fetchProduct();
-  }, [handle]);
+  }, [handle, initialProduct]);
+
+  // Fetch similar products
+  useEffect(() => {
+    if (!product || !product.category) return;
+    fetch("/api/products")
+      .then((r) => r.ok ? r.json() : [])
+      .then((allData) => {
+        if (Array.isArray(allData)) {
+          const filtered = allData
+            .filter((p: any) => p.category === product.category && p.handle !== product.handle)
+            .slice(0, relatedLimitRef.current);
+          setSimilarProducts(filtered);
+        }
+      })
+      .catch(() => {});
+  }, [product?.category, product?.handle]);
 
   const handleQuantityChange = (val: number) => {
     if (val < 1) return;

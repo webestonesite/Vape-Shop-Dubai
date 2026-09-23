@@ -488,6 +488,7 @@ export async function getProductByHandle(handle: string) {
             "Content-Type": "application/json",
             "X-Shopify-Access-Token": ADMIN_API_TOKEN,
           },
+          next: { revalidate: 60 },
           body: JSON.stringify({
             query: `
               query GetSpecsMeta($handle: String!) {
@@ -567,6 +568,7 @@ export async function getProductByHandle(handle: string) {
             "Content-Type": "application/json",
             "X-Shopify-Access-Token": ADMIN_API_TOKEN,
           },
+          next: { revalidate: 60 },
           body: JSON.stringify({
             query: `
               query GetReviewsMeta($handle: String!) {
@@ -663,6 +665,7 @@ export async function getProductByHandle(handle: string) {
             "Content-Type": "application/json",
             "X-Shopify-Access-Token": ADMIN_API_TOKEN,
           },
+          next: { revalidate: 60 },
           body: JSON.stringify({
             query: `
               query GetFlavorNotesMeta($handle: String!) {
@@ -716,6 +719,7 @@ export async function getProductByHandle(handle: string) {
             "Content-Type": "application/json",
             "X-Shopify-Access-Token": ADMIN_API_TOKEN,
           },
+          next: { revalidate: 60 },
           body: JSON.stringify({
             query: `
               query GetWhyChooseMeta($handle: String!) {
@@ -835,6 +839,7 @@ export async function getProductByHandle(handle: string) {
             "Content-Type": "application/json",
             "X-Shopify-Access-Token": ADMIN_API_TOKEN,
           },
+          next: { revalidate: 60 },
           body: JSON.stringify({
             query: `
               query GetFinalThoughtsMeta($handle: String!) {
