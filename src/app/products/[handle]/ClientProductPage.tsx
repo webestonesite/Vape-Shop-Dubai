@@ -548,6 +548,22 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
     ? Math.round(((selectedVariant.compareAtPrice - selectedVariant.price) / selectedVariant.compareAtPrice) * 100)
     : 0;
 
+  const primaryColHandle = (product as any)?.primaryCollection?.handle ||
+    (product.category === "disposables" ? "disposable-vape" :
+     product.category === "juul" ? "juul-vape-dubai" :
+     product.category === "e-liquids" ? "vape-e-juice" :
+     product.category === "accessories" ? "pod-system" :
+     product.category === "myle" ? "myle-vape-dubai" :
+     product.category || "shop");
+
+  const primaryColTitle = (product as any)?.primaryCollection?.title ||
+    (product.category === "disposables" ? "Disposable Vapes" :
+     product.category === "juul" ? "JUUL" :
+     product.category === "e-liquids" ? "E-Liquids" :
+     product.category === "accessories" ? "Pod Systems" :
+     product.category === "myle" ? "MYLE" :
+     product.category || "Products");
+
   return (
     <div className="relative flex flex-col min-h-screen bg-background text-foreground" suppressHydrationWarning>
       {/* Product JSON-LD Schemas */}
@@ -579,7 +595,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
           __html: JSON.stringify(
             getBreadcrumbSchema([
               { name: "Home", item: "/" },
-              { name: product.category, item: `/collections/${product.category}` },
+              { name: primaryColTitle, item: `/collections/${primaryColHandle}` },
               { name: product.name, item: `/products/${product.handle}` },
             ])
           ),
@@ -631,7 +647,12 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                   {text("breadcrumbShopLabel", "PRODUCTS")}
                 </Link>
                 <span className="text-muted-foreground/40 shrink-0 font-light">/</span>
-                <Link href={`/collections/${product.category}`} className="hover:text-primary transition-colors capitalize shrink-0">{product.category}</Link>
+                <Link
+                  href={`/collections/${primaryColHandle}`}
+                  className="hover:text-primary transition-colors capitalize shrink-0"
+                >
+                  {primaryColTitle}
+                </Link>
                 <span className="text-muted-foreground/40 shrink-0 font-light">/</span>
                 <span className="text-foreground font-bold">{product.name}</span>
               </nav>

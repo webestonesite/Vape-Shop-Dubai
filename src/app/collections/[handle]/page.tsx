@@ -450,6 +450,16 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     "best-seller-vape": "Best Sellers",
     "flash-sale": "Flash Sale",
     "brand": "Certified Vape Brands",
+    "juul": "Juul Vape Dubai",
+    "myle": "Myle Vape Dubai",
+    "disposables": "Disposable Vape",
+    "disposable": "Disposable Vape",
+    "e-liquids": "Vape E-Juice",
+    "e-liquid": "Vape E-Juice",
+    "e-juice": "Vape E-Juice",
+    "accessories": "Pod System",
+    "pod-systems": "Pod System",
+    "vape": "Vape Shop Dubai",
   };
 
   const collectionInfo = useMemo(() => {
@@ -523,21 +533,66 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
 
 
 
+  // Handle aliases mapping for collection slugs
+  const COLLECTION_HANDLE_ALIASES: Record<string, string[]> = {
+    juul: ["juul-vape-dubai", "juul-1-series", "juul-2-series", "juul-pods-offers"],
+    "juul-pods": ["juul-pods-offers", "juul-vape-dubai", "juul-1-series", "juul-2-series"],
+    myle: ["myle-vape-dubai", "myle-v5-series", "myle-v5-pods", "myle-v5-device", "myle-disposable"],
+    disposable: ["disposable-vape", "myle-disposable", "lost-mary-disposable", "geek-bar-disposable"],
+    disposables: ["disposable-vape", "myle-disposable", "lost-mary-disposable", "geek-bar-disposable"],
+    "e-liquid": ["vape-e-juice", "freebase-e-liquid", "salt-nicotine"],
+    "e-liquids": ["vape-e-juice", "freebase-e-liquid", "salt-nicotine"],
+    "e-juice": ["vape-e-juice", "freebase-e-liquid", "salt-nicotine"],
+    accessories: ["pod-system", "pod-kit", "pod-cartridge", "vape-coils"],
+    "pod-systems": ["pod-system", "pod-kit", "pod-cartridge"],
+    pods: ["pod-system", "pod-kit", "pod-cartridge", "juul-pods-offers", "myle-v5-pods"],
+    vape: ["best-seller-vape", "disposable-vape", "pod-system", "juul-vape-dubai"],
+  };
+
   // Base collection products for THIS specific page/handle
   const collectionProducts = useMemo(() => {
-    const hLower = (handle || "").toLowerCase();
+    const hLower = (handle || "").toLowerCase().trim();
     if (!hLower || hLower === "all" || hLower === "shop") {
       return products;
     }
 
-    return products.filter((p) => {
-      // Exact Shopify Collection match on the product
-      const hasDirectCollectionMatch = p.collections && p.collections.length > 0 && p.collections.some((c) => {
-        const cLower = c.toLowerCase();
-        return cLower === hLower;
-      });
+    const aliases = COLLECTION_HANDLE_ALIASES[hLower] || [];
 
-      return hasDirectCollectionMatch;
+    return products.filter((p) => {
+      // 1. Direct Shopify collection match
+      const pCollections = (p.collections || []).map((c) => c.toLowerCase());
+      if (pCollections.includes(hLower)) return true;
+
+      // 2. Alias collection match (e.g. "juul" -> "juul-vape-dubai")
+      if (aliases.some((alias) => pCollections.includes(alias))) return true;
+
+      // 3. Category match fallback (e.g. p.category === "disposables" for /collections/disposables)
+      const pCat = (p.category || "").toLowerCase();
+      if (
+        pCat === hLower ||
+        ((hLower === "disposables" || hLower === "disposable") && pCat === "disposables") ||
+        ((hLower === "e-liquids" || hLower === "e-liquid" || hLower === "e-juice") && pCat === "e-liquids") ||
+        ((hLower === "accessories" || hLower === "pod-systems") && pCat === "accessories") ||
+        (hLower === "juul" && pCat === "juul") ||
+        (hLower === "myle" && pCat === "myle")
+      ) {
+        return true;
+      }
+
+      // 4. Brand match fallback (e.g. /collections/juul matching brand JUUL or /collections/myle matching brand MYLE)
+      const pBrand = (p.brand || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const cleanHandle = hLower.replace(/[^a-z0-9]/g, "");
+      if (pBrand && cleanHandle && (pBrand.includes(cleanHandle) || cleanHandle.includes(pBrand))) {
+        return true;
+      }
+
+      // 5. Title keyword fallback for primary categories
+      const nameL = (p.name || "").toLowerCase();
+      if (hLower === "juul" && nameL.includes("juul")) return true;
+      if (hLower === "myle" && nameL.includes("myle")) return true;
+      if ((hLower === "disposable" || hLower === "disposables") && nameL.includes("disposable")) return true;
+
+      return false;
     });
   }, [products, handle]);
 

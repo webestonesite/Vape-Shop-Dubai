@@ -14,6 +14,15 @@ query getProductByHandle($handle: String!) {
     descriptionHtml
     productType
     tags
+    collections(first: 10) {
+      edges {
+        node {
+          id
+          handle
+          title
+        }
+      }
+    }
     seo {
       title
       description
@@ -108,6 +117,15 @@ query getProductByHandle($handle: String!) {
     productType
     tags
     status
+    collections(first: 10) {
+      edges {
+        node {
+          id
+          handle
+          title
+        }
+      }
+    }
     seo {
       title
       description
@@ -936,6 +954,29 @@ export async function getProductByHandle(handle: string) {
       }),
       section,
       brand: detectBrand(node.title, node.vendor),
+      primaryCollection: (() => {
+        const collectionsList = (node.collections?.edges || []).map((e: any) => e.node).filter(Boolean);
+        const specificCollection = collectionsList.find((c: any) =>
+          c.handle && c.handle !== "all" && c.handle !== "brand" && c.handle !== "best-seller-vape" && c.handle !== "uncategorized"
+        ) || collectionsList[0] || null;
+
+        const CATEGORY_COLLECTION_MAP: Record<string, { handle: string; title: string }> = {
+          juul: { handle: "juul-vape-dubai", title: "JUUL" },
+          disposables: { handle: "disposable-vape", title: "Disposable Vapes" },
+          myle: { handle: "myle-vape-dubai", title: "MYLE" },
+          "e-liquids": { handle: "vape-e-juice", title: "E-Liquids" },
+          accessories: { handle: "pod-system", title: "Pod Systems" },
+          vape: { handle: "best-seller-vape", title: "Vape Shop" },
+        };
+
+        if (specificCollection) {
+          return {
+            handle: specificCollection.handle,
+            title: specificCollection.title || specificCollection.handle,
+          };
+        }
+        return CATEGORY_COLLECTION_MAP[category] || { handle: "shop", title: "Products" };
+      })(),
     };
   } catch (error: any) {
     console.error("Error in GET product by handle:", error);
