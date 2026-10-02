@@ -1,9 +1,10 @@
 import React from "react";
+import dynamic from "next/dynamic";
 
 import { shouldRenderInstance, type SectionContext } from "@/lib/theme/conditions";
 import type { SectionInstance } from "@/lib/theme/types";
 
-import { HeroSection, type HeroSettings } from "./HeroSection";
+import { HeroSectionLoader, type HeroSettings } from "./HeroSectionLoader";
 import {
   ContactDetailsSection,
   FeatureGridSection,
@@ -18,14 +19,50 @@ import {
   ContactFormSection,
   type ContactFormSettings,
 } from "./ContactFormSection";
-import { BrandsSettings, AuthorizedDealers } from "./AuthorizedDealers";
-import { CategoriesSettings, Categories } from "./Categories";
 import { FaqSettings, FAQSection } from "./FAQSection";
-import { WhatsAppSettings, WhatsAppContactSection } from "./WhatsAppContactSection";
-import { WhyShopSettings, WhyShopWithUs } from "./WhyShopWithUs";
-import { BlogSettings, BlogSection } from "./BlogSection";
-import { FlavorsWheel } from "./FlavorsWheel";
-import { BrandSphere3D } from "./BrandSphere3D";
+import type { BrandsSettings } from "./AuthorizedDealers";
+import type { CategoriesSettings } from "./Categories";
+import type { WhatsAppSettings } from "./WhatsAppContactSection";
+import type { WhyShopSettings } from "./WhyShopWithUs";
+import type { BlogSettings } from "./BlogSection";
+
+// ─── Dynamically imported heavy client sections ────────────────────────────
+// `ssr: false` is NOT allowed here — SectionRenderer is a Server Component.
+// The dynamic() calls still split the bundle so their JS is deferred from the
+// initial page load, reducing TBT. Reserved-height loading fallbacks prevent CLS.
+const BrandSphere3D = dynamic(
+  () => import("./BrandSphere3D").then((m) => ({ default: m.BrandSphere3D })),
+  { loading: () => <div style={{ height: "500px" }} aria-hidden="true" /> }
+);
+
+const AuthorizedDealers = dynamic(
+  () => import("./AuthorizedDealers").then((m) => ({ default: m.AuthorizedDealers })),
+  { loading: () => <div style={{ height: "200px" }} aria-hidden="true" /> }
+);
+
+const Categories = dynamic(
+  () => import("./Categories").then((m) => ({ default: m.Categories })),
+  { loading: () => <div style={{ height: "300px" }} aria-hidden="true" /> }
+);
+
+const FlavorsWheel = dynamic(
+  () => import("./FlavorsWheel").then((m) => ({ default: m.FlavorsWheel })),
+  { loading: () => <div style={{ height: "400px" }} aria-hidden="true" /> }
+);
+
+const WhyShopWithUs = dynamic(
+  () => import("./WhyShopWithUs").then((m) => ({ default: m.WhyShopWithUs })),
+  { loading: () => <div style={{ height: "300px" }} aria-hidden="true" /> }
+);
+
+const WhatsAppContactSection = dynamic(
+  () => import("./WhatsAppContactSection").then((m) => ({ default: m.WhatsAppContactSection }))
+);
+
+const BlogSection = dynamic(
+  () => import("./BlogSection").then((m) => ({ default: m.BlogSection })),
+  { loading: () => <div style={{ height: "300px" }} aria-hidden="true" /> }
+);
 
 /**
  * Sections the page renders itself, keyed by section type.
@@ -52,25 +89,24 @@ function renderRegistrySection(
   instance: SectionInstance
 ): React.ReactNode {
   const s = instance.settings;
-  const isIdle = true; // Always true for server components
 
   switch (instance.type) {
     case "hero":
-      return <HeroSection settings={s as unknown as HeroSettings} />;
+      return <HeroSectionLoader settings={s as unknown as HeroSettings} />;
     case "brandDirectoryShowcase":
-      return isIdle ? <BrandSphere3D settings={s as any} /> : <div style={{ height: "500px" }} />;
+      return <BrandSphere3D settings={s as any} />;
     case "categories":
-      return isIdle ? <Categories settings={s as unknown as CategoriesSettings} /> : <div style={{ height: "300px" }} />;
+      return <Categories settings={s as unknown as CategoriesSettings} />;
     case "brands":
-      return isIdle ? <AuthorizedDealers settings={s as unknown as BrandsSettings} /> : <div style={{ height: "200px" }} />;
+      return <AuthorizedDealers settings={s as unknown as BrandsSettings} />;
     case "flavorsWheel":
-      return isIdle ? <FlavorsWheel {...(s as any)} /> : <div style={{ height: "400px" }} />;
+      return <FlavorsWheel {...(s as any)} />;
     case "whyShop":
-      return isIdle ? <WhyShopWithUs settings={s as unknown as WhyShopSettings} /> : <div style={{ height: "300px" }} />;
+      return <WhyShopWithUs settings={s as unknown as WhyShopSettings} />;
     case "faq":
       return <FAQSection settings={s as unknown as FaqSettings} />;
     case "whatsapp":
-      return isIdle ? <WhatsAppContactSection settings={s as unknown as WhatsAppSettings} /> : null;
+      return <WhatsAppContactSection settings={s as unknown as WhatsAppSettings} />;
     case "blogPosts":
       return <BlogSection settings={s as unknown as BlogSettings} />;
     case "pageHeader":

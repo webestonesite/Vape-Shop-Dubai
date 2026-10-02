@@ -89,12 +89,8 @@ const storage: ThemeStorage = {
     return jsonFileStorage.read(slot);
   },
   async write(slot, record) {
-    try {
-      await firestoreStorage.write(slot, record);
-    } catch {
-      // Fallback silently to JSON file storage if Firestore credentials are not configured
-    }
-    await jsonFileStorage.write(slot, record);
+    // 100% Firebase Firestore — bypasses local disk entirely
+    await firestoreStorage.write(slot, record);
   },
 };
 

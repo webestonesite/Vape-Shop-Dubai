@@ -1,6 +1,6 @@
 import { HomeStateProvider } from "@/context/HomeStateContext";
 import { HomeNavbarConnector } from "@/components/layout/HomeNavbarConnector";
-import { Footer } from "@/components/layout/Footer";
+import { LazyFooter } from "@/components/layout/LazyFooter";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { AgeGate } from "@/components/sections/AgeGate";
 import { getThemeSettings } from "@/lib/theme/get-settings";
@@ -66,7 +66,7 @@ export default async function Home() {
         </main>
 
         <CartDrawer />
-        <Footer />
+        <LazyFooter />
       </div>
     </HomeStateProvider>
   );

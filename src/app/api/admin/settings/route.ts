@@ -59,7 +59,7 @@ export async function PUT(request: Request) {
   } catch (err) {
     console.error("[admin] failed to save draft:", err);
     return NextResponse.json(
-      { error: "Could not save. Check that the data directory is writable." },
+      { error: (err as Error)?.message || "Could not save settings." },
       { status: 500 }
     );
   }
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error(`[admin] action '${body.action}' failed:`, err);
     return NextResponse.json(
-      { error: "Could not save. Check that the data directory is writable." },
+      { error: (err as Error)?.message || `Could not perform '${body.action}'.` },
       { status: 500 }
     );
   }

@@ -13,7 +13,7 @@ export function useCollectionImages() {
     }
 
     if (!fetchPromise) {
-      fetchPromise = fetch("/api/collections/images", { cache: 'no-store' })
+      fetchPromise = fetch("/api/collections/images", { next: { revalidate: 3600 } })
         .then((res) => res.json())
         .then((data) => {
           if (!data.error) {

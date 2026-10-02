@@ -45,7 +45,7 @@ lighthouse-report.json
 
 # theme customizer — merchant-editable content and credentials live here, and
 # are environment-specific rather than part of the codebase
-/data
+/data/*
 !/data/redirects.json
 !/data/theme-published.json
 !/data/theme-draft.json
@@ -54,3 +54,7 @@ lighthouse-report.json
 
 # scratch scripts
 scratch/
+
+# agent tools & workflows
+.agents/*
+!.agents/AGENTS.md

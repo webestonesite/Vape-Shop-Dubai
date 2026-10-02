@@ -49,8 +49,12 @@ export async function getAllStoredReviews(): Promise<StoredReview[]> {
 
 /** Saves all reviews locally as backup */
 export async function saveAllStoredReviewsLocal(reviews: StoredReview[]): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(REVIEWS_FILE, JSON.stringify(reviews, null, 2), "utf-8");
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(REVIEWS_FILE, JSON.stringify(reviews, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Local review storage write failed (safe to ignore if on cloud/read-only hosting):", err);
+  }
 }
 
 /** Gets approved reviews for a specific product handle */

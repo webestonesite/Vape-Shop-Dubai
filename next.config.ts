@@ -14,14 +14,34 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  // Merge CSS chunks — reduces the number of CSS round-trips per page load.
+  // cssChunking: "loose",  // ← Enable when Next.js type defs support it
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-popover",
+    ],
   },
   transpilePackages: ["firebase-admin", "jwks-rsa", "jose"],
   async headers() {
     return [
       {
         source: "/:all*(svg|jpg|png|webp|avif|woff2)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Cache JS/CSS chunks aggressively — Next.js content-hashes them
+        source: "/_next/static/:path*",
         headers: [
           {
             key: "Cache-Control",
