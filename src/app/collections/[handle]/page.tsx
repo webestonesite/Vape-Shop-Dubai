@@ -956,7 +956,7 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
   ]);
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-background text-foreground">
+    <div className="relative flex flex-col min-h-screen bg-background text-foreground" suppressHydrationWarning>
       {/* Collection JSON-LD Schemas */}
       <script
         type="application/ld+json"

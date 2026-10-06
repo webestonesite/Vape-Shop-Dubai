@@ -128,15 +128,105 @@ export default async function RootLayout({
         {/* Preload LCP hero images for instant first paint */}
         <link rel="preload" as="image" type="image/webp" href="/Slider/myle_slider_mobile.webp" media="(max-width: 640px)" fetchPriority="high" />
         <link rel="preload" as="image" type="image/webp" href="/Slider/myle_slider.webp" media="(min-width: 641px)" fetchPriority="high" />
-        {/* Prevent browser extension attributes (e.g. bis_skin_checked) from causing hydration mismatches */}
+        {/* Prevent browser extension attributes (e.g. Bitwarden bis_skin_checked) from causing hydration mismatches */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){
               if(typeof window==='undefined')return;
               try{
+                function shouldMute(args){
+                  if(!args)return false;
+                  for(var i=0;i<args.length;i++){
+                    var a=args[i];
+                    if(!a)continue;
+                    var str='';
+                    if(typeof a==='string'){
+                      str=a;
+                    }else{
+                      try{
+                        str=(a.message||'')+' '+(a.stack||'')+' '+(a.componentStack||'')+' '+String(a);
+                      }catch(err){}
+                    }
+                    if(str.indexOf('bis_skin_checked')!==-1||str.indexOf('bis_register')!==-1||str.indexOf('bis_size')!==-1){
+                      return true;
+                    }
+                  }
+                  return false;
+                }
+                var origError=console.error;
+                var activeError=function(){
+                  if(shouldMute(arguments))return;
+                  return origError.apply(console,arguments);
+                };
+                Object.defineProperty(console,'error',{
+                  configurable:true,
+                  enumerable:true,
+                  get:function(){return activeError;},
+                  set:function(newH){
+                    origError=newH;
+                    activeError=function(){
+                      if(shouldMute(arguments))return;
+                      return origError.apply(console,arguments);
+                    };
+                  }
+                });
+                var origWarn=console.warn;
+                var activeWarn=function(){
+                  if(shouldMute(arguments))return;
+                  return origWarn.apply(console,arguments);
+                };
+                Object.defineProperty(console,'warn',{
+                  configurable:true,
+                  enumerable:true,
+                  get:function(){return activeWarn;},
+                  set:function(newH){
+                    origWarn=newH;
+                    activeWarn=function(){
+                      if(shouldMute(arguments))return;
+                      return origWarn.apply(console,arguments);
+                    };
+                  }
+                });
+                window.addEventListener('error',function(e){
+                  if(!e)return;
+                  var msg=(e.message||(e.error&&e.error.message)||'')+'';
+                  if(msg.indexOf('bis_skin_checked')!==-1||msg.indexOf('bis_register')!==-1||msg.indexOf('bis_size')!==-1){
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    return true;
+                  }
+                },true);
+                function scrub(){
+                  try{
+                    var els=document.querySelectorAll('[bis_skin_checked],[bis_register],[bis_size]');
+                    for(var i=0;i<els.length;i++){
+                      els[i].removeAttribute('bis_skin_checked');
+                      els[i].removeAttribute('bis_register');
+                      els[i].removeAttribute('bis_size');
+                    }
+                  }catch(e){}
+                }
+                if(document.readyState==='loading'){
+                  document.addEventListener('DOMContentLoaded',scrub);
+                }else{
+                  scrub();
+                }
+                if(typeof MutationObserver!=='undefined'){
+                  var obs=new MutationObserver(function(muts){
+                    for(var i=0;i<muts.length;i++){
+                      var m=muts[i];
+                      if(m.type==='attributes'&&(m.attributeName==='bis_skin_checked'||m.attributeName==='bis_register'||m.attributeName==='bis_size')){
+                        m.target.removeAttribute(m.attributeName);
+                      }
+                    }
+                  });
+                  if(document.documentElement){
+                    obs.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['bis_skin_checked','bis_register','bis_size']});
+                  }
+                }
                 var origSet=Element.prototype.setAttribute;
                 Element.prototype.setAttribute=function(n,v){
-                  if(n==='bis_skin_checked'||n==='bis_register')return;
+                  if(n==='bis_skin_checked'||n==='bis_register'||n==='bis_size')return;
                   return origSet.call(this,n,v);
                 };
                 Object.defineProperty(Element.prototype,'bis_skin_checked',{
