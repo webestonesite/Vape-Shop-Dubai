@@ -34,6 +34,7 @@ export interface Product {
   section?: string;
   brand?: string;
   collections?: string[];
+  tags?: string[];
 }
 
 

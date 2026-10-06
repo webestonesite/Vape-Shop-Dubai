@@ -325,8 +325,15 @@ function parseCombinedBlock(rawText: string) {
     flavors = parseFlavorsSimpleText(flavorsMatch[1].trim());
   }
 
+  // Sheet format: TAGS = ... or PILLS = ...
+  let subPills: any[] | null = null;
+  const pillsMatch = text.match(/(?:TAGS|PILLS|SUB_COLLECTIONS|SUB_TAGS)\s*[:=]\s*([^\n]+)/i);
+  if (pillsMatch) {
+    subPills = parseSubPills(pillsMatch[1].trim());
+  }
+
   // Sheet format: GUIDE = ... or CONTENT = ...
-  const guideMatch = text.match(/(?:GUIDE|CONTENT|DESCRIPTION)\s*[:=]\s*([\s\S]+?)(?=\n(?:Q:|TITLE=|TAG=|FLAVORS=)|$)/i);
+  const guideMatch = text.match(/(?:GUIDE|CONTENT|DESCRIPTION)\s*[:=]\s*([\s\S]+?)(?=\n(?:Q:|TITLE=|TAG=|FLAVORS=|TAGS=|PILLS=)|$)/i);
   if (guideMatch) guideHtml = guideMatch[1].trim();
 
   // FAQs block if Q: & A: present
@@ -334,7 +341,7 @@ function parseCombinedBlock(rawText: string) {
     faqs = parseFaqsMetafield(text);
   }
 
-  return { eyebrow, heading, flavors, faqs, guideHtml };
+  return { eyebrow, heading, flavors, faqs, guideHtml, subPills };
 }
 
 function parseFlavorsSimpleText(val: unknown) {
@@ -529,19 +536,24 @@ function parseMetaobjectFields(fields: any[] | undefined): Record<string, any> |
   return Object.keys(obj).length > 0 ? obj : null;
 }
 
-function parseSubPills(val: unknown) {
+export function parseSubPills(val: unknown): { label: string; query: string }[] | null {
   if (!val) return null;
-  if (typeof val === "object") return val;
+  if (Array.isArray(val)) return val as any;
+  if (typeof val === "object") return val as any;
   if (typeof val === "string") {
     try {
-      return JSON.parse(val);
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
     } catch {
-      const items = val.split(",").map((s) => {
-        const parts = s.split("|").map((p) => p.trim());
-        return { label: parts[0] || "", query: parts[1] || "all" };
-      }).filter((i) => i.label);
-      return items.length > 0 ? items : null;
+      // not JSON
     }
+    const items = val.split(",").map((s) => {
+      const parts = s.split("|").map((p) => p.trim());
+      const label = parts[0] || "";
+      const query = parts.length > 1 ? parts[1] : label;
+      return { label, query: query || "all" };
+    }).filter((i) => i.label);
+    return items.length > 0 ? items : null;
   }
   return null;
 }
@@ -644,7 +656,7 @@ function mapCollection(col: Record<string, unknown>): CollectionMeta {
 
   // Parse subPills
   const subCollectionsRaw = (col.subCollectionsMeta as { value?: string })?.value || null;
-  const subPillsJson = parseSubPills(subCollectionsRaw);
+  const subPillsJson = parseSubPills(subCollectionsRaw) || combinedParsed?.subPills || null;
 
   // Parse metaobject references
   const techSpecsMeta = parseMetaobjectFields((col.techSpecsMeta as any)?.reference?.fields);

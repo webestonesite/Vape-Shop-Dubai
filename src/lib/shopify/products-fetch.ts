@@ -15,7 +15,7 @@ query {
         productType
         vendor
         tags
-        collections(first: 20) {
+        collections(first: 50) {
           edges {
             node {
               id
@@ -64,7 +64,7 @@ query {
         vendor
         tags
         status
-        collections(first: 20) {
+        collections(first: 50) {
           edges {
             node {
               id
@@ -286,6 +286,7 @@ export async function getAllProducts(): Promise<Product[]> {
       section,
       brand: detectBrand(node.title, node.vendor),
       collections: node.collections?.edges?.map((c: any) => c.node?.handle).filter(Boolean) || [],
+      tags: Array.isArray(node.tags) ? node.tags : [],
     };
   });
 }

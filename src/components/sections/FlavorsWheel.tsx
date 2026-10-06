@@ -191,7 +191,7 @@ export function FlavorsWheel({
   };
 
   return (
-    <div className="w-full relative overflow-hidden">
+    <div className="w-full relative overflow-hidden" suppressHydrationWarning>
       {/* CSS for wheel spin animations */}
       <style
         dangerouslySetInnerHTML={{

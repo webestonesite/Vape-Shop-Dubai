@@ -58,6 +58,7 @@ import {
   getFAQSchema,
 } from "@/lib/seo-schemas";
 import { getCachedProduct, setCachedProduct } from "@/lib/product-cache";
+import { getAccurateProductSpecs } from "@/lib/shopify/smart-specs";
 
 /** One row of the buy box's specification card. */
 interface SpecCardRow {
@@ -121,6 +122,7 @@ interface ProductDetails {
   variants: Variant[];
   section?: string;
   brand?: string;
+  keySpecifications?: Array<{ label: string; value: string }> | null;
 }
 
 export default function ClientProductPage({ initialProduct }: { initialProduct?: any }) {
@@ -540,7 +542,13 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
       nicotine: product.nicotine,
       battery: product.battery,
     };
-    return (row.source === "custom" ? "" : fromProduct[row.source] ?? "") || row.value;
+    const val = (row.source === "custom" ? "" : fromProduct[row.source] ?? "");
+    if (val) return val;
+    // Never output misleading hardcoded defaults for nicotine, battery, or puffs
+    if (row.source === "nicotine" || row.source === "battery" || row.source === "puffs") {
+      return "";
+    }
+    return row.value;
   };
 
   const isSale = selectedVariant && selectedVariant.compareAtPrice && selectedVariant.compareAtPrice > selectedVariant.price;
@@ -928,24 +936,82 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
               </div>
 
               {/* Two-Column Key Specifications Card */}
-              {flag("showSpecCard") && specCardRows.length > 0 && (
-                <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs relative overflow-hidden">
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20" />
-                  {text("specCardHeading", "Key Product Specifications") && (
-                    <h3 className="text-xs font-black uppercase tracking-wider text-primary mb-3.5">
-                      {text("specCardHeading", "Key Product Specifications")}
-                    </h3>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 text-xs">
-                    {specCardRows.map((row, idx) => (
-                      <div key={idx} className="flex items-center justify-between border-b border-border/40 pb-2">
-                        <span className="text-muted-foreground font-medium">{row.label}:</span>
-                        <span className="font-extrabold text-foreground">{specValue(row)}</span>
+              {(() => {
+                const metaobjectSpecs = Array.isArray(product.specsTable) && product.specsTable.length > 0
+                  ? product.specsTable.map((s: any) => ({
+                      label: s.label || s.feature || s.key || "",
+                      value: s.value || s.details || "",
+                    })).filter((r: any) => r.label && r.value)
+                  : null;
+
+                const customSpecs =
+                  metaobjectSpecs && metaobjectSpecs.length > 0
+                    ? metaobjectSpecs
+                    : product.keySpecifications;
+                const hasCustomSpecs = Array.isArray(customSpecs) && customSpecs.length > 0;
+                const autoSpecs = getAccurateProductSpecs({
+                  name: product.name,
+                  category: product.category,
+                  brand: product.brand,
+                  tags: (product as any).tags,
+                  descriptionHtml: product.descriptionHtml,
+                  puffs: product.puffs,
+                  nicotine: product.nicotine,
+                  battery: product.battery,
+                });
+                const displayRows = hasCustomSpecs
+                  ? customSpecs
+                  : (autoSpecs && autoSpecs.length > 0)
+                  ? autoSpecs
+                  : specCardRows
+                      .map((row) => ({ label: row.label, value: specValue(row) }))
+                      .filter((r) => r.label && r.value);
+
+                if (!flag("showSpecCard") || displayRows.length === 0) return null;
+
+                return (
+                  <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20" />
+                    {text("specCardHeading", "Key Product Specifications") && (
+                      <div className="flex items-center justify-between mb-3.5">
+                        <h3 className="text-xs font-black uppercase tracking-wider text-primary flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          {text("specCardHeading", "Key Product Specifications")}
+                        </h3>
+                        {displayRows.length > 4 && (
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                            {displayRows.length} Specifications
+                          </span>
+                        )}
                       </div>
-                    ))}
+                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-xs">
+                      {displayRows.map((row, idx) => {
+                        const isLong = (row.label.length + row.value.length) > 38 || row.value.length > 28;
+                        const isLastOdd = idx === displayRows.length - 1 && displayRows.length % 2 !== 0;
+                        const spanFull = isLong || isLastOdd;
+
+                        return (
+                          <div
+                            key={idx}
+                            className={`flex items-start justify-between gap-3 border-b border-border/40 pb-2.5 ${
+                              spanFull ? "sm:col-span-2" : ""
+                            }`}
+                          >
+                            <span className="text-muted-foreground font-semibold shrink-0 pt-0.5 whitespace-nowrap">
+                              {row.label}:
+                            </span>
+                            <span className="font-extrabold text-foreground text-right leading-snug break-words">
+                              {row.value}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
+
 
               {/* Dynamic Option Name */}
               {(() => {
@@ -1270,7 +1336,15 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 puffs={product.puffs}
                 nicotine={product.nicotine}
                 battery={product.battery}
-                specsTable={product.specsTable}
+                specsTable={
+                  product.specsTable ||
+                  (product.keySpecifications
+                    ? product.keySpecifications.map((k) => ({
+                        feature: k.label,
+                        details: k.value,
+                      }))
+                    : undefined)
+                }
                 settings={settings as never}
                 hideIfEmpty={true}
               />

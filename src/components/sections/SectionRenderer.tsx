@@ -177,8 +177,8 @@ export const TemplateSections: React.FC<TemplateSectionsProps> = ({
           containerClassName && !FULL_BLEED.has(instance.type);
 
         return (
-          <div key={instance.id} data-section-id={instance.id} className="scroll-mt-24">
-            {useContainer ? <div className={containerClassName}>{node}</div> : node}
+          <div key={instance.id} data-section-id={instance.id} className="scroll-mt-24" suppressHydrationWarning>
+            {useContainer ? <div className={containerClassName} suppressHydrationWarning>{node}</div> : node}
           </div>
         );
       })}

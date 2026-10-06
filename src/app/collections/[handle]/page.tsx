@@ -38,6 +38,7 @@ import {
   parseCollectionSections,
   resolveCollectionSections,
 } from "@/lib/theme/collection-sections";
+import { parseSubPills } from "@/lib/shopify/collection";
 import {
   Star,
   ShoppingCart,
@@ -113,165 +114,239 @@ const ALL_BRANDS_COLLECTION = [
   { name: "Vapes Bars", handle: "vapes-bars", image: "", tag: "Ghost Pro Disposables", color: "from-indigo-500/10 to-purple-500/10" },
 ];
 
-function getSubPillsForHandle(h: string) {
-  const handleLower = (h || "").toLowerCase();
-
-  // JUUL Specific Sub-Collections
-  if (handleLower.includes("juul-1") || handleLower.includes("juul1")) {
-    return [
-      { label: "All JUUL 1", query: "all" },
-      { label: "Menthol 3%", query: "3%" },
-      { label: "Menthol 5%", query: "5%" },
-      { label: "Virginia Tobacco", query: "tobacco" },
-      { label: "Mango Pods", query: "mango" },
-      { label: "JUUL 1 Device", query: "device" },
-    ];
-  }
-  if (handleLower.includes("juul-2") || handleLower.includes("juul2")) {
-    return [
-      { label: "All JUUL 2", query: "all" },
-      { label: "Crisp Menthol", query: "crisp" },
-      { label: "Virginia Tobacco", query: "tobacco" },
-      { label: "Ruby Scheme", query: "ruby" },
-      { label: "Polar Menthol", query: "polar" },
-      { label: "JUUL 2 Device", query: "device" },
-    ];
-  }
-  if (handleLower.includes("juul-pods") || handleLower.includes("juul-menthol")) {
-    return [
-      { label: "All JUUL Pods", query: "all" },
-      { label: "Menthol Pods", query: "menthol" },
-      { label: "Tobacco Pods", query: "tobacco" },
-      { label: "3% Nicotine", query: "3%" },
-      { label: "5% Nicotine", query: "5%" },
-    ];
-  }
-  if (handleLower.includes("juul")) {
-    return [
-      { label: "All JUUL", query: "all" },
-      { label: "JUUL 1 Series", query: "juul 1" },
-      { label: "JUUL 2 Series", query: "juul 2" },
-      { label: "JUUL Menthol", query: "menthol" },
-      { label: "JUUL Tobacco", query: "tobacco" },
-    ];
-  }
-
-  // MYLE Specific Sub-Collections
-  if (handleLower.includes("myle-v5") || handleLower.includes("myle-meta-v5")) {
-    return [
-      { label: "All MYLE V5", query: "all" },
-      { label: "Iced Mint", query: "mint" },
-      { label: "Peach Mango", query: "peach" },
-      { label: "Mega Melon", query: "melon" },
-      { label: "Sweet Tobacco", query: "tobacco" },
-      { label: "MYLE V5 Device", query: "device" },
-    ];
-  }
-  if (handleLower.includes("myle-micro")) {
-    return [
-      { label: "All MYLE Micro", query: "all" },
-      { label: "1000 Puffs", query: "1000" },
-      { label: "Iced Watermelon", query: "watermelon" },
-      { label: "Blue Razz", query: "blue razz" },
-    ];
-  }
-  if (handleLower.includes("myle-drip")) {
-    return [
-      { label: "All MYLE Drip", query: "all" },
-      { label: "2500 Puffs", query: "2500" },
-      { label: "5000 Puffs", query: "5000" },
-      { label: "Mango Ice", query: "mango" },
-    ];
-  }
-  if (handleLower.includes("myle")) {
-    return [
-      { label: "All MYLE", query: "all" },
-      { label: "MYLE Meta V5", query: "meta v5" },
-      { label: "MYLE Micro", query: "micro" },
-      { label: "MYLE Drip", query: "drip" },
-      { label: "MYLE Meta Box", query: "meta box" },
-    ];
-  }
-
-  // Specific Brands
-  if (handleLower.includes("tugboat")) {
-    return [
-      { label: "All Tugboat", query: "all" },
-      { label: "Royal 13000", query: "13000" },
-      { label: "EVO 4500", query: "4500" },
-      { label: "Ultra 12000", query: "12000" },
-      { label: "Super 24000", query: "24000" },
-    ];
-  }
-  if (handleLower.includes("al-fakher") || handleLower.includes("al_fakher")) {
-    return [
-      { label: "All Al Fakher", query: "all" },
-      { label: "Crown Bar 8000", query: "8000" },
-      { label: "Crown Bar 10000", query: "10000" },
-      { label: "Two Apple", query: "apple" },
-      { label: "Gum Mint", query: "mint" },
-    ];
-  }
-  if (handleLower.includes("yuoto")) {
-    return [
-      { label: "All Yuoto", query: "all" },
-      { label: "Thanatos 5000", query: "thanatos" },
-      { label: "XXL 2500", query: "xxl" },
-      { label: "Luscious 1500", query: "luscious" },
-    ];
-  }
-  if (handleLower.includes("pod-salt") || handleLower.includes("pod_salt")) {
-    return [
-      { label: "All Pod Salt", query: "all" },
-      { label: "Evo 1600", query: "evo" },
-      { label: "Nexus 6000", query: "nexus" },
-      { label: "Salt Nicotine", query: "salt" },
-    ];
-  }
-
-  // Main Categories
-  if (handleLower.includes("disposable")) {
-    return [
-      { label: "All Disposables", query: "all" },
-      { label: "Tugboat", query: "tugboat" },
-      { label: "Yuoto", query: "yuoto" },
-      { label: "Al Fakher", query: "al fakher" },
-      { label: "Waka", query: "waka" },
-      { label: "Maskking", query: "maskking" },
-      { label: "Vozol", query: "vozol" },
-    ];
-  }
-  if (handleLower.includes("freebase")) {
-    return [
-      { label: "All Freebase", query: "all" },
-      { label: "3mg Strength", query: "3mg" },
-      { label: "6mg Strength", query: "6mg" },
-      { label: "VGOD Freebase", query: "vgod" },
-      { label: "Nasty Juice", query: "nasty" },
-      { label: "Dr Vapes", query: "dr vapes" },
-      { label: "High VG 70/30", query: "70/30" },
-    ];
-  }
-  if (handleLower.includes("juice") || handleLower.includes("liquid")) {
-    return [
-      { label: "All E-Liquids", query: "all" },
-      { label: "Pod Salt", query: "pod salt" },
-      { label: "VGOD Stig", query: "vgod" },
-      { label: "Dr Vapes", query: "dr vapes" },
-      { label: "Nasty Juice", query: "nasty" },
-      { label: "Ruthless", query: "ruthless" },
-    ];
-  }
-
-  return [
-    { label: "All Products", query: "all" },
-    { label: "JUUL", query: "juul" },
-    { label: "MYLE", query: "myle" },
-    { label: "Disposables", query: "disposable" },
-    { label: "E-Liquids", query: "liquid" },
-    { label: "Pod Systems", query: "pod" },
+const DEFAULT_COLLECTION_SUB_PILLS: Record<string, { label: string; query: string }[]> = {
+  "myle-vape-dubai": [
+    { label: "All MYLE", query: "all" },
+    { label: "MYLE Meta V5", query: "v5" },
+    { label: "MYLE Pods", query: "pods" },
+    { label: "MYLE Devices", query: "device" },
+    { label: "Flash Sale", query: "flash-sale" },
+  ],
+  "myle": [
+    { label: "All MYLE", query: "all" },
+    { label: "MYLE Meta V5", query: "v5" },
+    { label: "MYLE Pods", query: "pods" },
+    { label: "MYLE Devices", query: "device" },
+  ],
+  "juul-vape-dubai": [
+    { label: "All JUUL", query: "all" },
+    { label: "JUUL 2 Series", query: "juul 2" },
+    { label: "JUUL 1 Series", query: "juul 1" },
+    { label: "Menthol Pods", query: "menthol" },
+    { label: "Virginia Tobacco", query: "tobacco" },
+  ],
+  "juul": [
+    { label: "All JUUL", query: "all" },
+    { label: "JUUL 2 Series", query: "juul 2" },
+    { label: "JUUL 1 Series", query: "juul 1" },
+    { label: "Menthol Pods", query: "menthol" },
+  ],
+  "disposable-vape": [
+    { label: "All Disposables", query: "all" },
+    { label: "Elf Bar", query: "elf bar" },
+    { label: "Pod Salt", query: "pod salt" },
+    { label: "Al Fakher", query: "al fakher" },
+    { label: "Vozol", query: "vozol" },
+    { label: "Lost Mary", query: "lost mary" },
+    { label: "Yuoto", query: "yuoto" },
     { label: "Tugboat", query: "tugboat" },
-  ];
+  ],
+  "disposables": [
+    { label: "All Disposables", query: "all" },
+    { label: "Elf Bar", query: "elf bar" },
+    { label: "Pod Salt", query: "pod salt" },
+    { label: "Al Fakher", query: "al fakher" },
+    { label: "Vozol", query: "vozol" },
+  ],
+  "vape-e-juice": [
+    { label: "All E-Juice", query: "all" },
+    { label: "Ruthless", query: "ruthless" },
+    { label: "Nasty Juice", query: "nasty" },
+    { label: "Salt Nicotine", query: "salt" },
+    { label: "Freebase", query: "freebase" },
+  ],
+  "pod-system": [
+    { label: "All Pod Systems", query: "all" },
+    { label: "Vaporesso", query: "vaporesso" },
+    { label: "Uwell Caliburn", query: "uwell" },
+    { label: "Oxva Xlim", query: "oxva" },
+    { label: "Geekvape", query: "geekvape" },
+    { label: "Voopoo", query: "voopoo" },
+  ],
+};
+
+export function detectProductNicotines(p: { name?: string; nicotine?: string; tags?: string[] }): string[] {
+  const result = new Set<string>();
+
+  if (p.nicotine && p.nicotine.trim()) {
+    const raw = p.nicotine.trim();
+    if (raw.includes("50mg") || raw.includes("5%")) result.add("5.0% (50mg)");
+    else if (raw.includes("20mg") || raw.includes("2%")) result.add("2.0% (20mg)");
+    else if (raw.includes("18mg") || raw.includes("1.8%")) result.add("1.8% (18mg)");
+    else if (raw.includes("30mg") || raw.includes("3%")) result.add("3.0% (30mg)");
+    else if (raw.includes("35mg") || raw.includes("3.5%")) result.add("3.5% (35mg)");
+    else if (raw.includes("25mg") || raw.includes("2.5%")) result.add("2.5% (25mg)");
+    else if (raw.includes("60mg") || raw.includes("6%")) result.add("6.0% (60mg)");
+    else if (raw.includes("3mg")) result.add("3mg");
+    else if (raw.includes("6mg")) result.add("6mg");
+    else if (raw.includes("12mg")) result.add("12mg");
+    else if (raw.includes("0mg") || raw.includes("0%")) result.add("0mg (Zero Nicotine)");
+    else result.add(raw);
+  }
+
+  const text = ((p.name || "") + " " + (p.tags || []).join(" ")).toLowerCase();
+
+  // 5% or 50mg
+  if (/(?:^|[^\w.])(?:50\s*mg|5(?:\.0)?%)(?![0-9a-z])/i.test(text)) result.add("5.0% (50mg)");
+  // 2% or 20mg
+  if (/(?:^|[^\w.])(?:20\s*mg|2(?:\.0)?%)(?![0-9a-z])/i.test(text)) result.add("2.0% (20mg)");
+  // 1.8% or 18mg (e.g. Juul 2)
+  if (/(?:^|[^\w.])(?:18\s*mg|1\.8%)(?![0-9a-z])/i.test(text)) result.add("1.8% (18mg)");
+  // 3% or 30mg
+  if (/(?:^|[^\w.])(?:30\s*mg|3(?:\.0)?%)(?![0-9a-z])/i.test(text)) result.add("3.0% (30mg)");
+  // 3.5% or 35mg
+  if (/(?:^|[^\w.])(?:35\s*mg|3\.5%)(?![0-9a-z])/i.test(text)) result.add("3.5% (35mg)");
+  // 2.5% or 25mg
+  if (/(?:^|[^\w.])(?:25\s*mg|2\.5%)(?![0-9a-z])/i.test(text)) result.add("2.5% (25mg)");
+  // 6% or 60mg
+  if (/(?:^|[^\w.])(?:60\s*mg|6(?:\.0)?%)(?![0-9a-z])/i.test(text)) result.add("6.0% (60mg)");
+  // Freebase 3mg, 6mg, 12mg
+  if (/(?:^|[^\w.])3\s*mg(?![0-9a-z])/i.test(text)) result.add("3mg");
+  if (/(?:^|[^\w.])6\s*mg(?![0-9a-z])/i.test(text)) result.add("6mg");
+  if (/(?:^|[^\w.])12\s*mg(?![0-9a-z])/i.test(text)) result.add("12mg");
+  // 0mg or 0%
+  if (/(?:^|[^\w.])(?:0\s*mg|0%|zero\s*nicotine|nicotine\s*free)(?![0-9a-z])/i.test(text)) result.add("0mg (Zero Nicotine)");
+
+  return Array.from(result);
+}
+
+export function detectProductNicotine(p: { name?: string; nicotine?: string; tags?: string[] }): string | null {
+  const all = detectProductNicotines(p);
+  return all.length > 0 ? all[0] : null;
+}
+
+export function productMatchesNicotine(
+  p: { name?: string; nicotine?: string; tags?: string[] },
+  selectedOptions: string[]
+): boolean {
+  if (!selectedOptions || selectedOptions.length === 0) return true;
+  const detectedList = detectProductNicotines(p);
+  const text = ((p.name || "") + " " + (p.tags || []).join(" ") + " " + (p.nicotine || "")).toLowerCase();
+
+  return selectedOptions.some((opt) => {
+    const optTrimmed = opt.trim();
+    if (!optTrimmed) return false;
+    const optLower = optTrimmed.toLowerCase();
+
+    // 1. Exact match with any detected canonical strengths
+    if (detectedList.some((det) => det.toLowerCase() === optLower)) return true;
+
+    // 2. Substring match inside detected canonical strength (e.g. opt="50mg" or "5%" matches "5.0% (50mg)")
+    if (detectedList.some((det) => det.toLowerCase().includes(optLower))) return true;
+
+    // 3. Regex matching for mg values (e.g. opt="50mg" or "3mg")
+    const mgMatch = optLower.match(/(\d+(?:\.\d+)?)\s*mg/);
+    if (mgMatch) {
+      const val = mgMatch[1];
+      const rx = new RegExp(`(?:^|[^\\w.])${val}\\s*mg(?![0-9a-z])`, "i");
+      if (rx.test(text)) return true;
+    }
+
+    // 4. Regex matching for % values (e.g. opt="5%" or "2%")
+    const pctMatch = optLower.match(/(\d+(?:\.\d+)?)\s*%/);
+    if (pctMatch) {
+      const val = pctMatch[1];
+      const rx = new RegExp(`(?:^|[^\\w.])${val}(?:\\.0)?%(?![0-9a-z])`, "i");
+      if (rx.test(text)) return true;
+    }
+
+    return text.includes(optLower);
+  });
+}
+
+export const NICOTINE_SORT_ORDER = [
+  "0mg (Zero Nicotine)",
+  "0mg",
+  "1.8% (18mg)",
+  "18mg",
+  "2.0% (20mg)",
+  "20mg",
+  "2%",
+  "2.5% (25mg)",
+  "25mg",
+  "3mg",
+  "3.0% (30mg)",
+  "30mg",
+  "3%",
+  "3.5% (35mg)",
+  "35mg",
+  "5.0% (50mg)",
+  "50mg",
+  "5%",
+  "6mg",
+  "6.0% (60mg)",
+  "60mg",
+  "12mg",
+];
+
+export function sortNicotines(list: string[]): string[] {
+  return [...list].sort((a, b) => {
+    const idxA = NICOTINE_SORT_ORDER.indexOf(a);
+    const idxB = NICOTINE_SORT_ORDER.indexOf(b);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return a.localeCompare(b);
+  });
+}
+
+export function detectProductCapacities(p: { name?: string; tags?: string[] }): string[] {
+  const text = ((p.name || "") + " " + (p.tags || []).join(" ")).toLowerCase();
+  const regex = /(?:^|[^\w.])(\d+(?:\.\d+)?)\s*ml(?![0-9a-z])/gi;
+  const found = new Set<string>();
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(text)) !== null) {
+    const num = parseFloat(match[1]);
+    if (num > 0 && num <= 500) {
+      found.add(`${num}ml`);
+    }
+  }
+  return Array.from(found);
+}
+
+export function sortCapacities(list: string[]): string[] {
+  return [...list].sort((a, b) => {
+    const numA = parseFloat(a) || 0;
+    const numB = parseFloat(b) || 0;
+    return numA - numB;
+  });
+}
+
+export function productMatchesCapacity(
+  p: { name?: string; tags?: string[] },
+  selectedOptions: string[]
+): boolean {
+  if (!selectedOptions || selectedOptions.length === 0) return true;
+  const detectedList = detectProductCapacities(p);
+  const text = ((p.name || "") + " " + (p.tags || []).join(" ")).toLowerCase();
+
+  return selectedOptions.some((opt) => {
+    const optTrimmed = opt.trim().toLowerCase();
+    if (!optTrimmed) return false;
+
+    // 1. Direct match with detected values (e.g. "30ml", "2ml")
+    if (detectedList.some((det) => det.toLowerCase() === optTrimmed)) return true;
+
+    // 2. Number extracted match (e.g. opt="30" or "30ml")
+    const match = optTrimmed.match(/(\d+(?:\.\d+)?)/);
+    if (match) {
+      const num = match[1];
+      const rx = new RegExp(`(?:^|[^\\w.])${num}\\s*ml(?![0-9a-z])`, "i");
+      if (rx.test(text)) return true;
+    }
+
+    return text.includes(optTrimmed);
+  });
 }
 
 function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
@@ -289,6 +364,7 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
 
   // Filter States (Checkbox arrays for multi-select)
   const [selectedNicotines, setSelectedNicotines] = useState<string[]>([]);
+  const [selectedCapacities, setSelectedCapacities] = useState<string[]>([]);
   const [selectedPuffs, setSelectedPuffs] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -408,6 +484,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     [previewSections, savedSections, templateInstances, templateIsOverride]
   );
 
+  const mainSettings = useMemo(
+    () => instanceSettings(sectionInstances, "collectionMain"),
+    [sectionInstances]
+  );
+
   const CANONICAL_HANDLE_TITLES: Record<string, string> = {
     "juul-vape-dubai": "Juul Vape Dubai",
     "myle-vape-dubai": "Myle Vape Dubai",
@@ -480,7 +561,12 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     else if (hLower.includes("pod-system") || hLower.includes("pod-kit") || hLower.includes("pod-cartridge") || hLower.includes("vape-coils")) categoryKey = "accessories";
 
     // Read collectionMain settings from Admin Customizer
-    const mainSettings = instanceSettings(sectionInstances, "collectionMain");
+    const defaultPillsForHandle = DEFAULT_COLLECTION_SUB_PILLS[hKey] || null;
+    const configuredSubPills =
+      (mainSettings.subPills ? parseSubPills(mainSettings.subPills as string) : null) ||
+      (collectionMeta as any)?.subPillsJson ||
+      defaultPillsForHandle ||
+      null;
 
     // If Shopify data loaded, use it merged with customizer overrides
     if (collectionMeta && (collectionMeta.title || (collectionMeta as any).customHeading)) {
@@ -509,6 +595,7 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
         eyebrowText: (collectionMeta as any).eyebrowText || (mainSettings.customEyebrow as string) || null,
         flavorsWheelJson: (collectionMeta as any).flavorsWheelJson || (mainSettings.flavorsList ? (mainSettings.flavorsList as string).split(",").map(s => ({ name: s.trim(), query: s.trim() })) : null),
         faqsJson: (collectionMeta as any).faqsJson || null,
+        subPillsJson: configuredSubPills,
         seo: collectionMeta.seo,
         categoryKey,
       };
@@ -525,74 +612,39 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
       description: fallbackDesc,
       descriptionHtml: fallbackDescHtml,
       faqsJson: (collectionMeta as any)?.faqsJson || fallbackFaqsJson,
+      subPillsJson: configuredSubPills,
       image: null as { url: string; altText: string; width: number; height: number } | null,
       seo: null as { title: string; description: string } | null,
       categoryKey,
     };
   }, [handle, collectionMeta, sectionInstances]);
 
-
-
-  // Handle aliases mapping for collection slugs
-  const COLLECTION_HANDLE_ALIASES: Record<string, string[]> = {
-    juul: ["juul-vape-dubai", "juul-1-series", "juul-2-series", "juul-pods-offers"],
-    "juul-pods": ["juul-pods-offers", "juul-vape-dubai", "juul-1-series", "juul-2-series"],
-    myle: ["myle-vape-dubai", "myle-v5-series", "myle-v5-pods", "myle-v5-device", "myle-disposable"],
-    disposable: ["disposable-vape", "myle-disposable", "lost-mary-disposable", "geek-bar-disposable"],
-    disposables: ["disposable-vape", "myle-disposable", "lost-mary-disposable", "geek-bar-disposable"],
-    "e-liquid": ["vape-e-juice", "freebase-e-liquid", "salt-nicotine"],
-    "e-liquids": ["vape-e-juice", "freebase-e-liquid", "salt-nicotine"],
-    "e-juice": ["vape-e-juice", "freebase-e-liquid", "salt-nicotine"],
-    accessories: ["pod-system", "pod-kit", "pod-cartridge", "vape-coils"],
-    "pod-systems": ["pod-system", "pod-kit", "pod-cartridge"],
-    pods: ["pod-system", "pod-kit", "pod-cartridge", "juul-pods-offers", "myle-v5-pods"],
-    vape: ["best-seller-vape", "disposable-vape", "pod-system", "juul-vape-dubai"],
+  // Canonical collection alias mapping for shorthand URLs to their exact Shopify backend collection handle
+  const CANONICAL_COLLECTION_ALIASES: Record<string, string> = {
+    juul: "juul-vape-dubai",
+    myle: "myle-vape-dubai",
+    disposable: "disposable-vape",
+    disposables: "disposable-vape",
+    "e-liquid": "vape-e-juice",
+    "e-liquids": "vape-e-juice",
+    "e-juice": "vape-e-juice",
+    "pod-systems": "pod-system",
+    accessories: "pod-system",
   };
 
-  // Base collection products for THIS specific page/handle
+  // Base collection products for THIS specific page/handle — STRICTLY from Shopify Backend
   const collectionProducts = useMemo(() => {
     const hLower = (handle || "").toLowerCase().trim();
     if (!hLower || hLower === "all" || hLower === "shop") {
       return products;
     }
 
-    const aliases = COLLECTION_HANDLE_ALIASES[hLower] || [];
+    const targetHandle = CANONICAL_COLLECTION_ALIASES[hLower] || hLower;
 
     return products.filter((p) => {
-      // 1. Direct Shopify collection match
       const pCollections = (p.collections || []).map((c) => c.toLowerCase());
-      if (pCollections.includes(hLower)) return true;
-
-      // 2. Alias collection match (e.g. "juul" -> "juul-vape-dubai")
-      if (aliases.some((alias) => pCollections.includes(alias))) return true;
-
-      // 3. Category match fallback (e.g. p.category === "disposables" for /collections/disposables)
-      const pCat = (p.category || "").toLowerCase();
-      if (
-        pCat === hLower ||
-        ((hLower === "disposables" || hLower === "disposable") && pCat === "disposables") ||
-        ((hLower === "e-liquids" || hLower === "e-liquid" || hLower === "e-juice") && pCat === "e-liquids") ||
-        ((hLower === "accessories" || hLower === "pod-systems") && pCat === "accessories") ||
-        (hLower === "juul" && pCat === "juul") ||
-        (hLower === "myle" && pCat === "myle")
-      ) {
-        return true;
-      }
-
-      // 4. Brand match fallback (e.g. /collections/juul matching brand JUUL or /collections/myle matching brand MYLE)
-      const pBrand = (p.brand || "").toLowerCase().replace(/[^a-z0-9]/g, "");
-      const cleanHandle = hLower.replace(/[^a-z0-9]/g, "");
-      if (pBrand && cleanHandle && (pBrand.includes(cleanHandle) || cleanHandle.includes(pBrand))) {
-        return true;
-      }
-
-      // 5. Title keyword fallback for primary categories
-      const nameL = (p.name || "").toLowerCase();
-      if (hLower === "juul" && nameL.includes("juul")) return true;
-      if (hLower === "myle" && nameL.includes("myle")) return true;
-      if ((hLower === "disposable" || hLower === "disposables") && nameL.includes("disposable")) return true;
-
-      return false;
+      // Strictly match only products assigned to this collection in Shopify backend
+      return pCollections.includes(hLower) || pCollections.includes(targetHandle);
     });
   }, [products, handle]);
 
@@ -604,25 +656,56 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
 
   // Dynamic filter options generated ONLY from products present inside this specific collection
   const filterOptions = useMemo(() => {
-    const nics = new Set<string>();
     const puffsSet = new Set<string>();
     const brandsSet = new Set<string>();
     const categoriesSet = new Set<string>();
     const seriesSet = new Set<string>();
     let maxP = 0;
 
+    // Manual admin override from Theme Customizer or Shopify metafield for Nicotines
+    const customNicsSetting =
+      (typeof mainSettings.customNicotines === "string" ? mainSettings.customNicotines.trim() : "") ||
+      (typeof (collectionMeta as any)?.customNicotines === "string" ? (collectionMeta as any).customNicotines.trim() : "");
+
+    let nicotineOptions: string[] = [];
+
+    if (customNicsSetting) {
+      nicotineOptions = customNicsSetting
+        .split(",")
+        .map((s: string) => s.trim())
+        .filter(Boolean);
+    } else {
+      const nicsSet = new Set<string>();
+      collectionProducts.forEach((p) => {
+        const detected = detectProductNicotines(p);
+        detected.forEach((n) => nicsSet.add(n));
+      });
+      nicotineOptions = sortNicotines(Array.from(nicsSet));
+    }
+
+    // Manual admin override from Theme Customizer or Shopify metafield for Capacities / ML
+    const customCapsSetting =
+      (typeof mainSettings.customCapacities === "string" ? mainSettings.customCapacities.trim() : "") ||
+      (typeof (collectionMeta as any)?.customCapacities === "string" ? (collectionMeta as any).customCapacities.trim() : "");
+
+    let capacityOptions: string[] = [];
+
+    if (customCapsSetting) {
+      capacityOptions = customCapsSetting
+        .split(",")
+        .map((s: string) => s.trim())
+        .filter(Boolean);
+    } else {
+      const capsSet = new Set<string>();
+      collectionProducts.forEach((p) => {
+        const detected = detectProductCapacities(p);
+        detected.forEach((c) => capsSet.add(c));
+      });
+      capacityOptions = sortCapacities(Array.from(capsSet));
+    }
+
     collectionProducts.forEach((p) => {
       const nameL = p.name.toLowerCase();
-
-      // Auto Nicotine Strength Detection
-      let nic = p.nicotine;
-      if (!nic) {
-        if (nameL.includes("1.8%") || nameL.includes("18mg") || nameL.includes("18 mg")) nic = "1.8% (18mg)";
-        else if (nameL.includes("3%") || nameL.includes("30mg") || nameL.includes("30 mg")) nic = "3.0% (30mg)";
-        else if (nameL.includes("5%") || nameL.includes("50mg") || nameL.includes("50 mg")) nic = "5.0% (50mg)";
-        else if (nameL.includes("2%") || nameL.includes("20mg") || nameL.includes("20 mg")) nic = "2.0% (20mg)";
-      }
-      if (nic) nics.add(nic);
 
       // Auto Series / Product Line Detection for JUUL & MYLE
       if (nameL.includes("juul 1") || (nameL.includes("juul") && !nameL.includes("juul 2") && !nameL.includes("juul2"))) {
@@ -651,14 +734,15 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     });
 
     return {
-      nicotines: Array.from(nics).filter(Boolean).sort(),
+      nicotines: nicotineOptions,
+      capacities: capacityOptions,
       puffs: Array.from(puffsSet).filter(Boolean),
       brands: Array.from(brandsSet).filter(Boolean),
       categories: Array.from(categoriesSet).filter(Boolean),
       series: Array.from(seriesSet).filter(Boolean),
       maxFoundPrice: maxP || 2000
     };
-  }, [collectionProducts]);
+  }, [collectionProducts, mainSettings.customNicotines, mainSettings.customCapacities, collectionMeta]);
 
   // Initialize maxPrice slider default
   useEffect(() => {
@@ -691,17 +775,10 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
       }
 
       // Nicotine filter
-      let matchNic = true;
-      if (selectedNicotines.length > 0) {
-        let pNic = p.nicotine || "";
-        if (!pNic) {
-          if (prodNameLower.includes("1.8%") || prodNameLower.includes("18mg") || prodNameLower.includes("18 mg")) pNic = "1.8% (18mg)";
-          else if (prodNameLower.includes("3%") || prodNameLower.includes("30mg") || prodNameLower.includes("30 mg")) pNic = "3.0% (30mg)";
-          else if (prodNameLower.includes("5%") || prodNameLower.includes("50mg") || prodNameLower.includes("50 mg")) pNic = "5.0% (50mg)";
-          else if (prodNameLower.includes("2%") || prodNameLower.includes("20mg") || prodNameLower.includes("20 mg")) pNic = "2.0% (20mg)";
-        }
-        matchNic = selectedNicotines.includes(pNic);
-      }
+      const matchNic = productMatchesNicotine(p, selectedNicotines);
+
+      // Capacity (ml) filter
+      const matchCapacity = productMatchesCapacity(p, selectedCapacities);
 
       // Puffs filter
       const matchPuff = selectedPuffs.length === 0 || (p.puffs && selectedPuffs.includes(p.puffs));
@@ -731,7 +808,25 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
       if (activePillFilter && activePillFilter !== "all") {
         const cleanPill = activePillFilter.toLowerCase().replace("all", "").trim();
         if (cleanPill) {
-          matchPill = prodNameLower.includes(cleanPill) ||
+          const pillInCollections = (p.collections || []).some((c) => {
+            const cLower = c.toLowerCase();
+            return cLower === cleanPill || cLower.includes(cleanPill);
+          });
+          const pillInTags = (p.tags || []).some((t: string) => {
+            const tLower = t.toLowerCase();
+            return tLower === cleanPill || tLower.includes(cleanPill);
+          });
+          const matchSpecial =
+            (cleanPill === "device" && (prodNameLower.includes("kit") || prodNameLower.includes("device"))) ||
+            (cleanPill === "pods" && (prodNameLower.includes("pod") || prodNameLower.includes("cartridge"))) ||
+            (cleanPill === "flash-sale" && ((p.originalPrice ?? 0) > p.price || prodSectionLower.includes("flash") || (p.collections || []).includes("flash-sale"))) ||
+            (cleanPill === "juul 1" && prodNameLower.includes("juul") && !prodNameLower.includes("juul 2") && !prodNameLower.includes("juul2")) ||
+            (cleanPill === "juul 2" && (prodNameLower.includes("juul 2") || prodNameLower.includes("juul2")));
+
+          matchPill = pillInCollections ||
+            pillInTags ||
+            matchSpecial ||
+            prodNameLower.includes(cleanPill) ||
             prodBrandLower.includes(cleanPill) ||
             prodSectionLower.includes(cleanPill) ||
             prodCatLower.includes(cleanPill);
@@ -743,7 +838,7 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (p.brand && p.brand.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      return matchSeries && matchNic && matchPuff && matchBrand && matchCategory && matchStock && matchPrice && matchSub && matchPill && matchSearch;
+      return matchSeries && matchNic && matchCapacity && matchPuff && matchBrand && matchCategory && matchStock && matchPrice && matchSub && matchPill && matchSearch;
     });
 
     // Sorting
@@ -762,16 +857,15 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
     }
 
     return result;
-  }, [collectionProducts, selectedSeries, selectedNicotines, selectedPuffs, selectedBrands, selectedCategories, inStockOnly, maxPrice, sortBy, subFilter, searchQuery, activePillFilter]);
+  }, [collectionProducts, selectedSeries, selectedNicotines, selectedCapacities, selectedPuffs, selectedBrands, selectedCategories, inStockOnly, maxPrice, sortBy, subFilter, searchQuery, activePillFilter]);
 
   // Both come from the collection template's Product Grid section.
-  const mainSettings = instanceSettings(sectionInstances, "collectionMain");
   const ITEMS_PER_PAGE = Number(mainSettings.itemsPerPage) || 12;
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedNicotines, selectedPuffs, selectedBrands, selectedCategories, inStockOnly, maxPrice, sortBy, subFilter, searchQuery, activePillFilter, handle]);
+  }, [selectedNicotines, selectedCapacities, selectedPuffs, selectedBrands, selectedCategories, inStockOnly, maxPrice, sortBy, subFilter, searchQuery, activePillFilter, handle]);
 
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
 
@@ -783,6 +877,12 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
   const toggleNicotine = (nic: string) => {
     setSelectedNicotines((prev) =>
       prev.includes(nic) ? prev.filter((item) => item !== nic) : [...prev, nic]
+    );
+  };
+
+  const toggleCapacity = (cap: string) => {
+    setSelectedCapacities((prev) =>
+      prev.includes(cap) ? prev.filter((item) => item !== cap) : [...prev, cap]
     );
   };
 
@@ -806,9 +906,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
 
   const handleClearFilters = () => {
     setSelectedNicotines([]);
+    setSelectedCapacities([]);
     setSelectedPuffs([]);
     setSelectedBrands([]);
     setSelectedCategories([]);
+    setSelectedSeries([]);
     setInStockOnly(false);
     setMaxPrice(filterOptions.maxFoundPrice);
   };
@@ -872,7 +974,7 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
         activeCategory={activeCategory}
       />
 
-      <main className="flex-grow pb-24 pt-[92px]">
+      <main className="flex-grow pb-24 pt-[92px]" suppressHydrationWarning>
         {/* Slim Collection Header Bar (Exact Reference Match) */}
         {!(handle === "brand" || handle === "brands") && (
           <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
@@ -912,26 +1014,28 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
                 )}
               </div>
 
-              {/* Bottom Row: Horizontal Scrollable Sub-Category & Brand Filter Pills (In-Page State Filtering) */}
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5 pb-0.5">
-                {getSubPillsForHandle(handle).map((pill, idx) => {
-                  const isActive = activePillFilter === pill.query || (activePillFilter === "all" && pill.query === "all");
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        setActivePillFilter(pill.query);
-                      }}
-                      className={`shrink-0 text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 cursor-pointer shadow-2xs ${isActive
-                        ? "bg-primary text-white font-black scale-105 shadow-md border border-primary"
-                        : "bg-background border border-border/70 text-foreground hover:border-primary hover:bg-primary/10 hover:text-primary hover:scale-105"
-                        }`}
-                    >
-                      {pill.label}
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Bottom Row: Horizontal Scrollable Sub-Category & Brand Filter Pills (Configured in Shopify Backend) */}
+              {collectionInfo.subPillsJson && collectionInfo.subPillsJson.length > 0 && (
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5 pb-0.5">
+                  {collectionInfo.subPillsJson.map((pill: any, idx: number) => {
+                    const isActive = activePillFilter === pill.query || (activePillFilter === "all" && pill.query === "all");
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          setActivePillFilter(pill.query);
+                        }}
+                        className={`shrink-0 text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-300 cursor-pointer shadow-2xs ${isActive
+                          ? "bg-primary text-white font-black scale-105 shadow-md border border-primary"
+                          : "bg-background border border-border/70 text-foreground hover:border-primary hover:bg-primary/10 hover:text-primary hover:scale-105"
+                          }`}
+                      >
+                        {pill.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
             </div>
           </div>
@@ -951,9 +1055,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
                       <SlidersHorizontal className="h-4 w-4 text-primary" /> Filters
                     </h3>
                     {(selectedNicotines.length > 0 ||
+                      selectedCapacities.length > 0 ||
                       selectedPuffs.length > 0 ||
                       selectedBrands.length > 0 ||
                       selectedCategories.length > 0 ||
+                      selectedSeries.length > 0 ||
                       inStockOnly ||
                       maxPrice !== filterOptions.maxFoundPrice) && (
                         <button
@@ -1084,6 +1190,26 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
                       </div>
                     )}
 
+                    {/* Capacity / Size (ml) Checklist */}
+                    {filterOptions.capacities.length > 0 && (
+                      <div className="space-y-3 pt-4 border-t border-border/40">
+                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Capacity / Size (ml):</p>
+                        <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                          {filterOptions.capacities.map((cap) => (
+                            <label key={cap} className="flex items-center gap-2.5 text-xs font-semibold cursor-pointer text-foreground group">
+                              <input
+                                type="checkbox"
+                                checked={selectedCapacities.includes(cap)}
+                                onChange={() => toggleCapacity(cap)}
+                                className="accent-primary h-4 w-4 rounded border-border focus:ring-0 cursor-pointer"
+                              />
+                              <span className="group-hover:text-primary transition-colors">{cap}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Puffs list Checklist */}
                     {filterOptions.puffs.length > 0 && (
                       <div className="space-y-3 pt-4 border-t border-border/40">
@@ -1125,9 +1251,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
                     >
                       <SlidersHorizontal className="h-3.5 w-3.5" /> Filters
                       {(selectedNicotines.length > 0 ||
+                        selectedCapacities.length > 0 ||
                         selectedPuffs.length > 0 ||
                         selectedBrands.length > 0 ||
                         selectedCategories.length > 0 ||
+                        selectedSeries.length > 0 ||
                         inStockOnly ||
                         maxPrice !== filterOptions.maxFoundPrice) && (
                           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -1487,9 +1615,11 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
               </h3>
               <div className="flex items-center gap-4">
                 {(selectedNicotines.length > 0 ||
+                  selectedCapacities.length > 0 ||
                   selectedPuffs.length > 0 ||
                   selectedBrands.length > 0 ||
                   selectedCategories.length > 0 ||
+                  selectedSeries.length > 0 ||
                   inStockOnly ||
                   maxPrice !== filterOptions.maxFoundPrice) && (
                     <button
@@ -1601,6 +1731,26 @@ function CollectionPageContent({ initialMeta }: { initialMeta?: any }) {
                           className="accent-primary h-4 w-4 rounded border-border focus:ring-0 cursor-pointer"
                         />
                         <span className="group-hover:text-primary transition-colors">{nic}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Capacity / Size (ml) Checklist */}
+              {filterOptions.capacities.length > 0 && (
+                <div className="space-y-3 pt-4 border-t border-border/40">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Capacity / Size (ml):</p>
+                  <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                    {filterOptions.capacities.map((cap) => (
+                      <label key={cap} className="flex items-center gap-2.5 text-xs font-semibold cursor-pointer text-foreground group">
+                        <input
+                          type="checkbox"
+                          checked={selectedCapacities.includes(cap)}
+                          onChange={() => toggleCapacity(cap)}
+                          className="accent-primary h-4 w-4 rounded border-border focus:ring-0 cursor-pointer"
+                        />
+                        <span className="group-hover:text-primary transition-colors">{cap}</span>
                       </label>
                     ))}
                   </div>

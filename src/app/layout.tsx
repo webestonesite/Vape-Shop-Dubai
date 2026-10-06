@@ -128,6 +128,26 @@ export default async function RootLayout({
         {/* Preload LCP hero images for instant first paint */}
         <link rel="preload" as="image" type="image/webp" href="/Slider/myle_slider_mobile.webp" media="(max-width: 640px)" fetchPriority="high" />
         <link rel="preload" as="image" type="image/webp" href="/Slider/myle_slider.webp" media="(min-width: 641px)" fetchPriority="high" />
+        {/* Prevent browser extension attributes (e.g. bis_skin_checked) from causing hydration mismatches */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              if(typeof window==='undefined')return;
+              try{
+                var origSet=Element.prototype.setAttribute;
+                Element.prototype.setAttribute=function(n,v){
+                  if(n==='bis_skin_checked'||n==='bis_register')return;
+                  return origSet.call(this,n,v);
+                };
+                Object.defineProperty(Element.prototype,'bis_skin_checked',{
+                  set:function(){},
+                  get:function(){return undefined;},
+                  configurable:true
+                });
+              }catch(e){}
+            })();`,
+          }}
+        />
         {/* Root Google JSON-LD Schemas */}
         <script
           type="application/ld+json"

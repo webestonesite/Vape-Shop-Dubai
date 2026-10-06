@@ -1,4 +1,4 @@
-
+import { getAccurateProductSpecs, extractNicotine, extractPuffs } from "./smart-specs";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
 const ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
@@ -42,6 +42,17 @@ query getProductByHandle($handle: String!) {
       }
     }
     faqAccordion: metafield(namespace: "custom", key: "faq_accordion") { value }
+    specsTable: metafield(namespace: "custom", key: "specifications_table") {
+      references(first: 30) {
+        edges {
+          node {
+            ... on Metaobject {
+              fields { key value }
+            }
+          }
+        }
+      }
+    }
     youtubeVideoMeta: metafield(namespace: "custom", key: "youtube_video_url") { value }
     videoMeta: metafield(namespace: "custom", key: "video_url") { value }
     productVideoMeta: metafield(namespace: "custom", key: "product_video") { value }
@@ -393,6 +404,68 @@ function cleanProductTitle(title: string): string {
   return cleaned.trim();
 }
 
+export function parseKeySpecifications(raw: string | null | undefined): Array<{ label: string; value: string }> | null {
+  if (!raw || typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  // 1. JSON format support
+  if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        const rows = parsed.map((item: any) => ({
+          label: String(item.label || item.key || item.name || item.feature || "").trim(),
+          value: String(item.value || item.val || item.details || "").trim(),
+        })).filter(item => item.label && item.value);
+        if (rows.length > 0) return rows;
+      } else if (typeof parsed === "object" && parsed !== null) {
+        const rows = Object.entries(parsed).map(([k, v]) => ({
+          label: k.trim(),
+          value: String(v).trim(),
+        })).filter(item => item.label && item.value);
+        if (rows.length > 0) return rows;
+      }
+    } catch {
+      // not JSON, fallback to line-by-line parsing
+    }
+  }
+
+  // 2. Line-by-line parsing (Excel tab-separated, colon-separated, dash-separated, comma-separated)
+  const lines = trimmed.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const rows: Array<{ label: string; value: string }> = [];
+
+  for (const line of lines) {
+    let label = "";
+    let value = "";
+
+    if (line.includes("\t")) {
+      // Excel Copy-Paste
+      const parts = line.split("\t");
+      label = parts[0]?.trim() || "";
+      value = parts.slice(1).join(" ").trim();
+    } else if (line.includes(":")) {
+      const idx = line.indexOf(":");
+      label = line.slice(0, idx).trim();
+      value = line.slice(idx + 1).trim();
+    } else if (line.includes(" - ")) {
+      const idx = line.indexOf(" - ");
+      label = line.slice(0, idx).trim();
+      value = line.slice(idx + 3).trim();
+    } else if (line.includes(",")) {
+      const idx = line.indexOf(",");
+      label = line.slice(0, idx).trim();
+      value = line.slice(idx + 1).trim();
+    }
+
+    if (label && value) {
+      rows.push({ label, value });
+    }
+  }
+
+  return rows.length > 0 ? rows : null;
+}
+
 export async function getProductByHandle(handle: string) {
 
   try {
@@ -651,11 +724,15 @@ export async function getProductByHandle(handle: string) {
       specsTable = node.specsTable.references.edges.map((edge: any) => {
         const fields = edge.node.fields || [];
         const getVal = (k: string) => fields.find((f: any) => f.key === k)?.value || "";
+        const feature = getVal("feature") || getVal("name") || getVal("label") || "";
+        const details = getVal("details") || getVal("value") || "";
         return {
-          feature: getVal("feature") || getVal("name") || "",
-          details: getVal("details") || getVal("value") || "",
+          label: feature,
+          value: details,
+          feature,
+          details,
         };
-      });
+      }).filter((item: any) => item.label && item.value);
     } else if (node.specsTable?.value) {
       try {
         specsTable = JSON.parse(node.specsTable.value);
@@ -933,8 +1010,8 @@ export async function getProductByHandle(handle: string) {
       tagColor: comparePrice > price ? "sale" : undefined,
       isPopular: node.tags?.includes("Popular") || node.tags?.includes("popular"),
       isSoldOut,
-      puffs: node.puffs?.value || undefined,
-      nicotine: node.nicotine?.value || undefined,
+      puffs: extractPuffs(node.title, node.tags, node.descriptionHtml) || node.puffs?.value || undefined,
+      nicotine: extractNicotine(node.title, node.tags, node.descriptionHtml) || node.nicotine?.value || undefined,
       battery: node.battery?.value || undefined,
       shortDescription: node.shortDescription?.value || undefined,
       specsTable,
@@ -954,6 +1031,18 @@ export async function getProductByHandle(handle: string) {
       }),
       section,
       brand: detectBrand(node.title, node.vendor),
+      tags: node.tags || [],
+      keySpecifications:
+        (Array.isArray(specsTable) && specsTable.length > 0
+          ? specsTable.map((s: any) => ({ label: s.label || s.feature, value: s.value || s.details })).filter((s: any) => s.label && s.value)
+          : null) ||
+        getAccurateProductSpecs({
+          name: node.title,
+          category,
+          brand: detectBrand(node.title, node.vendor),
+          tags: node.tags || [],
+          descriptionHtml: node.descriptionHtml,
+        }),
       primaryCollection: (() => {
         const collectionsList = (node.collections?.edges || []).map((e: any) => e.node).filter(Boolean);
         const specificCollection = collectionsList.find((c: any) =>
