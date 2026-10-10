@@ -503,6 +503,12 @@ function CollectionPageContent({
     "juul-vape-dubai": "Juul Vape Dubai",
     "myle-vape-dubai": "Myle Vape Dubai",
     "disposable-vape": "Disposable Vape",
+    "buy-50mg-disposable-vape-in-uae": "50MG Disposable",
+    "buy-20mg-disposable-vape-uae": "20MG Disposable",
+    "buy-0mg-disposable-vape-in-uae": "0MG Disposable",
+    "50mg-disposable": "50MG Disposable",
+    "20mg-disposable": "20MG Disposable",
+    "0mg-disposable": "0MG Disposable",
     "vape-e-juice": "Vape E-Juice",
     "pod-system": "Pod System",
     "juul-1-series": "JUUL 1 Series",
@@ -640,6 +646,12 @@ function CollectionPageContent({
     "e-juice": "vape-e-juice",
     "pod-systems": "pod-system",
     accessories: "pod-system",
+    "50mg-disposable": "buy-50mg-disposable-vape-in-uae",
+    "20mg-disposable": "buy-20mg-disposable-vape-uae",
+    "0mg-disposable": "buy-0mg-disposable-vape-in-uae",
+    "50mg": "buy-50mg-disposable-vape-in-uae",
+    "20mg": "buy-20mg-disposable-vape-uae",
+    "0mg": "buy-0mg-disposable-vape-in-uae",
   };
 
   // Base collection products for THIS specific page/handle — STRICTLY from Shopify Backend

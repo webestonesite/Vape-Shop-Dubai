@@ -324,7 +324,11 @@ const DEFAULT_HEADER: ThemeSettings["header"] = {
     {
       label: "DISPOSABLE",
       href: "/collections/disposable-vape",
-      children: [],
+      children: [
+        { label: "50MG Disposable", href: "/collections/buy-50mg-disposable-vape-in-uae" },
+        { label: "20MG Disposable", href: "/collections/buy-20mg-disposable-vape-uae" },
+        { label: "0MG Disposable", href: "/collections/buy-0mg-disposable-vape-in-uae" },
+      ],
     },
     {
       label: "E-JUICE",

@@ -59,6 +59,9 @@ export async function GET(req: Request) {
     "best-seller-vape",
     "flash-sale",
     "sprk",
+    "buy-50mg-disposable-vape-in-uae",
+    "buy-20mg-disposable-vape-uae",
+    "buy-0mg-disposable-vape-in-uae",
   ];
 
   const staticPages = [

@@ -16,6 +16,12 @@ const CANONICAL_COLLECTION_ALIASES: Record<string, string> = {
   "e-juice": "vape-e-juice",
   "pod-systems": "pod-system",
   accessories: "pod-system",
+  "50mg-disposable": "buy-50mg-disposable-vape-in-uae",
+  "20mg-disposable": "buy-20mg-disposable-vape-uae",
+  "0mg-disposable": "buy-0mg-disposable-vape-in-uae",
+  "50mg": "buy-50mg-disposable-vape-in-uae",
+  "20mg": "buy-20mg-disposable-vape-uae",
+  "0mg": "buy-0mg-disposable-vape-in-uae",
 };
 
 const CANONICAL_HANDLE_TITLES: Record<string, string> = {
@@ -28,6 +34,9 @@ const CANONICAL_HANDLE_TITLES: Record<string, string> = {
   "myle-v5-device": "Myle V5 Devices",
   "myle-disposable": "Myle Disposables",
   "disposable-vape": "Disposable Vape Dubai",
+  "buy-50mg-disposable-vape-in-uae": "50MG Disposable",
+  "buy-20mg-disposable-vape-uae": "20MG Disposable",
+  "buy-0mg-disposable-vape-in-uae": "0MG Disposable",
   "al-fakher-vape": "Al Fakher Vape",
   "elf-bar-vape": "Elf Bar Vape",
   "lost-mary-disposable": "Lost Mary Disposable",
