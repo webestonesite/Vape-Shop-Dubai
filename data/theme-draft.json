@@ -56,6 +56,48 @@
         {
           "label": "DISPOSABLE",
           "href": "/collections/disposable-vape",
+          "children": []
+        },
+        {
+          "label": "E-JUICE",
+          "href": "/collections/vape-e-juice",
+          "children": [
+            {
+              "label": "Salt Nicotine",
+              "href": "/collections/salt-nicotine"
+            },
+            {
+              "label": "Freebase e-liquid",
+              "href": "/collections/freebase-e-liquid"
+            }
+          ]
+        },
+        {
+          "label": "POD SYSTEM",
+          "href": "/collections/pod-system",
+          "children": [
+            {
+              "label": "Pod Kit",
+              "href": "/collections/pod-kit"
+            },
+            {
+              "label": "Pod Cartridge",
+              "href": "/collections/pod-cartridge"
+            },
+            {
+              "label": "Vape Coils",
+              "href": "/collections/vape-coils"
+            }
+          ]
+        },
+        {
+          "label": "Sprk",
+          "href": "/collections/sprk",
+          "children": []
+        },
+        {
+          "label": "BRAND",
+          "href": "/collections/brand",
           "children": [
             {
               "label": "Al Fakher Vape",
@@ -120,50 +162,7 @@
             {
               "label": "Silvaper Vape",
               "href": "/collections/silvaper-vape"
-            }
-          ]
-        },
-        {
-          "label": "E-JUICE",
-          "href": "/collections/vape-e-juice",
-          "children": [
-            {
-              "label": "Salt Nicotine",
-              "href": "/collections/salt-nicotine"
             },
-            {
-              "label": "Freebase e-liquid",
-              "href": "/collections/freebase-e-liquid"
-            }
-          ]
-        },
-        {
-          "label": "POD SYSTEM",
-          "href": "/collections/pod-system",
-          "children": [
-            {
-              "label": "Pod Kit",
-              "href": "/collections/pod-kit"
-            },
-            {
-              "label": "Pod Cartridge",
-              "href": "/collections/pod-cartridge"
-            },
-            {
-              "label": "Vape Coils",
-              "href": "/collections/vape-coils"
-            }
-          ]
-        },
-        {
-          "label": "Sprk",
-          "href": "/collections/sprk",
-          "children": []
-        },
-        {
-          "label": "BRAND",
-          "href": "/collections/brand",
-          "children": [
             {
               "label": "Oxva Vape",
               "href": "/collections/oxva-vape"

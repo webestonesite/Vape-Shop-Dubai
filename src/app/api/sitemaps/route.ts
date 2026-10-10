@@ -2,29 +2,77 @@ import { NextResponse } from "next/server";
 import { FALLBACK_SITE_URL } from "@/lib/seo-schemas";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   const headersList = await headers();
   const host = headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'https';
   const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
 
+  const collectionHandles = [
+    "all",
+    "disposable-vape",
+    "juul-vape-dubai",
+    "myle-vape-dubai",
+    "vape-e-juice",
+    "pod-system",
+    "brand",
+    "accessories",
+    "disposables",
+    "e-liquids",
+    "juul",
+    "juul-1-series",
+    "juul-2-series",
+    "juul-pods-offers",
+    "myle",
+    "myle-v5-pods",
+    "myle-v5-device",
+    "myle-disposable",
+    "al-fakher-vape",
+    "elf-bar-vape",
+    "fummo-vape",
+    "pod-salt-vape",
+    "vapes-bars",
+    "vozol-vape",
+    "tugboat-vape",
+    "hqd-vape",
+    "lost-mary-disposable",
+    "maskking-vape",
+    "geek-bar-disposable",
+    "yuoto-vape",
+    "relx-vape",
+    "nerd-vape",
+    "vgod-stig",
+    "silvaper-vape",
+    "salt-nicotine",
+    "freebase-e-liquid",
+    "pod-kit",
+    "pod-cartridge",
+    "vape-coils",
+    "oxva-vape",
+    "uwell-vape",
+    "vaporesso-vape",
+    "smok-vape",
+    "geek-vape",
+    "voopoo-vape",
+    "best-seller-vape",
+    "flash-sale",
+    "sprk",
+  ];
+
   const staticPages = [
     "",
     "/products",
     "/shop",
-    "/collections/all",
-    "/collections/disposable-vape",
-    "/collections/juul-vape-dubai",
-    "/collections/myle-vape-dubai",
-    "/collections/vape-e-juice",
-    "/collections/pod-system",
-    "/collections/brand",
+    ...collectionHandles.map((h) => `/collections/${h}`),
     "/blogs/news",
     "/about-us",
     "/contact",
     "/shipping-delivery",
     "/terms-conditions",
     "/privacy-policy",
+    "/refund-returns",
   ];
 
   let dynamicUrls: string[] = [];

@@ -29,19 +29,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
     event.currentTarget.style.opacity = "0";
   }, []);
 
-  const isDummyImage =
-    !src ||
-    src.includes("juul_menthol") ||
-    src.includes("juul_device") ||
-    src.includes("vape_kit") ||
-    src.includes("lost_mary") ||
-    src.includes("premium_liquid") ||
-    src.includes("hero_vape") ||
-    src.includes("blog_juul") ||
-    src.includes("blog_disposable") ||
-    src.includes("blog_eliquid") ||
-    src.includes("blog_pod") ||
-    src.includes("blog_authenticity");
+  const isDummyImage = !src || src === "";
 
   if (isDummyImage || error) {
     return (
@@ -71,14 +59,18 @@ export const SmartImage: React.FC<SmartImageProps> = ({
         alt={alt}
         width={width}
         height={height}
-        className={`${className} mx-auto z-10 transition-all duration-500 ${
-          loaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
+        className={`${className} mx-auto z-10 transition-all duration-300 ${
+          loaded ? "opacity-100 blur-0" : "opacity-90"
         }`}
         sizes={effectiveSizes}
-        quality={70}
         priority={priority}
         fetchPriority={fetchPriority}
         draggable={draggable}
+        ref={(node) => {
+          if (node?.complete && !loaded) {
+            setLoaded(true);
+          }
+        }}
         onLoad={() => setLoaded(true)}
         onError={(e) => {
           handleError(e);

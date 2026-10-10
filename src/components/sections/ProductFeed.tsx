@@ -219,16 +219,17 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
             src={displayedImage}
             alt={product.name}
             fill
-            quality={60}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 230px, 260px"
-            onLoad={() => setImageLoaded(true)}
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.opacity = "0";
-              setImageLoaded(true);
+            ref={(node) => {
+              if (node?.complete && !imageLoaded) {
+                setImageLoaded(true);
+              }
             }}
-            className={`object-contain filter drop-shadow-md transition-all duration-500 z-10 ${
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+            className={`object-contain filter drop-shadow-md transition-all duration-300 z-10 ${
               hovered ? "scale-105" : "scale-100"
-            } ${imageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"}`}
+            } ${imageLoaded ? "opacity-100 blur-0" : "opacity-90"}`}
           />
         </Link>
 

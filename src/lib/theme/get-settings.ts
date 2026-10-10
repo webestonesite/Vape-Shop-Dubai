@@ -25,3 +25,4 @@ const getCachedPublishedSettings = unstable_cache(
 export async function getThemeSettings(): Promise<ThemeSettings> {
   return getCachedPublishedSettings();
 }
+

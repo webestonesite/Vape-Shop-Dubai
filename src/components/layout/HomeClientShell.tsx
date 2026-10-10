@@ -93,7 +93,7 @@ export function HomeClientShell() {
       <Navbar onCategorySelect={setActiveCategory} activeCategory={activeCategory} />
 
       <main className="flex-grow space-y-0 pb-0">
-        <h1 className="sr-only">TRUSTED JUUL SELLER IN UAE</h1>
+        <h1 className="sr-only">Trusted JUUL &amp; Vape Seller in Dubai, UAE</h1>
         <TemplateSections
           instances={instances}
           isOverride={isOverride}

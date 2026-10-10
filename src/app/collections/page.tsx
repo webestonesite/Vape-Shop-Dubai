@@ -1,7 +1,5 @@
-"use client";
-
 import CollectionPage from "./[handle]/page";
 
 export default function CollectionsRootPage() {
-  return <CollectionPage />;
+  return <CollectionPage params={Promise.resolve({ handle: "all" })} />;
 }

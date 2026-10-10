@@ -218,10 +218,17 @@ export interface CollectionMeta {
   pageSections?: unknown | null;
 }
 
-export async function fetchCollection(handle: string): Promise<CollectionMeta | null> {
+export async function fetchCollection(
+  handle: string,
+  opts?: { preview?: boolean }
+): Promise<CollectionMeta | null> {
   if (!SHOPIFY_STORE) {
     throw new Error("SHOPIFY_STORE is not configured");
   }
+
+  const fetchOpts = opts?.preview
+    ? { cache: "no-store" as const }
+    : { next: { revalidate: 3600 } };
 
   // Try Storefront API first
   if (STOREFRONT_TOKEN) {
@@ -237,7 +244,7 @@ export async function fetchCollection(handle: string): Promise<CollectionMeta | 
           query: storefrontCollectionQuery,
           variables: { handle },
         }),
-        cache: "no-store",
+        ...fetchOpts,
       });
 
       if (response.ok) {
@@ -263,7 +270,7 @@ export async function fetchCollection(handle: string): Promise<CollectionMeta | 
         query: adminCollectionQuery,
         variables: { handle },
       }),
-      cache: "no-store",
+      ...fetchOpts,
     });
 
     if (!response.ok) {

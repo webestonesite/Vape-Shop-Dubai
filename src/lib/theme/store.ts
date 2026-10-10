@@ -89,8 +89,12 @@ const storage: ThemeStorage = {
     return jsonFileStorage.read(slot);
   },
   async write(slot, record) {
-    // 100% Firebase Firestore — bypasses local disk entirely
-    await firestoreStorage.write(slot, record);
+    try {
+      await firestoreStorage.write(slot, record);
+    } catch {
+      // Fallback if Firestore unavailable
+    }
+    await jsonFileStorage.write(slot, record);
   },
 };
 

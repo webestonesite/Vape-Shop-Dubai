@@ -68,6 +68,19 @@ query getArticles {
 const singleArticleCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_TTL = 10 * 60 * 1000;
 
+function cleanArticleBodyHtml(html: string): string {
+  if (!html) return "";
+  let cleaned = html;
+  // Strip competitor URLs and unwrap the links
+  cleaned = cleaned.replace(/<a[^>]*href=["']https?:\/\/(?:www\.)?(?:ostore\.ae|vpdubaiking\.ae|vapstall\.ae|vapepods\.ae)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi, "$1");
+  // Normalize store links
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/products\/([^"]+)"/gi, 'href="/products/$1"');
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/collections\/([^"]+)"/gi, 'href="/collections/$1"');
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/blogs\/([^"]+)"/gi, 'href="/blogs/$1"');
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/?"/gi, 'href="/"');
+  return cleaned;
+}
+
 // Blog handles to try for Storefront API lookups
 const BLOG_HANDLES = ["news", "juul-pods", "disposables", "comparisons", "safety", "e-liquids", "uae-guides"];
 
@@ -115,7 +128,7 @@ export async function GET(
                 title: node.title,
                 handle: node.handle,
                 excerpt: node.excerpt || node.excerptHtml?.replace(/<[^>]+>/g, "").slice(0, 160) || "",
-                contentHtml: node.contentHtml || "",
+                contentHtml: cleanArticleBodyHtml(node.contentHtml || ""),
                 publishedAt: node.publishedAt,
                 author: node.authorV2?.name || "Vape Shop Dubai Editorial",
                 image: node.image?.url || "",
@@ -167,7 +180,7 @@ export async function GET(
               title: node.title,
               handle: node.handle,
               excerpt: node.summary || (node.body ? node.body.replace(/<[^>]+>/g, "").slice(0, 160) : "") || "",
-              contentHtml: node.body || "",
+              contentHtml: cleanArticleBodyHtml(node.body || ""),
               publishedAt: node.publishedAt,
               author: node.author?.name || "Vape Shop Dubai Editorial",
               image: node.image?.url || "",

@@ -814,7 +814,14 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 <div className="flex flex-wrap items-center justify-between gap-3 mt-2.5 pb-3 border-b border-border/40">
                   <div className="flex items-center gap-2.5">
                     {flag("showRating") && (
-                      <>
+                      <a
+                        href="#customer-reviews-section"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById("customer-reviews-section")?.scrollIntoView({ behavior: "smooth" });
+                        }}
+                        className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer group"
+                      >
                         <div className="flex items-center gap-0.5">
                           {[...Array(5)].map((_, i) => (
                             <Star
@@ -827,12 +834,12 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           ))}
                         </div>
                         <span className="text-[11px] font-black text-foreground">{product.rating}</span>
-                        <span className="text-[11px] text-muted-foreground font-normal">
+                        <span className="text-[11px] text-muted-foreground font-normal group-hover:text-primary transition-colors underline decoration-dotted decoration-muted-foreground/40 underline-offset-2">
                           {text("reviewCountTemplate", "({count} reviews)")
                             .split("{count}")
                             .join(String(product.reviews))}
                         </span>
-                      </>
+                      </a>
                     )}
                     {product.isSoldOut ? (
                       <span className="inline-flex items-center gap-1 bg-muted border border-border/60 text-muted-foreground text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full">
@@ -1381,7 +1388,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 productReviewsCount={product.reviews}
                 productReviewsList={product.reviewsList}
                 settings={settings as never}
-                hideIfEmpty={true}
+                hideIfEmpty={false}
               />
             ),
             faq: (settings: Record<string, unknown>) => (

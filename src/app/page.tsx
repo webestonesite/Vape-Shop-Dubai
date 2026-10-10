@@ -34,7 +34,6 @@ export default async function Home() {
 
   const faqSchema = getFAQSchema(questions);
   const breadcrumbSchema = getBreadcrumbSchema([{ name: "Home", item: "/" }]);
-
   return (
     <HomeStateProvider>
       <div className="relative flex flex-col min-h-screen bg-background text-foreground">
@@ -52,7 +51,7 @@ export default async function Home() {
         <HomeNavbarConnector />
 
         <main className="flex-grow space-y-0 pb-0">
-          <h1 className="sr-only">TRUSTED JUUL SELLER IN UAE</h1>
+          <h1 className="sr-only">Trusted JUUL &amp; Vape Seller in Dubai, UAE</h1>
           <TemplateSections
             instances={instances}
             isOverride={isOverride}

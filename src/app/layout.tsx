@@ -85,6 +85,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
       images: [`${SITE_URL}/hero_vape.png`],
     },
+    alternates: {
+      canonical: "/",
+    },
     robots: {
       index: true,
       follow: true,

@@ -72,6 +72,19 @@ interface RelatedArticle {
   blogTitle: string;
 }
 
+function cleanArticleBodyHtml(html: string): string {
+  if (!html) return "";
+  let cleaned = html;
+  // Strip competitor URLs and unwrap the links
+  cleaned = cleaned.replace(/<a[^>]*href=["']https?:\/\/(?:www\.)?(?:ostore\.ae|vpdubaiking\.ae|vapstall\.ae|vapepods\.ae)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi, "$1");
+  // Normalize store links
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/products\/([^"]+)"/gi, 'href="/products/$1"');
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/collections\/([^"]+)"/gi, 'href="/collections/$1"');
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/blogs\/([^"]+)"/gi, 'href="/blogs/$1"');
+  cleaned = cleaned.replace(/href="https?:\/\/(?:www\.)?(?:vapshopdubai\.ae|vapshop\.ae|vapeshopdubai\.net|vapeuae\.shop)\/?"/gi, 'href="/"');
+  return cleaned;
+}
+
 /** Fetch single article server-side directly from Shopify */
 async function fetchArticle(slug: string): Promise<ArticleData | null> {
   // Strategy 1: Storefront API — try multiple blog handles
@@ -93,6 +106,7 @@ async function fetchArticle(slug: string): Promise<ArticleData | null> {
             next: { revalidate: 300 },
           }
         );
+
         if (res.ok) {
           const json = await res.json();
           const node = json.data?.blogByHandle?.articleByHandle;
@@ -103,7 +117,7 @@ async function fetchArticle(slug: string): Promise<ArticleData | null> {
               title: node.title,
               handle: node.handle,
               excerpt: node.excerpt || node.excerptHtml?.replace(/<[^>]+>/g, "").slice(0, 160) || "",
-              contentHtml: node.contentHtml,
+              contentHtml: cleanArticleBodyHtml(node.contentHtml),
               publishedAt: node.publishedAt,
               author,
               image: node.image?.url || "",
@@ -146,7 +160,7 @@ async function fetchArticle(slug: string): Promise<ArticleData | null> {
             title: node.title,
             handle: node.handle,
             excerpt: node.summary || (node.body ? node.body.replace(/<[^>]+>/g, "").slice(0, 160) : ""),
-            contentHtml: node.body || "",
+            contentHtml: cleanArticleBodyHtml(node.body || ""),
             publishedAt: node.publishedAt,
             author,
             image: node.image?.url || "",
