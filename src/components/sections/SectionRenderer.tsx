@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { shouldRenderInstance, type SectionContext } from "@/lib/theme/conditions";
 import type { SectionInstance } from "@/lib/theme/types";
 
-import { HeroSectionLoader, type HeroSettings } from "./HeroSectionLoader";
+import { HeroSection, type HeroSettings } from "./HeroSection";
 import {
   ContactDetailsSection,
   FeatureGridSection,
@@ -20,48 +20,19 @@ import {
   type ContactFormSettings,
 } from "./ContactFormSection";
 import { FaqSettings, FAQSection } from "./FAQSection";
-import type { BrandsSettings } from "./AuthorizedDealers";
-import type { CategoriesSettings } from "./Categories";
-import type { WhatsAppSettings } from "./WhatsAppContactSection";
-import type { WhyShopSettings } from "./WhyShopWithUs";
-import type { BlogSettings } from "./BlogSection";
+import { AuthorizedDealers, type BrandsSettings } from "./AuthorizedDealers";
+import { Categories, type CategoriesSettings } from "./Categories";
+import { WhatsAppContactSection, type WhatsAppSettings } from "./WhatsAppContactSection";
+import { WhyShopWithUs, type WhyShopSettings } from "./WhyShopWithUs";
+import { BlogSection, type BlogSettings } from "./BlogSection";
 
-// ─── Dynamically imported heavy client sections ────────────────────────────
-// `ssr: false` is NOT allowed here — SectionRenderer is a Server Component.
-// The dynamic() calls still split the bundle so their JS is deferred from the
-// initial page load, reducing TBT. Reserved-height loading fallbacks prevent CLS.
+// ─── Heavy interactive optional sections ────────────────────────────
 const BrandSphere3D = dynamic(
-  () => import("./BrandSphere3D").then((m) => ({ default: m.BrandSphere3D })),
-  { loading: () => <div style={{ height: "500px" }} aria-hidden="true" /> }
-);
-
-const AuthorizedDealers = dynamic(
-  () => import("./AuthorizedDealers").then((m) => ({ default: m.AuthorizedDealers })),
-  { loading: () => <div style={{ height: "200px" }} aria-hidden="true" /> }
-);
-
-const Categories = dynamic(
-  () => import("./Categories").then((m) => ({ default: m.Categories })),
-  { loading: () => <div style={{ height: "300px" }} aria-hidden="true" /> }
+  () => import("./BrandSphere3D").then((m) => ({ default: m.BrandSphere3D }))
 );
 
 const FlavorsWheel = dynamic(
-  () => import("./FlavorsWheel").then((m) => ({ default: m.FlavorsWheel })),
-  { loading: () => <div style={{ height: "400px" }} aria-hidden="true" /> }
-);
-
-const WhyShopWithUs = dynamic(
-  () => import("./WhyShopWithUs").then((m) => ({ default: m.WhyShopWithUs })),
-  { loading: () => <div style={{ height: "300px" }} aria-hidden="true" /> }
-);
-
-const WhatsAppContactSection = dynamic(
-  () => import("./WhatsAppContactSection").then((m) => ({ default: m.WhatsAppContactSection }))
-);
-
-const BlogSection = dynamic(
-  () => import("./BlogSection").then((m) => ({ default: m.BlogSection })),
-  { loading: () => <div style={{ height: "300px" }} aria-hidden="true" /> }
+  () => import("./FlavorsWheel").then((m) => ({ default: m.FlavorsWheel }))
 );
 
 /**
@@ -92,7 +63,7 @@ function renderRegistrySection(
 
   switch (instance.type) {
     case "hero":
-      return <HeroSectionLoader settings={s as unknown as HeroSettings} />;
+      return <HeroSection settings={s as unknown as HeroSettings} />;
     case "brandDirectoryShowcase":
       return <BrandSphere3D settings={s as any} />;
     case "categories":

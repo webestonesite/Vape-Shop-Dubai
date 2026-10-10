@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -77,16 +78,15 @@ const DEFAULT_PROMO_IMAGES = [
 ];
 
 const PromoCard: React.FC<{ card: HeroPromoCard; index: number }> = ({ card, index }) => {
-  const router = useRouter();
   const isPrimary = card.style === "primary";
   const imageSrc = card.image || DEFAULT_PROMO_IMAGES[index % DEFAULT_PROMO_IMAGES.length];
 
   return (
-    <div
+    <Link
+      href={card.href || "/shop"}
       className={`flex-1 border rounded-[2.5rem] p-6 sm:p-8 flex gap-5 items-center justify-between relative overflow-hidden group card-shadow hover:card-shadow-hover transition-all duration-300 hover:-translate-y-1.5 cursor-pointer min-h-[260px] sm:min-h-[290px] ${
         isPrimary ? "bg-primary border-primary" : "bg-white dark:bg-card border-border/60"
       }`}
-      onClick={() => router.push(card.href || "/shop")}
     >
       {/* Left content */}
       <div className="flex flex-col justify-center flex-grow min-w-0 z-10 gap-4 py-1">
@@ -139,7 +139,7 @@ const PromoCard: React.FC<{ card: HeroPromoCard; index: number }> = ({ card, ind
           />
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -263,29 +263,31 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                       {/* Center grid */}
                       <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
                         {/* Product image (Placed TOP on mobile, RIGHT on desktop) */}
-                        <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 select-none pointer-events-none">
+                        <div className="md:w-[45%] md:order-2 flex items-center justify-center relative w-full h-[240px] sm:h-[320px] lg:h-[390px] py-1 select-none pointer-events-none">
                           {slideImg && (
                             idx === 0 ? (
                               <Image
                                 src={slideImg}
                                 alt={slide.title}
-                                width={800}
-                                height={800}
+                                width={400}
+                                height={400}
                                 priority
+                                fetchPriority="high"
+                                decoding="async"
                                 quality={60}
-                                sizes="(max-width: 640px) 400px, 800px"
-                                className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
+                                sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
+                                className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
                               />
                             ) : (
                               <SmartImage
                                 src={slideImg}
                                 fallbackSrc={slide.fallbackImage || DEFAULT_SLIDE_IMAGES[idx % DEFAULT_SLIDE_IMAGES.length]}
                                 alt={slide.title}
-                                width={420}
-                                height={420}
+                                width={400}
+                                height={400}
                                 draggable={false}
-                                sizes="(max-width: 640px) 200px, (max-width: 1024px) 360px, 420px"
-                                className="sm:animate-float relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain pointer-events-none"
+                                sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
+                                className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
                               />
                             )
                           )}

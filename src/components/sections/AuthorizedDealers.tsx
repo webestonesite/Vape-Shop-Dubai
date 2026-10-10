@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { FlavorsWheel } from "./FlavorsWheel";
 import { useCollectionImages, getHandleFromUrl } from "@/hooks/useCollectionImages";
@@ -118,41 +119,59 @@ export const AuthorizedDealers: React.FC<AuthorizedDealersProps> = ({
 
           {/* Actions */}
           <div className="flex justify-center sm:justify-end">
-            <button
-              onClick={() => router.push(settings?.seeAllHref || "/shop")}
+            <Link
+              href={settings?.seeAllHref || "/shop"}
               className="rounded-full border border-border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-all hover:bg-foreground hover:text-background active:scale-95 cursor-pointer"
             >
               {settings?.seeAllLabel || "SEE ALL"}
-            </button>
+            </Link>
           </div>
         </div>
 
         {/* Grid matching category style */}
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 sm:gap-3.5">
-          {items.map((brand, idx) => (
-            <div
-              key={`${brand.name}-${idx}`}
-              onClick={() => handleBrandClick(brand)}
-              className="group bg-card hover:bg-primary/[0.04] border-2 border-primary/20 hover:border-primary rounded-2xl p-2.5 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-95 shadow-xs hover:shadow-md hover:shadow-primary/10"
-            >
-              {/* Image Container */}
-              <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex items-center justify-center bg-muted/20 border border-primary/15 group-hover:border-primary/40 rounded-xl p-1 sm:p-2 mb-2 transition-colors">
-                <SmartImage
-                  src={(getHandleFromUrl(brand.href) ? collectionImages[getHandleFromUrl(brand.href)!] : undefined) || brand.image}
-                  fallbackSrc=""
-                  alt={brand.name}
-                  width={64}
-                  height={64}
-                  sizes="(max-width: 640px) 40px, 64px"
-                  className="w-full h-full object-contain filter drop-shadow-xs transition-transform duration-300 group-hover:scale-110"
-                />
-              </div>
-              {/* Label */}
-              <span className="text-[9px] sm:text-xs font-bold text-foreground group-hover:text-primary transition-colors leading-tight line-clamp-2">
-                {brand.name}
-              </span>
-            </div>
-          ))}
+          {items.map((brand, idx) => {
+            const cardContent = (
+              <>
+                {/* Image Container */}
+                <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex items-center justify-center bg-muted/20 border border-primary/15 group-hover:border-primary/40 rounded-xl p-1 sm:p-2 mb-2 transition-colors">
+                  <SmartImage
+                    src={(getHandleFromUrl(brand.href) ? collectionImages[getHandleFromUrl(brand.href)!] : undefined) || brand.image}
+                    fallbackSrc=""
+                    alt={brand.name}
+                    width={64}
+                    height={64}
+                    sizes="(max-width: 640px) 40px, 64px"
+                    className="w-full h-full object-contain filter drop-shadow-xs transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+                {/* Label */}
+                <span className="text-[9px] sm:text-xs font-bold text-foreground group-hover:text-primary transition-colors leading-tight line-clamp-2">
+                  {brand.name}
+                </span>
+              </>
+            );
+
+            const cardClassName = "group bg-card hover:bg-primary/[0.04] border-2 border-primary/20 hover:border-primary rounded-2xl p-2.5 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-95 shadow-xs hover:shadow-md hover:shadow-primary/10";
+
+            return onBrandSelect ? (
+              <button
+                key={`${brand.name}-${idx}`}
+                onClick={() => onBrandSelect(brand.name)}
+                className={cardClassName}
+              >
+                {cardContent}
+              </button>
+            ) : (
+              <Link
+                key={`${brand.name}-${idx}`}
+                href={brand.href || "/shop"}
+                className={cardClassName}
+              >
+                {cardContent}
+              </Link>
+            );
+          })}
         </div>
       </div>
 

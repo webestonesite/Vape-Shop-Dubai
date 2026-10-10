@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { SmartImage } from "@/components/ui/smart-image";
 
 export interface CategoryItem {
@@ -22,8 +22,6 @@ export interface CategoriesSettings {
 export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
   settings,
 }) => {
-  const router = useRouter();
-
   return (
     <div className="py-4 sm:py-6">
       {/* Header */}
@@ -55,12 +53,12 @@ export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
         {/* Actions */}
         <div className="flex items-center justify-center sm:justify-end gap-2.5 w-full sm:w-32">
           {settings.seeAllLabel && (
-            <button
-              onClick={() => router.push(settings.seeAllHref || "/shop")}
+            <Link
+              href={settings.seeAllHref || "/shop"}
               className="text-[10px] sm:text-xs font-bold text-muted-foreground hover:text-primary border border-border px-3 py-1.5 rounded-md hover:border-primary/30 transition-all cursor-pointer uppercase tracking-wider"
             >
               {settings.seeAllLabel}
-            </button>
+            </Link>
           )}
         </div>
       </div>
@@ -68,9 +66,9 @@ export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
       {/* Directory Grid */}
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 sm:gap-3.5">
         {settings.items.map((section, idx) => (
-          <div
+          <Link
             key={`${section.label}-${idx}`}
-            onClick={() => router.push(section.href || "/shop")}
+            href={section.href || "/shop"}
             className="group bg-card hover:bg-primary/[0.04] border-2 border-primary/20 hover:border-primary rounded-2xl p-2.5 sm:p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-95 shadow-xs hover:shadow-md hover:shadow-primary/10"
           >
             {/* Image Container */}
@@ -89,7 +87,7 @@ export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
             <span className="text-[9px] sm:text-xs font-bold text-foreground group-hover:text-primary transition-colors leading-tight line-clamp-2">
               {section.label}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

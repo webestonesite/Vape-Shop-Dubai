@@ -27,6 +27,26 @@ export default async function Home() {
     .filter(Boolean);
   const isOverride = Boolean(templateMatch(template));
 
+  const leanInitialProducts = initialProducts.map((p) => ({
+    id: p.id,
+    name: p.name,
+    handle: p.handle,
+    variantId: p.variantId,
+    category: p.category,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    rating: p.rating,
+    reviews: p.reviews,
+    image: p.image,
+    hoverImage: p.hoverImage,
+    tag: p.tag,
+    tagColor: p.tagColor,
+    isPopular: p.isPopular,
+    isSoldOut: p.isSoldOut,
+    collections: p.collections,
+    tags: p.tags,
+  }));
+
   const questions = instances
     .filter((i) => i.type === "faq" && i.enabled)
     .flatMap((i) => (i.settings.items as FaqItem[] | undefined) ?? [])
@@ -57,7 +77,7 @@ export default async function Home() {
             isOverride={isOverride}
             context={{}}
             slots={{
-              productFeed: (settings) => <HomeProductFeedSlot settings={settings} initialProducts={initialProducts} />,
+              productFeed: (settings) => <HomeProductFeedSlot settings={settings} initialProducts={leanInitialProducts} />,
               customerReviews: (settings) => <HomeCustomerReviewsSlot settings={settings} />
             }}
             containerClassName={SECTION_CONTAINER}

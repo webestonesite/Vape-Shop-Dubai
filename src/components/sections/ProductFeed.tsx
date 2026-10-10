@@ -534,6 +534,10 @@ export const ProductFeed: React.FC<
   const [loading, setLoading] = useState<boolean>(!initialProducts || initialProducts.length === 0);
 
   useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      setLoading(false);
+      return;
+    }
     async function loadProducts() {
       try {
         const res = await fetch("/api/products");
@@ -552,7 +556,7 @@ export const ProductFeed: React.FC<
       }
     }
     loadProducts();
-  }, []);
+  }, [initialProducts]);
 
   const activeProductsList = products;
 
