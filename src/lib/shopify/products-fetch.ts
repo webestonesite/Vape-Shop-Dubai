@@ -44,6 +44,7 @@ query {
                 amount
               }
               availableForSale
+              quantityAvailable
             }
           }
         }
@@ -89,6 +90,7 @@ query {
               price
               compareAtPrice
               availableForSale
+              inventoryQuantity
             }
           }
         }
@@ -238,7 +240,13 @@ export async function getAllProducts(): Promise<Product[]> {
     const comparePriceVal = typeof firstVariant?.compareAtPrice === 'object' ? firstVariant?.compareAtPrice?.amount : firstVariant?.compareAtPrice;
     const comparePrice = comparePriceVal ? parseFloat(comparePriceVal) : 0;
     
-    const isSoldOut = !node.variants?.edges?.some((v: any) => v.node?.availableForSale);
+    const isSoldOut = !node.variants?.edges?.some((v: any) => {
+      const vNode = v.node;
+      if (!vNode) return false;
+      const rawQty = vNode.quantityAvailable !== undefined ? vNode.quantityAvailable : vNode.inventoryQuantity;
+      const isQtyZero = rawQty !== undefined && rawQty !== null && rawQty <= 0;
+      return vNode.availableForSale && !isQtyZero;
+    });
 
     const typeLower = (node.productType || "").toLowerCase();
     const titleLower = (node.title || "").toLowerCase();

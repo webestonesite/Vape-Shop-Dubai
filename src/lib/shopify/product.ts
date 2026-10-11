@@ -110,6 +110,7 @@ query getProductByHandle($handle: String!) {
             amount
           }
           availableForSale
+          quantityAvailable
         }
       }
     }
@@ -467,7 +468,7 @@ export function parseKeySpecifications(raw: string | null | undefined): Array<{ 
 }
 
 const productMemoryCache = new Map<string, { data: any; expiresAt: number }>();
-const PRODUCT_CACHE_TTL_MS = 60 * 1000; // 60s memory cache
+const PRODUCT_CACHE_TTL_MS = 15 * 1000; // 15s memory cache
 
 export async function getProductByHandle(handle: string) {
   const cached = productMemoryCache.get(handle);
@@ -492,7 +493,7 @@ export async function getProductByHandle(handle: string) {
             query: storefrontQuery,
             variables: { handle },
           }),
-          next: { revalidate: 3600 },
+          next: { revalidate: 60 },
         });
 
         if (response.ok) {
@@ -517,7 +518,7 @@ export async function getProductByHandle(handle: string) {
           query: adminQuery,
           variables: { handle },
         }),
-        next: { revalidate: 3600 },
+        next: { revalidate: 60 },
       });
 
       if (response.ok) {
@@ -557,7 +558,11 @@ export async function getProductByHandle(handle: string) {
     const comparePriceVal = typeof firstVariant?.compareAtPrice === 'object' ? firstVariant?.compareAtPrice?.amount : firstVariant?.compareAtPrice;
     const comparePrice = comparePriceVal ? parseFloat(comparePriceVal) : 0;
 
-    const isSoldOut = variants.length > 0 && variants.every((v: any) => !v.availableForSale);
+    const isSoldOut = variants.length > 0 && variants.every((v: any) => {
+      const rawQty = v.quantityAvailable !== undefined ? v.quantityAvailable : v.inventoryQuantity;
+      const isQtyZero = rawQty !== undefined && rawQty !== null && rawQty <= 0;
+      return !v.availableForSale || isQtyZero;
+    });
 
     let section = undefined;
     if (node.tags?.includes("JUUL 2 Series") || node.tags?.includes("juul2")) {
@@ -1080,13 +1085,17 @@ export async function getProductByHandle(handle: string) {
       variants: variants.map((v: any) => {
         const vPrice = typeof v.price === 'object' ? v.price?.amount : v.price;
         const vCompare = typeof v.compareAtPrice === 'object' ? v.compareAtPrice?.amount : v.compareAtPrice;
+        const rawQty = v.quantityAvailable !== undefined ? v.quantityAvailable : v.inventoryQuantity;
+        const isQtyZero = rawQty !== undefined && rawQty !== null && rawQty <= 0;
+        const isAvailable = Boolean(v.availableForSale) && !isQtyZero;
+
         return {
           id: v.id,
           title: v.title,
           price: vPrice ? parseFloat(vPrice) : 0,
           compareAtPrice: vCompare ? parseFloat(vCompare) : undefined,
-          availableForSale: v.availableForSale,
-          inventoryQuantity: v.inventoryQuantity ?? 10,
+          availableForSale: isAvailable,
+          inventoryQuantity: rawQty ?? (isAvailable ? 10 : 0),
         };
       }),
       section,

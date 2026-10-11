@@ -1021,16 +1021,31 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                       {product.variants && product.variants.length > 1 ? (
                         <div className="sm:col-span-8 bg-card border border-border/80 rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3 overflow-hidden">
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                            <span
+                              className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                                selectedVariant
+                                  ? selectedVariant.availableForSale
+                                    ? "bg-emerald-500 animate-pulse"
+                                    : "bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.7)]"
+                                  : "bg-emerald-500"
+                              }`}
+                            />
                             <div className="text-left min-w-0">
                               <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block leading-tight">
                                 {`${optionName} Option:`}
                               </span>
-                              <span className="text-xs sm:text-sm font-extrabold text-foreground truncate block mt-0.5">
-                                {selectedVariant
-                                  ? selectedVariant.title
-                                  : `Select ${optionName}`}
-                              </span>
+                              <div className="flex items-center gap-2 mt-0.5 min-w-0">
+                                <span className="text-xs sm:text-sm font-extrabold text-foreground truncate block">
+                                  {selectedVariant
+                                    ? selectedVariant.title
+                                    : `Select ${optionName}`}
+                                </span>
+                                {selectedVariant && !selectedVariant.availableForSale && (
+                                  <span className="text-[9px] font-black uppercase tracking-wider text-white bg-red-600 px-1.5 py-0.5 rounded shrink-0 shadow-xs">
+                                    Sold Out
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
 
@@ -1089,6 +1104,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           <ShoppingCart className="h-4.5 w-4.5 text-primary" />{" "}
                           {!selectedVariant
                             ? `Select ${optionName} First`
+                            : !selectedVariant.availableForSale
+                            ? "Out of Stock"
                             : text("addToCartLabel", "Add to Cart")}
                         </button>
 
@@ -1100,6 +1117,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           <Truck className="h-4.5 w-4.5" />{" "}
                           {!selectedVariant
                             ? `Select ${optionName} First`
+                            : !selectedVariant.availableForSale
+                            ? "Sold Out"
                             : text("buyNowLabel", "Buy It Now")}
                         </button>
                       </div>
@@ -1474,46 +1493,77 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 .filter((v) => v.title.toLowerCase().includes(flavorSearchQuery.toLowerCase()))
                 .map((v) => {
                   const isSelected = selectedVariant?.id === v.id;
+                  const isAvailable = Boolean(v.availableForSale);
                   return (
                     <button
                       key={v.id}
                       type="button"
-                      disabled={!v.availableForSale}
+                      disabled={!isAvailable}
                       onClick={() => {
-                        if (v.availableForSale) {
+                        if (isAvailable) {
                           setSelectedVariant(v);
                           setIsFlavorModalOpen(false);
                           setFlavorSearchQuery("");
                         }
                       }}
-                      className={`w-full p-4 rounded-2xl border flex items-center justify-between text-left transition-all duration-200 cursor-pointer ${!v.availableForSale
-                          ? "opacity-40 cursor-not-allowed bg-muted/10 border-border/40 line-through"
+                      className={`w-full p-4 rounded-2xl border flex items-center justify-between text-left transition-all duration-200 ${
+                        !isAvailable
+                          ? "cursor-not-allowed bg-red-500/[0.04] border-red-200 dark:border-red-900/50"
                           : isSelected
-                            ? "bg-primary/10 border-2 border-primary shadow-md"
-                            : "bg-background hover:bg-muted/30 border-border/60 hover:border-primary/40"
-                        }`}
+                            ? "bg-primary/10 border-2 border-primary shadow-md cursor-pointer"
+                            : "bg-background hover:bg-muted/30 border-border/60 hover:border-primary/40 cursor-pointer"
+                      }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className={`w-3 h-3 rounded-full shrink-0 ${v.availableForSale ? "bg-emerald-500" : "bg-zinc-400"}`} />
-                        <div>
-                          <h4 className="text-xs sm:text-sm font-extrabold text-foreground leading-tight">
-                            {v.title}
-                          </h4>
-                          <span className="text-[10px] text-muted-foreground font-semibold">
-                            {v.availableForSale
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span
+                          className={`w-3.5 h-3.5 rounded-full shrink-0 ${
+                            isAvailable
+                              ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                              : "bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.7)]"
+                          }`}
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h4
+                              className={`text-xs sm:text-sm font-extrabold leading-tight ${
+                                !isAvailable ? "text-muted-foreground line-through" : "text-foreground"
+                              }`}
+                            >
+                              {v.title}
+                            </h4>
+                            {!isAvailable && (
+                              <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-red-600 text-white shrink-0 shadow-xs">
+                                Sold Out
+                              </span>
+                            )}
+                          </div>
+                          <span
+                            className={`text-[10px] font-black block mt-0.5 ${
+                              isAvailable ? "text-emerald-600 dark:text-emerald-400" : "text-red-600"
+                            }`}
+                          >
+                            {isAvailable
                               ? text("variantInStockNote", "In Stock • Ready to ship")
                               : text("variantOutOfStockNote", "Currently Out of Stock")}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-black text-primary">
+                      <div className="flex items-center gap-3 shrink-0 ml-3">
+                        <span
+                          className={`text-xs font-black ${
+                            isAvailable ? "text-primary" : "text-muted-foreground line-through"
+                          }`}
+                        >
                           Dhs. {v.price}
                         </span>
                         {isSelected ? (
                           <span className="bg-primary text-white p-1 rounded-full shadow-xs">
                             <Check className="w-3.5 h-3.5" />
+                          </span>
+                        ) : !isAvailable ? (
+                          <span className="text-[10px] font-black uppercase tracking-wider text-white bg-red-600 px-3 py-1.5 rounded-xl shadow-xs">
+                            Sold Out
                           </span>
                         ) : (
                           <span className="text-xs font-bold text-muted-foreground group-hover:text-primary">

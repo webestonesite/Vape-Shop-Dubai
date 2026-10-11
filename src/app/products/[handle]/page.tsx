@@ -4,7 +4,7 @@ import { resolveTemplateKey } from "@/lib/theme/types";
 import { PageTemplatesProvider } from "@/context/PageTemplatesContext";
 import ClientProductPage from "./ClientProductPage";
 
-export const revalidate = 3600; // Cache the full route HTML for 1 hour
+export const revalidate = 60; // Revalidate every 60 seconds for inventory accuracy
 
 export default async function ProductPage(props: { params: Promise<{ handle: string }> }) {
   const params = await props.params;
