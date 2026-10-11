@@ -65,6 +65,11 @@ query getCustomerOrders($query: String!) {
             }
           }
         }
+        note
+        customAttributes {
+          key
+          value
+        }
         shippingAddress {
           name
           address1
@@ -248,6 +253,12 @@ export async function GET(req: NextRequest) {
             const subtotal = parseFloat(node.subtotalPriceSet?.shopMoney?.amount || totalPrice.toString());
             const vatAmount = parseFloat(node.totalTaxSet?.shopMoney?.amount || "0");
 
+            const shopifyCustomNote =
+              (node.customAttributes || []).find((a: any) => a.key === "Customer Note")?.value ||
+              (node.note && node.note.includes("Customer Note:")
+                ? node.note.split("Customer Note:")[1]?.split("\n")[0]?.trim()
+                : node.note || "");
+
             if (ordersMap.has(key)) {
               // Update existing with live Shopify fulfillment status & real product details
               const existing = ordersMap.get(key);
@@ -287,6 +298,7 @@ export async function GET(req: NextRequest) {
 
               ordersMap.set(key, {
                 ...existing,
+                customerNote: existing.customerNote || shopifyCustomNote || "",
                 lineItems: mergedLineItems,
                 shopifyStatus: node.displayFulfillmentStatus,
                 status: resolvedStatus,
@@ -310,6 +322,7 @@ export async function GET(req: NextRequest) {
                 subtotal,
                 vatAmount,
                 paymentMethod: "Cash / Card on Delivery",
+                customerNote: shopifyCustomNote || "",
                 status,
                 statusLabel,
                 createdAt: node.createdAt,

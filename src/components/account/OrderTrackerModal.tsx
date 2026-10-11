@@ -227,6 +227,15 @@ export function OrderTrackerModal({ order, isOpen, onClose }: OrderTrackerModalP
                 </span>
               </div>
             )}
+
+            {order.customerNote && (
+              <div className="pt-2 border-t border-border/40 text-[11px]">
+                <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground block mb-0.5">
+                  Customer Note / Instructions:
+                </span>
+                <p className="text-foreground italic">{order.customerNote}</p>
+              </div>
+            )}
           </div>
 
           {/* WhatsApp Instant Assistance */}

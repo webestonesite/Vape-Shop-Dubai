@@ -17,6 +17,7 @@ import {
   Loader2,
   ShoppingBag,
   Info,
+  FileText,
 } from "lucide-react";
 import { useCustomerAuth, CustomerAddress } from "@/context/CustomerAuthContext";
 
@@ -31,6 +32,7 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState("+971 ");
   const [city, setCity] = useState("Dubai");
   const [address, setAddress] = useState("");
+  const [customerNote, setCustomerNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [shippingType, setShippingType] = useState("standard");
 
@@ -216,6 +218,7 @@ export default function CheckoutPage() {
           address1: address,
           city: city,
         },
+        customerNote: customerNote.trim() || undefined,
         paymentMethod: paymentMethod,
         lineItems: lineItems,
         shippingLine: {
@@ -465,6 +468,26 @@ export default function CheckoutPage() {
                   placeholder="e.g. Marina Heights Tower, Apt 1402, Dubai Marina"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
+                  disabled={loading}
+                  className="w-full bg-background border border-border/60 hover:border-primary/50 focus:border-primary rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all resize-none"
+                />
+              </div>
+
+              {/* Order Note (Optional) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                    <FileText className="h-3 w-3 text-primary" /> Order Note / Delivery Instructions
+                  </label>
+                  <span className="text-[10px] text-muted-foreground font-semibold px-2 py-0.5 rounded-full bg-muted/60">
+                    Optional
+                  </span>
+                </div>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. Leave package with security guard, please ring bell, preferred delivery timing..."
+                  value={customerNote}
+                  onChange={(e) => setCustomerNote(e.target.value)}
                   disabled={loading}
                   className="w-full bg-background border border-border/60 hover:border-primary/50 focus:border-primary rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all resize-none"
                 />

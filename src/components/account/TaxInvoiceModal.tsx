@@ -174,6 +174,16 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
             </div>
           </div>
 
+          {/* Customer Note / Delivery Instructions */}
+          {order.customerNote && (
+            <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs print:border print:border-gray-400">
+              <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400 print:text-black block mb-0.5">
+                Customer Note / Delivery Instructions:
+              </span>
+              <p className="text-foreground print:text-black italic">{order.customerNote}</p>
+            </div>
+          )}
+
           {/* Line Items Table */}
           <div className="py-6 border-b border-border/60 overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">

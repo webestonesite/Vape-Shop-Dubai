@@ -85,7 +85,8 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { shippingAddress, paymentMethod, lineItems } = body;
+    const { shippingAddress, paymentMethod, lineItems, customerNote } = body;
+    const cleanCustomerNote = typeof customerNote === "string" ? customerNote.trim() : "";
 
     if (!lineItems || lineItems.length === 0) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
@@ -224,8 +225,15 @@ export async function POST(request: Request) {
               phone: customerPhone,
               country: "United Arab Emirates",
             },
-            note: `Customer Name: ${rawName}\nPhone: ${rawPhone} (Formatted: ${customerPhone || "N/A"})\nDelivery Address: ${shippingAddress.address1}, ${shippingAddress.city}\nPayment Method: ${paymentMethod}`,
+            note: [
+              cleanCustomerNote ? `Customer Note: ${cleanCustomerNote}` : "",
+              `Customer Name: ${rawName}`,
+              `Phone: ${rawPhone} (Formatted: ${customerPhone || "N/A"})`,
+              `Delivery Address: ${shippingAddress.address1}, ${shippingAddress.city}`,
+              `Payment Method: ${paymentMethod}`,
+            ].filter(Boolean).join("\n"),
             customAttributes: [
+              ...(cleanCustomerNote ? [{ key: "Customer Note", value: cleanCustomerNote }] : []),
               { key: "Customer Name", value: rawName },
               { key: "Customer Phone", value: rawPhone },
               { key: "Formatted Phone", value: customerPhone || rawPhone },
@@ -347,6 +355,7 @@ export async function POST(request: Request) {
           shippingFee: shippingPrice,
           totalPrice: grandTotal,
           paymentMethod: paymentMethod || "Cash on Delivery",
+          customerNote: cleanCustomerNote,
           status: "order_received",
           statusLabel: "Order Received",
           createdAt: nowIso,
