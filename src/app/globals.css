@@ -521,3 +521,9 @@ h3.tracking-tight,
 .animate-404-blink {
   animation: colorBlinkGlow 2.5s ease-in-out infinite;
 }
+
+/* ─── Guaranteed Interactivity for Checkout Form ─── */
+#checkout-form,
+#checkout-form * {
+  pointer-events: auto;
+}

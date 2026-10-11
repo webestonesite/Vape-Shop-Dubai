@@ -2234,13 +2234,13 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           icon: "CreditCard",
           title: "Payment Methods",
-          subtitle: "CASH, CARD & APPLE PAY ON DELIVERY",
+          subtitle: "Cash, Card & Online Link Payment on Delivery",
         },
-        { icon: "Zap", title: "Fast Delivery", subtitle: "DUBAI EXPRESS WITHIN 2 HOURS" },
+        { icon: "Zap", title: "Fast Delivery", subtitle: "DUBAI EXPRESS WITHIN 3 HOURS" },
         {
           icon: "Package",
           title: "Same Day Delivery",
-          subtitle: "ORDER BEFORE 6PM ALL EMIRATES",
+          subtitle: "Order before 9pm (Dubai, Sharjah, Ajman)",
         },
       ],
 

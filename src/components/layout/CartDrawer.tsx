@@ -26,6 +26,12 @@ export const CartDrawer: React.FC = () => {
   // Always close drawer on route change
   useEffect(() => {
     setIsCartOpen(false);
+    if (typeof document !== "undefined") {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.overflow = "auto";
+      document.documentElement.style.pointerEvents = "auto";
+      document.documentElement.style.overflow = "auto";
+    }
   }, [pathname, setIsCartOpen]);
 
   // Generate WhatsApp message and redirect
@@ -50,7 +56,16 @@ export const CartDrawer: React.FC = () => {
   const handleShopifyCheckout = () => {
     if (cart.length === 0) return;
     setIsCartOpen(false);
-    router.push("/checkout");
+    if (typeof document !== "undefined") {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.overflow = "auto";
+      document.documentElement.style.pointerEvents = "auto";
+      document.documentElement.style.overflow = "auto";
+    }
+    // Small timeout ensures Base UI Dialog completes unmount and removes all modal locks before navigation
+    setTimeout(() => {
+      router.push("/checkout");
+    }, 60);
   };
 
   return (
@@ -170,8 +185,18 @@ export const CartDrawer: React.FC = () => {
               >
                 Checkout
               </button>
+
+              <button
+                onClick={() => {
+                  setIsCartOpen(false);
+                  router.push("/cart");
+                }}
+                className="w-full flex items-center justify-center gap-2 bg-muted/40 hover:bg-muted text-foreground border border-border/80 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer uppercase tracking-wider"
+              >
+                View Cart Page
+              </button>
               
-              <div className="text-center pt-2">
+              <div className="text-center pt-1">
                 <span className="text-[10px] text-text-muted">
                   Same-day express delivery in 2 hours across Dubai
                 </span>

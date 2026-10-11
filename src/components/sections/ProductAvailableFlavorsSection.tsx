@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, Flame, Check, Table, HelpCircle, ChevronDown } from "lucide-react";
+import { CheckCircle2, Flame, Check, Table, HelpCircle, ChevronDown, Palette } from "lucide-react";
 
 export interface FlavorVariant {
   id: string;
@@ -23,6 +23,7 @@ interface ProductAvailableFlavorsSectionProps {
   className?: string;
   settings?: ProductFlavorsSettings;
   hideIfEmpty?: boolean;
+  optionName?: string;
 }
 
 // Preset flavor descriptions dictionary to match popular vape & shisha flavors in UAE
@@ -58,6 +59,36 @@ const KNOWN_FLAVOR_DESCRIPTIONS: Record<string, string> = {
   "sweet apple": "Crisp orchard red apples with natural juicy sweetness"
 };
 
+// Preset device color finish descriptions dictionary to match popular hardware finishes in UAE
+const KNOWN_COLOR_DESCRIPTIONS: Record<string, string> = {
+  "vital orange": "Vibrant metallic orange finish with dynamic gradient contrast and modern ergonomic styling.",
+  "silver": "Clean brushed metallic silver chassis with sleek minimalist aesthetics.",
+  "rose pink": "Elegant rose pink anodized coating with soft satin sheen and luxury touch.",
+  "olive green": "Tactical matte olive green exterior with military-grade durable finish.",
+  "navy blue": "Deep nautical navy blue satin coating with scratch-resistant surface.",
+  "black": "Classic stealth matte black finish with fingerprint-resistant premium coating.",
+  "space grey": "Sophisticated space grey metallic chassis delivering clean executive styling.",
+  "bondi blue": "Vivid coastal bondi blue anodized finish with vibrant metallic luster.",
+  "lemon yellow": "Energetic lemon yellow chassis with bright contemporary accents.",
+  "lilac purple": "Delicate lilac purple pastel finish with smooth satin texture.",
+  "gunmetal": "Rugged industrial gunmetal brushed alloy finish with dark metallic accents.",
+  "red": "Bold crimson red anodized chassis with premium high-gloss finish.",
+  "gold": "Prestigious champagne gold metallic finish with radiant luxury luster.",
+  "white": "Pristine pearl white finish with clean modern minimalist aesthetics.",
+  "aurora": "Mesmerizing iridescent chameleon gradient shifting across different light angles.",
+  "rainbow": "Prismatic multi-hue spectrum finish with dazzling reflective color shifts.",
+  "blue": "Rich royal blue metallic finish with durable protective coating.",
+  "green": "Lush emerald green anodized surface with subtle satin sheen.",
+  "purple": "Deep royal purple metallic finish with refined dark undertones.",
+  "grey": "Understated industrial slate grey finish engineered for everyday durability.",
+  "gray": "Understated industrial slate grey finish engineered for everyday durability.",
+  "carbon fiber": "High-tech woven carbon fiber texture with lightweight racing aesthetics.",
+  "leather": "Ergonomic stitched luxury leather inlay providing comfortable tactile grip.",
+  "phantom gold": "Opulent brushed gold edition with mirror-polished metallic trim.",
+  "cherry red": "Lustrous cherry red metallic coating with deep lacquer finish.",
+  "midnight black": "Deep midnight black alloy with silky matte anodized finish."
+};
+
 // Fallback flavor list when product does not have individual variant items
 const DEFAULT_FALLBACK_FLAVORS = [
   { title: "Blue Razz Lemonade", desc: "Fresh and tangy blend of blue raspberry with a citrus lemonade twist" },
@@ -75,36 +106,80 @@ const DEFAULT_FALLBACK_FLAVORS = [
   { title: "Watermelon Kiwi", desc: "Refreshing fusion of juicy watermelon and tangy kiwi for a balanced sweet-and-sour vape" }
 ];
 
-function getFlavorDescription(
-  flavorTitle: string,
-  productName: string,
-  notes: FlavorNote[] = []
-): string {
-  const cleanTitle = flavorTitle.toLowerCase().trim();
-  // Strip pack size suffix for matching ("Grape Ice / 1Pc/1Device" -> "grape ice")
-  const baseFlavor = cleanTitle.replace(/\s*\/\s*(1pc|10pc|5pc|3pc|20pc|50pc|100pc)\/[^\s].*$/i, "").trim();
+function getColorDescription(variantTitle: string, productName: string): string {
+  const cleanTitle = variantTitle.toLowerCase().trim();
+  const baseColor = cleanTitle.replace(/\s*\/\s*(single|1pc|10pc|5pc|3pc|20pc|50pc|100pc|1box|10pcs|pack)[\s/]?.*/i, "").trim();
 
-  // A note typed in the customizer or from metafield always wins over the built-in dictionary.
-  const authored = notes.find((note) => {
-    const noteKey = note.flavor?.toLowerCase().trim();
-    return noteKey && note.description && (noteKey === cleanTitle || noteKey === baseFlavor || baseFlavor.includes(noteKey) || noteKey.includes(baseFlavor));
-  });
-  if (authored) return authored.description;
-
-  // Exact match in known dictionary
-  if (KNOWN_FLAVOR_DESCRIPTIONS[baseFlavor]) {
-    return KNOWN_FLAVOR_DESCRIPTIONS[baseFlavor];
+  if (KNOWN_COLOR_DESCRIPTIONS[baseColor]) {
+    return KNOWN_COLOR_DESCRIPTIONS[baseColor];
   }
 
-  // Partial match search
-  for (const [key, desc] of Object.entries(KNOWN_FLAVOR_DESCRIPTIONS)) {
-    if (baseFlavor.includes(key) || key.includes(baseFlavor)) {
+  for (const [key, desc] of Object.entries(KNOWN_COLOR_DESCRIPTIONS)) {
+    if (baseColor.includes(key) || key.includes(baseColor)) {
       return desc;
     }
   }
 
-  // Generate clean fallback description
-  return `Authentic ${flavorTitle} blend with rich flavor profile, smooth throat hit, and refreshing finish.`;
+  return `Premium ${variantTitle} finish with durable anodized coating and sleek styling for ${productName}.`;
+}
+
+function getVariantDescription(
+  variantTitle: string,
+  productName: string,
+  optionType: "color" | "flavor" | "other",
+  notes: FlavorNote[] = []
+): string {
+  const cleanTitle = variantTitle.toLowerCase().trim();
+  // Strip pack size suffix for matching ("Grape Ice / 1Pc/1Device" -> "grape ice")
+  const baseVariant = cleanTitle.replace(/\s*\/\s*(1pc|10pc|5pc|3pc|20pc|50pc|100pc)\/[^\s].*$/i, "").trim();
+
+  // A note typed in the customizer or from metafield
+  const authored = notes.find((note) => {
+    const noteKey = note.flavor?.toLowerCase().trim();
+    return noteKey && note.description && (noteKey === cleanTitle || noteKey === baseVariant || baseVariant.includes(noteKey) || noteKey.includes(baseVariant));
+  });
+
+  if (authored) {
+    if (optionType === "color" && /flavou?r|tasting notes|exhaling/i.test(authored.description)) {
+      // Flavor description erroneously applied to a color variant
+      return getColorDescription(variantTitle, productName);
+    }
+    if (optionType === "other" && /flavou?r|tasting notes|exhaling/i.test(authored.description)) {
+      if (/(\d+(\.\d+)?\s*(ohm|ω))/i.test(variantTitle)) {
+        return `${variantTitle} coil configuration optimized for exceptional vapor density and clean draw.`;
+      }
+      return `Authentic ${variantTitle} specification engineered for optimal performance with ${productName}.`;
+    }
+    return authored.description;
+  }
+
+  if (optionType === "color") {
+    return getColorDescription(variantTitle, productName);
+  }
+
+  if (optionType === "flavor") {
+    // Exact match in known dictionary
+    if (KNOWN_FLAVOR_DESCRIPTIONS[baseVariant]) {
+      return KNOWN_FLAVOR_DESCRIPTIONS[baseVariant];
+    }
+
+    // Partial match search
+    for (const [key, desc] of Object.entries(KNOWN_FLAVOR_DESCRIPTIONS)) {
+      if (baseVariant.includes(key) || key.includes(baseVariant)) {
+        return desc;
+      }
+    }
+
+    // Generate clean fallback description
+    return `Authentic ${variantTitle} blend with rich flavor profile, smooth throat hit, and refreshing finish.`;
+  }
+
+  // Other option types (e.g. Resistance, Size, Edition)
+  if (/(\d+(\.\d+)?\s*(ohm|ω))/i.test(variantTitle)) {
+    return `${variantTitle} coil configuration optimized for exceptional flavor extraction and vapor density.`;
+  }
+
+  return `Authentic ${variantTitle} specification engineered for optimal performance and reliability with ${productName}.`;
 }
 
 export interface FlavorNote {
@@ -142,73 +217,122 @@ export function ProductAvailableFlavorsSection({
   onSelectVariant,
   className = "",
   hideIfEmpty = false,
+  optionName,
 }: ProductAvailableFlavorsSectionProps) {
   
   const notes = [...(productFlavorNotes || []), ...(settings?.flavorNotes ?? [])];
 
   // Filter valid variants (ignore single default variant if titled "Default Title")
-  const validVariants = variants.filter((v) => v.title && v.title.toLowerCase() !== "default title" && v.title.toLowerCase() !== "default");
+  const validVariants = variants.filter(
+    (v) => v.title && v.title.toLowerCase() !== "default title" && v.title.toLowerCase() !== "default"
+  );
 
-  const hasFlavorData = validVariants.length > 1 || (productFlavorNotes && productFlavorNotes.length > 0);
+  const hasVariantData = validVariants.length > 1 || (productFlavorNotes && productFlavorNotes.length > 0);
 
-  if (hideIfEmpty && !hasFlavorData) {
+  if (hideIfEmpty && !hasVariantData) {
     return null;
   }
 
-  // Group variants by base flavor name (strip pack size suffixes)
+  // Detect option name and type (Color vs Flavor vs other)
+  const rawOption = (optionName || "").trim();
+  const hasColorVariants = validVariants.some((v) =>
+    /(orange|silver|pink|green|blue|black|grey|gray|red|gold|white|purple|yellow|gunmetal|bronze|copper|titanium|cyan|teal|magenta)/i.test(
+      v.title
+    )
+  );
+  const hasFlavorVariants = validVariants.some((v) =>
+    /(mint|ice|lemon|grape|mango|berry|apple|watermelon|tobacco|peach|cherry|strawberry|vanilla|cola|punch|coffee)/i.test(
+      v.title
+    )
+  );
+
+  // If rawOption specifies color, or if variants clearly contain colors without flavors
+  const isColor =
+    (rawOption && /colou?r/i.test(rawOption)) ||
+    (!rawOption && hasColorVariants && !hasFlavorVariants) ||
+    (rawOption && /flavou?r/i.test(rawOption) && hasColorVariants && !hasFlavorVariants);
+
+  const isFlavor =
+    !isColor &&
+    ((rawOption && /flavou?r/i.test(rawOption)) ||
+      (!rawOption && (hasFlavorVariants || !hasColorVariants)));
+
+  const singularLabel = isColor
+    ? "Color"
+    : isFlavor
+    ? "Flavour"
+    : rawOption && rawOption.toLowerCase() !== "title"
+    ? rawOption
+    : "Option";
+
+  const pluralLabel = isColor
+    ? "Colors"
+    : isFlavor
+    ? "Flavours"
+    : singularLabel.endsWith("s")
+    ? singularLabel
+    : `${singularLabel}s`;
+
+  const optionType: "color" | "flavor" | "other" = isColor
+    ? "color"
+    : isFlavor
+    ? "flavor"
+    : "other";
+
+  // Group variants by base variant name (strip pack size suffixes)
   // Handles: "/ 1Pc/1Device", "/ 10Pc/1Box", "/ SINGLE/1PC", "/ 1BOX/10PCS", "/ Single Pack", "/ 10Pack/1Box"
-  function extractBaseFlavor(title: string): string {
+  function extractBaseVariant(title: string): string {
     return title
       .replace(/\s*\/\s*(SINGLE|1PC|1Pc|10Pc|5Pc|3Pc|20Pc|50Pc|100Pc|1BOX|10PCS|Single Pack|10Pack)[\s/]?.*/i, "")
       .trim();
   }
 
-  interface FlavorGroup {
+  interface VariantGroup {
     baseName: string;
     variants: typeof validVariants;
     desc: string;
     anyAvailable: boolean;
   }
 
-  const groupedFlavors: FlavorGroup[] = [];
-  const seenFlavors = new Map<string, FlavorGroup>();
+  const groupedVariants: VariantGroup[] = [];
+  const seenVariants = new Map<string, VariantGroup>();
 
   for (const v of validVariants) {
-    const baseName = extractBaseFlavor(v.title);
+    const baseName = extractBaseVariant(v.title);
     const key = baseName.toLowerCase();
 
-    if (seenFlavors.has(key)) {
-      seenFlavors.get(key)!.variants.push(v);
-      if (v.availableForSale) seenFlavors.get(key)!.anyAvailable = true;
+    if (seenVariants.has(key)) {
+      seenVariants.get(key)!.variants.push(v);
+      if (v.availableForSale) seenVariants.get(key)!.anyAvailable = true;
     } else {
-      const group: FlavorGroup = {
+      const group: VariantGroup = {
         baseName,
         variants: [v],
-        desc: getFlavorDescription(baseName, productName, notes),
+        desc: getVariantDescription(baseName, productName, optionType, notes),
         anyAvailable: v.availableForSale,
       };
-      seenFlavors.set(key, group);
-      groupedFlavors.push(group);
+      seenVariants.set(key, group);
+      groupedVariants.push(group);
     }
   }
 
-function extractFlavorFromProductName(name: string): string {
-  let cleaned = name
-    .replace(/juul\s*\d*\s*(pods|device|kit|starter kit)?/gi, "")
-    .replace(/myle\s*(meta|v5|v4|micro|drip)?\s*(pods|device|kit)?/gi, "")
-    .replace(/disposable\s*(vape|device|pod)?/gi, "")
-    .replace(/\d+\s*(mg|puffs|puff|k|ml|pack|pcs|pc)/gi, "")
-    .replace(/\|?\s*made in [a-z]+/gi, "")
-    .replace(/\b(in uae|dubai|uae|vape|pods|pod|kit|device)\b/gi, "")
-    .trim();
+  function extractNameFromProductName(name: string): string {
+    let cleaned = name
+      .replace(/juul\s*\d*\s*(pods|device|kit|starter kit)?/gi, "")
+      .replace(/myle\s*(meta|v5|v4|micro|drip)?\s*(pods|device|kit)?/gi, "")
+      .replace(/disposable\s*(vape|device|pod)?/gi, "")
+      .replace(/\d+\s*(mg|puffs|puff|k|ml|pack|pcs|pc)/gi, "")
+      .replace(/\|?\s*made in [a-z]+/gi, "")
+      .replace(/\b(in uae|dubai|uae|vape|pods|pod|kit|device)\b/gi, "")
+      .trim();
 
-  return cleaned || name;
-}
+    return cleaned || name;
+  }
 
-  // Determine flavor list to display
-  const singleFlavorTitle = extractFlavorFromProductName(productName);
-  const flavorsList = groupedFlavors.length > 0
-    ? groupedFlavors.map((group, i) => ({
+  // Determine variant list to display
+  const fallbackTitle = isColor ? "Standard Edition" : extractNameFromProductName(productName);
+  const itemsList = groupedVariants.length > 0
+    ? groupedVariants.map((group) => ({
         id: group.variants[0].id,
         variantObj: group.variants[0],
         allVariants: group.variants,
@@ -219,32 +343,88 @@ function extractFlavorFromProductName(name: string): string {
       }))
     : [
         {
-          id: variants[0]?.id || "single-flavor",
+          id: variants[0]?.id || "single-variant",
           variantObj: variants[0] || null,
           allVariants: variants,
-          title: singleFlavorTitle,
-          desc: getFlavorDescription(singleFlavorTitle, productName, notes),
+          title: fallbackTitle,
+          desc: getVariantDescription(fallbackTitle, productName, optionType, notes),
           available: variants[0]?.availableForSale ?? true,
           price: variants[0]?.price ?? null,
         },
       ];
 
-  const subheading = (
-    settings?.subheadingTemplate ?? "Complete flavor profile spreadsheet table for {product}"
-  )
-    .split("{product}")
-    .join(productName);
-  const countBadge = (settings?.countBadgeTemplate ?? "{count} Signature Options")
-    .split("{count}")
-    .join(String(flavorsList.length));
+  // Dynamic Section Heading
+  let heading = settings?.heading;
+  if (!heading || heading === "Available Flavours" || heading === "Available Flavors") {
+    heading = `Available ${pluralLabel}`;
+  } else if (!isFlavor && /flavou?rs?/i.test(heading)) {
+    heading = heading.replace(/flavou?rs?/gi, pluralLabel);
+  }
+
+  // Dynamic Subheading
+  let subheadingTemplate = settings?.subheadingTemplate;
+  if (!subheadingTemplate || subheadingTemplate === "Complete flavor profile spreadsheet table for {product}") {
+    if (isColor) {
+      subheadingTemplate = "Complete color options spreadsheet table for {product}";
+    } else if (isFlavor) {
+      subheadingTemplate = "Complete flavor profile spreadsheet table for {product}";
+    } else {
+      subheadingTemplate = `Complete ${singularLabel.toLowerCase()} options spreadsheet table for {product}`;
+    }
+  } else if (!isFlavor && /flavor profile/i.test(subheadingTemplate)) {
+    subheadingTemplate = subheadingTemplate.replace(
+      /flavor profile/gi,
+      isColor ? "color options" : `${singularLabel.toLowerCase()} options`
+    );
+  }
+  const subheading = subheadingTemplate.split("{product}").join(productName);
+
+  // Dynamic Count Badge
+  let countBadgeTemplate = settings?.countBadgeTemplate || "{count} Signature Options";
+  if (!isFlavor && /flavou?rs?/i.test(countBadgeTemplate)) {
+    countBadgeTemplate = countBadgeTemplate.replace(/flavou?rs?/gi, pluralLabel);
+  }
+  const countBadge = countBadgeTemplate.split("{count}").join(String(itemsList.length));
+
+  // Dynamic Column 1 (Name)
+  let nameColumnLabel = settings?.nameColumnLabel;
+  if (!nameColumnLabel || /flavou?r name/i.test(nameColumnLabel)) {
+    nameColumnLabel = `${singularLabel} Name`;
+  }
+
+  // Dynamic Column 2 (Profile / Details)
+  let profileColumnLabel = settings?.profileColumnLabel;
+  if (!profileColumnLabel || /flavou?r profile/i.test(profileColumnLabel)) {
+    if (isColor) {
+      profileColumnLabel = "Color Finish & Details";
+    } else if (isFlavor) {
+      profileColumnLabel = "Flavour Profile & Tasting Notes";
+    } else {
+      profileColumnLabel = `${singularLabel} Specifications & Details`;
+    }
+  }
+
+  // Dynamic Footnote
+  let footnote = settings?.footnote ?? "";
+  const isDefaultFlavorFootnote =
+    !footnote ||
+    footnote.includes("Each blend is crafted to replicate authentic shisha & vape flavours");
+  if (!isFlavor && isDefaultFlavorFootnote) {
+    if (isColor) {
+      footnote =
+        "Each color finish is precision engineered with premium scratch-resistant coating and durable ergonomic styling.";
+    } else {
+      footnote = `Each ${singularLabel.toLowerCase()} is 100% authentic and engineered for optimal compatibility with ${productName}.`;
+    }
+  }
+
   const inStockLabel = settings?.inStockLabel || "IN STOCK";
   const outOfStockLabel = settings?.outOfStockLabel || "OUT OF STOCK";
   const selectedLabel = settings?.selectedLabel || "SELECTED";
   const showPrices = settings?.showPrices !== false;
-  const footnote = settings?.footnote ?? "";
 
-  const [showAllFlavors, setShowAllFlavors] = useState(false);
-  const visibleFlavors = showAllFlavors ? flavorsList : flavorsList.slice(0, 5);
+  const [showAllItems, setShowAllItems] = useState(false);
+  const visibleItems = showAllItems ? itemsList : itemsList.slice(0, 5);
 
   return (
     <section className={`w-full ${className}`}>
@@ -259,7 +439,7 @@ function extractFlavorFromProductName(name: string): string {
             <div className="w-1.5 h-7 bg-primary rounded-full shrink-0 shadow-sm" />
             <div>
               <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif text-foreground tracking-tight flex items-center gap-2">
-                <span>{settings?.heading || "Available Flavours"}</span>
+                <span>{heading}</span>
                 <Table className="w-5 h-5 sm:w-6 sm:h-6 text-primary opacity-80" />
               </h3>
               {subheading && (
@@ -270,7 +450,11 @@ function extractFlavorFromProductName(name: string): string {
 
           {countBadge && (
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full self-start sm:self-auto">
-              <Flame className="w-3.5 h-3.5 text-primary" />
+              {isColor ? (
+                <Palette className="w-3.5 h-3.5 text-primary" />
+              ) : (
+                <Flame className="w-3.5 h-3.5 text-primary" />
+              )}
               <span>{countBadge}</span>
             </div>
           )}
@@ -286,10 +470,10 @@ function extractFlavorFromProductName(name: string): string {
                   #
                 </th>
                 <th scope="col" className="py-3.5 px-5 w-1/3 border-r border-white/20">
-                  {settings?.nameColumnLabel || "Flavour Name"}
+                  {nameColumnLabel}
                 </th>
                 <th scope="col" className="py-3.5 px-5 border-r border-white/20">
-                  {settings?.profileColumnLabel || "Flavour Profile & Tasting Notes"}
+                  {profileColumnLabel}
                 </th>
                 <th scope="col" className="py-3.5 px-5 text-center w-36">
                   {settings?.availabilityColumnLabel || "Availability"}
@@ -299,19 +483,19 @@ function extractFlavorFromProductName(name: string): string {
 
             {/* Excel Rows */}
             <tbody className="divide-y divide-border/50 text-xs font-medium text-foreground">
-              {visibleFlavors.map((flavor, index) => {
-                const isSelected = flavor.allVariants?.some((v: any) => selectedVariantId === v.id) || selectedVariantId === flavor.id;
+              {visibleItems.map((item, index) => {
+                const isSelected = item.allVariants?.some((v: any) => selectedVariantId === v.id) || selectedVariantId === item.id;
 
                 return (
                   <tr
-                    key={flavor.id}
+                    key={item.id}
                     onClick={() => {
-                      if (flavor.variantObj && onSelectVariant && flavor.available) {
-                        onSelectVariant(flavor.variantObj);
+                      if (item.variantObj && onSelectVariant && item.available) {
+                        onSelectVariant(item.variantObj);
                       }
                     }}
                     className={`transition-colors duration-150 group cursor-pointer ${
-                      !flavor.available
+                      !item.available
                         ? "opacity-40 bg-muted/30 cursor-not-allowed"
                         : isSelected
                         ? "bg-primary/15 font-bold text-foreground ring-1 ring-primary/40"
@@ -323,7 +507,7 @@ function extractFlavorFromProductName(name: string): string {
                       {String(index + 1).padStart(2, "0")}
                     </td>
 
-                    {/* Flavour Name Cell */}
+                    {/* Variant Name Cell */}
                     <td className="py-3.5 px-5 border-r border-border/40">
                       <div className="flex items-center gap-2.5">
                         <span
@@ -332,7 +516,7 @@ function extractFlavorFromProductName(name: string): string {
                           }`}
                         />
                         <span className={`font-bold text-xs sm:text-sm ${isSelected ? "text-primary font-black" : "text-foreground group-hover:text-primary"}`}>
-                          {flavor.title}
+                          {item.title}
                         </span>
                         {isSelected && <Check className="w-4 h-4 text-primary shrink-0 ml-auto" />}
                       </div>
@@ -340,15 +524,15 @@ function extractFlavorFromProductName(name: string): string {
 
                     {/* Description Cell */}
                     <td className="py-3.5 px-5 border-r border-border/40 text-muted-foreground leading-relaxed text-xs">
-                      {flavor.desc}
+                      {item.desc}
                     </td>
 
                     {/* Availability / Pack Options Cell */}
                     <td className="py-3.5 px-5 text-center">
-                      {flavor.available ? (
+                      {item.available ? (
                         <div className="flex flex-wrap items-center justify-center gap-1.5">
-                          {flavor.allVariants && flavor.allVariants.length > 1 ? (
-                            flavor.allVariants.map((v: any, vi: number) => {
+                          {item.allVariants && item.allVariants.length > 1 ? (
+                            item.allVariants.map((v: any) => {
                               // Extract pack label from variant title suffix
                               let packLabel = "1Pc";
                               const t = v.title || "";
@@ -386,8 +570,8 @@ function extractFlavorFromProductName(name: string): string {
                             }`}>
                               {isSelected
                                 ? selectedLabel
-                                : showPrices && flavor.price
-                                ? `Dhs. ${flavor.price}`
+                                : showPrices && item.price
+                                ? `Dhs. ${item.price}`
                                 : inStockLabel}
                             </span>
                           )}
@@ -405,21 +589,25 @@ function extractFlavorFromProductName(name: string): string {
           </table>
         </div>
 
-        {/* See More Flavors Button */}
-        {flavorsList.length > 5 && (
+        {/* See More Items Button */}
+        {itemsList.length > 5 && (
           <div className="mt-6 flex justify-center">
             <button
               type="button"
-              onClick={() => setShowAllFlavors((prev) => !prev)}
+              onClick={() => setShowAllItems((prev) => !prev)}
               className="inline-flex items-center gap-2 bg-primary hover:bg-gold-shimmer text-white px-8 py-3.5 rounded-full text-xs font-sans font-extrabold uppercase tracking-wider transition-all duration-300 shadow-md hover:scale-105 cursor-pointer"
             >
-              <Flame className="w-4 h-4 text-white" />
+              {isColor ? (
+                <Palette className="w-4 h-4 text-white" />
+              ) : (
+                <Flame className="w-4 h-4 text-white" />
+              )}
               <span>
-                {showAllFlavors
-                  ? "Show Less Flavors"
-                  : `See More Flavors (${flavorsList.length - 5} More)`}
+                {showAllItems
+                  ? `Show Less ${pluralLabel}`
+                  : `See More ${pluralLabel} (${itemsList.length - 5} More)`}
               </span>
-              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showAllFlavors ? "rotate-180" : ""}`} />
+              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showAllItems ? "rotate-180" : ""}`} />
             </button>
           </div>
         )}
@@ -436,3 +624,4 @@ function extractFlavorFromProductName(name: string): string {
     </section>
   );
 }
+

@@ -436,7 +436,7 @@ const DEFAULT_FOOTER: ThemeSettings["footer"] = {
   pinterestUrl: "https://www.pinterest.com/juuldubai/",
   youtubeUrl: "https://youtube.com/@vapshopdubai",
   healthWarning:
-    "UAE 21+ ONLY: Products contain nicotine, an addictive chemical. For adult smokers (21+) in the UAE. Keep out of reach of children and pets.",
+    "UAE 18+ ONLY: Products contain nicotine, an addictive chemical. For adult smokers (18+) in the UAE. Keep out of reach of children and pets.",
   paymentBadges: [
     { icon: "CreditCard", label: "Cash / Card on Delivery" },
     { icon: "Link2", label: "Link Pay Accepted" },

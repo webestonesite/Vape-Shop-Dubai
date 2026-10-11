@@ -6,23 +6,22 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
-import { 
-  ArrowLeft, 
-  MapPin, 
-  Phone, 
-  User, 
+import {
+  ArrowLeft,
+  MapPin,
+  Phone,
+  User,
   Mail,
-  CreditCard, 
-  DollarSign, 
-  Loader2, 
+  CreditCard,
+  DollarSign,
+  Loader2,
   ShoppingBag,
   Info
 } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartTotal, clearCart } = useCart();
+  const { cart, cartTotal, clearCart, setIsCartOpen } = useCart();
 
   // Form states
   const [name, setName] = useState("");
@@ -43,10 +42,10 @@ export default function CheckoutPage() {
     if (cleaned.startsWith("05") && cleaned.length === 10) return true;
     return false;
   };
-  const isPhoneInvalid = 
-    phone.trim().length > 0 && 
-    phone !== "+971" && 
-    phone !== "+971 " && 
+  const isPhoneInvalid =
+    phone.trim().length > 0 &&
+    phone !== "+971" &&
+    phone !== "+971 " &&
     !isValidUAEPhone(phone);
 
   const isValidEmail = (emailStr: string) => {
@@ -56,7 +55,7 @@ export default function CheckoutPage() {
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    
+
     if (val.startsWith("+971 ")) {
       setPhone(val);
     } else if (val === "+971") {
@@ -66,14 +65,14 @@ export default function CheckoutPage() {
       // If they cleared it, pasted over it, or tried to delete the prefix
       const digits = val.replace(/[^\d]/g, "");
       let clean = digits;
-      
+
       // Handle pasted numbers gracefully by stripping any existing country code / local zero
       if (clean.startsWith("971")) {
         clean = clean.substring(3);
       } else if (clean.startsWith("05")) {
         clean = clean.substring(1);
       }
-      
+
       setPhone("+971 " + clean);
     }
   };
@@ -97,6 +96,27 @@ export default function CheckoutPage() {
     return () => clearTimeout(timeout);
   }, [cart, router]);
 
+  // Ensure DOM is fully interactive and clear any leftover modal locks from previous routes
+  useEffect(() => {
+    setIsCartOpen?.(false);
+    if (typeof document !== "undefined") {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.overflow = "auto";
+      document.documentElement.style.pointerEvents = "auto";
+      document.documentElement.style.overflow = "auto";
+
+      // Also remove any stray backdrop/overlay elements from portaled dialogs
+      const overlays = document.querySelectorAll(
+        "[data-slot='sheet-overlay'], [data-slot='sheet-portal'], [data-slot='dialog-overlay'], [data-slot='sheet-content']"
+      );
+      overlays.forEach((el) => {
+        if (el && el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
+      });
+    }
+  }, [setIsCartOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
@@ -107,19 +127,24 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (!email.trim()) {
+      setFormError("Email Address is required.");
+      return;
+    }
+
+    if (!isValidEmail(email.trim())) {
+      setFormError("Please enter a valid email address.");
+      return;
+    }
+
     const cleanPhone = phone.trim();
-    if (!cleanPhone) {
-      setFormError("Phone Number is required.");
+    if (!cleanPhone || cleanPhone === "+971" || cleanPhone === "+971 ") {
+      setFormError("Mobile Number is required.");
       return;
     }
 
     if (!isValidUAEPhone(cleanPhone)) {
-      setFormError("Please enter a valid UAE phone number (e.g. +971 50 123 4567).");
-      return;
-    }
-
-    if (email.trim().length > 0 && !isValidEmail(email)) {
-      setFormError("Please enter a valid email address.");
+      setFormError("Please enter a valid UAE mobile number (e.g. +971 50 123 4567).");
       return;
     }
 
@@ -200,10 +225,10 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-background text-foreground">
+    <div className="relative flex flex-col min-h-screen bg-background text-foreground pointer-events-auto">
       <Navbar />
 
-      <main className="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pb-10 pt-24 sm:pt-32">
+      <main className="flex-grow max-w-[1600px] mx-auto w-full px-4 sm:px-6 lg:px-8 pb-10 pt-24 sm:pt-32 pointer-events-auto">
         {/* Back Link */}
         <div className="mb-6">
           <Link
@@ -218,7 +243,7 @@ export default function CheckoutPage() {
 
         {/* Layout grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Form details */}
           <div className="lg:col-span-7 bg-card border border-border/40 rounded-[2rem] p-6 sm:p-8 shadow-sm">
             <h2 className="text-lg font-serif font-bold mb-6 flex items-center gap-2">
@@ -232,11 +257,11 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-5">
+            <form id="checkout-form" onSubmit={handleSubmit} className="space-y-5 pointer-events-auto relative z-10">
               {/* Full Name */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                  <User className="h-3 w-3" /> Full Name
+                  <User className="h-3 w-3" /> Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -249,26 +274,30 @@ export default function CheckoutPage() {
                 />
               </div>
 
-              {/* Email Address (Optional) */}
+              {/* Email Address */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                  <Mail className="h-3 w-3" /> Email Address <span className="text-[10px] font-normal text-muted-foreground">(Optional)</span>
+                  <Mail className="h-3 w-3" /> Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
+                  required
                   placeholder="e.g. name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className={`w-full bg-background border ${
-                    isEmailInvalid
+                  className={`w-full bg-background border ${isEmailInvalid
                       ? "border-red-500 focus:border-red-600"
                       : "border-border/60 hover:border-primary/50 focus:border-primary"
-                  } rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all`}
+                    } rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all`}
                 />
-                {isEmailInvalid && (
+                {isEmailInvalid ? (
                   <span className="text-[10px] text-red-500 block font-semibold">
                     Please enter a valid email address.
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-muted-foreground block">
+                    Required for order confirmation & receipt.
                   </span>
                 )}
               </div>
@@ -276,7 +305,7 @@ export default function CheckoutPage() {
               {/* Phone */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                  <Phone className="h-3 w-3" /> Mobile Number
+                  <Phone className="h-3 w-3" /> Mobile Number <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="tel"
@@ -285,11 +314,10 @@ export default function CheckoutPage() {
                   value={phone}
                   onChange={handlePhoneChange}
                   disabled={loading}
-                  className={`w-full bg-background border ${
-                    isPhoneInvalid
+                  className={`w-full bg-background border ${isPhoneInvalid
                       ? "border-red-500 focus:border-red-600"
                       : "border-border/60 hover:border-primary/50 focus:border-primary"
-                  } rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all font-mono`}
+                    } rounded-xl px-4 py-3 text-xs outline-none text-foreground transition-all font-mono`}
                 />
                 {isPhoneInvalid ? (
                   <span className="text-[10px] text-red-500 block font-semibold">
@@ -325,8 +353,8 @@ export default function CheckoutPage() {
 
               {/* Street Address */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                  Delivery Address Details
+                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                  Delivery Address Details <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   required
@@ -344,13 +372,12 @@ export default function CheckoutPage() {
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   Shipping Method
                 </label>
-                
+
                 <div className="flex flex-col gap-3">
-                  <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
-                    shippingType === "standard"
+                  <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${shippingType === "standard"
                       ? "border-primary bg-primary/5"
                       : "border-border/60 hover:border-primary/50 bg-background"
-                  }`}>
+                    }`}>
                     <div className="flex items-center gap-3">
                       <div className="text-left">
                         <p className="text-xs font-bold text-foreground">Standard Delivery</p>
@@ -368,15 +395,14 @@ export default function CheckoutPage() {
                   </label>
 
                   {cartTotal >= 300 && (
-                    <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
-                      shippingType === "free"
+                    <label className={`border rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${shippingType === "free"
                         ? "border-primary bg-primary/5"
                         : "border-border/60 hover:border-primary/50 bg-background"
-                    }`}>
+                      }`}>
                       <div className="flex items-center gap-3">
                         <div className="text-left">
                           <p className="text-xs font-bold text-foreground flex items-center gap-2">
-                            Free Express Delivery 
+                            Free Express Delivery
                             <span className="bg-primary text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">Qualified</span>
                           </p>
                           <p className="text-[10px] text-muted-foreground">0.00 AED</p>
@@ -400,7 +426,7 @@ export default function CheckoutPage() {
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   Payment Method
                 </label>
-                
+
                 <div className="flex flex-col gap-2">
                   <label className="border border-primary bg-primary/5 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all">
                     <div className="flex items-center gap-3">
@@ -421,7 +447,7 @@ export default function CheckoutPage() {
                       className="accent-primary"
                     />
                   </label>
-                  
+
                   <p className="text-[11px] text-yellow-600 font-bold px-2">
                     * Note: If Card or Link Payment then 5% VAT Required.
                   </p>
@@ -506,15 +532,13 @@ export default function CheckoutPage() {
                 ⚡ Lightning-Fast UAE Delivery
               </p>
               <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">
-                Orders are processed instantly. Deliveries take within 2 hours in Dubai and same-day across other Emirates. COD payment can be made via Cash or Card on arrival.
+                Orders are processed instantly. Deliveries take within 3 hours in Dubai and same-day across other Emirates. COD payment can be made via Cash or Card on arrival.
               </p>
             </div>
           </div>
 
         </div>
       </main>
-
-      <CartDrawer />
       <Footer />
     </div>
   );

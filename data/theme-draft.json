@@ -55,7 +55,7 @@
         },
         {
           "label": "Sprk",
-          "href": "/collections/sprk",
+          "href": "/collections/sprk-pods-shop-in-uae",
           "children": []
         },
         {
@@ -300,7 +300,7 @@
       "twitterUrl": "https://x.com/vapshopdubai",
       "pinterestUrl": "https://www.pinterest.com/juuldubai/",
       "youtubeUrl": "https://youtube.com/@vapshopdubai",
-      "healthWarning": "UAE 21+ ONLY: Products contain nicotine, an addictive chemical. For adult smokers (21+) in the UAE. Keep out of reach of children and pets.",
+      "healthWarning": "UAE 18+ ONLY: Products contain nicotine, an addictive chemical. For adult smokers (18+) in the UAE. Keep out of reach of children and pets.",
       "paymentBadges": [
         {
           "icon": "CreditCard",
@@ -4204,17 +4204,17 @@
                 {
                   "icon": "CreditCard",
                   "title": "Payment Methods",
-                  "subtitle": "CASH, CARD & APPLE PAY ON DELIVERY"
+                  "subtitle": "Cash, Card & Online Link Payment on Delivery"
                 },
                 {
                   "icon": "Zap",
                   "title": "Fast Delivery",
-                  "subtitle": "DUBAI EXPRESS WITHIN 2 HOURS"
+                  "subtitle": "DUBAI EXPRESS WITHIN 3 HOURS"
                 },
                 {
                   "icon": "Package",
                   "title": "Same Day Delivery",
-                  "subtitle": "ORDER BEFORE 6PM ALL EMIRATES"
+                  "subtitle": "Order before 9pm (Dubai, Sharjah, Ajman)"
                 }
               ],
               "descriptionTabLabel": "Product Description",
@@ -6707,6 +6707,6 @@
       }
     }
   },
-  "updatedAt": "2026-10-10T19:13:06.969Z",
+  "updatedAt": "2026-10-11T19:42:54.559Z",
   "updatedBy": "shipontalukdar.webestone@gmail.com"
 }

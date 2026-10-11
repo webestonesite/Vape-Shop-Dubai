@@ -281,7 +281,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
       )}
 
       {/* ── Main Navbar ───────────────────────────────── */}
-      <div suppressHydrationWarning className={`glass-strong border-b border-border transition-all duration-300 ${isScrolled ? "py-2.5" : "py-3"}`}>
+      <div suppressHydrationWarning className={`glass-strong bg-white/95 dark:bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300 ${isScrolled ? "py-2.5 shadow-md" : "py-3"}`}>
         <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div suppressHydrationWarning className="flex items-center justify-between gap-4">
 

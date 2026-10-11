@@ -438,7 +438,7 @@ export function JuulAppIntegrationSection({
                     </div>
 
                     <div>
-                      <h4 className="font-serif font-black text-base text-slate-100">Age Verified (21+ UAE)</h4>
+                      <h4 className="font-serif font-black text-base text-slate-100">Age Verified (18+ UAE)</h4>
                       <p className="text-[11px] text-slate-400 mt-1">Smart biometric lock prevents underage access</p>
                     </div>
 

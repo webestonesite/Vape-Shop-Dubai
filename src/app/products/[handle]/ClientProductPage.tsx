@@ -207,6 +207,28 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
     return list;
   }, [templateInstances]);
+
+  const primaryOptionName = React.useMemo(() => {
+    if (!product) return "Flavor";
+    const found = product.options?.find(
+      (o) => o.name && o.name.toLowerCase() !== "title" && Array.isArray(o.values) && o.values.length > 0
+    )?.name || (product.options?.[0]?.name && product.options[0].name.toLowerCase() !== "title" ? product.options[0].name : "");
+
+    if (found) return found;
+
+    // Fallback: detect from variant titles
+    const hasColorVariants = product.variants?.some((v) =>
+      /(orange|silver|pink|green|blue|black|grey|gray|red|gold|white|purple|yellow|gunmetal)/i.test(v.title)
+    );
+    const hasFlavorVariants = product.variants?.some((v) =>
+      /(mint|ice|lemon|grape|mango|berry|apple|watermelon|tobacco|peach)/i.test(v.title)
+    );
+
+    if (hasColorVariants && !hasFlavorVariants) return "Color";
+    if (hasFlavorVariants) return "Flavor";
+    return "Option";
+  }, [product]);
+
   // Everything the buy box says comes from the product template's
   // "Product Details & Buy Box" section; only the data is Shopify's.
   const mainSettings = instanceSettings(templateInstances, "productMain");
@@ -1012,7 +1034,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
               {/* Dynamic Option Name */}
               {(() => {
-                const optionName = product.options?.[0]?.name || "Flavor";
+                const optionName = primaryOptionName;
                 return (
                   <>
                     {/* Single Line Grid Row: Select Flavor & Quantity Selector */}
@@ -1369,6 +1391,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
             ),
             productFlavors: (settings: Record<string, unknown>) => (
               <ProductAvailableFlavorsSection
+                optionName={primaryOptionName}
                 variants={product.variants}
                 productName={product.name}
                 productCategory={product.category}
@@ -1461,7 +1484,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                   {product.name}
                 </span>
                 <h3 className="text-xl sm:text-2xl font-serif font-black text-foreground mt-0.5">
-                  {`Select ${product.options?.[0]?.name || "Flavor"} Option`}
+                  {`Select ${primaryOptionName} Option`}
                 </h3>
               </div>
               <button
@@ -1479,7 +1502,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder={`Search ${product.options?.[0]?.name?.toLowerCase() || "flavor"} name...`}
+                  placeholder={`Search ${primaryOptionName.toLowerCase()} name...`}
                   value={flavorSearchQuery}
                   onChange={(e) => setFlavorSearchQuery(e.target.value)}
                   className="w-full bg-muted/20 border border-border/60 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-bold text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"

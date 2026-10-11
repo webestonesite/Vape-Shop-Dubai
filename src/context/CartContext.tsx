@@ -31,22 +31,31 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
 
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem("vapeshope_cart");
-    if (savedCart) {
-      try {
+    try {
+      const savedCart = localStorage.getItem("vapeshope_cart");
+      if (savedCart) {
         setCart(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Error parsing cart storage:", e);
       }
+    } catch (e) {
+      console.error("Error parsing cart storage:", e);
+    } finally {
+      setIsLoaded(true);
     }
   }, []);
 
-  // Sync cart to localStorage whenever it changes
+  // Sync cart to localStorage whenever it changes (only after initial load)
   useEffect(() => {
-    localStorage.setItem("vapeshope_cart", JSON.stringify(cart));
-  }, [cart]);
+    if (!isLoaded) return;
+    try {
+      localStorage.setItem("vapeshope_cart", JSON.stringify(cart));
+    } catch (e) {
+      console.error("Error saving cart to storage:", e);
+    }
+  }, [cart, isLoaded]);
 
   const addToCart = (product: Omit<CartItem, "quantity">, quantity = 1) => {
     setCart((prevCart) => {

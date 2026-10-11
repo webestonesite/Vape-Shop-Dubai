@@ -198,10 +198,10 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
         setHovered(false);
         setActiveImageIndex(0);
       }}
-      className="group relative bg-card border-2 border-primary/20 hover:border-primary rounded-[1.8rem] sm:rounded-[2.2rem] p-3 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col w-full h-full overflow-hidden"
+      className="group relative bg-card border-2 border-primary/20 hover:border-primary rounded-[1.5rem] sm:rounded-[2.2rem] p-3 sm:p-5 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1.5 flex flex-col w-full h-full overflow-hidden"
     >
       {/* Large Image Area */}
-      <div className="relative bg-muted/20 rounded-[1.3rem] sm:rounded-[1.8rem] h-52 sm:h-72 lg:h-80 p-1 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
+      <div className="relative bg-muted/20 rounded-[1.2rem] sm:rounded-[1.8rem] h-40 sm:h-64 lg:h-72 p-1 sm:p-5 flex items-center justify-center overflow-hidden border border-primary/15 group-hover:border-primary/40 transition-all duration-300">
         <div className="hidden sm:block absolute w-56 h-56 rounded-full bg-primary/5 filter blur-2xl pointer-events-none" />
 
         <Link
@@ -304,7 +304,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
           onMouseEnter={() => prefetchProduct(product.handle)}
           className="hover:text-primary transition-colors block"
         >
-          <h3 className="text-base sm:text-lg font-body text-foreground group-hover:text-primary transition-colors leading-snug">
+          <h3 className="text-xs sm:text-base lg:text-lg font-body text-foreground group-hover:text-primary transition-colors leading-snug line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
             {product.name}
           </h3>
         </Link>
@@ -324,40 +324,40 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
         {/* Rating & Price Row */}
         <div className="flex items-end justify-between mt-auto pt-2">
           <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400 flex-shrink-0" />
+            <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-amber-400 text-amber-400 flex-shrink-0" />
             <span className="text-xs font-bold text-foreground">{product.rating}</span>
             <span className="text-[11px] text-muted-foreground">({product.reviews})</span>
           </div>
 
           <div className="text-right">
             {product.originalPrice && (
-              <p className="text-[11px] text-muted-foreground line-through mb-1">Dhs. {product.originalPrice.toFixed(2)}</p>
+              <p className="text-[10px] sm:text-[11px] text-muted-foreground line-through mb-0.5">Dhs. {product.originalPrice.toFixed(2)}</p>
             )}
-            <p className="text-lg sm:text-xl font-serif text-primary leading-none tracking-tight">
+            <p className="text-base sm:text-xl font-serif text-primary leading-none tracking-tight font-black">
               Dhs. {product.price.toFixed(2)}
             </p>
           </div>
         </div>
 
         {/* Full-width Action Pill Button (Matches Screenshot) */}
-        <div className="pt-3 mt-1">
+        <div className="pt-2 sm:pt-3 mt-1">
           {product.isSoldOut ? (
-            <div className="w-full py-3 rounded-full bg-[#E5DFD5] dark:bg-[#2A241E] text-muted-foreground text-xs font-bold text-center cursor-not-allowed border border-border/30">
+            <div className="w-full py-2.5 sm:py-3 rounded-xl sm:rounded-full bg-[#E5DFD5] dark:bg-[#2A241E] text-muted-foreground text-xs font-bold text-center cursor-not-allowed border border-border/30">
               Sold out
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
               <button
                 onClick={() => onAddToCart(product)}
-                className="py-3 rounded-full bg-card hover:bg-muted/40 border border-border/80 text-foreground text-xs font-bold text-center cursor-pointer transition-all flex items-center justify-center gap-1.5 active:scale-98"
+                className="py-2.5 sm:py-3 px-1 sm:px-2 rounded-xl sm:rounded-full bg-card hover:bg-muted/40 border border-border/80 text-foreground text-[11px] sm:text-xs font-bold text-center cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-98"
               >
-                <ShoppingCart className="h-3.5 w-3.5" /> Cart
+                <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> Cart
               </button>
               <button
                 onClick={() => onBuyNow(product)}
-                className="py-3 rounded-full bg-gradient-to-r from-primary to-orange-500 hover:brightness-105 text-white text-xs font-bold text-center shadow cursor-pointer transition-all flex items-center justify-center gap-1.5 active:scale-98"
+                className="py-2.5 sm:py-3 px-1 sm:px-2 rounded-xl sm:rounded-full bg-gradient-to-r from-primary to-orange-500 hover:brightness-105 text-white text-[11px] sm:text-xs font-bold text-center shadow cursor-pointer transition-all flex items-center justify-center gap-1 active:scale-98"
               >
-                <Zap className="h-3.5 w-3.5" /> Buy Now
+                <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> Buy Now
               </button>
             </div>
           )}

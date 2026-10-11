@@ -30,6 +30,9 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["firebase-admin", "jwks-rsa", "jose"],
   async headers() {
+    if (process.env.NODE_ENV !== "production") {
+      return [];
+    }
     return [
       {
         source: "/:all*(svg|jpg|png|webp|avif|woff2)",
@@ -41,7 +44,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Cache JS/CSS chunks aggressively — Next.js content-hashes them
+        // Cache JS/CSS chunks aggressively in production — Next.js content-hashes them
         source: "/_next/static/:path*",
         headers: [
           {

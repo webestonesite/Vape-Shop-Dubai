@@ -90,18 +90,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    if (!shippingAddress || !shippingAddress.firstName || !shippingAddress.phone || !shippingAddress.address1 || !shippingAddress.city) {
+    if (!shippingAddress) {
       return NextResponse.json({ error: "Missing shipping address details" }, { status: 400 });
     }
 
+    const rawName = (shippingAddress.firstName || "").trim();
+    if (!rawName) {
+      return NextResponse.json({ error: "Full Name is required" }, { status: 400 });
+    }
+
+    const customerEmail = (shippingAddress.email || "").trim();
+    if (!customerEmail) {
+      return NextResponse.json({ error: "Email Address is required" }, { status: 400 });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      return NextResponse.json({ error: "Please provide a valid email address" }, { status: 400 });
+    }
+
+    const rawPhone = (shippingAddress.phone || "").trim();
+    if (!rawPhone || rawPhone === "+971" || rawPhone === "+971 ") {
+      return NextResponse.json({ error: "Mobile Number is required" }, { status: 400 });
+    }
+
+    if (!shippingAddress.address1 || !shippingAddress.city) {
+      return NextResponse.json({ error: "Delivery address details are required" }, { status: 400 });
+    }
+
     // Properly split full name into firstName and lastName for Shopify
-    const rawName = (shippingAddress.firstName || "Customer").trim();
     const nameParts = rawName.split(" ");
     const firstName = nameParts[0] || "Customer";
     const lastName = nameParts.slice(1).join(" ") || ".";
 
-    const customerEmail = shippingAddress.email && shippingAddress.email.trim() ? shippingAddress.email.trim() : undefined;
-    const rawPhone = shippingAddress.phone ? shippingAddress.phone.trim() : "";
     const customerPhone = formatUAEPhone(rawPhone);
 
     let orderName = `VSD-${Math.floor(100000 + Math.random() * 900000)}`;

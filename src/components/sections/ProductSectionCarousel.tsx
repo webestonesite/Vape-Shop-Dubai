@@ -244,7 +244,7 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
           */}
           <CarouselContent className="px-4 sm:px-0 py-3">
             {products.map((product) => (
-              <CarouselItem key={product.id} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 flex">
+              <CarouselItem key={product.id} className="pl-3 sm:pl-4 basis-[82%] xs:basis-[72%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 flex">
                 <ProductCard product={product} onAddToCart={onAddToCart} onBuyNow={onBuyNow} />
               </CarouselItem>
             ))}
