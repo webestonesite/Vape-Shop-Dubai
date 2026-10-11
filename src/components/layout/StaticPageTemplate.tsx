@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import {
@@ -60,7 +59,6 @@ export const StaticPageTemplate: React.FC<{
         )}
       </main>
 
-      <CartDrawer />
       <Footer />
     </div>
   );

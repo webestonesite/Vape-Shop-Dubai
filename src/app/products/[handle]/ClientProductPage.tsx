@@ -6,8 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import {
   Star,
   ShoppingCart,
@@ -245,7 +245,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
   const returnsBlocks = list<TabBlock>("returnsBlocks");
   const showShippingTab = flag("showShippingTab");
   const showReturnsTab = flag("showReturnsTab");
-  const [isWishlist, setIsWishlist] = useState(false);
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
 
@@ -1146,23 +1146,38 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                       </div>
 
                 {/* Wishlist Toggle Button */}
-                {flag("showWishlist") && (
-                <button
-                  type="button"
-                  onClick={() => setIsWishlist(!isWishlist)}
-                  className={`w-full py-3 px-4 rounded-2xl border text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${isWishlist
-                    ? "bg-rose-500/10 border-rose-500/30 text-rose-500"
-                    : "bg-card border-border/60 text-muted-foreground hover:text-foreground hover:border-border"
-                    }`}
-                >
-                  <Heart className={`h-4 w-4 ${isWishlist ? "fill-rose-500 text-rose-500" : ""}`} />
-                  <span>
-                    {isWishlist
-                      ? text("wishlistSavedLabel", "Saved in Wishlist")
-                      : text("wishlistLabel", "Add to Wishlist")}
-                  </span>
-                </button>
-                )}
+                {flag("showWishlist") && (() => {
+                  const isWishlisted = isInWishlist(product.id);
+                  return (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toggleWishlist({
+                          id: product.id,
+                          handle: product.handle,
+                          title: product.name,
+                          price: selectedVariant ? selectedVariant.price : product.price,
+                          originalPrice: selectedVariant?.compareAtPrice || product.originalPrice,
+                          image: product.image || product.images?.[0] || "/placeholder.png",
+                          category: product.category,
+                          availableForSale: !product.isSoldOut,
+                        })
+                      }
+                      className={`w-full py-3 px-4 rounded-2xl border text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        isWishlisted
+                          ? "bg-rose-500/10 border-rose-500/40 text-rose-500 shadow-sm"
+                          : "bg-card border-border/60 text-muted-foreground hover:text-foreground hover:border-border"
+                      }`}
+                    >
+                      <Heart className={`h-4 w-4 ${isWishlisted ? "fill-rose-500 text-rose-500" : ""}`} />
+                      <span>
+                        {isWishlisted
+                          ? text("wishlistSavedLabel", "Saved in Wishlist")
+                          : text("wishlistLabel", "Add to Wishlist")}
+                      </span>
+                    </button>
+                  );
+                })()}
               </div>
             </>
           );
@@ -1641,7 +1656,6 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
         </div>
       )}
 
-      <CartDrawer />
       <Footer />
     </div>
   );

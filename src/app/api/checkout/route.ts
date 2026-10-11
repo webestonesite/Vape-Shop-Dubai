@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import rateLimit from "@/lib/rate-limit";
+import { adminDb } from "@/lib/firebase/admin";
 
 const limiter = rateLimit({
   interval: 60 * 1000, // 60 seconds
@@ -305,6 +306,78 @@ export async function POST(request: Request) {
       } catch (err) {
         console.error("Admin draftOrder error:", err);
       }
+    }
+
+    // Save order in Firestore for real-time tracking, customer dashboard & tax invoice
+    try {
+      const nowIso = new Date().toISOString();
+      const calculatedTotal = lineItems.reduce(
+        (acc: number, item: any) => acc + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+        0
+      );
+      const subtotal = Math.round((calculatedTotal / 1.05) * 100) / 100;
+      const vatAmount = Math.round((calculatedTotal - subtotal) * 100) / 100;
+
+      await adminDb.collection("orders").doc(orderName).set(
+        {
+          orderId: orderName,
+          userId: body.userId || null,
+          customerName: rawName,
+          customerEmail: customerEmail.toLowerCase().trim(),
+          customerPhone: rawPhone,
+          shippingAddress: {
+            firstName: rawName,
+            address1: shippingAddress.address1,
+            city: shippingAddress.city || "Dubai",
+            emirate: shippingAddress.city || "Dubai",
+            phone: rawPhone,
+          },
+          lineItems: lineItems.map((li: any) => ({
+            title: li.title || "Vape Product",
+            variantTitle: li.variantTitle || "",
+            handle: li.handle || "",
+            price: Number(li.price || 0),
+            quantity: Number(li.quantity || 1),
+            image: li.image || "",
+          })),
+          totalPrice: calculatedTotal,
+          subtotal: subtotal,
+          vatAmount: vatAmount,
+          paymentMethod: paymentMethod || "Cash on Delivery",
+          status: "processing",
+          statusLabel: "Processing & Quality Check",
+          createdAt: nowIso,
+          statusTimeline: [
+            {
+              title: "Order Placed",
+              description: "Order received via Web Store",
+              timestamp: nowIso,
+              completed: true,
+            },
+            {
+              title: "Processing & Quality Check",
+              description: "Checked and packed by Dubai warehouse team",
+              timestamp: nowIso,
+              completed: true,
+            },
+            {
+              title: "Out for Express Delivery",
+              description: "Dispatched with Dubai delivery courier",
+              timestamp: null,
+              completed: false,
+            },
+            {
+              title: "Delivered",
+              description: "Package safely delivered",
+              timestamp: null,
+              completed: false,
+            },
+          ],
+        },
+        { merge: true }
+      );
+    } catch (dbErr) {
+      console.warn("[Checkout] Failed to save order to Firestore:", dbErr);
     }
 
     return NextResponse.json({

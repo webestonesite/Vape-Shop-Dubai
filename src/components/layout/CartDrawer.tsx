@@ -34,6 +34,28 @@ export const CartDrawer: React.FC = () => {
     }
   }, [pathname, setIsCartOpen]);
 
+  // Ensure DOM styles are completely unlocked when drawer is closed
+  useEffect(() => {
+    if (!isCartOpen && typeof document !== "undefined") {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.overflow = "auto";
+      document.documentElement.style.pointerEvents = "auto";
+      document.documentElement.style.overflow = "auto";
+    }
+  }, [isCartOpen]);
+
+  // Safety cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (typeof document !== "undefined") {
+        document.body.style.pointerEvents = "auto";
+        document.body.style.overflow = "auto";
+        document.documentElement.style.pointerEvents = "auto";
+        document.documentElement.style.overflow = "auto";
+      }
+    };
+  }, []);
+
   // Generate WhatsApp message and redirect
   const handleWhatsAppCheckout = () => {
     const phone = "+971500000000"; // Shop WhatsApp number

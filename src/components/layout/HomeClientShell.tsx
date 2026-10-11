@@ -4,7 +4,6 @@ import React, { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { AgeGate } from "@/components/sections/AgeGate";
 import {
   SECTION_CONTAINER,
@@ -100,7 +99,6 @@ export function HomeClientShell() {
         />
       </main>
 
-      <CartDrawer />
       <Footer />
     </div>
   );

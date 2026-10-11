@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Calendar, Clock, User, ChevronRight, ChevronLeft, Search, ArrowRight, Tag, BookOpen } from "lucide-react";
 import { BlogImageWithSkeleton } from "@/components/ui/BlogImageWithSkeleton";
 
@@ -431,7 +430,6 @@ export default function BlogNewsPage() {
       </main>
 
       <Footer />
-      <CartDrawer />
     </div>
   );
 }

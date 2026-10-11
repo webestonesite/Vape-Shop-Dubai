@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { Product } from "@/components/sections/ProductFeed";
 import { ProductSectionCarousel } from "@/components/sections/ProductSectionCarousel";
 import {
@@ -669,7 +668,6 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
         )}
       </main>
 
-      <CartDrawer />
       <Footer />
     </div>
   );

@@ -6,7 +6,6 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { useCart } from "@/context/CartContext";
 import { Product, ProductCard } from "@/components/sections/ProductFeed";
 import { AuthorizedDealers } from "@/components/sections/AuthorizedDealers";
@@ -1811,7 +1810,6 @@ function CollectionPageContent({
         </div>
       )}
 
-      <CartDrawer />
       <Footer />
     </div>
   );

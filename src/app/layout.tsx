@@ -2,10 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeSettingsProvider } from "@/context/ThemeSettingsContext";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { LazyWhatsApp } from "@/components/layout/LazyWhatsApp";
+import { CartDrawer } from "@/components/layout/CartDrawer";
 import { CanonicalHead } from "@/components/layout/CanonicalHead";
 import {
   getOrganizationSchema,
@@ -153,10 +156,15 @@ export default async function RootLayout({
         <CanonicalHead />
         <ThemeSettingsProvider initial={layoutThemeSettings}>
           <ThemeProvider>
-            <CartProvider>
-              {children}
-              <LazyWhatsApp />
-            </CartProvider>
+              <CustomerAuthProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    {children}
+                    <CartDrawer />
+                    <LazyWhatsApp />
+                  </WishlistProvider>
+                </CartProvider>
+              </CustomerAuthProvider>
           </ThemeProvider>
         </ThemeSettingsProvider>
       </body>

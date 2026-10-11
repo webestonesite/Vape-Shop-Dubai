@@ -11,9 +11,13 @@ import {
   ChevronDown,
   MessageCircle,
   ShieldAlert,
+  User,
+  Heart,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useHeaderSettings } from "@/context/ThemeSettingsContext";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -30,6 +34,8 @@ const NavbarContent: React.FC<NavbarProps> = ({
 }) => {
   const header = useHeaderSettings();
   const { cartCount, setIsCartOpen } = useCart();
+  const { wishlistCount } = useWishlist();
+  const { user, profile } = useCustomerAuth();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -504,6 +510,37 @@ const NavbarContent: React.FC<NavbarProps> = ({
 
 
 
+              {/* Wishlist */}
+              <Link
+                href={user ? "/account?tab=wishlist" : "/account/login?redirect=/account?tab=wishlist"}
+                className="relative p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60 flex items-center justify-center"
+                aria-label="Wishlist"
+                title={`Wishlist (${wishlistCount})`}
+              >
+                <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "text-rose-500 fill-rose-500/20" : ""}`} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[9px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-background leading-none">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Account / User */}
+              <Link
+                href={user ? "/account" : "/account/login"}
+                className="relative p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60 flex items-center justify-center"
+                aria-label={user ? "My Account" : "Login"}
+                title={user ? (profile?.name || user.email || "My Account") : "Login / Register"}
+              >
+                {user ? (
+                  <div className="w-5 h-5 rounded-full bg-primary/20 text-primary border border-primary/40 flex items-center justify-center text-[11px] font-black leading-none">
+                    {(profile?.name || user.displayName || user.email || "U").charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
+              </Link>
+
               {/* Cart */}
               <button
                 onClick={() => setIsCartOpen(true)}
@@ -720,9 +757,14 @@ const NavbarContent: React.FC<NavbarProps> = ({
               <MessageCircle className="h-4 w-4" />
               WhatsApp Order
             </a>
-            <button className="flex-1 border border-border text-sm font-bold py-2.5 rounded-xl text-foreground/70 hover:border-primary hover:text-primary transition-all cursor-pointer">
-              Login / Register
-            </button>
+            <Link
+              href={user ? "/account" : "/account/login"}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex-1 flex items-center justify-center gap-2 border border-border text-sm font-bold py-2.5 rounded-xl text-foreground hover:border-primary hover:text-primary transition-all cursor-pointer bg-card/60"
+            >
+              <User className="h-4 w-4 text-primary" />
+              <span>{user ? "My Account" : "Login / Register"}</span>
+            </Link>
           </div>
         </div>
       )}

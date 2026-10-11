@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { CheckCircle2, ShoppingBag, Truck, Calendar, PhoneCall, Loader2 } from "lucide-react";
 
 function SuccessContent() {
@@ -95,7 +94,6 @@ function SuccessContent() {
         </div>
       </main>
 
-      <CartDrawer />
       <Footer />
     </div>
   );

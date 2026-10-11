@@ -1,6 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
+import { useCustomerAuth } from "./CustomerAuthContext";
 
 export interface CartItem {
   id: string;
@@ -27,66 +29,170 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const STORAGE_KEY = "vapeshope_cart";
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
-
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const { user } = useCustomerAuth();
+  const pathname = usePathname();
+
+  // Always reset drawer state and unlock DOM interaction on route change
+  useEffect(() => {
+    setIsCartOpen(false);
+    if (typeof document !== "undefined") {
+      document.body.style.pointerEvents = "auto";
+      document.body.style.overflow = "auto";
+      document.documentElement.style.pointerEvents = "auto";
+      document.documentElement.style.overflow = "auto";
+    }
+  }, [pathname]);
 
   // Load cart from localStorage on mount
   useEffect(() => {
     try {
-      const savedCart = localStorage.getItem("vapeshope_cart");
+      const savedCart = localStorage.getItem(STORAGE_KEY);
       if (savedCart) {
-        setCart(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+          setCart(parsed);
+        }
       }
     } catch (e) {
-      console.error("Error parsing cart storage:", e);
+      console.error("[Cart] Error parsing cart storage:", e);
     } finally {
       setIsLoaded(true);
     }
   }, []);
 
-  // Sync cart to localStorage whenever it changes (only after initial load)
+  // Sync cart to localStorage whenever it changes
   useEffect(() => {
     if (!isLoaded) return;
     try {
-      localStorage.setItem("vapeshope_cart", JSON.stringify(cart));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
     } catch (e) {
-      console.error("Error saving cart to storage:", e);
+      console.error("[Cart] Error saving cart to storage:", e);
     }
   }, [cart, isLoaded]);
 
-  const addToCart = (product: Omit<CartItem, "quantity">, quantity = 1) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-        );
+  // Sync with Firestore cloud cart when user is logged in
+  useEffect(() => {
+    if (!user || !isLoaded) return;
+
+    let isMounted = true;
+    const syncCloudCart = async () => {
+      try {
+        const token = await user.getIdToken();
+        const res = await fetch("/api/customer/cart", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.cart) && isMounted) {
+            setCart((current) => {
+              const combinedMap = new Map<string, CartItem>();
+              data.cart.forEach((item: CartItem) => combinedMap.set(item.id, item));
+              current.forEach((item) => {
+                const existing = combinedMap.get(item.id);
+                if (existing) {
+                  combinedMap.set(item.id, {
+                    ...item,
+                    quantity: Math.max(item.quantity, existing.quantity),
+                  });
+                } else {
+                  combinedMap.set(item.id, item);
+                }
+              });
+              const merged = Array.from(combinedMap.values());
+              return merged;
+            });
+          }
+        }
+      } catch (err) {
+        console.error("[Cart] Cloud sync error:", err);
       }
-      return [...prevCart, { ...product, quantity }];
-    });
-    setIsCartOpen(true); // Open drawer on addition
-  };
+    };
 
-  const removeFromCart = (id: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
+    syncCloudCart();
+    return () => {
+      isMounted = false;
+    };
+  }, [user, isLoaded]);
 
-  const updateQuantity = (id: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(id);
-      return;
-    }
-    setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
+  // Helper to persist cart updates to Firestore
+  const pushToBackend = useCallback(
+    async (updatedCart: CartItem[]) => {
+      if (!user) return;
+      try {
+        const token = await user.getIdToken();
+        await fetch("/api/customer/cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ cart: updatedCart }),
+        });
+      } catch (err) {
+        console.error("[Cart] Push to backend failed:", err);
+      }
+    },
+    [user]
+  );
 
-  const clearCart = () => {
+  const addToCart = useCallback(
+    (product: Omit<CartItem, "quantity">, quantity = 1) => {
+      setCart((prevCart) => {
+        const existingItem = prevCart.find((item) => item.id === product.id);
+        let updated: CartItem[];
+        if (existingItem) {
+          updated = prevCart.map((item) =>
+            item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+          );
+        } else {
+          updated = [...prevCart, { ...product, quantity }];
+        }
+        pushToBackend(updated);
+        return updated;
+      });
+      setIsCartOpen(true);
+    },
+    [pushToBackend]
+  );
+
+  const removeFromCart = useCallback(
+    (id: string) => {
+      setCart((prevCart) => {
+        const updated = prevCart.filter((item) => item.id !== id);
+        pushToBackend(updated);
+        return updated;
+      });
+    },
+    [pushToBackend]
+  );
+
+  const updateQuantity = useCallback(
+    (id: string, quantity: number) => {
+      if (quantity <= 0) {
+        removeFromCart(id);
+        return;
+      }
+      setCart((prevCart) => {
+        const updated = prevCart.map((item) => (item.id === id ? { ...item, quantity } : item));
+        pushToBackend(updated);
+        return updated;
+      });
+    },
+    [pushToBackend, removeFromCart]
+  );
+
+  const clearCart = useCallback(() => {
     setCart([]);
-  };
+    pushToBackend([]);
+  }, [pushToBackend]);
 
   const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);

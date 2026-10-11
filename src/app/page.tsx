@@ -1,7 +1,6 @@
 import { HomeStateProvider } from "@/context/HomeStateContext";
 import { HomeNavbarConnector } from "@/components/layout/HomeNavbarConnector";
 import { LazyFooter } from "@/components/layout/LazyFooter";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { AgeGate } from "@/components/sections/AgeGate";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { resolveTemplateKey, templateMatch } from "@/lib/theme/types";
@@ -117,8 +116,6 @@ export default async function Home() {
             containerClassName={SECTION_CONTAINER}
           />
         </main>
-
-        <CartDrawer />
         <LazyFooter />
       </div>
     </HomeStateProvider>

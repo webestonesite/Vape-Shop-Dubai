@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 
 interface PageShellProps {
   children: React.ReactNode;
@@ -36,9 +35,6 @@ export const PageShell: React.FC<PageShellProps> = ({ children, breadcrumbTitle 
       <main className="flex-grow">
         {children}
       </main>
-
-      {/* Cart Drawer */}
-      <CartDrawer />
 
       {/* Footer */}
       <Footer />

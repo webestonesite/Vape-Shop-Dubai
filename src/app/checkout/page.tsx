@@ -16,12 +16,14 @@ import {
   DollarSign,
   Loader2,
   ShoppingBag,
-  Info
+  Info,
 } from "lucide-react";
+import { useCustomerAuth, CustomerAddress } from "@/context/CustomerAuthContext";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, cartTotal, clearCart, setIsCartOpen } = useCart();
+  const { user, profile, addresses } = useCustomerAuth();
 
   // Form states
   const [name, setName] = useState("");
@@ -96,6 +98,44 @@ export default function CheckoutPage() {
     return () => clearTimeout(timeout);
   }, [cart, router]);
 
+  // Auto-fill from logged-in customer account and address book
+  useEffect(() => {
+    if (user) {
+      const def: CustomerAddress | undefined = addresses.length > 0
+        ? addresses.find((a: CustomerAddress) => a.isDefault) || addresses[0]
+        : undefined;
+
+      // Auto-fill Full Name
+      if (!name || name.trim() === "") {
+        if (profile?.name) setName(profile.name);
+        else if (def?.fullName) setName(def.fullName);
+      }
+
+      // Auto-fill Email
+      if (!email && user.email) {
+        setEmail(user.email);
+      }
+
+      // Auto-fill UAE Phone Number
+      const isPhoneUnset = !phone || phone.trim() === "" || phone === "+971 " || phone.trim() === "+971";
+      if (isPhoneUnset) {
+        if (profile?.phone) setPhone(profile.phone);
+        else if (def?.phone) setPhone(def.phone);
+      }
+
+      // Auto-fill Delivery Address & Emirate
+      if (def) {
+        if (def.emirate) setCity(def.emirate);
+        if (!address || address.trim() === "") {
+          const fullAddr = [def.addressLine1, def.area, def.villaOrApt ? `Apt ${def.villaOrApt}` : ""]
+            .filter(Boolean)
+            .join(", ");
+          if (fullAddr) setAddress(fullAddr);
+        }
+      }
+    }
+  }, [user, profile, addresses, name, email, phone, address]);
+
   // Ensure DOM is fully interactive and clear any leftover modal locks from previous routes
   useEffect(() => {
     setIsCartOpen?.(false);
@@ -165,6 +205,7 @@ export default function CheckoutPage() {
       }));
 
       const payload = {
+        userId: user?.uid || null,
         shippingAddress: {
           firstName: name,
           email: email.trim(),
@@ -256,6 +297,65 @@ export default function CheckoutPage() {
                 <span>{formError}</span>
               </div>
             )}
+
+            {!user ? (
+              <div className="mb-6 p-3.5 bg-primary/5 border border-primary/20 rounded-2xl flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-primary" />
+                  <span className="text-muted-foreground">Have an account?</span>
+                </div>
+                <Link
+                  href="/account/login?redirect=/checkout"
+                  className="font-bold text-primary hover:underline text-xs flex items-center gap-1 cursor-pointer"
+                >
+                  Log in for saved addresses →
+                </Link>
+              </div>
+            ) : addresses.length > 0 ? (
+              <div className="mb-6 p-4 bg-muted/30 border border-border/60 rounded-2xl">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-primary" /> Saved Addresses ({addresses.length})
+                  </span>
+                  <Link href="/account" className="text-[11px] font-bold text-primary hover:underline cursor-pointer">
+                    Manage
+                  </Link>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {addresses.map((addr: CustomerAddress) => {
+                    const formatted = [addr.addressLine1, addr.area, addr.villaOrApt ? `Apt ${addr.villaOrApt}` : ""]
+                      .filter(Boolean)
+                      .join(", ");
+                    const isSelected = address === formatted;
+                    return (
+                      <button
+                        key={addr.id}
+                        type="button"
+                        onClick={() => {
+                          if (addr.fullName) setName(addr.fullName);
+                          if (addr.phone) setPhone(addr.phone);
+                          if (addr.emirate) setCity(addr.emirate);
+                          if (formatted) setAddress(formatted);
+                        }}
+                        className={`text-xs px-3 py-2 rounded-xl border transition-all text-left flex items-center gap-2 cursor-pointer ${
+                          isSelected
+                            ? "border-primary bg-primary/10 text-primary font-bold shadow-sm"
+                            : "border-border/60 hover:border-primary/50 bg-background text-foreground"
+                        }`}
+                      >
+                        <span className="font-bold">{addr.emirate}</span>
+                        <span className="text-[10px] text-muted-foreground">({addr.area || "UAE"})</span>
+                        {addr.isDefault && (
+                          <span className="text-[9px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-black">
+                            Default
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
 
             <form id="checkout-form" onSubmit={handleSubmit} className="space-y-5 pointer-events-auto relative z-10">
               {/* Full Name */}

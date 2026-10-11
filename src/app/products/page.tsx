@@ -4,7 +4,6 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import { getAllProducts } from "@/lib/shopify/products-fetch";
 import { getItemListSchema, getBreadcrumbSchema } from "@/lib/seo-schemas";
 import { Star, ChevronRight, Package, ArrowRight, ShieldCheck } from "lucide-react";
@@ -209,7 +208,6 @@ export default async function ProductIndexPage({
       </main>
 
       <Footer />
-      <CartDrawer />
     </div>
   );
 }

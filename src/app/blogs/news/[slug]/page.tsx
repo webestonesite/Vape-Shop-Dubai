@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/layout/CartDrawer";
 import {
   Calendar,
   Clock,
@@ -284,7 +283,6 @@ export default async function SingleBlogNewsPage({
           </div>
         </main>
         <Footer />
-        <CartDrawer />
       </div>
     );
   }
@@ -453,7 +451,6 @@ export default async function SingleBlogNewsPage({
       </main>
 
       <Footer />
-      <CartDrawer />
 
       {/* Blog Content Premium Styles */}
       <style>{`
