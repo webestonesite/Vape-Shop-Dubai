@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ShopPage() {
-  return <CollectionPage params={Promise.resolve({ handle: "all" })} />;
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ preview?: string; __vs_preview?: string; sub?: string }>;
+}) {
+  return await CollectionPage({
+    params: Promise.resolve({ handle: "all" }),
+    searchParams,
+  });
 }

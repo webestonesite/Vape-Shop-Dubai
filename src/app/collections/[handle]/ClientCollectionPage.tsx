@@ -51,11 +51,11 @@ import {
   X,
   Check,
   Zap,
-  Sparkles,
   ShieldCheck,
   Home
 } from "lucide-react";
 import { getItemListSchema, getBreadcrumbSchema } from "@/lib/seo-schemas";
+import { getMatchingCollectionProducts } from "@/lib/shopify/collection-matching";
 
 function cleanDescriptionHtml(html: string): string {
   if (!html) return "";
@@ -349,21 +349,49 @@ export function productMatchesCapacity(
   });
 }
 
+interface SearchParamsSyncData {
+  sub: string;
+  brand: string;
+  search: string;
+}
+
+function SearchParamsListener({ onSync }: { onSync: (data: SearchParamsSyncData) => void }) {
+  const searchParams = useSearchParams();
+  const sub = searchParams?.get("sub") || "";
+  const brand = searchParams?.get("brand") || "";
+  const search = searchParams?.get("search") || searchParams?.get("q") || "";
+
+  useEffect(() => {
+    onSync({ sub, brand, search });
+  }, [sub, brand, search, onSync]);
+
+  return null;
+}
+
 function CollectionPageContent({
   initialMeta,
   initialProducts,
   handle: propHandle,
+  initialSubFilter = "",
 }: {
   initialMeta?: any;
   initialProducts?: Product[];
   handle?: string;
+  initialSubFilter?: string;
 }) {
   const params = useParams();
   const rawHandle = propHandle || params?.handle;
   const handle = (typeof rawHandle === "string" ? rawHandle : Array.isArray(rawHandle) ? rawHandle[0] : "") || "";
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const subFilter = searchParams?.get("sub");
+  const [subFilter, setSubFilter] = useState<string>(initialSubFilter);
+  const handleSearchParamsSync = React.useCallback(
+    ({ sub, brand, search }: SearchParamsSyncData) => {
+      if (sub) setSubFilter(sub);
+      if (brand) setSelectedBrands([brand]);
+      if (search) setSearchQuery(search);
+    },
+    []
+  );
 
   const { addToCart, setIsCartOpen } = useCart();
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
@@ -445,25 +473,6 @@ function CollectionPageContent({
     loadCollectionMeta();
   }, [handle, initialMeta]);
 
-  // Synchronize brand filter from query params
-  useEffect(() => {
-    const brandParam = searchParams?.get("brand");
-    if (brandParam) {
-      setSelectedBrands([brandParam]);
-    } else {
-      setSelectedBrands([]);
-    }
-  }, [searchParams]);
-
-  // Synchronize search query from query params
-  useEffect(() => {
-    const searchParam = searchParams?.get("search") || searchParams?.get("q");
-    if (searchParam) {
-      setSearchQuery(searchParam);
-    } else {
-      setSearchQuery("");
-    }
-  }, [searchParams]);
 
   // Collection info — use Shopify data if available, otherwise fallback
   const { instances: templateInstances, isOverride: templateIsOverride } =
@@ -654,20 +663,9 @@ function CollectionPageContent({
     "0mg": "buy-0mg-disposable-vape-in-uae",
   };
 
-  // Base collection products for THIS specific page/handle — STRICTLY from Shopify Backend
+  // Base collection products for THIS specific page/handle — resolved via shared matching engine
   const collectionProducts = useMemo(() => {
-    const hLower = (handle || "").toLowerCase().trim();
-    if (!hLower || hLower === "all" || hLower === "shop") {
-      return products;
-    }
-
-    const targetHandle = CANONICAL_COLLECTION_ALIASES[hLower] || hLower;
-
-    return products.filter((p) => {
-      const pCollections = (p.collections || []).map((c) => c.toLowerCase());
-      // Strictly match only products assigned to this collection in Shopify backend
-      return pCollections.includes(hLower) || pCollections.includes(targetHandle);
-    });
+    return getMatchingCollectionProducts(products, handle);
   }, [products, handle]);
 
   const toggleSeries = (s: string) => {
@@ -963,31 +961,11 @@ function CollectionPageContent({
     router.push("/checkout");
   };
 
-  const itemListSchema = getItemListSchema(
-    collectionInfo.title,
-    filteredProducts.map((p) => ({
-      name: p.name,
-      handle: p.handle,
-      price: p.price,
-      image: p.image,
-    }))
-  );
-  const breadcrumbSchema = getBreadcrumbSchema([
-    { name: "Home", item: "/" },
-    { name: collectionInfo.title, item: `/collections/${handle}` },
-  ]);
-
   return (
     <div className="relative flex flex-col min-h-screen bg-background text-foreground" suppressHydrationWarning>
-      {/* Collection JSON-LD Schemas */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      <Suspense fallback={null}>
+        <SearchParamsListener onSync={handleSearchParamsSync} />
+      </Suspense>
       {/* Navbar */}
       <Navbar
         onCategorySelect={(c) => {
@@ -1823,18 +1801,12 @@ export default function ClientCollectionPage(props: {
   handle?: string;
   initialMeta?: any;
   initialProducts?: Product[];
+  initialSubFilter?: string;
 }) {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="flex flex-col items-center gap-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={null}>
       <CollectionPageContent {...props} />
     </Suspense>
   );
 }
+

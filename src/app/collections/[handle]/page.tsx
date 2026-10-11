@@ -1,51 +1,16 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { fetchCollection } from "@/lib/shopify/collection";
 import { getAllProducts } from "@/lib/shopify/products-fetch";
 import ClientCollectionPage from "./ClientCollectionPage";
 import { getItemListSchema, getBreadcrumbSchema } from "@/lib/seo-schemas";
+import {
+  CANONICAL_COLLECTION_ALIASES,
+  CANONICAL_HANDLE_TITLES,
+  getMatchingCollectionProducts,
+} from "@/lib/shopify/collection-matching";
 
 export const revalidate = 3600; // Edge ISR cache for 1 hour
-
-const CANONICAL_COLLECTION_ALIASES: Record<string, string> = {
-  juul: "juul-vape-dubai",
-  myle: "myle-vape-dubai",
-  disposable: "disposable-vape",
-  disposables: "disposable-vape",
-  "e-liquid": "vape-e-juice",
-  "e-liquids": "vape-e-juice",
-  "e-juice": "vape-e-juice",
-  "pod-systems": "pod-system",
-  accessories: "pod-system",
-  "50mg-disposable": "buy-50mg-disposable-vape-in-uae",
-  "20mg-disposable": "buy-20mg-disposable-vape-uae",
-  "0mg-disposable": "buy-0mg-disposable-vape-in-uae",
-  "50mg": "buy-50mg-disposable-vape-in-uae",
-  "20mg": "buy-20mg-disposable-vape-uae",
-  "0mg": "buy-0mg-disposable-vape-in-uae",
-};
-
-const CANONICAL_HANDLE_TITLES: Record<string, string> = {
-  "juul-vape-dubai": "Juul Vape Dubai",
-  "juul-2-series": "Juul 2 Series",
-  "juul-1-series": "Juul 1 Series",
-  "juul-pods-offers": "Juul Pods Offers",
-  "myle-vape-dubai": "Myle Vape Dubai",
-  "myle-v5-pods": "Myle V5 Pods",
-  "myle-v5-device": "Myle V5 Devices",
-  "myle-disposable": "Myle Disposables",
-  "disposable-vape": "Disposable Vape Dubai",
-  "buy-50mg-disposable-vape-in-uae": "50MG Disposable",
-  "buy-20mg-disposable-vape-uae": "20MG Disposable",
-  "buy-0mg-disposable-vape-in-uae": "0MG Disposable",
-  "al-fakher-vape": "Al Fakher Vape",
-  "elf-bar-vape": "Elf Bar Vape",
-  "lost-mary-disposable": "Lost Mary Disposable",
-  "tugboat-vape": "Tugboat Vape",
-  "vozol-vape": "Vozol Vape",
-  "vape-e-juice": "Vape E-Juice",
-  "pod-system": "Pod Systems & Kits",
-  all: "All Vape Products",
-};
 
 export async function generateMetadata({
   params,
@@ -93,11 +58,12 @@ export default async function CollectionPage({
   searchParams,
 }: {
   params: Promise<{ handle: string }>;
-  searchParams?: Promise<{ preview?: string; __vs_preview?: string }>;
+  searchParams?: Promise<{ preview?: string; __vs_preview?: string; sub?: string }>;
 }) {
   const { handle } = await params;
   const sParams = searchParams ? await searchParams : undefined;
   const isPreview = sParams?.preview === "true" || sParams?.__vs_preview === "true";
+  const subFilter = typeof sParams?.sub === "string" ? sParams.sub : undefined;
 
   const [collectionMeta, allProducts] = await Promise.all([
     fetchCollection(handle, { preview: isPreview }).catch(() => null),
@@ -105,16 +71,9 @@ export default async function CollectionPage({
   ]);
 
   const hLower = (handle || "").toLowerCase().trim();
-  const targetHandle = CANONICAL_COLLECTION_ALIASES[hLower] || hLower;
 
   // Filter matching products for this collection on the server
-  const matchingProducts =
-    !hLower || hLower === "all" || hLower === "shop"
-      ? allProducts
-      : allProducts.filter((p) => {
-          const pCollections = (p.collections || []).map((c) => c.toLowerCase());
-          return pCollections.includes(hLower) || pCollections.includes(targetHandle);
-        });
+  const matchingProducts = getMatchingCollectionProducts(allProducts, handle);
 
   const collectionTitle =
     (collectionMeta as any)?.customHeading ||
@@ -125,16 +84,19 @@ export default async function CollectionPage({
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
 
-  // Generate complete ItemList schema for 100% crawler indexation
-  const itemListSchema = getItemListSchema(
-    collectionTitle,
-    matchingProducts.map((p) => ({
-      name: p.name,
-      handle: p.handle,
-      price: p.price,
-      image: p.image,
-    }))
-  );
+  // Generate complete ItemList schema for 100% crawler indexation (only if products exist to prevent empty schema errors)
+  const itemListSchema =
+    matchingProducts.length > 0
+      ? getItemListSchema(
+          collectionTitle,
+          matchingProducts.map((p) => ({
+            name: p.name,
+            handle: p.handle,
+            price: p.price,
+            image: p.image,
+          }))
+        )
+      : null;
 
   const breadcrumbSchema = getBreadcrumbSchema([
     { name: "Home", item: "/" },
@@ -145,21 +107,49 @@ export default async function CollectionPage({
   return (
     <>
       {/* Complete ItemList and Breadcrumb structured data in raw server HTML */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
-      />
+      {itemListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      {/* Client Interactive Section, initialized with server-fetched products */}
-      <ClientCollectionPage
-        handle={handle}
-        initialMeta={collectionMeta}
-        initialProducts={allProducts}
-      />
+      {/* Crawlable Semantic Product Catalog for Search Engine Bots (Googlebot, Bingbot) */}
+      {matchingProducts.length > 0 && (
+        <section
+          aria-label={`${collectionTitle} Complete Catalog`}
+          className="sr-only"
+        >
+          <h2>All {collectionTitle} at Vape Shop Dubai</h2>
+          <nav aria-label={`${collectionTitle} Products`}>
+            <ul>
+              {matchingProducts.map((p, idx) => (
+                <li key={p.id || p.handle || idx}>
+                  <a href={`/products/${p.handle}`}>
+                    <span>{p.name}</span>
+                    <span> - AED {p.price}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </section>
+      )}
+
+      {/* Client Interactive Section with Suspense Boundary */}
+      <Suspense fallback={null}>
+        <ClientCollectionPage
+          handle={handle}
+          initialMeta={collectionMeta}
+          initialProducts={allProducts}
+          initialSubFilter={subFilter}
+        />
+      </Suspense>
     </>
   );
 }
+
