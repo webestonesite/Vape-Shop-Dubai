@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -27,7 +27,7 @@ import { Footer } from "@/components/layout/Footer";
 import { isValidUAEPhone, formatUAEPhone, validateUAEPhone } from "@/lib/uae-phone";
 import { auth } from "@/lib/firebase/client";
 
-export default function CustomerLoginPage() {
+function CustomerLoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "/account";
@@ -901,5 +901,19 @@ export default function CustomerLoginPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CustomerLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        </div>
+      }
+    >
+      <CustomerLoginContent />
+    </Suspense>
   );
 }
