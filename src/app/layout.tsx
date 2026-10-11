@@ -115,6 +115,12 @@ export default async function RootLayout({
   const websiteSchema = getWebSiteSchema(siteUrl);
   const storeSchema = getLocalBusinessSchema(siteUrl);
   const themeSettings = await getThemeSettings();
+  // Strip heavy templates (190KB+) from global root layout RSC payload.
+  // Routes provide their own scoped templates via PageTemplatesProvider.
+  const layoutThemeSettings = {
+    ...themeSettings,
+    templates: {},
+  };
 
   return (
     <html
@@ -145,7 +151,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <CanonicalHead />
-        <ThemeSettingsProvider initial={themeSettings}>
+        <ThemeSettingsProvider initial={layoutThemeSettings}>
           <ThemeProvider>
             <CartProvider>
               {children}

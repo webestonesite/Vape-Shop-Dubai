@@ -79,7 +79,6 @@ export const Categories: React.FC<{ settings: CategoriesSettings }> = ({
                 alt={section.label}
                 width={64}
                 height={64}
-                sizes="(max-width: 640px) 40px, 64px"
                 className="w-full h-full object-contain filter drop-shadow-xs transition-transform duration-300 group-hover:scale-110"
               />
             </div>

@@ -406,3 +406,5 @@ export function BottomCollectionGrid({ handle, settings }: BottomCollectionGridP
     </div>
   );
 }
+
+export default BottomCollectionGrid;

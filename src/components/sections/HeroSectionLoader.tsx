@@ -28,9 +28,9 @@ export type { HeroSettings };
 
 // ─── Lazy carousel — deferred until after first paint ──────────────────────
 const HeroCarousel = dynamic(
-  () => import("./HeroSection").then((m) => ({ default: m.HeroSection })),
+  () => import("./HeroSection"),
   {
-    ssr: false,   // ✅ Allowed: HeroSectionLoader is "use client"
+    ssr: false,   // Allowed: HeroSectionLoader is "use client"
     loading: () => null, // Static shell is already shown — no extra fallback needed
   }
 );

@@ -173,6 +173,9 @@ export interface ResolvedTemplate {
   instances: SectionInstance[];
 }
 
+export { PageTemplatesProvider } from "@/context/PageTemplatesContext";
+import { usePageTemplates } from "@/context/PageTemplatesContext";
+
 /**
  * The template a page should render: a per-handle override when the merchant
  * created one, otherwise the type default.
@@ -182,10 +185,25 @@ export function useResolvedTemplate(
   handle?: string
 ): ResolvedTemplate {
   const settings = useThemeSettings();
+  const pageTemplates = usePageTemplates();
 
   return useMemo(() => {
-    const key = resolveTemplateKey(settings.templates, type, handle);
-    const template = settings.templates[key];
+    // If inside customizer preview, draft settings pushed over postMessage win
+    const inPreview =
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).has(PREVIEW_PARAM);
+
+    const hasDraftTemplates =
+      inPreview && settings.templates && Object.keys(settings.templates).length > 0;
+
+    const templatesToUse = hasDraftTemplates
+      ? settings.templates
+      : pageTemplates && Object.keys(pageTemplates).length > 0
+        ? { ...(settings.templates || {}), ...pageTemplates }
+        : settings.templates || {};
+
+    const key = resolveTemplateKey(templatesToUse, type, handle);
+    const template = templatesToUse[key];
     if (!template) return { key, isOverride: false, instances: [] };
 
     return {
@@ -193,9 +211,10 @@ export function useResolvedTemplate(
       // Any template with a URL rule is an override, so its sections render
       // unconditionally — see `shouldRenderInstance`.
       isOverride: Boolean(templateMatch(template)),
-      instances: template.order
-        .map((id) => template.instances[id])
-        .filter((instance): instance is SectionInstance => Boolean(instance)),
+      instances: (template.order || [])
+        .map((id: string) => template.instances?.[id])
+        .filter((instance: any): instance is SectionInstance => Boolean(instance)),
     };
-  }, [settings.templates, type, handle]);
+  }, [settings.templates, pageTemplates, type, handle]);
 }
+

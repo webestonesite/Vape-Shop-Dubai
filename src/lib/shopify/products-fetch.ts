@@ -218,10 +218,18 @@ function cleanProductTitle(title: string): string {
   return cleaned.trim();
 }
 
+let cachedProducts: { data: Product[]; expiresAt: number } | null = null;
+const CACHE_TTL_MS = 60 * 1000; // 60-second in-memory server cache
+
 export async function getAllProducts(): Promise<Product[]> {
+  const now = Date.now();
+  if (cachedProducts && cachedProducts.expiresAt > now) {
+    return cachedProducts.data;
+  }
+
   const rawProducts = await fetchShopifyProducts();
 
-  return rawProducts.map((node: any): Product => {
+  const mappedProducts = rawProducts.map((node: any): Product => {
     const firstVariant = node.variants?.edges?.[0]?.node;
     
     const priceVal = typeof firstVariant?.price === 'object' ? firstVariant?.price?.amount : firstVariant?.price;
@@ -279,7 +287,6 @@ export async function getAllProducts(): Promise<Product[]> {
       reviews: node.reviews?.value ? parseInt(node.reviews.value) : detReviews.reviews,
       image,
       hoverImage,
-      images: allImages,
       tag: node.badge?.value || (isSoldOut ? "Sold Out" : comparePrice > price ? "Sale" : undefined),
       tagColor: comparePrice > price ? "sale" : undefined,
       isPopular,
@@ -293,4 +300,7 @@ export async function getAllProducts(): Promise<Product[]> {
       tags: Array.isArray(node.tags) ? node.tags : [],
     };
   });
+
+  cachedProducts = { data: mappedProducts, expiresAt: now + CACHE_TTL_MS };
+  return mappedProducts;
 }

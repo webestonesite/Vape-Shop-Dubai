@@ -570,3 +570,5 @@ export function CustomerReviewsSection({
     </div>
   );
 }
+
+export default CustomerReviewsSection;

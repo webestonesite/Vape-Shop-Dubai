@@ -40,17 +40,21 @@ export const SmartImage: React.FC<SmartImageProps> = ({
   }
 
   const effectiveSizes =
-    sizes ||
-    (typeof width === "number" && width <= 80
-      ? "(max-width: 640px) 64px, 80px"
+    sizes !== undefined
+      ? sizes
+      : typeof width === "number" && width <= 100
+      ? undefined
       : typeof width === "number" && width <= 180
       ? "(max-width: 640px) 140px, 180px"
       : typeof width === "number" && width <= 360
       ? "(max-width: 640px) 240px, 360px"
-      : "(max-width: 640px) 360px, 640px");
+      : "(max-width: 640px) 360px, 640px";
 
   return (
-    <div className="relative overflow-hidden flex items-center justify-center w-full h-full">
+    <div
+      className="relative overflow-hidden flex items-center justify-center w-full h-full"
+      suppressHydrationWarning
+    >
       {!loaded && (
         <div className="absolute inset-0 z-0 flex items-center justify-center bg-muted/30 animate-pulse rounded-xl pointer-events-none" />
       )}
@@ -66,6 +70,7 @@ export const SmartImage: React.FC<SmartImageProps> = ({
         priority={priority}
         fetchPriority={fetchPriority}
         draggable={draggable}
+        suppressHydrationWarning
         ref={(node) => {
           if (node?.complete && !loaded) {
             setLoaded(true);

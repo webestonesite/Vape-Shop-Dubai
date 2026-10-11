@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
@@ -10,12 +11,8 @@ import { useCart } from "@/context/CartContext";
 import { Product, ProductCard } from "@/components/sections/ProductFeed";
 import { AuthorizedDealers } from "@/components/sections/AuthorizedDealers";
 import { WhatsAppContactSection } from "@/components/sections/WhatsAppContactSection";
-import { BrandSphere3D } from "@/components/sections/BrandSphere3D";
-import { FlavorsWheel } from "@/components/sections/FlavorsWheel";
-import { BottomCollectionGrid } from "@/components/sections/BottomCollectionGrid";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { WhyShopWithUs } from "@/components/sections/WhyShopWithUs";
-import { CustomerReviewsSection } from "@/components/sections/CustomerReviewsSection";
 import { JuulTechSpecsSection } from "@/components/sections/JuulTechSpecsSection";
 import { JuulSignatureFlavorsSection } from "@/components/sections/JuulSignatureFlavorsSection";
 import { JuulPackagingCompareSection } from "@/components/sections/JuulPackagingCompareSection";
@@ -26,6 +23,11 @@ import { MyleVerificationSection } from "@/components/sections/MyleVerificationS
 import { DisposableComparisonSections } from "@/components/sections/DisposableComparisonSections";
 import { DisposableBrandsShowcase } from "@/components/sections/DisposableBrandsShowcase";
 import { EJuiceBrandsShowcase } from "@/components/sections/EJuiceBrandsShowcase";
+
+import CustomerReviewsSection from "@/components/sections/CustomerReviewsSection";
+import BottomCollectionGrid from "@/components/sections/BottomCollectionGrid";
+import FlavorsWheel from "@/components/sections/FlavorsWheel";
+import BrandSphere3D from "@/components/sections/BrandSphere3D";
 import {
   instanceSettings,
   TemplateSections,
@@ -395,7 +397,7 @@ function CollectionPageContent({
 
   const { addToCart, setIsCartOpen } = useCart();
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
-  const [loading, setLoading] = useState<boolean>(!initialProducts || initialProducts.length === 0);
+  const [loading, setLoading] = useState<boolean>(initialProducts === undefined);
   const [error, setError] = useState("");
 
   // Filter States (Checkbox arrays for multi-select)
@@ -426,7 +428,7 @@ function CollectionPageContent({
   const activeCategory = handle || "all";
 
   useEffect(() => {
-    if (!initialProducts || initialProducts.length === 0) {
+    if (initialProducts === undefined) {
       async function loadProducts() {
         setLoading(true);
         setError("");
@@ -450,6 +452,24 @@ function CollectionPageContent({
     setSelectedBrands([]);
     setIsGuideExpanded(false);
   }, [handle, initialProducts]);
+
+  // Background hydration for /shop to load remaining catalogue without blocking initial page weight
+  useEffect(() => {
+    const isAll = handle === "all" || handle === "shop" || !handle;
+    if (isAll && products.length < 100) {
+      const timer = setTimeout(() => {
+        fetch("/api/products")
+          .then((r) => r.json())
+          .then((all) => {
+            if (Array.isArray(all) && all.length > products.length) {
+              setProducts(all);
+            }
+          })
+          .catch(() => {});
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [handle, products.length]);
 
   // Fetch Shopify collection metadata
   useEffect(() => {

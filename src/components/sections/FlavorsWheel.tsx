@@ -305,3 +305,5 @@ export function FlavorsWheel({
     </div>
   );
 }
+
+export default FlavorsWheel;

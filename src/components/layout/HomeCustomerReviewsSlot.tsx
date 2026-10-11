@@ -6,7 +6,7 @@ import { useIsIdle } from "@/hooks/use-is-idle";
 import { SECTION_CONTAINER } from "@/components/sections/SectionRenderer";
 
 const CustomerReviewsSection = dynamic(
-  () => import("@/components/sections/CustomerReviewsSection").then((m) => ({ default: m.CustomerReviewsSection })),
+  () => import("@/components/sections/CustomerReviewsSection"),
   { ssr: false }
 );
 

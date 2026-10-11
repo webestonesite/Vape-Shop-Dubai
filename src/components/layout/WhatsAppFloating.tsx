@@ -396,3 +396,5 @@ export const WhatsAppFloating: React.FC = () => {
     </div>
   );
 };
+
+export default WhatsAppFloating;

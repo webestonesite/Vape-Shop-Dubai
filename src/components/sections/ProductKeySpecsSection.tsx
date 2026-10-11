@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Cpu, ShieldCheck } from "lucide-react";
-import { getAccurateProductSpecs, isInvalidValue, cleanAndDeduplicateSpecs } from "@/lib/shopify/smart-specs";
+import { isInvalidValue } from "@/lib/shopify/smart-specs";
 
 export interface SpecRow {
   feature: string;
@@ -46,15 +46,14 @@ function autoRows(
   nicotine: string,
   battery: string
 ): SpecRow[] {
-  const specs = getAccurateProductSpecs({
-    name: productName,
-    category,
-    brand,
-    puffs,
-    nicotine,
-    battery,
-  });
-  return specs.map((s) => ({ feature: s.label, details: s.value }));
+  const rows: SpecRow[] = [];
+  if (brand && !isInvalidValue(brand)) rows.push({ feature: "Brand", details: brand });
+  if (category && !isInvalidValue(category)) rows.push({ feature: "Product Category", details: category });
+  if (puffs && !isInvalidValue(puffs)) rows.push({ feature: "Puff Count", details: puffs });
+  if (nicotine && !isInvalidValue(nicotine)) rows.push({ feature: "Nicotine Strength", details: nicotine });
+  if (battery && !isInvalidValue(battery)) rows.push({ feature: "Battery Capacity", details: battery });
+  rows.push({ feature: "Authenticity", details: "100% Genuine UAE Verified" });
+  return rows;
 }
 
 export function ProductKeySpecsSection({
@@ -92,11 +91,17 @@ export function ProductKeySpecsSection({
     rawRows = autoRows(productName, category, brand, puffs, nicotine, battery);
   }
 
-  const cleaned = cleanAndDeduplicateSpecs(rawRows);
-  const rows: SpecRow[] = cleaned.map((r) => ({
-    feature: r.feature || r.label,
-    details: r.details || r.value,
-  }));
+  const seen = new Set<string>();
+  const rows: SpecRow[] = [];
+  for (const r of rawRows) {
+    const feature = (r.feature || (r as any).label || "").trim();
+    const details = (r.details || (r as any).value || "").trim();
+    if (!feature || !details || isInvalidValue(details)) continue;
+    const key = feature.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    rows.push({ feature, details });
+  }
 
   if (rows.length === 0) {
     return null;
@@ -111,8 +116,11 @@ export function ProductKeySpecsSection({
   const badgeText = settings?.badgeText ?? "100% Authentic UAE Certified";
 
   return (
-    <section className={`w-full ${className}`}>
-      <div className="bg-card border border-border/60 rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden transition-all duration-300">
+    <section className={`w-full ${className}`} suppressHydrationWarning>
+      <div
+        className="bg-card border border-border/60 rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden transition-all duration-300"
+        suppressHydrationWarning
+      >
 
         {/* Top Accent Gradient Bar */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20" />

@@ -385,3 +385,5 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
     </section>
   );
 };
+
+export default HeroSection;

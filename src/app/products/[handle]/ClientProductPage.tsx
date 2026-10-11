@@ -58,7 +58,10 @@ import {
   getFAQSchema,
 } from "@/lib/seo-schemas";
 import { getCachedProduct, setCachedProduct } from "@/lib/product-cache";
-import { getAccurateProductSpecs, isInvalidValue, mergeSpecs, cleanAndDeduplicateSpecs, getDeterministicReviews } from "@/lib/shopify/smart-specs";
+import {
+  isInvalidValue,
+  getDeterministicReviews,
+} from "@/lib/shopify/smart-specs";
 
 /** One row of the buy box's specification card. */
 interface SpecCardRow {
@@ -948,41 +951,26 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
               {/* Two-Column Key Specifications Card */}
               {(() => {
-                const metaobjectSpecs = Array.isArray(product.specsTable) && product.specsTable.length > 0
+                const sourceSpecs = (Array.isArray(product.keySpecifications) && product.keySpecifications.length > 0)
+                  ? product.keySpecifications
+                  : (Array.isArray(product.specsTable) && product.specsTable.length > 0)
                   ? product.specsTable.map((s: any) => ({
                       label: s.label || s.feature || s.key || "",
                       value: s.value || s.details || "",
-                    })).filter((r: any) => r.label && r.value && !isInvalidValue(r.value))
-                  : null;
+                    }))
+                  : specCardRows.map((row) => ({ label: row.label, value: specValue(row) }));
 
-                const customSpecs =
-                  metaobjectSpecs && metaobjectSpecs.length > 0
-                    ? metaobjectSpecs
-                    : (Array.isArray(product.keySpecifications) && product.keySpecifications.length > 0
-                        ? product.keySpecifications.filter((r) => r.label && r.value && !isInvalidValue(r.value))
-                        : null);
-
-                const autoSpecs = getAccurateProductSpecs({
-                  name: product.name,
-                  category: product.category,
-                  brand: product.brand,
-                  tags: (product as any).tags,
-                  shortDescription: product.shortDescription,
-                  descriptionHtml: product.descriptionHtml,
-                  puffs: product.puffs,
-                  nicotine: product.nicotine,
-                  battery: product.battery,
-                });
-
-                const rawDisplayRows = (customSpecs && customSpecs.length > 0)
-                  ? mergeSpecs(customSpecs, autoSpecs)
-                  : (autoSpecs && autoSpecs.length > 0)
-                  ? autoSpecs
-                  : specCardRows
-                      .map((row) => ({ label: row.label, value: specValue(row) }))
-                      .filter((r) => r.label && r.value && !isInvalidValue(r.value));
-
-                const displayRows = cleanAndDeduplicateSpecs(rawDisplayRows);
+                const seen = new Set<string>();
+                const displayRows: Array<{ label: string; value: string }> = [];
+                for (const item of sourceSpecs) {
+                  const label = (item.label || (item as any).feature || "").trim();
+                  const value = (item.value || (item as any).details || "").trim();
+                  if (!label || !value || isInvalidValue(value)) continue;
+                  const key = label.toLowerCase();
+                  if (seen.has(key)) continue;
+                  seen.add(key);
+                  displayRows.push({ label, value });
+                }
 
                 if (!flag("showSpecCard") || displayRows.length === 0) return null;
 
@@ -1003,7 +991,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                       </div>
                     )}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
-                      {displayRows.map((row, idx) => (
+                      {displayRows.map((row: any, idx: number) => (
                         <div
                           key={idx}
                           className="flex items-center justify-between gap-3 border-b border-border/40 py-2 min-w-0"

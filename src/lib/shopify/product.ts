@@ -466,7 +466,14 @@ export function parseKeySpecifications(raw: string | null | undefined): Array<{ 
   return rows.length > 0 ? rows : null;
 }
 
+const productMemoryCache = new Map<string, { data: any; expiresAt: number }>();
+const PRODUCT_CACHE_TTL_MS = 60 * 1000; // 60s memory cache
+
 export async function getProductByHandle(handle: string) {
+  const cached = productMemoryCache.get(handle);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.data;
+  }
 
   try {
     let node: any = null;
@@ -485,7 +492,7 @@ export async function getProductByHandle(handle: string) {
             query: storefrontQuery,
             variables: { handle },
           }),
-          next: { revalidate: 60 },
+          next: { revalidate: 3600 },
         });
 
         if (response.ok) {
@@ -510,7 +517,7 @@ export async function getProductByHandle(handle: string) {
           query: adminQuery,
           variables: { handle },
         }),
-        next: { revalidate: 60 },
+        next: { revalidate: 3600 },
       });
 
       if (response.ok) {
@@ -1026,7 +1033,7 @@ export async function getProductByHandle(handle: string) {
     const isPopular = node.tags?.includes("Popular") || node.tags?.includes("popular");
     const detReviews = getDeterministicReviews(node.handle || node.id, isPopular);
 
-    return {
+    const productDetail = {
       id: node.id,
       name: node.title,
       seoTitle,
@@ -1110,6 +1117,13 @@ export async function getProductByHandle(handle: string) {
         return CATEGORY_COLLECTION_MAP[category] || { handle: "shop", title: "Products" };
       })(),
     };
+
+    productMemoryCache.set(handle, {
+      data: productDetail,
+      expiresAt: Date.now() + PRODUCT_CACHE_TTL_MS,
+    });
+
+    return productDetail;
   } catch (error: any) {
     console.error("Error in GET product by handle:", error);
     return null;

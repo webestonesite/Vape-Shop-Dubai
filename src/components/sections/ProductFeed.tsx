@@ -558,6 +558,19 @@ export const ProductFeed: React.FC<
     loadProducts();
   }, [initialProducts]);
 
+  // Lazy-load full catalogue in background when user interacts with search
+  useEffect(() => {
+    if (searchQuery && products.length < 100) {
+      fetch("/api/products")
+        .then((r) => r.json())
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) setProducts(data);
+        })
+        .catch(() => {});
+    }
+  }, [searchQuery, products.length]);
+
+
   const activeProductsList = products;
 
   const filteredProducts = useMemo(() => {
@@ -817,3 +830,5 @@ export const ProductFeed: React.FC<
     </div>
   );
 };
+
+export default ProductFeed;

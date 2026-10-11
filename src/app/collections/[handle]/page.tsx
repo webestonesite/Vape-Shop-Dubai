@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { fetchCollection } from "@/lib/shopify/collection";
 import { getAllProducts } from "@/lib/shopify/products-fetch";
+import { getThemeSettings } from "@/lib/theme/get-settings";
+import { resolveTemplateKey } from "@/lib/theme/types";
+import { PageTemplatesProvider } from "@/context/PageTemplatesContext";
 import ClientCollectionPage from "./ClientCollectionPage";
 import { getItemListSchema, getBreadcrumbSchema } from "@/lib/seo-schemas";
 import {
@@ -65,15 +68,56 @@ export default async function CollectionPage({
   const isPreview = sParams?.preview === "true" || sParams?.__vs_preview === "true";
   const subFilter = typeof sParams?.sub === "string" ? sParams.sub : undefined;
 
-  const [collectionMeta, allProducts] = await Promise.all([
+  const [collectionMeta, allProducts, themeSettings] = await Promise.all([
     fetchCollection(handle, { preview: isPreview }).catch(() => null),
     getAllProducts().catch(() => []),
+    getThemeSettings().catch(() => null),
   ]);
 
   const hLower = (handle || "").toLowerCase().trim();
 
   // Filter matching products for this collection on the server
   const matchingProducts = getMatchingCollectionProducts(allProducts, handle);
+
+  // For /shop (handle "all"), send first 48 items initially to keep initial payload < 500KB; ClientCollectionPage hydrates the rest in background
+  const isShopAll = !hLower || hLower === "all" || hLower === "shop";
+  const initialSlice = isShopAll ? matchingProducts.slice(0, 48) : matchingProducts;
+
+  // Map to lean product structure without extra arrays to slash flight payload
+  const leanMatchingProducts = initialSlice.map((p) => ({
+    id: p.id,
+    name: p.name,
+    handle: p.handle,
+    variantId: p.variantId,
+    category: p.category,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    rating: p.rating,
+    reviews: p.reviews,
+    image: p.image,
+    hoverImage: p.hoverImage,
+    tag: p.tag,
+    tagColor: p.tagColor,
+    isPopular: p.isPopular,
+    isSoldOut: p.isSoldOut,
+    puffs: p.puffs,
+    nicotine: p.nicotine,
+    battery: p.battery,
+    section: p.section,
+    brand: p.brand,
+    collections: p.collections,
+    tags: p.tags,
+  }));
+
+  // Resolve ONLY the active collection template to save ~170KB in RSC flight payload
+  const scopedTemplates: Record<string, any> = {};
+  if (themeSettings?.templates) {
+    const templateKey = resolveTemplateKey(themeSettings.templates, "collection", handle);
+    const activeTemplate = themeSettings.templates[templateKey] || themeSettings.templates["collection"];
+    if (activeTemplate) {
+      scopedTemplates[templateKey] = activeTemplate;
+    }
+  }
 
   const collectionTitle =
     (collectionMeta as any)?.customHeading ||
@@ -84,12 +128,13 @@ export default async function CollectionPage({
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
 
-  // Generate complete ItemList schema for 100% crawler indexation (only if products exist to prevent empty schema errors)
+  // Generate ItemList schema (capped at 20 items per Google Rich Results guidelines)
+  const schemaProducts = matchingProducts.slice(0, 20);
   const itemListSchema =
-    matchingProducts.length > 0
+    schemaProducts.length > 0
       ? getItemListSchema(
           collectionTitle,
-          matchingProducts.map((p) => ({
+          schemaProducts.map((p) => ({
             name: p.name,
             handle: p.handle,
             price: p.price,
@@ -140,15 +185,17 @@ export default async function CollectionPage({
         </section>
       )}
 
-      {/* Client Interactive Section with Suspense Boundary */}
-      <Suspense fallback={null}>
-        <ClientCollectionPage
-          handle={handle}
-          initialMeta={collectionMeta}
-          initialProducts={allProducts}
-          initialSubFilter={subFilter}
-        />
-      </Suspense>
+      {/* Client Interactive Section with Suspense Boundary and Scoped Templates */}
+      <PageTemplatesProvider templates={scopedTemplates}>
+        <Suspense fallback={null}>
+          <ClientCollectionPage
+            handle={handle}
+            initialMeta={collectionMeta}
+            initialProducts={leanMatchingProducts}
+            initialSubFilter={subFilter}
+          />
+        </Suspense>
+      </PageTemplatesProvider>
     </>
   );
 }

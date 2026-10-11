@@ -27,25 +27,59 @@ export default async function Home() {
     .filter(Boolean);
   const isOverride = Boolean(templateMatch(template));
 
-  const leanInitialProducts = initialProducts.map((p) => ({
-    id: p.id,
-    name: p.name,
-    handle: p.handle,
-    variantId: p.variantId,
-    category: p.category,
-    price: p.price,
-    originalPrice: p.originalPrice,
-    rating: p.rating,
-    reviews: p.reviews,
-    image: p.image,
-    hoverImage: p.hoverImage,
-    tag: p.tag,
-    tagColor: p.tagColor,
-    isPopular: p.isPopular,
-    isSoldOut: p.isSoldOut,
-    collections: p.collections,
-    tags: p.tags,
-  }));
+  // On home page, pass featured products needed for the initial feed carousels and category tabs (saves ~130KB flight bloat)
+  const feedInstance = instances.find((i) => i.type === "productFeed");
+  const feedRows = (feedInstance?.settings?.rows as Array<{ collectionHandle?: string }> | undefined) ?? [];
+  const rowHandles = new Set(
+    feedRows.flatMap((r) =>
+      (r.collectionHandle || "")
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean)
+    )
+  );
+
+  const featuredProductIds = new Set<string>();
+  // 1. Matches for homepage rows
+  for (const p of initialProducts) {
+    const ph = p.handle.toLowerCase();
+    const isRowMatch = Array.from(rowHandles).some(
+      (h) => ph.includes(h) || (p.collections || []).some((c) => c.toLowerCase() === h)
+    );
+    if (isRowMatch) featuredProductIds.add(p.id);
+  }
+
+  // 2. Top products for each category tab
+  const categoryCounts: Record<string, number> = {};
+  for (const p of initialProducts) {
+    const cat = p.category || "other";
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    if (categoryCounts[cat] <= 4) {
+      featuredProductIds.add(p.id);
+    }
+  }
+
+  const leanInitialProducts = initialProducts
+    .filter((p) => featuredProductIds.has(p.id))
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      handle: p.handle,
+      variantId: p.variantId,
+      category: p.category,
+      price: p.price,
+      originalPrice: p.originalPrice,
+      rating: p.rating,
+      reviews: p.reviews,
+      image: p.image,
+      hoverImage: p.hoverImage,
+      tag: p.tag,
+      tagColor: p.tagColor,
+      isPopular: p.isPopular,
+      isSoldOut: p.isSoldOut,
+      collections: p.collections,
+      tags: p.tags,
+    }));
 
   const questions = instances
     .filter((i) => i.type === "faq" && i.enabled)

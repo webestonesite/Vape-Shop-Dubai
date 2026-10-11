@@ -16,14 +16,11 @@ import { useIsIdle } from "@/hooks/use-is-idle";
 import type { FaqItem } from "@/components/sections/FAQSection";
 
 const ProductFeed = dynamic(
-  () => import("@/components/sections/ProductFeed").then((m) => ({ default: m.ProductFeed })),
+  () => import("@/components/sections/ProductFeed"),
   { ssr: false }
 );
 const CustomerReviewsSection = dynamic(
-  () =>
-    import("@/components/sections/CustomerReviewsSection").then((m) => ({
-      default: m.CustomerReviewsSection,
-    })),
+  () => import("@/components/sections/CustomerReviewsSection"),
   { ssr: false }
 );
 

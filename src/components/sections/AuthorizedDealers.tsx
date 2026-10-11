@@ -2,10 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter, useParams } from "next/navigation";
-import { FlavorsWheel } from "./FlavorsWheel";
 import { useCollectionImages, getHandleFromUrl } from "@/hooks/useCollectionImages";
 import { SmartImage } from "@/components/ui/smart-image";
+
+const FlavorsWheel = dynamic(
+  () => import("./FlavorsWheel"),
+  { ssr: false }
+);
 
 export interface BrandItem {
   name: string;
@@ -141,7 +146,6 @@ export const AuthorizedDealers: React.FC<AuthorizedDealersProps> = ({
                     alt={brand.name}
                     width={64}
                     height={64}
-                    sizes="(max-width: 640px) 40px, 64px"
                     className="w-full h-full object-contain filter drop-shadow-xs transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>

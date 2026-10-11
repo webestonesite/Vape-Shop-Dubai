@@ -36,7 +36,7 @@ export interface WhyChooseProductSettings {
 
 const FALLBACK_HEADING = "Why Choose the {product}?";
 
-function parseAstToHtml(nodes: any[]): string {
+function parseAstToHtml(nodes: any[], inline = false): string {
   if (!Array.isArray(nodes)) return "";
   return nodes
     .map((node) => {
@@ -47,25 +47,28 @@ function parseAstToHtml(nodes: any[]): string {
         return val;
       }
       if (node.type === "link") {
-        const inner = parseAstToHtml(node.children || []);
+        const inner = parseAstToHtml(node.children || [], inline);
         return `<a href="${node.url || "#"}" class="text-primary underline font-bold hover:opacity-80">${inner}</a>`;
       }
       if (node.type === "paragraph") {
-        return `<p class="mb-3 last:mb-0 leading-relaxed text-justify [text-align-last:left]">${parseAstToHtml(node.children || [])}</p>`;
+        if (inline) {
+          return `<span class="inline leading-relaxed">${parseAstToHtml(node.children || [], inline)}</span>`;
+        }
+        return `<p class="mb-3 last:mb-0 leading-relaxed text-justify [text-align-last:left]">${parseAstToHtml(node.children || [], inline)}</p>`;
       }
       if (node.type === "list") {
         const tag = node.listType === "ordered" ? "ol" : "ul";
-        return `<${tag}>${parseAstToHtml(node.children || [])}</${tag}>`;
+        return `<${tag}>${parseAstToHtml(node.children || [], inline)}</${tag}>`;
       }
       if (node.type === "list-item") {
-        return `<li>${parseAstToHtml(node.children || [])}</li>`;
+        return `<li>${parseAstToHtml(node.children || [], inline)}</li>`;
       }
-      return parseAstToHtml(node.children || []);
+      return parseAstToHtml(node.children || [], inline);
     })
     .join("");
 }
 
-function formatText(text: string): string {
+function formatText(text: string, inline = false): string {
   if (!text) return "";
 
   // 1. If text is a Shopify Rich Text AST JSON string, parse AST to HTML
@@ -73,7 +76,7 @@ function formatText(text: string): string {
     try {
       const ast = JSON.parse(text);
       if (ast.type === "root" && Array.isArray(ast.children)) {
-        return parseAstToHtml(ast.children);
+        return parseAstToHtml(ast.children, inline);
       }
     } catch (e) {
       // Fallback to text
@@ -137,8 +140,11 @@ export function WhyChooseProductSection({
       : "";
 
   return (
-    <section className={`w-full ${className}`}>
-      <div className="bg-card border border-border/60 rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden transition-all duration-300">
+    <section className={`w-full ${className}`} suppressHydrationWarning>
+      <div
+        className="bg-card border border-border/60 rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-sm relative overflow-hidden transition-all duration-300"
+        suppressHydrationWarning
+      >
 
         {/* Top subtle brand accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20" />
@@ -170,13 +176,13 @@ export function WhyChooseProductSection({
                 <div className="w-5 h-5 rounded-full bg-primary/10 group-hover:bg-primary text-primary group-hover:text-white border border-primary/20 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 transition-colors duration-200 shadow-2xs">
                   <Check className="w-3 h-3 stroke-[3]" />
                 </div>
-                <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed">
+                <div className="text-xs sm:text-sm text-foreground/90 leading-relaxed">
                   <strong className="font-extrabold text-foreground">{item.title}: </strong>
-                  <span
-                    className="text-muted-foreground font-medium [&_a]:text-primary [&_a]:underline [&_a]:font-bold hover:[&_a]:opacity-80"
-                    dangerouslySetInnerHTML={{ __html: formatText(fill(item.description)) }}
+                  <div
+                    className="inline text-muted-foreground font-medium [&_a]:text-primary [&_a]:underline [&_a]:font-bold hover:[&_a]:opacity-80"
+                    dangerouslySetInnerHTML={{ __html: formatText(fill(item.description), true) }}
                   />
-                </p>
+                </div>
               </div>
             ))}
           </div>

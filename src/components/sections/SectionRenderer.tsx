@@ -26,14 +26,8 @@ import { WhatsAppContactSection, type WhatsAppSettings } from "./WhatsAppContact
 import { WhyShopWithUs, type WhyShopSettings } from "./WhyShopWithUs";
 import { BlogSection, type BlogSettings } from "./BlogSection";
 
-// ─── Heavy interactive optional sections ────────────────────────────
-const BrandSphere3D = dynamic(
-  () => import("./BrandSphere3D").then((m) => ({ default: m.BrandSphere3D }))
-);
-
-const FlavorsWheel = dynamic(
-  () => import("./FlavorsWheel").then((m) => ({ default: m.FlavorsWheel }))
-);
+const BrandSphere3D = dynamic(() => import("./BrandSphere3D"));
+const FlavorsWheel = dynamic(() => import("./FlavorsWheel"));
 
 /**
  * Sections the page renders itself, keyed by section type.
