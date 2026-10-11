@@ -136,7 +136,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
   const [products, setProducts] = useState<any[]>([]);
   const [hasFetchedProducts, setHasFetchedProducts] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchRef = useRef<HTMLFormElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -163,6 +163,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
       }
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowSuggestions(false);
+        setIsSearchOpen(false);
       }
       if (mobileSearchRef.current && !mobileSearchRef.current.contains(e.target as Node)) {
         setShowSuggestions(false);
@@ -344,8 +345,8 @@ const NavbarContent: React.FC<NavbarProps> = ({
           suppressHydrationWarning
           className={`hidden sm:block bg-primary text-white transition-all duration-300 overflow-hidden ${isScrolled ? "h-0 opacity-0" : "h-8 opacity-100"}`}
         >
-          <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-4 h-full flex items-center justify-center">
-            <p className="text-[10px] sm:text-xs font-semibold tracking-wider text-center">
+          <div suppressHydrationWarning className="max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-full flex items-center justify-center">
+            <p className="text-[10px] sm:text-xs font-semibold tracking-wider text-center truncate">
               {header.announcementText}
             </p>
           </div>
@@ -353,9 +354,9 @@ const NavbarContent: React.FC<NavbarProps> = ({
       )}
 
       {/* ── Main Navbar ───────────────────────────────── */}
-      <div suppressHydrationWarning className={`glass-strong bg-white/95 dark:bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300 ${isScrolled ? "py-2.5 shadow-md" : "py-3"}`}>
-        <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div suppressHydrationWarning className="flex items-center justify-between gap-4">
+      <div suppressHydrationWarning className={`glass-strong bg-white/95 dark:bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300 w-full ${isScrolled ? "py-2 shadow-md" : "py-2.5 sm:py-3"}`}>
+        <div suppressHydrationWarning className="max-w-[1600px] 2xl:max-w-[1720px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 relative w-full">
+          <div suppressHydrationWarning className="flex items-center justify-between gap-2 lg:gap-3 xl:gap-4 w-full">
 
             {/* Logo */}
             <div
@@ -374,7 +375,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                 <img
                   src={header.logoImage}
                   alt={header.logoText || "Vape Shop Dubai"}
-                  className="h-8 w-auto sm:h-10 object-contain"
+                  className="h-7 sm:h-8 xl:h-9 2xl:h-10 w-auto object-contain flex-shrink-0"
                 />
               ) : (
                 <Image
@@ -383,13 +384,13 @@ const NavbarContent: React.FC<NavbarProps> = ({
                   width={219}
                   height={40}
                   priority
-                  className="h-8 w-auto sm:h-10"
+                  className="h-7 sm:h-8 xl:h-9 2xl:h-10 w-auto object-contain flex-shrink-0"
                 />
               )}
             </div>
 
             {/* Desktop Nav Links */}
-            <nav className="hidden lg:flex items-center gap-1 xl:gap-2" ref={dropdownRef}>
+            <nav className="hidden lg:flex flex-1 items-center justify-start 2xl:justify-center gap-0.5 xl:gap-1 2xl:gap-1.5 min-w-0 ml-2 xl:ml-4 2xl:ml-6 mr-1 xl:mr-2" ref={dropdownRef}>
               {navLinks.map((link) => {
                 const mainHref = getNavLinkHref(link.id);
                 const isBrand = link.id === "brand" || link.label.toUpperCase() === "BRAND";
@@ -404,7 +405,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                   >
                     <div
                       suppressHydrationWarning
-                      className={`flex items-center rounded-xl text-xs xl:text-[13px] font-extrabold tracking-wider whitespace-nowrap transition-all duration-200 ${
+                      className={`flex items-center rounded-xl text-[10.5px] xl:text-[11.5px] 2xl:text-xs font-bold xl:font-extrabold tracking-tight whitespace-nowrap transition-all duration-200 ${
                         getActiveState(link.id) || openDropdown === link.id
                           ? "text-primary bg-primary/10 font-black shadow-xs"
                           : "text-foreground/85 hover:text-primary hover:bg-muted/70"
@@ -422,7 +423,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           }
                           setOpenDropdown(null);
                         }}
-                        className="px-2.5 xl:px-3 py-2 text-left hover:text-primary transition-colors cursor-pointer"
+                        className={`${link.sub ? "pl-1.5 lg:pl-2 xl:pl-2.5 2xl:px-3 pr-0.5 xl:pr-1" : "px-1.5 lg:px-2 xl:px-2.5 2xl:px-3"} py-1.5 xl:py-2 text-left hover:text-primary transition-colors cursor-pointer`}
                       >
                         {link.label}
                       </Link>
@@ -432,12 +433,19 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setOpenDropdown(openDropdown === link.id ? null : link.id);
+                            if (openDropdown === link.id) {
+                              if (dropdownTimerRef.current) clearTimeout(dropdownTimerRef.current);
+                              setOpenDropdown(null);
+                              isInsideDropdownRef.current = false;
+                            } else {
+                              if (dropdownTimerRef.current) clearTimeout(dropdownTimerRef.current);
+                              setOpenDropdown(link.id);
+                            }
                           }}
-                          className="pr-2.5 xl:pr-3 py-2 pl-0.5 hover:text-primary transition-all cursor-pointer flex items-center justify-center"
+                          className="pr-1.5 lg:pr-2 xl:pr-2.5 2xl:pr-3 py-1.5 xl:py-2 pl-0.5 hover:text-primary transition-all cursor-pointer flex items-center justify-center"
                           aria-label={`Toggle ${link.label} menu`}
                         >
-                          <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${openDropdown === link.id ? "rotate-180 text-primary" : ""}`} />
+                          <ChevronDown className={`h-2.5 w-2.5 xl:h-3 xl:w-3 transition-transform duration-200 ${openDropdown === link.id ? "rotate-180 text-primary" : ""}`} />
                         </button>
                       )}
                     </div>
@@ -555,52 +563,69 @@ const NavbarContent: React.FC<NavbarProps> = ({
             </nav>
 
             {/* Right Actions */}
-            <div suppressHydrationWarning className="flex items-center gap-2">
-              {/* Search (desktop expandable) */}
-              <div suppressHydrationWarning className="hidden md:flex items-center gap-2 relative">
-                {isSearchOpen ? (
-                  <form 
-                    ref={searchRef}
-                    onSubmit={handleSearchSubmit} 
-                    className="flex items-center gap-2 relative"
-                  >
-                    <input
-                      autoFocus
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => {
-                        handleSearchChange(e.target.value);
-                        setShowSuggestions(true);
-                      }}
-                      onFocus={() => {
-                        fetchProductsForSuggestions();
-                        setShowSuggestions(true);
-                      }}
-                      placeholder="Search products..."
-                      className="w-48 bg-muted border border-border rounded-full px-4 py-1.5 text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-all"
-                    />
-                    <button type="submit" className="p-1.5 text-foreground/75 hover:text-primary cursor-pointer">
-                      <Search className="h-4 w-4" />
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => { 
-                        setIsSearchOpen(false); 
-                        setSearchQuery(""); 
-                        setShowSuggestions(false);
-                      }} 
-                      className="text-muted-foreground hover:text-foreground cursor-pointer"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
+            <div suppressHydrationWarning className="ml-auto flex items-center gap-1.5 xl:gap-2.5 flex-shrink-0 pl-3 xl:pl-4 border-l border-border/70">
+              {/* Search (Desktop Popover Modal) */}
+              <div suppressHydrationWarning className="hidden md:flex items-center relative" ref={searchRef}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextState = !isSearchOpen;
+                    setIsSearchOpen(nextState);
+                    if (nextState) {
+                      fetchProductsForSuggestions();
+                      setShowSuggestions(true);
+                    }
+                  }}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border transition-all cursor-pointer ${
+                    isSearchOpen
+                      ? "border-primary bg-primary/10 text-primary shadow-xs"
+                      : "border-border/60 bg-muted/30 hover:bg-muted/70 hover:border-primary/40 text-foreground/75 hover:text-primary"
+                  }`}
+                  aria-label="Search"
+                  title="Search products"
+                >
+                  {isSearchOpen ? <X className="h-4 w-4" /> : <Search className="h-4 w-4 text-primary" />}
+                  <span className="hidden xl:inline text-xs font-semibold text-muted-foreground pr-0.5">Search</span>
+                </button>
 
-                    {/* Suggestions Dropdown */}
-                    {showSuggestions && searchQuery.trim().length >= 2 && (
-                      <div className="absolute top-full right-0 mt-2 w-80 sm:w-96 bg-card/95 backdrop-blur-md border border-border/80 rounded-2xl shadow-xl py-2 z-50 overflow-hidden">
-                        <div className="px-4 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/30">
-                          Search Suggestions
-                        </div>
-                        <div className="max-h-64 overflow-y-auto divide-y divide-border/20">
+                {/* Popover Dropdown */}
+                {isSearchOpen && (
+                  <div className="absolute top-full right-0 mt-2.5 w-80 sm:w-96 max-w-[calc(100vw-32px)] bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-2xl shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                    <form onSubmit={handleSearchSubmit} className="space-y-2">
+                      <div className="flex items-center gap-2 bg-muted/60 border border-border/70 rounded-xl px-3 py-2 focus-within:border-primary transition-colors">
+                        <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <input
+                          autoFocus
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => {
+                            handleSearchChange(e.target.value);
+                            setShowSuggestions(true);
+                          }}
+                          onFocus={() => {
+                            fetchProductsForSuggestions();
+                            setShowSuggestions(true);
+                          }}
+                          placeholder="Search products, brands..."
+                          className="w-full bg-transparent text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery("");
+                              setShowSuggestions(false);
+                            }}
+                            className="text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Suggestions list */}
+                      {showSuggestions && searchQuery.trim().length >= 2 && (
+                        <div className="max-h-64 overflow-y-auto divide-y divide-border/20 rounded-xl border border-border/30 bg-background/50">
                           {suggestions.length > 0 ? (
                             suggestions.map((product) => (
                               <button
@@ -609,8 +634,9 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                 onClick={() => {
                                   router.push(`/products/${product.handle}`);
                                   setShowSuggestions(false);
+                                  setIsSearchOpen(false);
                                 }}
-                                className="w-full flex items-center gap-3 px-4 py-2 hover:bg-muted/60 transition-colors cursor-pointer text-left"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-muted/60 transition-colors cursor-pointer text-left"
                               >
                                 <img
                                   src={product.image}
@@ -632,43 +658,36 @@ const NavbarContent: React.FC<NavbarProps> = ({
                               </button>
                             ))
                           ) : (
-                            <div className="px-4 py-3 text-xs text-muted-foreground text-center">
+                            <div className="px-3 py-3 text-xs text-muted-foreground text-center">
                               No products found for "{searchQuery}"
                             </div>
                           )}
                         </div>
+                      )}
+
+                      {searchQuery.trim().length >= 2 && (
                         <button
                           type="submit"
-                          className="w-full text-center py-2.5 border-t border-border/40 text-xs font-bold text-primary hover:bg-primary/5 transition-all block cursor-pointer"
+                          className="w-full text-center py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-all block cursor-pointer border border-primary/20"
                         >
                           View all results for "{searchQuery}"
                         </button>
-                      </div>
-                    )}
-                  </form>
-                ) : (
-                  <button
-                    onClick={() => setIsSearchOpen(true)}
-                    className="p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60"
-                    aria-label="Search"
-                  >
-                    <Search className="h-4.5 w-4.5" />
-                  </button>
+                      )}
+                    </form>
+                  </div>
                 )}
               </div>
-
-
 
               {/* Wishlist */}
               <Link
                 href={user ? "/account?tab=wishlist" : "/account/login?redirect=/account?tab=wishlist"}
-                className="relative p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60 flex items-center justify-center"
+                className="relative p-1.5 xl:p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60 flex items-center justify-center"
                 aria-label="Wishlist"
                 title={`Wishlist (${wishlistCount})`}
               >
-                <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "text-rose-500 fill-rose-500/20" : ""}`} />
+                <Heart className={`h-4.5 w-4.5 xl:h-5 xl:w-5 ${wishlistCount > 0 ? "text-rose-500 fill-rose-500/20" : ""}`} />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[9px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-background leading-none">
+                  <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[9px] font-bold w-4 h-4 xl:w-4.5 xl:h-4.5 rounded-full flex items-center justify-center border-2 border-background leading-none">
                     {wishlistCount}
                   </span>
                 )}
@@ -677,29 +696,29 @@ const NavbarContent: React.FC<NavbarProps> = ({
               {/* Account / User */}
               <Link
                 href={user ? "/account" : "/account/login"}
-                className="relative p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60 flex items-center justify-center"
+                className="relative p-1.5 xl:p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60 flex items-center justify-center"
                 aria-label={user ? "My Account" : "Login"}
                 title={user ? (profile?.name || user.email || "My Account") : "Login / Register"}
               >
                 {user ? (
-                  <div className="w-5 h-5 rounded-full bg-primary/20 text-primary border border-primary/40 flex items-center justify-center text-[11px] font-black leading-none">
+                  <div className="w-4.5 h-4.5 xl:w-5 xl:h-5 rounded-full bg-primary/20 text-primary border border-primary/40 flex items-center justify-center text-[10px] xl:text-[11px] font-black leading-none">
                     {(profile?.name || user.displayName || user.email || "U").charAt(0).toUpperCase()}
                   </div>
                 ) : (
-                  <User className="h-5 w-5" />
+                  <User className="h-4.5 w-4.5 xl:h-5 xl:w-5" />
                 )}
               </Link>
 
               {/* Cart */}
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60"
+                className="relative p-1.5 xl:p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-muted/60"
                 aria-label="Cart"
                 id="cart-btn"
               >
-                <ShoppingBag className="h-5 w-5" />
+                <ShoppingBag className="h-4.5 w-4.5 xl:h-5 xl:w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[9px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-background leading-none">
+                  <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[9px] font-bold w-4 h-4 xl:w-4.5 xl:h-4.5 rounded-full flex items-center justify-center border-2 border-background leading-none">
                     {cartCount}
                   </span>
                 )}
@@ -708,7 +727,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer"
+                className="lg:hidden p-1.5 sm:p-2 text-foreground/70 hover:text-primary transition-colors cursor-pointer"
                 aria-label="Menu"
               >
                 {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -947,10 +966,10 @@ export const Navbar: React.FC<NavbarProps> = (props) => {
   return (
     <Suspense fallback={
       <header suppressHydrationWarning className="fixed top-0 left-0 right-0 z-50 glass-strong border-b border-border py-3">
-        <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div className="h-9 sm:h-10 w-24 bg-muted animate-pulse rounded" />
+        <div suppressHydrationWarning className="max-w-[1600px] 2xl:max-w-[1720px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 flex items-center justify-between">
+          <div className="h-7 sm:h-8 w-24 bg-muted animate-pulse rounded" />
           <div className="h-5 w-40 bg-muted animate-pulse rounded hidden md:block" />
-          <div className="h-9 w-9 bg-muted animate-pulse rounded-full" />
+          <div className="h-8 w-8 bg-muted animate-pulse rounded-full" />
         </div>
       </header>
     }>
