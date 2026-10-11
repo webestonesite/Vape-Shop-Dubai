@@ -13,6 +13,10 @@ import {
   ShieldAlert,
   User,
   Heart,
+  Flame,
+  Zap,
+  Award,
+  ArrowRight,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -26,6 +30,34 @@ interface NavbarProps {
   onCategorySelect?: (category: string) => void;
   activeCategory?: string;
 }
+
+interface BrandCategory {
+  name: string;
+  desc: string;
+  icon: React.ComponentType<{ className?: string }>;
+  keywords: string[];
+}
+
+const BRAND_CATEGORIES: BrandCategory[] = [
+  {
+    name: "Disposable Brands",
+    desc: "Top high-puff authentic vapes",
+    icon: Flame,
+    keywords: ["fakher", "elf", "mary", "vozol", "tugboat", "hqd", "geek bar", "fummo", "disposable"],
+  },
+  {
+    name: "Pod Systems & Kits",
+    desc: "Refillable devices & pods",
+    icon: Zap,
+    keywords: ["uwell", "oxva", "vaporesso", "smok", "voopoo", "geek vape", "relx", "pod"],
+  },
+  {
+    name: "E-Liquids & Nic Salts",
+    desc: "Premium salt nic & freebase",
+    icon: Award,
+    keywords: ["salt", "stig", "bars", "maskking", "yuoto", "nerd", "silvaper", "juice"],
+  },
+];
 
 const NavbarContent: React.FC<NavbarProps> = ({
   onSearchChange,
@@ -48,8 +80,13 @@ const NavbarContent: React.FC<NavbarProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const dropdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isInsideDropdownRef = useRef(false);
 
   const handleMouseEnterNav = (id: string) => {
+    // If cursor is actively browsing inside an open dropdown, don't hijack with sibling links
+    if (isInsideDropdownRef.current && openDropdown && openDropdown !== id) {
+      return;
+    }
     if (dropdownTimerRef.current) {
       clearTimeout(dropdownTimerRef.current);
       dropdownTimerRef.current = null;
@@ -63,7 +100,36 @@ const NavbarContent: React.FC<NavbarProps> = ({
     }
     dropdownTimerRef.current = setTimeout(() => {
       setOpenDropdown(null);
-    }, 200);
+      isInsideDropdownRef.current = false;
+    }, 400);
+  };
+
+  const categorizeBrandList = (subItems: string[]) => {
+    const col1: string[] = [];
+    const col2: string[] = [];
+    const col3: string[] = [];
+
+    subItems.forEach((brandName) => {
+      const lower = brandName.toLowerCase();
+      if (BRAND_CATEGORIES[0].keywords.some((k) => lower.includes(k))) {
+        col1.push(brandName);
+      } else if (BRAND_CATEGORIES[1].keywords.some((k) => lower.includes(k))) {
+        col2.push(brandName);
+      } else if (BRAND_CATEGORIES[2].keywords.some((k) => lower.includes(k))) {
+        col3.push(brandName);
+      } else {
+        const minLen = Math.min(col1.length, col2.length, col3.length);
+        if (col1.length === minLen) col1.push(brandName);
+        else if (col2.length === minLen) col2.push(brandName);
+        else col3.push(brandName);
+      }
+    });
+
+    return [
+      { ...BRAND_CATEGORIES[0], items: col1 },
+      { ...BRAND_CATEGORIES[1], items: col2 },
+      { ...BRAND_CATEGORIES[2], items: col3 },
+    ];
   };
 
   // Suggestions states & refs
@@ -288,7 +354,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
 
       {/* ── Main Navbar ───────────────────────────────── */}
       <div suppressHydrationWarning className={`glass-strong bg-white/95 dark:bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300 ${isScrolled ? "py-2.5 shadow-md" : "py-3"}`}>
-        <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div suppressHydrationWarning className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div suppressHydrationWarning className="flex items-center justify-between gap-4">
 
             {/* Logo */}
@@ -326,12 +392,13 @@ const NavbarContent: React.FC<NavbarProps> = ({
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2" ref={dropdownRef}>
               {navLinks.map((link) => {
                 const mainHref = getNavLinkHref(link.id);
+                const isBrand = link.id === "brand" || link.label.toUpperCase() === "BRAND";
 
                 return (
                   <div 
                     key={link.id} 
                     suppressHydrationWarning
-                    className="relative group"
+                    className={`${isBrand ? "static" : "relative"} group`}
                     onMouseEnter={() => link.sub && handleMouseEnterNav(link.id)}
                     onMouseLeave={() => link.sub && handleMouseLeaveNav()}
                   >
@@ -375,29 +442,111 @@ const NavbarContent: React.FC<NavbarProps> = ({
                       )}
                     </div>
 
-                    {/* Dropdown (Shows on Hover & Click with Pseudo-Bridge Gap Filler) */}
-                    {link.sub && openDropdown === link.id && (
+                    {/* BRAND MEGA MENU */}
+                    {link.sub && openDropdown === link.id && isBrand && (
                       <div
-                        onMouseEnter={() => handleMouseEnterNav(link.id)}
-                        onMouseLeave={handleMouseLeaveNav}
-                        className="absolute top-full left-0 mt-1 bg-card/98 backdrop-blur-md border border-border/70 rounded-2xl shadow-xl p-2 min-w-[220px] max-h-96 overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-150 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+                        onMouseEnter={() => {
+                          isInsideDropdownRef.current = true;
+                          if (dropdownTimerRef.current) {
+                            clearTimeout(dropdownTimerRef.current);
+                            dropdownTimerRef.current = null;
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          isInsideDropdownRef.current = false;
+                          handleMouseLeaveNav();
+                        }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[940px] xl:w-[1020px] max-w-[calc(100vw-32px)] z-50 animate-in fade-in slide-in-from-top-1 duration-150 before:absolute before:-top-6 before:left-0 before:right-0 before:h-6 before:content-['']"
                       >
-                        {link.sub.map((s) => {
-                          const subHref = getNavLinkHref(link.id, s);
-                          return (
-                            <Link
-                              key={s}
-                              href={subHref}
-                              onClick={() => {
-                                setOpenDropdown(null);
-                              }}
-                              className="w-full text-left px-4 py-3 text-sm font-extrabold text-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all cursor-pointer flex items-center justify-between group/sub"
-                            >
-                              <span>{s}</span>
-                              <span className="opacity-0 group-hover/sub:opacity-100 text-primary transition-opacity font-bold">→</span>
-                            </Link>
-                          );
-                        })}
+                        <div className="bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-2xl p-6 sm:p-7">
+                          <div className="grid grid-cols-3 gap-6 xl:gap-8 items-start">
+                            {categorizeBrandList(link.sub).map((cat) => (
+                              <div key={cat.name} className="flex flex-col">
+                                {/* Column Header */}
+                                <div className="flex items-center gap-3 pb-3 mb-3 border-b border-border/60">
+                                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-xs">
+                                    <cat.icon className="w-4 h-4" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h4 className="text-xs font-black text-foreground uppercase tracking-wider truncate font-serif">
+                                      {cat.name}
+                                    </h4>
+                                    <p className="text-[11px] text-muted-foreground font-medium truncate">
+                                      {cat.desc}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* Spacious Clickable Brand Cards */}
+                                <div className="flex flex-col gap-2">
+                                  {cat.items.map((brandName) => {
+                                    const subHref = getNavLinkHref(link.id, brandName);
+                                    const initial = brandName.trim().charAt(0).toUpperCase();
+                                    return (
+                                      <Link
+                                        key={brandName}
+                                        href={subHref}
+                                        onClick={() => {
+                                          setOpenDropdown(null);
+                                          isInsideDropdownRef.current = false;
+                                        }}
+                                        className="group/b flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-border/50 bg-muted/20 hover:bg-primary/10 hover:border-primary/40 hover:shadow-sm transition-all duration-150 cursor-pointer"
+                                      >
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                          <span className="w-7 h-7 rounded-lg bg-card border border-border/50 text-foreground font-black text-xs flex items-center justify-center group-hover/b:bg-primary group-hover/b:text-primary-foreground group-hover/b:border-primary transition-colors shrink-0 shadow-xs">
+                                            {initial}
+                                          </span>
+                                          <span className="text-[13px] font-bold text-foreground group-hover/b:text-primary transition-colors truncate">
+                                            {brandName}
+                                          </span>
+                                        </div>
+                                        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground opacity-30 -translate-x-1 group-hover/b:opacity-100 group-hover/b:translate-x-0 group-hover/b:text-primary transition-all shrink-0" />
+                                      </Link>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* STANDARD DROPDOWN (for JUUL, MYLE, DISPOSABLE, E-JUICE, POD SYSTEM) */}
+                    {link.sub && openDropdown === link.id && !isBrand && (
+                      <div
+                        onMouseEnter={() => {
+                          isInsideDropdownRef.current = true;
+                          if (dropdownTimerRef.current) {
+                            clearTimeout(dropdownTimerRef.current);
+                            dropdownTimerRef.current = null;
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          isInsideDropdownRef.current = false;
+                          handleMouseLeaveNav();
+                        }}
+                        className="absolute top-full left-0 pt-1 min-w-[220px] z-50 animate-in fade-in slide-in-from-top-1 duration-150 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+                      >
+                        <div className="bg-card/98 backdrop-blur-md border border-border/70 rounded-2xl shadow-xl p-2 max-h-96 overflow-y-auto">
+                          {link.sub.map((s) => {
+                            const subHref = getNavLinkHref(link.id, s);
+                            return (
+                              <Link
+                                key={s}
+                                href={subHref}
+                                onClick={() => {
+                                  setOpenDropdown(null);
+                                  isInsideDropdownRef.current = false;
+                                }}
+                                className="w-full text-left px-4 py-3 text-sm font-extrabold text-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all cursor-pointer flex items-center justify-between group/sub"
+                              >
+                                <span>{s}</span>
+                                <span className="opacity-0 group-hover/sub:opacity-100 text-primary transition-opacity font-bold">→</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -722,23 +871,45 @@ const NavbarContent: React.FC<NavbarProps> = ({
                         <span>View All {link.label}</span>
                         <span>→</span>
                       </Link>
-                      {(link.sub ?? []).map((s) => {
-                        const subHref = getNavLinkHref(link.id, s);
-                        return (
-                          <Link
-                            key={s}
-                            href={subHref}
-                            onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              setOpenDropdown(null);
-                            }}
-                            className="w-full text-left px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground hover:text-primary rounded-xl hover:bg-primary/10 transition-all flex items-center justify-between cursor-pointer"
-                          >
-                            <span>{s}</span>
-                            <span className="text-primary/60 text-xs font-bold">→</span>
-                          </Link>
-                        );
-                      })}
+                      {link.id === "brand" || link.label.toUpperCase() === "BRAND" ? (
+                        <div className="grid grid-cols-2 gap-2 pt-1 pb-1">
+                          {(link.sub ?? []).map((s) => {
+                            const subHref = getNavLinkHref(link.id, s);
+                            return (
+                              <Link
+                                key={s}
+                                href={subHref}
+                                onClick={() => {
+                                  setIsMobileMenuOpen(false);
+                                  setOpenDropdown(null);
+                                }}
+                                className="px-3 py-2 text-xs font-bold text-foreground hover:text-primary rounded-xl bg-background/80 border border-border/40 hover:border-primary/50 transition-all flex items-center justify-between truncate cursor-pointer"
+                              >
+                                <span className="truncate">{s}</span>
+                                <span className="text-primary/60 text-[10px] ml-1 shrink-0">→</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        (link.sub ?? []).map((s) => {
+                          const subHref = getNavLinkHref(link.id, s);
+                          return (
+                            <Link
+                              key={s}
+                              href={subHref}
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                setOpenDropdown(null);
+                              }}
+                              className="w-full text-left px-3.5 py-2.5 text-xs sm:text-sm font-bold text-foreground hover:text-primary rounded-xl hover:bg-primary/10 transition-all flex items-center justify-between cursor-pointer"
+                            >
+                              <span>{s}</span>
+                              <span className="text-primary/60 text-xs font-bold">→</span>
+                            </Link>
+                          );
+                        })
+                      )}
                     </div>
                   )}
                 </div>
