@@ -58,7 +58,7 @@ import {
   getFAQSchema,
 } from "@/lib/seo-schemas";
 import { getCachedProduct, setCachedProduct } from "@/lib/product-cache";
-import { getAccurateProductSpecs } from "@/lib/shopify/smart-specs";
+import { getAccurateProductSpecs, isInvalidValue, mergeSpecs, cleanAndDeduplicateSpecs, getDeterministicReviews } from "@/lib/shopify/smart-specs";
 
 /** One row of the buy box's specification card. */
 interface SpecCardRow {
@@ -543,18 +543,22 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
       battery: product.battery,
     };
     const val = (row.source === "custom" ? "" : fromProduct[row.source] ?? "");
-    if (val) return val;
+    if (val && !isInvalidValue(val)) return val;
     // Never output misleading hardcoded defaults for nicotine, battery, or puffs
     if (row.source === "nicotine" || row.source === "battery" || row.source === "puffs") {
       return "";
     }
-    return row.value;
+    return isInvalidValue(row.value) ? "" : row.value;
   };
 
   const isSale = selectedVariant && selectedVariant.compareAtPrice && selectedVariant.compareAtPrice > selectedVariant.price;
   const discountPercent = isSale && selectedVariant.compareAtPrice
     ? Math.round(((selectedVariant.compareAtPrice - selectedVariant.price) / selectedVariant.compareAtPrice) * 100)
     : 0;
+
+  const detReviews = getDeterministicReviews(product.handle || handle, product.isPopular);
+  const displayRating = typeof product.rating === "number" && !isNaN(product.rating) ? product.rating : detReviews.rating;
+  const displayReviews = typeof product.reviews === "number" && !isNaN(product.reviews) ? product.reviews : detReviews.reviews;
 
   const primaryColHandle = (product as any)?.primaryCollection?.handle ||
     (product.category === "disposables" ? "disposable-vape" :
@@ -586,8 +590,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
               descriptionHtml: product.descriptionHtml,
               price: selectedVariant?.price || product.price,
               originalPrice: product.originalPrice,
-              rating: product.rating,
-              reviews: product.reviews,
+              rating: displayRating,
+              reviews: displayReviews,
               image: product.image,
               images: product.images,
               brand: product.brand,
@@ -826,18 +830,18 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-3.5 w-3.5 ${i < Math.floor(product.rating)
+                              className={`h-3.5 w-3.5 ${i < Math.floor(displayRating)
                                 ? "fill-amber-400 text-amber-400"
                                 : "text-muted-foreground/30"
                                 }`}
                             />
                           ))}
                         </div>
-                        <span className="text-[11px] font-black text-foreground">{product.rating}</span>
+                        <span className="text-[11px] font-black text-foreground">{displayRating}</span>
                         <span className="text-[11px] text-muted-foreground font-normal group-hover:text-primary transition-colors underline decoration-dotted decoration-muted-foreground/40 underline-offset-2">
                           {text("reviewCountTemplate", "({count} reviews)")
                             .split("{count}")
-                            .join(String(product.reviews))}
+                            .join(String(displayReviews))}
                         </span>
                       </a>
                     )}
@@ -948,31 +952,37 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                   ? product.specsTable.map((s: any) => ({
                       label: s.label || s.feature || s.key || "",
                       value: s.value || s.details || "",
-                    })).filter((r: any) => r.label && r.value)
+                    })).filter((r: any) => r.label && r.value && !isInvalidValue(r.value))
                   : null;
 
                 const customSpecs =
                   metaobjectSpecs && metaobjectSpecs.length > 0
                     ? metaobjectSpecs
-                    : product.keySpecifications;
-                const hasCustomSpecs = Array.isArray(customSpecs) && customSpecs.length > 0;
+                    : (Array.isArray(product.keySpecifications) && product.keySpecifications.length > 0
+                        ? product.keySpecifications.filter((r) => r.label && r.value && !isInvalidValue(r.value))
+                        : null);
+
                 const autoSpecs = getAccurateProductSpecs({
                   name: product.name,
                   category: product.category,
                   brand: product.brand,
                   tags: (product as any).tags,
+                  shortDescription: product.shortDescription,
                   descriptionHtml: product.descriptionHtml,
                   puffs: product.puffs,
                   nicotine: product.nicotine,
                   battery: product.battery,
                 });
-                const displayRows = hasCustomSpecs
-                  ? customSpecs
+
+                const rawDisplayRows = (customSpecs && customSpecs.length > 0)
+                  ? mergeSpecs(customSpecs, autoSpecs)
                   : (autoSpecs && autoSpecs.length > 0)
                   ? autoSpecs
                   : specCardRows
                       .map((row) => ({ label: row.label, value: specValue(row) }))
-                      .filter((r) => r.label && r.value);
+                      .filter((r) => r.label && r.value && !isInvalidValue(r.value));
+
+                const displayRows = cleanAndDeduplicateSpecs(rawDisplayRows);
 
                 if (!flag("showSpecCard") || displayRows.length === 0) return null;
 
@@ -992,28 +1002,20 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                         )}
                       </div>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-xs">
-                      {displayRows.map((row, idx) => {
-                        const isLong = (row.label.length + row.value.length) > 38 || row.value.length > 28;
-                        const isLastOdd = idx === displayRows.length - 1 && displayRows.length % 2 !== 0;
-                        const spanFull = isLong || isLastOdd;
-
-                        return (
-                          <div
-                            key={idx}
-                            className={`flex items-start justify-between gap-3 border-b border-border/40 pb-2.5 ${
-                              spanFull ? "sm:col-span-2" : ""
-                            }`}
-                          >
-                            <span className="text-muted-foreground font-semibold shrink-0 pt-0.5 whitespace-nowrap">
-                              {row.label}:
-                            </span>
-                            <span className="font-extrabold text-foreground text-right leading-snug break-words">
-                              {row.value}
-                            </span>
-                          </div>
-                        );
-                      })}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
+                      {displayRows.map((row, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between gap-3 border-b border-border/40 py-2 min-w-0"
+                        >
+                          <span className="text-muted-foreground font-medium shrink-0 whitespace-nowrap text-xs">
+                            {row.label}:
+                          </span>
+                          <span className="font-bold text-foreground text-right leading-tight break-words text-xs">
+                            {row.value}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 );
@@ -1344,13 +1346,15 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 nicotine={product.nicotine}
                 battery={product.battery}
                 specsTable={
-                  product.specsTable ||
-                  (product.keySpecifications
-                    ? product.keySpecifications.map((k) => ({
-                        feature: k.label,
-                        details: k.value,
-                      }))
-                    : undefined)
+                  (Array.isArray(product.keySpecifications) && product.keySpecifications.length > 0)
+                    ? product.keySpecifications
+                        .map((k) => ({ feature: k.label, details: k.value }))
+                        .filter((r) => r.feature && r.details && !isInvalidValue(r.details))
+                    : (Array.isArray(product.specsTable) && product.specsTable.length > 0)
+                    ? product.specsTable
+                        .map((s: any) => ({ feature: s.feature || s.label, details: s.details || s.value }))
+                        .filter((r) => r.feature && r.details && !isInvalidValue(r.details))
+                    : undefined
                 }
                 settings={settings as never}
                 hideIfEmpty={true}
@@ -1384,8 +1388,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
               <CustomerReviewsSection
                 productHandle={product.handle || handle}
                 collectionName={product.name}
-                productRating={product.rating}
-                productReviewsCount={product.reviews}
+                productRating={displayRating}
+                productReviewsCount={displayReviews}
                 productReviewsList={product.reviewsList}
                 settings={settings as never}
                 hideIfEmpty={false}

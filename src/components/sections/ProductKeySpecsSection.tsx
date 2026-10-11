@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Cpu, ShieldCheck } from "lucide-react";
+import { getAccurateProductSpecs, isInvalidValue, cleanAndDeduplicateSpecs } from "@/lib/shopify/smart-specs";
 
 export interface SpecRow {
   feature: string;
@@ -35,8 +36,7 @@ export interface ProductKeySpecsSettings {
 
 /**
  * The table the section falls back to when neither the merchant nor Shopify
- * supplied rows — the storefront's original hard-coded list, kept so a product
- * with no spec data still renders a full table.
+ * supplied rows — generates accurate category specifications.
  */
 function autoRows(
   productName: string,
@@ -46,40 +46,15 @@ function autoRows(
   nicotine: string,
   battery: string
 ): SpecRow[] {
-  return [
-    {
-      feature: "Puff Count",
-      details: puffs || "N/A",
-    },
-    {
-      feature: "Nicotine Strength",
-      details: nicotine || "N/A",
-    },
-    {
-      feature: "E-Liquid Capacity",
-      details: "N/A",
-    },
-    {
-      feature: "Battery Capacity",
-      details: battery || "N/A",
-    },
-    {
-      feature: "Charging System",
-      details: "N/A",
-    },
-    {
-      feature: "Display",
-      details: "N/A",
-    },
-    {
-      feature: "Coil Type",
-      details: "N/A",
-    },
-    {
-      feature: "Coil Resistance",
-      details: "N/A",
-    },
-  ];
+  const specs = getAccurateProductSpecs({
+    name: productName,
+    category,
+    brand,
+    puffs,
+    nicotine,
+    battery,
+  });
+  return specs.map((s) => ({ feature: s.label, details: s.value }));
 }
 
 export function ProductKeySpecsSection({
@@ -96,10 +71,10 @@ export function ProductKeySpecsSection({
 }: ProductKeySpecsSectionProps) {
   // Precedence: what the merchant typed in the customizer, then what Shopify
   // holds on the product, then the generated fallback.
-  const authored = (settings?.rows ?? []).filter((row) => row.feature || row.details);
+  const authored = (settings?.rows ?? []).filter((row) => row.feature && row.details && !isInvalidValue(row.details));
 
   const hasShopifySpecs =
-    (Array.isArray(specsTable) && specsTable.length > 0 && specsTable.some((r) => r.details && r.details.trim() !== "" && r.details.trim().toUpperCase() !== "N/A")) ||
+    (Array.isArray(specsTable) && specsTable.length > 0 && specsTable.some((r) => r.details && !isInvalidValue(r.details))) ||
     (specsTable && typeof specsTable === "object" && !Array.isArray(specsTable) && Object.keys(specsTable).length > 0);
 
   if (hideIfEmpty && !hasShopifySpecs && authored.length === 0) {
@@ -109,7 +84,7 @@ export function ProductKeySpecsSection({
   let rawRows: SpecRow[];
   if (authored.length > 0) {
     rawRows = authored;
-  } else if (Array.isArray(specsTable) && specsTable.length > 0) {
+  } else if (Array.isArray(specsTable) && specsTable.length > 0 && hasShopifySpecs) {
     rawRows = specsTable;
   } else if (specsTable && typeof specsTable === "object") {
     rawRows = Object.entries(specsTable).map(([feature, details]) => ({ feature, details }));
@@ -117,10 +92,15 @@ export function ProductKeySpecsSection({
     rawRows = autoRows(productName, category, brand, puffs, nicotine, battery);
   }
 
-  const rows = rawRows.map((row) => ({
-    feature: row.feature,
-    details: row.details && row.details.trim() !== "" ? row.details : "N/A",
+  const cleaned = cleanAndDeduplicateSpecs(rawRows);
+  const rows: SpecRow[] = cleaned.map((r) => ({
+    feature: r.feature || r.label,
+    details: r.details || r.value,
   }));
+
+  if (rows.length === 0) {
+    return null;
+  }
 
   const heading = settings?.heading || "Key Features & Specifications";
   const subheading = (

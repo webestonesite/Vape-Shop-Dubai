@@ -1,4 +1,5 @@
 import { Product } from "@/components/sections/ProductFeed";
+import { getDeterministicReviews } from "./smart-specs";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
 const ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
@@ -263,6 +264,9 @@ export async function getAllProducts(): Promise<Product[]> {
     const image = allImages[0] || "";
     const hoverImage = allImages.length > 1 ? allImages[1] : undefined;
 
+    const isPopular = node.tags?.includes("Popular") || node.tags?.includes("popular");
+    const detReviews = getDeterministicReviews(node.handle || node.id, isPopular);
+
     return {
       id: node.id,
       name: cleanProductTitle(node.title),
@@ -271,14 +275,14 @@ export async function getAllProducts(): Promise<Product[]> {
       category,
       price,
       originalPrice: comparePrice > price ? comparePrice : undefined,
-      rating: parseFloat(node.rating?.value || "4.8"),
-      reviews: parseInt(node.reviews?.value || "125"),
+      rating: node.rating?.value ? parseFloat(node.rating.value) : detReviews.rating,
+      reviews: node.reviews?.value ? parseInt(node.reviews.value) : detReviews.reviews,
       image,
       hoverImage,
       images: allImages,
       tag: node.badge?.value || (isSoldOut ? "Sold Out" : comparePrice > price ? "Sale" : undefined),
       tagColor: comparePrice > price ? "sale" : undefined,
-      isPopular: node.tags?.includes("Popular") || node.tags?.includes("popular"),
+      isPopular,
       isSoldOut,
       puffs: node.puffs?.value || undefined,
       nicotine: node.nicotine?.value || undefined,

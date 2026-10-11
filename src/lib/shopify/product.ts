@@ -1,4 +1,4 @@
-import { getAccurateProductSpecs, extractNicotine, extractPuffs } from "./smart-specs";
+import { getAccurateProductSpecs, extractNicotine, extractPuffs, isInvalidValue, mergeSpecs, cleanAndDeduplicateSpecs, getDeterministicReviews } from "./smart-specs";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
 const ADMIN_API_TOKEN = process.env.SHOPIFY_ADMIN_API_TOKEN;
@@ -732,10 +732,24 @@ export async function getProductByHandle(handle: string) {
           feature,
           details,
         };
-      }).filter((item: any) => item.label && item.value);
+      }).filter((item: any) => item.label && item.value && !isInvalidValue(item.value));
     } else if (node.specsTable?.value) {
       try {
-        specsTable = JSON.parse(node.specsTable.value);
+        const parsed = JSON.parse(node.specsTable.value);
+        if (Array.isArray(parsed)) {
+          specsTable = parsed.map((item: any) => {
+            const feature = item.feature || item.label || item.key || item.name || "";
+            const details = item.details || item.value || item.val || "";
+            return {
+              label: feature,
+              value: details,
+              feature,
+              details,
+            };
+          }).filter((item: any) => item.label && item.value && !isInvalidValue(item.value));
+        } else {
+          specsTable = parsed;
+        }
       } catch (e) {
         specsTable = node.specsTable.value;
       }
@@ -985,6 +999,33 @@ export async function getProductByHandle(handle: string) {
       }
     }
 
+    const accurateSpecs = getAccurateProductSpecs({
+      name: node.title,
+      category,
+      brand: detectBrand(node.title, node.vendor),
+      tags: node.tags || [],
+      shortDescription: node.shortDescription?.value,
+      descriptionHtml: node.descriptionHtml,
+      puffs: node.puffs?.value,
+      nicotine: node.nicotine?.value,
+      battery: node.battery?.value,
+    });
+
+    const validSpecsTable = Array.isArray(specsTable) && specsTable.length > 0
+      ? specsTable.filter((s: any) => s.label && s.value && !isInvalidValue(s.value))
+      : [];
+
+    const effectiveKeySpecs = validSpecsTable.length > 0
+      ? mergeSpecs(validSpecsTable, accurateSpecs)
+      : cleanAndDeduplicateSpecs(accurateSpecs);
+
+    const cleanedSpecsTable = cleanAndDeduplicateSpecs(
+      validSpecsTable.length > 0 ? validSpecsTable : accurateSpecs
+    );
+
+    const isPopular = node.tags?.includes("Popular") || node.tags?.includes("popular");
+    const detReviews = getDeterministicReviews(node.handle || node.id, isPopular);
+
     return {
       id: node.id,
       name: node.title,
@@ -995,8 +1036,20 @@ export async function getProductByHandle(handle: string) {
       category,
       price,
       originalPrice: comparePrice > price ? comparePrice : undefined,
-      rating: node.rating?.value ? parseFloat(node.rating.value) : (node.ratingValue?.value ? parseFloat(node.ratingValue.value) : (reviewsList && reviewsList.length > 0 ? 4.9 : undefined)),
-      reviews: node.reviews?.value ? parseInt(node.reviews.value) : (node.reviewsCount?.value ? parseInt(node.reviewsCount.value) : (reviewsList ? reviewsList.length : undefined)),
+      rating: node.rating?.value
+        ? parseFloat(node.rating.value)
+        : node.ratingValue?.value
+        ? parseFloat(node.ratingValue.value)
+        : reviewsList && reviewsList.length > 0
+        ? 4.9
+        : detReviews.rating,
+      reviews: node.reviews?.value
+        ? parseInt(node.reviews.value)
+        : node.reviewsCount?.value
+        ? parseInt(node.reviewsCount.value)
+        : reviewsList && reviewsList.length > 0
+        ? reviewsList.length
+        : detReviews.reviews,
       reviewsList,
       flavorNotes: parsedFlavorNotes,
       whyChoose: parsedWhyChoose,
@@ -1008,13 +1061,13 @@ export async function getProductByHandle(handle: string) {
       videoUrl,
       tag: node.badge?.value || (isSoldOut ? "Sold Out" : comparePrice > price ? "Sale" : undefined),
       tagColor: comparePrice > price ? "sale" : undefined,
-      isPopular: node.tags?.includes("Popular") || node.tags?.includes("popular"),
+      isPopular,
       isSoldOut,
-      puffs: extractPuffs(node.title, node.tags, node.descriptionHtml) || node.puffs?.value || undefined,
-      nicotine: extractNicotine(node.title, node.tags, node.descriptionHtml) || node.nicotine?.value || undefined,
+      puffs: extractPuffs(node.title, node.tags, `${node.shortDescription?.value || ""} ${node.descriptionHtml || ""}`) || node.puffs?.value || undefined,
+      nicotine: extractNicotine(node.title, node.tags, `${node.shortDescription?.value || ""} ${node.descriptionHtml || ""}`) || node.nicotine?.value || undefined,
       battery: node.battery?.value || undefined,
       shortDescription: node.shortDescription?.value || undefined,
-      specsTable,
+      specsTable: cleanedSpecsTable,
       faqAccordion,
       options: node.options?.map((o: any) => ({ name: o.name, values: o.values })) || [],
       variants: variants.map((v: any) => {
@@ -1032,17 +1085,7 @@ export async function getProductByHandle(handle: string) {
       section,
       brand: detectBrand(node.title, node.vendor),
       tags: node.tags || [],
-      keySpecifications:
-        (Array.isArray(specsTable) && specsTable.length > 0
-          ? specsTable.map((s: any) => ({ label: s.label || s.feature, value: s.value || s.details })).filter((s: any) => s.label && s.value)
-          : null) ||
-        getAccurateProductSpecs({
-          name: node.title,
-          category,
-          brand: detectBrand(node.title, node.vendor),
-          tags: node.tags || [],
-          descriptionHtml: node.descriptionHtml,
-        }),
+      keySpecifications: effectiveKeySpecs,
       primaryCollection: (() => {
         const collectionsList = (node.collections?.edges || []).map((e: any) => e.node).filter(Boolean);
         const specificCollection = collectionsList.find((c: any) =>
