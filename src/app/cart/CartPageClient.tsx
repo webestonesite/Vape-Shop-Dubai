@@ -30,8 +30,8 @@ interface CartPageClientProps {
   recommendedProducts?: Product[];
 }
 
-const FREE_SHIPPING_THRESHOLD = 150; // 150 AED for free express delivery in Dubai / UAE
-const STANDARD_SHIPPING_FEE = 25; // 25 AED standard shipping below threshold
+const FREE_SHIPPING_THRESHOLD = 300; // 300 AED for free express delivery across UAE
+const STANDARD_SHIPPING_FEE = 30; // 30 AED standard shipping below threshold
 
 // Valid promo codes for interactive UAE shopping experience
 const VALID_PROMO_CODES: Record<string, number> = {
@@ -515,10 +515,6 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-muted-foreground font-medium">
-                      <span>Estimated VAT (5%)</span>
-                      <span className="text-foreground font-bold">Included</span>
-                    </div>
 
                     <div className="border-t border-border/60 pt-3 flex items-center justify-between text-base font-black text-foreground">
                       <span>Estimated Total</span>

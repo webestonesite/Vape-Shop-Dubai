@@ -195,7 +195,7 @@ export async function POST(request: Request) {
               };
             } else {
               return {
-                title: item.name || "Vape Product",
+                title: item.title || item.name || "Vape Product",
                 originalUnitPrice: parseFloat(item.price || "0").toFixed(2),
                 quantity: parseInt(item.quantity || "1", 10),
               };
@@ -311,12 +311,15 @@ export async function POST(request: Request) {
     // Save order in Firestore for real-time tracking, customer dashboard & tax invoice
     try {
       const nowIso = new Date().toISOString();
-      const calculatedTotal = lineItems.reduce(
+      const itemsTotal = lineItems.reduce(
         (acc: number, item: any) => acc + (Number(item.price) || 0) * (Number(item.quantity) || 1),
         0
       );
-      const subtotal = Math.round((calculatedTotal / 1.05) * 100) / 100;
-      const vatAmount = Math.round((calculatedTotal - subtotal) * 100) / 100;
+      const isFreeShipping = itemsTotal >= 300;
+      const shippingPrice = isFreeShipping
+        ? 0
+        : (body.shippingLine?.price !== undefined ? Number(body.shippingLine.price) : 30);
+      const grandTotal = itemsTotal + shippingPrice;
 
       await adminDb.collection("orders").doc(orderName).set(
         {
@@ -333,42 +336,42 @@ export async function POST(request: Request) {
             phone: rawPhone,
           },
           lineItems: lineItems.map((li: any) => ({
-            title: li.title || "Vape Product",
+            title: li.title || li.name || "Vape Product",
             variantTitle: li.variantTitle || "",
             handle: li.handle || "",
             price: Number(li.price || 0),
             quantity: Number(li.quantity || 1),
             image: li.image || "",
           })),
-          totalPrice: calculatedTotal,
-          subtotal: subtotal,
-          vatAmount: vatAmount,
+          subtotal: itemsTotal,
+          shippingFee: shippingPrice,
+          totalPrice: grandTotal,
           paymentMethod: paymentMethod || "Cash on Delivery",
-          status: "processing",
-          statusLabel: "Processing & Quality Check",
+          status: "order_received",
+          statusLabel: "Order Received",
           createdAt: nowIso,
           statusTimeline: [
             {
-              title: "Order Placed",
+              title: "Order Received",
               description: "Order received via Web Store",
               timestamp: nowIso,
               completed: true,
             },
             {
-              title: "Processing & Quality Check",
-              description: "Checked and packed by Dubai warehouse team",
-              timestamp: nowIso,
-              completed: true,
+              title: "Order Confirmed",
+              description: "In Progress & packing at Dubai hub",
+              timestamp: null,
+              completed: false,
             },
             {
-              title: "Out for Express Delivery",
-              description: "Dispatched with Dubai delivery courier",
+              title: "To Receive",
+              description: "Fulfilled & out for express delivery",
               timestamp: null,
               completed: false,
             },
             {
               title: "Delivered",
-              description: "Package safely delivered",
+              description: "Order safely received by customer",
               timestamp: null,
               completed: false,
             },

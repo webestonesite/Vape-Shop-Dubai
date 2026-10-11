@@ -12,8 +12,16 @@ query getCustomerOrders($query: String!) {
         id
         name
         createdAt
+        closed
+        cancelledAt
+        tags
         displayFulfillmentStatus
         displayFinancialStatus
+        fulfillments(first: 5) {
+          status
+          displayStatus
+          createdAt
+        }
         totalPriceSet {
           shopMoney {
             amount
@@ -49,6 +57,9 @@ query getCustomerOrders($query: String!) {
                 product {
                   handle
                   title
+                  featuredImage {
+                    url
+                  }
                 }
               }
             }
@@ -67,21 +78,72 @@ query getCustomerOrders($query: String!) {
 }
 `;
 
-function mapShopifyStatus(fulfillmentStatus?: string): {
-  status: "placed" | "processing" | "out_for_delivery" | "delivered" | "cancelled";
+function mapShopifyStatus(node: {
+  displayFulfillmentStatus?: string;
+  displayFinancialStatus?: string;
+  closed?: boolean;
+  cancelledAt?: string | null;
+  tags?: string[];
+  fulfillments?: Array<{ status?: string; displayStatus?: string }>;
+}): {
+  status: "order_received" | "confirmed" | "to_receive" | "delivered" | "cancelled";
   statusLabel: string;
 } {
-  const s = (fulfillmentStatus || "").toUpperCase();
-  if (s === "FULFILLED") {
-    return { status: "delivered", statusLabel: "Delivered" };
-  }
-  if (s === "IN_TRANSIT" || s === "OUT_FOR_DELIVERY") {
-    return { status: "out_for_delivery", statusLabel: "Out for Delivery" };
-  }
-  if (s === "RESTOCKED" || s === "CANCELLED") {
+  const fulfillmentStatus = (node.displayFulfillmentStatus || "").toUpperCase();
+  const financialStatus = (node.displayFinancialStatus || "").toUpperCase();
+  const tags = (node.tags || []).map((t: string) => t.toLowerCase());
+  const isClosed = Boolean(node.closed);
+  const isCancelled =
+    Boolean(node.cancelledAt) ||
+    tags.includes("cancelled") ||
+    tags.includes("canceled") ||
+    fulfillmentStatus === "CANCELLED" ||
+    fulfillmentStatus === "RESTOCKED";
+
+  if (isCancelled) {
     return { status: "cancelled", statusLabel: "Cancelled" };
   }
-  return { status: "processing", statusLabel: "Processing & Packing" };
+
+  // 4. Delivered: When marked as delivered or order closed
+  const hasDeliveredFulfillment = (node.fulfillments || []).some(
+    (f) => (f.displayStatus || "").toUpperCase() === "DELIVERED"
+  );
+  if (isClosed || hasDeliveredFulfillment || tags.includes("delivered") || tags.includes("received")) {
+    return { status: "delivered", statusLabel: "Delivered" };
+  }
+
+  // 3. To Receive: When marked as fulfilled / out for delivery
+  const hasActiveFulfillment = (node.fulfillments || []).some(
+    (f) => (f.status || "").toUpperCase() === "SUCCESS" || (f.status || "").toUpperCase() === "OPEN"
+  );
+  if (
+    fulfillmentStatus === "FULFILLED" ||
+    fulfillmentStatus === "PARTIALLY_FULFILLED" ||
+    fulfillmentStatus === "IN_TRANSIT" ||
+    fulfillmentStatus === "OUT_FOR_DELIVERY" ||
+    hasActiveFulfillment ||
+    tags.includes("shipped") ||
+    tags.includes("fulfilled") ||
+    tags.includes("to receive") ||
+    tags.includes("out for delivery")
+  ) {
+    return { status: "to_receive", statusLabel: "To Receive" };
+  }
+
+  // 2. Order Confirmed: In progress in Shopify
+  if (
+    fulfillmentStatus === "IN_PROGRESS" ||
+    fulfillmentStatus === "OPEN" ||
+    tags.includes("confirmed") ||
+    tags.includes("in progress") ||
+    tags.includes("processing") ||
+    financialStatus === "PAID"
+  ) {
+    return { status: "confirmed", statusLabel: "Order Confirmed" };
+  }
+
+  // 1. Order Received: Freshly placed unfulfilled order
+  return { status: "order_received", statusLabel: "Order Received" };
 }
 
 export async function GET(req: NextRequest) {
@@ -165,16 +227,20 @@ export async function GET(req: NextRequest) {
             const orderName = node.name || node.id;
             const key = orderName;
 
-            const { status, statusLabel } = mapShopifyStatus(node.displayFulfillmentStatus);
+            const { status, statusLabel } = mapShopifyStatus(node);
             const lineItems = (node.lineItems?.edges || []).map((li: any) => {
               const itemNode = li.node;
+              const img =
+                itemNode.variant?.image?.url ||
+                itemNode.variant?.product?.featuredImage?.url ||
+                "";
               return {
-                title: itemNode.title,
+                title: itemNode.title || itemNode.variant?.product?.title || "Vape Product",
                 variantTitle: itemNode.variant?.title || "",
                 handle: itemNode.variant?.product?.handle || "",
                 price: parseFloat(itemNode.originalUnitPriceSet?.shopMoney?.amount || "0"),
                 quantity: itemNode.quantity || 1,
-                image: itemNode.variant?.image?.url || "",
+                image: img,
               };
             });
 
@@ -183,13 +249,48 @@ export async function GET(req: NextRequest) {
             const vatAmount = parseFloat(node.totalTaxSet?.shopMoney?.amount || "0");
 
             if (ordersMap.has(key)) {
-              // Update existing with live Shopify fulfillment status if more fresh
+              // Update existing with live Shopify fulfillment status & real product details
               const existing = ordersMap.get(key);
+              const hasCorruptItems =
+                !existing.lineItems ||
+                existing.lineItems.length === 0 ||
+                existing.lineItems.some(
+                  (it: any) =>
+                    !it.title ||
+                    it.title.toLowerCase().trim() === "vape product" ||
+                    !it.image
+                );
+
+              const mergedLineItems =
+                hasCorruptItems && lineItems.length > 0
+                  ? lineItems
+                  : (existing.lineItems && existing.lineItems.length > 0)
+                  ? existing.lineItems.map((eli: any, idx: number) => ({
+                      ...eli,
+                      title:
+                        !eli.title || eli.title.toLowerCase().trim() === "vape product"
+                          ? lineItems[idx]?.title || eli.title || "Vape Product"
+                          : eli.title,
+                      image: eli.image || lineItems[idx]?.image || "",
+                      handle: eli.handle || lineItems[idx]?.handle || "",
+                    }))
+                  : lineItems;
+
+              const isOrderCancelled =
+                status === "cancelled" ||
+                (existing.status || "").toLowerCase() === "cancelled" ||
+                (existing.status || "").toLowerCase() === "canceled" ||
+                (existing.statusLabel || "").toLowerCase().includes("cancel");
+
+              const resolvedStatus = isOrderCancelled ? "cancelled" : status;
+              const resolvedStatusLabel = isOrderCancelled ? "Cancelled" : statusLabel;
+
               ordersMap.set(key, {
                 ...existing,
+                lineItems: mergedLineItems,
                 shopifyStatus: node.displayFulfillmentStatus,
-                status: status,
-                statusLabel: statusLabel,
+                status: resolvedStatus,
+                statusLabel: resolvedStatusLabel,
               });
             } else {
               ordersMap.set(key, {
@@ -213,10 +314,30 @@ export async function GET(req: NextRequest) {
                 statusLabel,
                 createdAt: node.createdAt,
                 statusTimeline: [
-                  { title: "Order Placed", description: "Order confirmed in store", timestamp: node.createdAt, completed: true },
-                  { title: "Processing & Quality Check", description: "Checked and packed by Dubai fulfillment team", timestamp: node.createdAt, completed: true },
-                  { title: "Out for Express Delivery", description: "Dispatched with Dubai delivery courier", timestamp: status === "out_for_delivery" || status === "delivered" ? node.createdAt : null, completed: status === "out_for_delivery" || status === "delivered" },
-                  { title: "Delivered", description: "Delivered to recipient address", timestamp: status === "delivered" ? node.createdAt : null, completed: status === "delivered" },
+                  {
+                    title: "Order Received",
+                    description: "Order received via web store",
+                    timestamp: node.createdAt,
+                    completed: true,
+                  },
+                  {
+                    title: "Order Confirmed",
+                    description: "In Progress & verified at Dubai warehouse",
+                    timestamp: status === "confirmed" || status === "to_receive" || status === "delivered" ? node.createdAt : null,
+                    completed: status === "confirmed" || status === "to_receive" || status === "delivered",
+                  },
+                  {
+                    title: "To Receive",
+                    description: "Fulfilled & out for express delivery",
+                    timestamp: status === "to_receive" || status === "delivered" ? node.createdAt : null,
+                    completed: status === "to_receive" || status === "delivered",
+                  },
+                  {
+                    title: "Delivered",
+                    description: "Order safely received by customer",
+                    timestamp: status === "delivered" ? node.createdAt : null,
+                    completed: status === "delivered",
+                  },
                 ],
               });
             }
@@ -227,11 +348,41 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const ordersList = Array.from(ordersMap.values()).sort((a, b) => {
-      const dateA = new Date(a.createdAt || 0).getTime();
-      const dateB = new Date(b.createdAt || 0).getTime();
-      return dateB - dateA;
-    });
+    const ordersList = Array.from(ordersMap.values())
+      .map((o) => {
+        const lineItems = o.lineItems || [];
+        const itemsSubtotal =
+          lineItems.length > 0
+            ? lineItems.reduce(
+                (acc: number, it: any) =>
+                  acc + (Number(it.price || 0) * Number(it.quantity || 1)),
+                0
+              )
+            : Number(o.subtotal || o.totalPrice || 0);
+
+        const isFreeDelivery = itemsSubtotal >= 300;
+        const deliveryFee = isFreeDelivery
+          ? 0
+          : o.shippingFee !== undefined
+          ? Number(o.shippingFee)
+          : o.totalPrice && Number(o.totalPrice) > itemsSubtotal
+          ? Number(o.totalPrice) - itemsSubtotal
+          : 30;
+
+        const grandTotal = itemsSubtotal + deliveryFee;
+
+        return {
+          ...o,
+          subtotal: itemsSubtotal,
+          shippingFee: deliveryFee,
+          totalPrice: grandTotal,
+        };
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0).getTime();
+        const dateB = new Date(b.createdAt || 0).getTime();
+        return dateB - dateA;
+      });
 
     return NextResponse.json({ success: true, orders: ordersList });
   } catch (err: any) {

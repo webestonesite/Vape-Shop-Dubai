@@ -23,6 +23,10 @@ export const CartDrawer: React.FC = () => {
     cartTotal,
   } = useCart();
 
+  const isFreeShipping = cartTotal >= 300;
+  const shippingFee = cart.length === 0 ? 0 : isFreeShipping ? 0 : 30;
+  const grandTotal = cartTotal + shippingFee;
+
   // Always close drawer on route change
   useEffect(() => {
     setIsCartOpen(false);
@@ -188,15 +192,26 @@ export const CartDrawer: React.FC = () => {
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs text-text-muted">
                 <span>Subtotal</span>
-                <span>{cartTotal} AED</span>
+                <span className="font-mono font-semibold">{cartTotal} AED</span>
               </div>
-              <div className="flex justify-between text-xs text-text-muted">
+              <div className="flex justify-between text-xs text-text-muted items-center">
                 <span>Shipping</span>
-                <span className="text-gold font-mono uppercase text-[10px]">Free Express Delivery</span>
+                {isFreeShipping ? (
+                  <span className="text-emerald-500 font-bold uppercase text-[10px] tracking-wider">
+                    Free Express Delivery
+                  </span>
+                ) : (
+                  <div className="text-right">
+                    <span className="font-mono text-foreground font-semibold">30.00 AED</span>
+                    <span className="block text-[9px] text-primary font-medium">
+                      Add {(300 - cartTotal).toFixed(0)} AED for Free Delivery
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="flex justify-between text-sm font-semibold text-foreground pt-2 border-t border-border">
                 <span>Total</span>
-                <span className="text-gold">{cartTotal} AED</span>
+                <span className="text-gold font-mono font-bold">{grandTotal} AED</span>
               </div>
             </div>
 

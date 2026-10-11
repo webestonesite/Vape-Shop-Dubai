@@ -19,9 +19,24 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
   };
 
   const lineItems = order.lineItems || [];
-  const totalPrice = Number(order.totalPrice || 0);
-  const subtotal = order.subtotal ? Number(order.subtotal) : Math.round((totalPrice / 1.05) * 100) / 100;
-  const vatAmount = order.vatAmount ? Number(order.vatAmount) : Math.round((totalPrice - subtotal) * 100) / 100;
+
+  // Calculate items subtotal strictly from line items
+  const itemsSubtotal = lineItems.length > 0
+    ? lineItems.reduce((acc: number, item: any) => acc + (Number(item.price || 0) * Number(item.quantity || 1)), 0)
+    : Number(order.subtotal || order.totalPrice || 0);
+
+  // Delivery fee: strictly free if items subtotal >= 300 AED, otherwise 30 AED standard
+  const isFreeDelivery = itemsSubtotal >= 300;
+  const deliveryFee = isFreeDelivery
+    ? 0
+    : (order.shippingFee !== undefined
+        ? Number(order.shippingFee)
+        : (order.totalPrice && Number(order.totalPrice) > itemsSubtotal
+            ? Number(order.totalPrice) - itemsSubtotal
+            : 30));
+
+  const grandTotal = itemsSubtotal + deliveryFee;
+
   const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-AE", {
     year: "numeric",
     month: "short",
@@ -33,6 +48,10 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
     minute: "2-digit",
   }) : "";
 
+  const isCancelled =
+    ["cancelled", "canceled", "refunded"].includes((order.status || "").toLowerCase()) ||
+    (order.statusLabel || "").toLowerCase().includes("cancel");
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm overflow-y-auto print:p-0 print:bg-white print:fixed print:inset-0">
       <div className="relative w-full max-w-3xl bg-card border border-border/80 rounded-3xl shadow-2xl overflow-hidden my-auto print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full">
@@ -40,9 +59,10 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
         {/* Modal Action Bar (Hidden in Print) */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/60 bg-muted/40 print:hidden">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-primary" />
+            <span className={`w-2 h-2 rounded-full ${isCancelled ? "bg-red-600" : "bg-primary"}`} />
             <span className="text-xs font-black uppercase tracking-wider text-foreground">
               Order Invoice • #{order.orderId || "Order"}
+              {isCancelled && <span className="text-red-500 font-bold ml-1.5">(CANCELLED)</span>}
             </span>
           </div>
 
@@ -79,17 +99,14 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
               <p className="text-[11px] text-muted-foreground print:text-gray-600 font-medium">
                 Licensed Vape & Pod Distributor • Dubai, United Arab Emirates
               </p>
-              <p className="text-[11px] text-muted-foreground print:text-gray-600 font-medium mt-0.5">
-                Tax Registration Number (TRN): <span className="font-mono font-bold text-foreground print:text-black">100234892100003</span>
-              </p>
               <p className="text-[11px] text-muted-foreground print:text-gray-600 font-medium">
                 Support: info@vapeshopdubai.com • WhatsApp: +971 58 283 9787
               </p>
             </div>
 
             <div className="text-left sm:text-right">
-              <span className="inline-block bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-1.5 print:border-black print:text-black">
-                ORDER INVOICE / فاتورة الطلب
+              <span className={`inline-block ${isCancelled ? "bg-red-500/10 text-red-600 border-red-500/30" : "bg-primary/10 text-primary border-primary/20"} border px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-1.5 print:border-black print:text-black`}>
+                {isCancelled ? "ORDER CANCELLED / ملغاة" : "ORDER INVOICE / فاتورة الطلب"}
               </span>
               <p className="text-sm font-mono font-black text-foreground print:text-black">
                 INV-{order.orderId?.replace("#", "") || "0000"}
@@ -137,10 +154,21 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
               <p className="font-bold text-foreground print:text-black">
                 Dubai Express 3 Hours Delivery
               </p>
-              <p className="text-muted-foreground print:text-gray-700 mt-0.5">
-                Status: <span className="font-bold uppercase text-emerald-600">{order.statusLabel || order.status || "Confirmed"}</span>
-              </p>
-              <p className="text-muted-foreground print:text-gray-700 mt-0.5">
+              <div className="mt-1 flex items-center gap-1.5 sm:justify-end">
+                <span className="text-muted-foreground print:text-gray-700">Status:</span>
+                {isCancelled ? (
+                  <span className="font-black uppercase text-xs px-2.5 py-0.5 rounded-md bg-red-500/15 text-red-600 border border-red-500/30 print:text-red-600 print:border-red-600 inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block animate-pulse" />
+                    CANCELLED
+                  </span>
+                ) : (
+                  <span className="font-black uppercase text-xs px-2.5 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 print:text-emerald-700 print:border-emerald-700 inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
+                    {order.statusLabel || "CONFIRMED"}
+                  </span>
+                )}
+              </div>
+              <p className="text-muted-foreground print:text-gray-700 mt-1">
                 Verification: 18+ Age Verified on Delivery
               </p>
             </div>
@@ -171,7 +199,11 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
                       </td>
                       <td className="py-3 px-3">
                         <span className="font-bold text-foreground print:text-black block">
-                          {item.title}
+                          {item.title && item.title.toLowerCase().trim() !== "vape product"
+                            ? item.title
+                            : item.handle
+                            ? item.handle.split("-").map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ")
+                            : item.name || "Authentic Vape Product"}
                         </span>
                         {item.variantTitle && item.variantTitle !== "Default Title" && (
                           <span className="text-[11px] text-muted-foreground print:text-gray-600">
@@ -209,23 +241,28 @@ export function TaxInvoiceModal({ order, isOpen, onClose }: TaxInvoiceModalProps
 
             <div className="w-full sm:w-64 space-y-2 text-xs">
               <div className="flex justify-between text-muted-foreground print:text-gray-700">
-                <span>Subtotal (Excl. VAT):</span>
-                <span className="font-mono font-semibold">Dhs. {subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground print:text-gray-700">
-                <span>UAE VAT (5%):</span>
-                <span className="font-mono font-semibold">Dhs. {vatAmount.toFixed(2)}</span>
+                <span>Subtotal:</span>
+                <span className="font-mono font-semibold">
+                  Dhs. {itemsSubtotal.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between text-muted-foreground print:text-gray-700">
                 <span>Express Delivery:</span>
-                <span className="font-mono font-semibold text-emerald-600">FREE</span>
+                <span className={`font-mono font-semibold ${isFreeDelivery ? "text-emerald-600" : "text-foreground print:text-black"}`}>
+                  {isFreeDelivery ? "FREE" : `Dhs. ${deliveryFee.toFixed(2)}`}
+                </span>
               </div>
               <div className="pt-2 border-t border-border/80 flex justify-between items-baseline text-sm font-black text-foreground print:text-black">
                 <span>Total Payable:</span>
-                <span className="text-lg font-mono text-primary print:text-black">
-                  Dhs. {totalPrice.toFixed(2)}
+                <span className={`text-lg font-mono ${isCancelled ? "text-red-500 line-through" : "text-primary"} print:text-black`}>
+                  Dhs. {grandTotal.toFixed(2)}
                 </span>
               </div>
+              {isCancelled && (
+                <div className="text-right text-[11px] font-bold text-red-600 print:text-red-700">
+                  Order Cancelled • Payment Voided
+                </div>
+              )}
             </div>
           </div>
 

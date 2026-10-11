@@ -12,6 +12,7 @@ import {
   MessageCircle,
   ShieldCheck,
   Zap,
+  XCircle,
 } from "lucide-react";
 
 interface OrderTrackerModalProps {
@@ -23,41 +24,57 @@ interface OrderTrackerModalProps {
 export function OrderTrackerModal({ order, isOpen, onClose }: OrderTrackerModalProps) {
   if (!isOpen || !order) return null;
 
-  const currentStatus = (order.status || "processing").toLowerCase();
+  const currentStatus = (order.status || "order_received").toLowerCase();
+  const isCancelled =
+    ["cancelled", "canceled", "refunded"].includes(currentStatus) ||
+    (order.statusLabel || "").toLowerCase().includes("cancel");
   
-  // Define 4 step progression
+  const isReceived = true;
+  const isConfirmed = !isCancelled && ["confirmed", "in_progress", "processing", "to_receive", "shipped", "out_for_delivery", "fulfilled", "delivered"].includes(currentStatus);
+  const isToReceive = !isCancelled && ["to_receive", "shipped", "out_for_delivery", "fulfilled", "delivered"].includes(currentStatus);
+  const isDelivered = !isCancelled && currentStatus === "delivered";
+
+  // Define 4 step progression: If cancelled, Step 2 becomes Order Cancelled
   const steps = [
     {
-      id: "placed",
-      title: "Order Placed",
-      desc: "Order confirmed in web store",
+      id: "order_received",
+      title: "Order Received",
+      desc: "Order received via Web Store",
       icon: Clock,
+      completed: isReceived,
+      active: !isCancelled && (currentStatus === "order_received" || currentStatus === "placed"),
+      isCancelled: false,
+      disabled: false,
+    },
+    {
+      id: isCancelled ? "cancelled" : "confirmed",
+      title: isCancelled ? "Order Cancelled" : "Order Confirmed",
+      desc: isCancelled ? "Order cancelled by store administrator" : "In Progress & verified at Dubai warehouse",
+      icon: isCancelled ? XCircle : ShieldCheck,
       completed: true,
-      active: currentStatus === "placed",
+      active: isCancelled || (!isCancelled && (currentStatus === "confirmed" || currentStatus === "in_progress" || currentStatus === "processing")),
+      isCancelled: isCancelled,
+      disabled: false,
     },
     {
-      id: "processing",
-      title: "Processing & Quality Check",
-      desc: "Items verified by Dubai warehouse team",
-      icon: Package,
-      completed: currentStatus !== "placed" && currentStatus !== "cancelled",
-      active: currentStatus === "processing",
-    },
-    {
-      id: "out_for_delivery",
-      title: "Out for Express Delivery",
-      desc: "Dispatched with courier for 3-Hour delivery",
+      id: "to_receive",
+      title: "To Receive",
+      desc: isCancelled ? "Delivery cancelled" : "Fulfilled & out for express 3-hour courier delivery",
       icon: Truck,
-      completed: currentStatus === "out_for_delivery" || currentStatus === "delivered",
-      active: currentStatus === "out_for_delivery",
+      completed: isToReceive,
+      active: !isCancelled && (currentStatus === "to_receive" || currentStatus === "out_for_delivery" || currentStatus === "shipped" || currentStatus === "fulfilled"),
+      isCancelled: false,
+      disabled: isCancelled,
     },
     {
       id: "delivered",
-      title: "Delivered",
-      desc: "Order safely received by customer",
+      title: "Order Delivered",
+      desc: isCancelled ? "Delivery cancelled" : "Order safely received by customer",
       icon: CheckCircle2,
-      completed: currentStatus === "delivered",
-      active: currentStatus === "delivered",
+      completed: isDelivered,
+      active: isDelivered,
+      isCancelled: false,
+      disabled: isCancelled,
     },
   ];
 
@@ -91,28 +108,50 @@ export function OrderTrackerModal({ order, isOpen, onClose }: OrderTrackerModalP
         {/* Content */}
         <div className="p-6 space-y-6">
           
-          {/* Estimated Delivery Banner */}
-          <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex items-center justify-between gap-3">
+          {/* Estimated Delivery / Status Banner */}
+          <div
+            className={`rounded-2xl p-4 flex items-center justify-between gap-3 border transition-colors ${
+              isCancelled
+                ? "bg-red-500/10 border-red-500/30"
+                : "bg-primary/10 border-primary/20"
+            }`}
+          >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
-                <Truck className="w-5 h-5" />
+              <div
+                className={`w-10 h-10 rounded-xl text-white flex items-center justify-center shrink-0 shadow-sm ${
+                  isCancelled ? "bg-red-600" : "bg-primary"
+                }`}
+              >
+                {isCancelled ? <XCircle className="w-5 h-5" /> : <Truck className="w-5 h-5" />}
               </div>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-primary block">
-                  Delivery Speed: Express 3 Hours
+                <span
+                  className={`text-[10px] font-black uppercase tracking-wider block ${
+                    isCancelled ? "text-red-600" : "text-primary"
+                  }`}
+                >
+                  {isCancelled ? "Order Status: Cancelled" : "Delivery Speed: Express 3 Hours"}
                 </span>
                 <p className="text-xs sm:text-sm font-extrabold text-foreground">
-                  {currentStatus === "delivered"
-                    ? "Order successfully delivered!"
-                    : currentStatus === "out_for_delivery"
-                    ? "Driver is on the way to your location"
-                    : "Preparing package for immediate dispatch"}
+                  {isCancelled
+                    ? "This order was cancelled from backend."
+                    : isDelivered
+                    ? "Order successfully delivered & received!"
+                    : isToReceive
+                    ? "Driver is on the way with your package"
+                    : isConfirmed
+                    ? "Order confirmed - preparing package for immediate dispatch"
+                    : "Order received - awaiting confirmation"}
                 </p>
               </div>
             </div>
 
-            <span className="text-[11px] font-black uppercase px-2.5 py-1 rounded-full bg-primary text-white shrink-0">
-              {order.statusLabel || order.status || "In Transit"}
+            <span
+              className={`text-[11px] font-black uppercase px-2.5 py-1 rounded-full text-white shrink-0 shadow-xs ${
+                isCancelled ? "bg-red-600" : "bg-primary"
+              }`}
+            >
+              {isCancelled ? "Cancelled" : (order.statusLabel || order.status || "In Transit")}
             </span>
           </div>
 
@@ -121,16 +160,18 @@ export function OrderTrackerModal({ order, isOpen, onClose }: OrderTrackerModalP
             {steps.map((step, idx) => {
               const StepIcon = step.icon;
               return (
-                <div key={step.id} className="relative flex items-start gap-4">
+                <div key={step.id} className={`relative flex items-start gap-4 ${step.disabled ? "opacity-35" : ""}`}>
                   {/* Step Dot */}
                   <div
                     className={`absolute -left-6 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border-2 transition-all ${
-                      step.completed
+                      step.isCancelled
+                        ? "bg-red-600 border-red-600 text-white shadow-xs"
+                        : step.completed
                         ? "bg-primary border-primary text-white shadow-xs"
                         : "bg-card border-border text-muted-foreground"
                     }`}
                   >
-                    {step.completed ? "✓" : idx + 1}
+                    {step.isCancelled ? "✕" : step.completed ? "✓" : idx + 1}
                   </div>
 
                   {/* Step Content */}
@@ -138,16 +179,24 @@ export function OrderTrackerModal({ order, isOpen, onClose }: OrderTrackerModalP
                     <div className="flex items-center gap-2">
                       <h4
                         className={`text-xs sm:text-sm font-bold ${
-                          step.completed ? "text-foreground" : "text-muted-foreground"
+                          step.isCancelled
+                            ? "text-red-600 dark:text-red-400 font-black"
+                            : step.completed
+                            ? "text-foreground"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {step.title}
                       </h4>
                       {step.active && (
-                        <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            step.isCancelled ? "bg-red-600" : "bg-primary"
+                          } animate-ping`}
+                        />
                       )}
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                    <p className={`text-[11px] mt-0.5 ${step.isCancelled ? "text-red-500 font-medium" : "text-muted-foreground"}`}>
                       {step.desc}
                     </p>
                   </div>

@@ -37,6 +37,7 @@ import {
   Copy,
   Tag,
   Percent,
+  XCircle,
 } from "lucide-react";
 import { useCustomerAuth, CustomerAddress } from "@/context/CustomerAuthContext";
 import { useCart } from "@/context/CartContext";
@@ -45,7 +46,49 @@ import { TaxInvoiceModal } from "@/components/account/TaxInvoiceModal";
 import { OrderTrackerModal } from "@/components/account/OrderTrackerModal";
 
 type TabType = "overview" | "orders" | "wishlist" | "coupons" | "invoices" | "addresses" | "profile";
-type OrderFilterType = "all" | "to_pay" | "to_ship" | "to_receive" | "to_review" | "returns" | "in_transit" | "delivered";
+type OrderFilterType =
+  | "all"
+  | "order_received"
+  | "confirmed"
+  | "to_receive"
+  | "delivered"
+  | "returns"
+  | "to_pay"
+  | "to_ship"
+  | "to_review"
+  | "in_transit";
+
+function getOrderStatusBadge(status?: string, statusLabel?: string) {
+  const st = (status || "").toLowerCase();
+  if (st === "delivered") {
+    return {
+      label: statusLabel || "Delivered",
+      className: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30",
+    };
+  }
+  if (["to_receive", "shipped", "out_for_delivery", "fulfilled", "dispatched"].includes(st)) {
+    return {
+      label: statusLabel || "To Receive",
+      className: "bg-primary/15 text-primary border border-primary/30",
+    };
+  }
+  if (["cancelled", "canceled", "refunded"].includes(st) || (statusLabel || "").toLowerCase().includes("cancel")) {
+    return {
+      label: "Order Cancelled",
+      className: "bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30",
+    };
+  }
+  if (["confirmed", "in_progress", "processing", "preparing"].includes(st)) {
+    return {
+      label: statusLabel || "Order Confirmed",
+      className: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30",
+    };
+  }
+  return {
+    label: statusLabel || "Order Received",
+    className: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30",
+  };
+}
 
 interface CustomerCoupon {
   code: string;
@@ -211,33 +254,31 @@ export function CustomerDashboardClient() {
     }
   }, [user]);
 
-  // Order counts for 5-status quick bar
+  // Order counts for quick status bar
   const orderCounts = useMemo(() => {
-    let toPay = 0;
-    let toShip = 0;
+    let received = 0;
+    let confirmed = 0;
     let toReceive = 0;
-    let toReview = 0;
+    let delivered = 0;
     let returns = 0;
 
     orders.forEach((o) => {
       const st = (o.status || "").toLowerCase();
-      const paySt = (o.paymentStatus || "").toLowerCase();
 
-      if (paySt === "pending" || st === "pending_payment" || paySt === "unpaid") {
-        toPay++;
-      }
-      if (["processing", "confirmed", "paid", "preparing", "pending"].includes(st) && paySt !== "unpaid") {
-        toShip++;
-      } else if (["shipped", "in_transit", "out_for_delivery", "dispatched"].includes(st)) {
+      if (st === "delivered") {
+        delivered++;
+      } else if (["to_receive", "shipped", "in_transit", "out_for_delivery", "fulfilled", "dispatched"].includes(st)) {
         toReceive++;
-      } else if (st === "delivered") {
-        toReview++;
+      } else if (["confirmed", "in_progress", "processing", "preparing"].includes(st)) {
+        confirmed++;
       } else if (["cancelled", "canceled", "refunded", "returned"].includes(st)) {
         returns++;
+      } else {
+        received++;
       }
     });
 
-    return { toPay, toShip, toReceive, toReview, returns };
+    return { received, confirmed, toReceive, delivered, returns };
   }, [orders]);
 
   // Active / in-transit orders
@@ -248,22 +289,49 @@ export function CustomerDashboardClient() {
     });
   }, [orders]);
 
+  // Active tracking stage progression for visual tracking rod animation
+  const trackingStageInfo = useMemo(() => {
+    if (!orders || orders.length === 0) {
+      return { activeIndex: -1, percent: 0, order: null, isCancelled: false };
+    }
+
+    const targetOrder = activeOrders[0] || orders[0];
+    const st = (targetOrder.status || "").toLowerCase();
+    const isCancelled =
+      ["cancelled", "canceled", "refunded", "returned"].includes(st) ||
+      (targetOrder.statusLabel || "").toLowerCase().includes("cancel");
+
+    if (isCancelled) {
+      return { activeIndex: 4, percent: 100, order: targetOrder, isCancelled: true };
+    }
+    if (st === "delivered") {
+      return { activeIndex: 3, percent: 75, order: targetOrder, isCancelled: false };
+    }
+    if (["to_receive", "shipped", "in_transit", "out_for_delivery", "fulfilled", "dispatched"].includes(st)) {
+      return { activeIndex: 2, percent: 50, order: targetOrder, isCancelled: false };
+    }
+    if (["confirmed", "in_progress", "processing", "preparing"].includes(st)) {
+      return { activeIndex: 1, percent: 25, order: targetOrder, isCancelled: false };
+    }
+    // Default: received
+    return { activeIndex: 0, percent: 0, order: targetOrder, isCancelled: false };
+  }, [orders, activeOrders]);
+
   // Filtered orders
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
       const st = (o.status || "").toLowerCase();
-      const paySt = (o.paymentStatus || "").toLowerCase();
 
       let matchesFilter = true;
       if (orderFilter === "all") {
         matchesFilter = true;
-      } else if (orderFilter === "to_pay") {
-        matchesFilter = paySt === "pending" || st === "pending_payment" || paySt === "unpaid";
-      } else if (orderFilter === "to_ship") {
-        matchesFilter = ["processing", "confirmed", "paid", "preparing", "pending"].includes(st) && paySt !== "unpaid";
+      } else if (orderFilter === "order_received" || orderFilter === "to_pay") {
+        matchesFilter = ["order_received", "placed", "unfulfilled", "pending"].includes(st) || (!st && o.orderId);
+      } else if (orderFilter === "confirmed" || orderFilter === "to_ship") {
+        matchesFilter = ["confirmed", "in_progress", "processing", "preparing"].includes(st);
       } else if (orderFilter === "to_receive" || orderFilter === "in_transit") {
-        matchesFilter = ["shipped", "in_transit", "out_for_delivery", "dispatched"].includes(st);
-      } else if (orderFilter === "to_review" || orderFilter === "delivered") {
+        matchesFilter = ["to_receive", "shipped", "in_transit", "out_for_delivery", "fulfilled", "dispatched"].includes(st);
+      } else if (orderFilter === "delivered" || orderFilter === "to_review") {
         matchesFilter = st === "delivered";
       } else if (orderFilter === "returns") {
         matchesFilter = ["cancelled", "canceled", "refunded", "returned"].includes(st);
@@ -635,12 +703,17 @@ export function CustomerDashboardClient() {
         {/* ─── TAB 1: OVERVIEW ────────────────────────────────────────────── */}
         {activeTab === "overview" && (
           <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
-            {/* ── My Orders Quick Status Bar (AliExpress / Shopee style) ──────── */}
-            <div className="clay-card p-4 sm:p-6 space-y-4">
+            {/* ── My Orders Quick Status Bar with Animated Tracking Rail ──────── */}
+            <div className="clay-card p-4 sm:p-6 space-y-4 sm:space-y-5">
               <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-border/50">
-                <h3 className="text-base sm:text-lg font-black text-foreground font-serif">
-                  My Orders
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black text-foreground font-serif">
+                    My Orders
+                  </h3>
+                  <span className="text-[11px] font-bold text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">
+                    {orders.length}
+                  </span>
+                </div>
                 <button
                   onClick={() => {
                     setActiveTab("orders");
@@ -653,137 +726,331 @@ export function CustomerDashboardClient() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-5 gap-1 sm:gap-3 text-center">
-                {/* 1. To Pay */}
-                <button
-                  onClick={() => {
-                    setActiveTab("orders");
-                    setOrderFilter("to_pay");
-                  }}
-                  className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
-                >
-                  <div className="relative mb-2">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#ff6a00]/15 text-[#ff6a00] flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-[#ff6a00] group-hover:text-white transition-all">
-                      <Wallet className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </div>
-                    {orderCounts.toPay > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm animate-pulse">
-                        {orderCounts.toPay}
+              {/* Live Order Micro-Tracker Strip (If customer has orders) */}
+              {trackingStageInfo.order && (
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-primary/5 hover:bg-primary/10 border border-primary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                        trackingStageInfo.isCancelled ? "bg-red-500 animate-pulse" : "bg-primary animate-ping"
+                      }`}
+                    />
+                    <div className="text-xs sm:text-sm font-bold text-foreground truncate">
+                      <span>Live Order </span>
+                      <span className="font-mono text-primary font-black">#{trackingStageInfo.order.orderId}</span>
+                      <span className="text-muted-foreground mx-1.5">•</span>
+                      <span className={trackingStageInfo.isCancelled ? "text-red-600 font-black" : "text-foreground font-black"}>
+                        {trackingStageInfo.isCancelled
+                          ? "Order Cancelled"
+                          : trackingStageInfo.order.statusLabel || "Order in Progress"}
                       </span>
-                    )}
+                      <span className="text-[11px] text-muted-foreground font-normal ml-2 hidden md:inline">
+                        ({trackingStageInfo.order.lineItems?.length || 1} items • Dhs. {Number(trackingStageInfo.order.totalPrice || 0).toFixed(2)})
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-foreground group-hover:text-[#ff6a00] transition-colors leading-tight">
-                    To Pay
-                  </span>
-                </button>
 
-                {/* 2. To Ship */}
-                <button
-                  onClick={() => {
-                    setActiveTab("orders");
-                    setOrderFilter("to_ship");
-                  }}
-                  className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
-                >
-                  <div className="relative mb-2">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#ff6a00]/15 text-[#ff6a00] flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-[#ff6a00] group-hover:text-white transition-all">
-                      <Package className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </div>
-                    {orderCounts.toShip > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm">
-                        {orderCounts.toShip}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-foreground group-hover:text-[#ff6a00] transition-colors leading-tight">
-                    To Ship
-                  </span>
-                </button>
+                  <button
+                    onClick={() => setSelectedTrackerOrder(trackingStageInfo.order)}
+                    className="clay-pill px-3 py-1.5 text-xs font-black uppercase tracking-wider text-primary hover:bg-primary/15 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer self-start sm:self-auto"
+                  >
+                    <Truck className="w-3.5 h-3.5 text-primary" />
+                    <span>Track Order</span>
+                  </button>
+                </div>
+              )}
 
-                {/* 3. To Receive */}
-                <button
-                  onClick={() => {
-                    setActiveTab("orders");
-                    setOrderFilter("to_receive");
-                  }}
-                  className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
-                >
-                  <div className="relative mb-2">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#ff6a00]/15 text-[#ff6a00] flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-[#ff6a00] group-hover:text-white transition-all">
-                      <Truck className="w-5 h-5 sm:w-6 sm:h-6" />
+              {/* ── Tracking Rail & Steps Container ── */}
+              <div className="relative pt-2 pb-1">
+                {/* Visual Tracking Rod / Rail (Passes behind icon centers) */}
+                <div className="absolute top-[28px] sm:top-[38px] left-[10%] right-[10%] -translate-y-1/2 pointer-events-none z-0">
+                  {/* Track Groove */}
+                  <div className="w-full h-2 sm:h-2.5 bg-muted/90 dark:bg-muted/40 rounded-full border border-border/60 shadow-inner overflow-hidden relative">
+                    {/* Animated Progress Fill Bar */}
+                    <div
+                      className={`h-full rounded-full transition-all duration-1000 ease-out relative ${
+                        trackingStageInfo.isCancelled
+                          ? "bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 shadow-[0_0_12px_rgba(239,68,68,0.5)]"
+                          : "bg-gradient-to-r from-amber-500 via-primary to-emerald-500 shadow-[0_0_14px_rgba(232,82,26,0.5)]"
+                      }`}
+                      style={{ width: `${trackingStageInfo.percent}%` }}
+                    >
+                      {/* Flowing Shimmer Light Pulse */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-pulse" />
                     </div>
-                    {orderCounts.toReceive > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm">
-                        {orderCounts.toReceive}
-                      </span>
-                    )}
                   </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-foreground group-hover:text-[#ff6a00] transition-colors leading-tight">
-                    To Receive
-                  </span>
-                </button>
 
-                {/* 4. To Review */}
-                <button
-                  onClick={() => {
-                    setActiveTab("orders");
-                    setOrderFilter("to_review");
-                  }}
-                  className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
-                >
-                  <div className="relative mb-2">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#ff6a00]/15 text-[#ff6a00] flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-[#ff6a00] group-hover:text-white transition-all">
-                      <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
+                  {/* Pulsing Runner Bead at Active Milestone */}
+                  {trackingStageInfo.order && (
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-1000 ease-out z-10"
+                      style={{ left: `${trackingStageInfo.percent}%` }}
+                    >
+                      <span
+                        className={`block w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white dark:border-card shadow-md ${
+                          trackingStageInfo.isCancelled ? "bg-red-500" : "bg-primary"
+                        }`}
+                      />
+                      <span
+                        className={`absolute inset-0 rounded-full animate-ping opacity-75 ${
+                          trackingStageInfo.isCancelled ? "bg-red-500" : "bg-primary"
+                        }`}
+                      />
                     </div>
-                    {orderCounts.toReview > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm">
-                        {orderCounts.toReview}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-foreground group-hover:text-[#ff6a00] transition-colors leading-tight">
-                    To Review
-                  </span>
-                </button>
+                  )}
+                </div>
 
-                {/* 5. Returns & Cancellations */}
-                <button
-                  onClick={() => {
-                    setActiveTab("orders");
-                    setOrderFilter("returns");
-                  }}
-                  className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
-                >
-                  <div className="relative mb-2">
-                    <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#ff6a00]/15 text-[#ff6a00] flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-[#ff6a00] group-hover:text-white transition-all">
-                      <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </div>
-                    {orderCounts.returns > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm">
-                        {orderCounts.returns}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[10px] sm:text-xs font-bold text-foreground group-hover:text-[#ff6a00] transition-colors leading-tight">
-                    Returns & Refunds
-                  </span>
-                </button>
+                {/* 5 Status Step Buttons Grid */}
+                <div className="grid grid-cols-5 gap-1 sm:gap-3 text-center relative z-10">
+                  {/* 1. Order Received */}
+                  {(() => {
+                    const isActive = trackingStageInfo.activeIndex === 0;
+                    const isCompleted = trackingStageInfo.activeIndex >= 0;
+                    return (
+                      <button
+                        onClick={() => {
+                          setActiveTab("orders");
+                          setOrderFilter("order_received");
+                        }}
+                        className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
+                      >
+                        <div className="relative mb-2">
+                          <div
+                            className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all relative ${
+                              isActive
+                                ? "bg-amber-500 text-white shadow-lg ring-4 ring-amber-500/30 scale-105 sm:scale-110"
+                                : isCompleted
+                                ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-md group-hover:bg-amber-500 group-hover:text-white"
+                                : "bg-card border-2 border-border/60 text-muted-foreground/60 shadow-sm"
+                            }`}
+                          >
+                            <Clock className="w-5 h-5 sm:w-6 sm:h-6" />
+                            {isActive && (
+                              <span className="absolute inset-0 rounded-2xl bg-amber-500/25 animate-ping -z-10" />
+                            )}
+                          </div>
+                          {orderCounts.received > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm animate-pulse z-20">
+                              {orderCounts.received}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`text-[10px] sm:text-xs font-bold leading-tight transition-colors ${
+                            isActive
+                              ? "text-amber-600 dark:text-amber-400 font-black"
+                              : "text-foreground group-hover:text-amber-600"
+                          }`}
+                        >
+                          Order Received
+                        </span>
+                      </button>
+                    );
+                  })()}
+
+                  {/* 2. Order Confirmed */}
+                  {(() => {
+                    const isActive = trackingStageInfo.activeIndex === 1;
+                    const isCompleted = trackingStageInfo.activeIndex >= 1 && !trackingStageInfo.isCancelled;
+                    return (
+                      <button
+                        onClick={() => {
+                          setActiveTab("orders");
+                          setOrderFilter("confirmed");
+                        }}
+                        className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
+                      >
+                        <div className="relative mb-2">
+                          <div
+                            className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all relative ${
+                              isActive
+                                ? "bg-emerald-500 text-white shadow-lg ring-4 ring-emerald-500/30 scale-105 sm:scale-110"
+                                : isCompleted
+                                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-md group-hover:bg-emerald-500 group-hover:text-white"
+                                : "bg-card border-2 border-border/60 text-muted-foreground/60 shadow-sm"
+                            }`}
+                          >
+                            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+                            {isActive && (
+                              <span className="absolute inset-0 rounded-2xl bg-emerald-500/25 animate-ping -z-10" />
+                            )}
+                          </div>
+                          {orderCounts.confirmed > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm z-20">
+                              {orderCounts.confirmed}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`text-[10px] sm:text-xs font-bold leading-tight transition-colors ${
+                            isActive
+                              ? "text-emerald-600 dark:text-emerald-400 font-black"
+                              : "text-foreground group-hover:text-emerald-600"
+                          }`}
+                        >
+                          Order Confirmed
+                        </span>
+                      </button>
+                    );
+                  })()}
+
+                  {/* 3. To Receive */}
+                  {(() => {
+                    const isActive = trackingStageInfo.activeIndex === 2;
+                    const isCompleted = trackingStageInfo.activeIndex >= 2 && !trackingStageInfo.isCancelled;
+                    return (
+                      <button
+                        onClick={() => {
+                          setActiveTab("orders");
+                          setOrderFilter("to_receive");
+                        }}
+                        className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
+                      >
+                        <div className="relative mb-2">
+                          <div
+                            className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all relative ${
+                              isActive
+                                ? "bg-primary text-white shadow-lg ring-4 ring-primary/30 scale-105 sm:scale-110"
+                                : isCompleted
+                                ? "bg-primary/15 text-primary border border-primary/30 shadow-md group-hover:bg-primary group-hover:text-white"
+                                : "bg-card border-2 border-border/60 text-muted-foreground/60 shadow-sm"
+                            }`}
+                          >
+                            <Truck className="w-5 h-5 sm:w-6 sm:h-6" />
+                            {isActive && (
+                              <span className="absolute inset-0 rounded-2xl bg-primary/25 animate-ping -z-10" />
+                            )}
+                          </div>
+                          {orderCounts.toReceive > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm z-20">
+                              {orderCounts.toReceive}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`text-[10px] sm:text-xs font-bold leading-tight transition-colors ${
+                            isActive
+                              ? "text-primary font-black"
+                              : "text-foreground group-hover:text-primary"
+                          }`}
+                        >
+                          To Receive
+                        </span>
+                      </button>
+                    );
+                  })()}
+
+                  {/* 4. Delivered */}
+                  {(() => {
+                    const isActive = trackingStageInfo.activeIndex === 3;
+                    const isCompleted = trackingStageInfo.activeIndex >= 3 && !trackingStageInfo.isCancelled;
+                    return (
+                      <button
+                        onClick={() => {
+                          setActiveTab("orders");
+                          setOrderFilter("delivered");
+                        }}
+                        className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
+                      >
+                        <div className="relative mb-2">
+                          <div
+                            className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all relative ${
+                              isActive
+                                ? "bg-emerald-600 text-white shadow-lg ring-4 ring-emerald-600/30 scale-105 sm:scale-110"
+                                : isCompleted
+                                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shadow-md group-hover:bg-emerald-600 group-hover:text-white"
+                                : "bg-card border-2 border-border/60 text-muted-foreground/60 shadow-sm"
+                            }`}
+                          >
+                            <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                            {isActive && (
+                              <span className="absolute inset-0 rounded-2xl bg-emerald-600/25 animate-ping -z-10" />
+                            )}
+                          </div>
+                          {orderCounts.delivered > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm z-20">
+                              {orderCounts.delivered}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`text-[10px] sm:text-xs font-bold leading-tight transition-colors ${
+                            isActive
+                              ? "text-emerald-600 dark:text-emerald-400 font-black"
+                              : "text-foreground group-hover:text-emerald-600"
+                          }`}
+                        >
+                          Delivered
+                        </span>
+                      </button>
+                    );
+                  })()}
+
+                  {/* 5. Returns / Cancelled */}
+                  {(() => {
+                    const isActive = trackingStageInfo.activeIndex === 4;
+                    return (
+                      <button
+                        onClick={() => {
+                          setActiveTab("orders");
+                          setOrderFilter("returns");
+                        }}
+                        className="flex flex-col items-center group cursor-pointer p-1 sm:p-2.5 rounded-2xl hover:bg-muted/30 transition-all"
+                      >
+                        <div className="relative mb-2">
+                          <div
+                            className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all relative ${
+                              isActive
+                                ? "bg-red-600 text-white shadow-lg ring-4 ring-red-500/30 scale-105 sm:scale-110"
+                                : orderCounts.returns > 0
+                                ? "bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30 shadow-md group-hover:bg-red-600 group-hover:text-white"
+                                : "bg-card border-2 border-border/60 text-muted-foreground/60 shadow-sm"
+                            }`}
+                          >
+                            {isActive ? (
+                              <XCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+                            ) : (
+                              <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" />
+                            )}
+                            {isActive && (
+                              <span className="absolute inset-0 rounded-2xl bg-red-600/25 animate-ping -z-10" />
+                            )}
+                          </div>
+                          {orderCounts.returns > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 bg-[#ff3b30] text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-card shadow-sm z-20">
+                              {orderCounts.returns}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`text-[10px] sm:text-xs font-bold leading-tight transition-colors ${
+                            isActive
+                              ? "text-red-600 dark:text-red-400 font-black"
+                              : "text-foreground group-hover:text-red-500"
+                          }`}
+                        >
+                          {isActive ? "Order Cancelled" : "Returns"}
+                        </span>
+                      </button>
+                    );
+                  })()}
+                </div>
               </div>
             </div>
 
             {/* ── My Coupons Quick Banner in Overview ────────────────────────── */}
             <div className="clay-card p-4 sm:p-6 bg-gradient-to-r from-amber-500/10 via-primary/10 to-orange-500/10 border border-primary/25 relative overflow-hidden">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-gradient-to-br from-amber-500 to-primary text-white flex items-center justify-center shadow-lg shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 relative z-10">
+                <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-gradient-to-br from-amber-500 to-primary text-white flex items-center justify-center shadow-lg shrink-0 mt-0.5 sm:mt-0">
                     <Ticket className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-sm sm:text-base font-black text-foreground font-serif">
                         Exclusive Coupons & Vouchers
                       </h3>
-                      <span className={`clay-badge px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+                      <span className={`clay-badge px-2 py-0.5 text-[10px] font-black uppercase tracking-wider shrink-0 ${
                         coupons.length > 0
                           ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                           : "bg-muted text-muted-foreground"
@@ -791,7 +1058,7 @@ export function CustomerDashboardClient() {
                         {coupons.length > 0 ? `${coupons.length} Ready to Use` : "0 Active"}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                       {coupons.length > 0 ? (
                         <>
                           Use code{" "}
@@ -813,7 +1080,7 @@ export function CustomerDashboardClient() {
 
                 <button
                   onClick={() => setActiveTab("coupons")}
-                  className="clay-btn-primary px-4 py-2 text-xs font-black uppercase tracking-wider flex items-center gap-1.5 cursor-pointer self-start sm:self-auto shrink-0"
+                  className="clay-btn-primary w-full sm:w-auto px-4 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap text-center"
                 >
                   <span>View Vouchers</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -822,8 +1089,8 @@ export function CustomerDashboardClient() {
             </div>
             {/* Live Tracking Hero Banner if active orders exist */}
             {activeOrders.length > 0 && (
-              <div className="clay-card p-6 sm:p-8 bg-gradient-to-br from-card via-card to-primary/5 border border-primary/30 shadow-xl relative overflow-hidden">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="clay-card p-5 sm:p-8 bg-gradient-to-br from-card via-card to-primary/5 border border-primary/30 shadow-xl relative overflow-hidden">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
                   <div>
                     <div className="inline-flex items-center gap-2 clay-badge px-3 py-1 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-wider mb-3">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
@@ -841,21 +1108,21 @@ export function CustomerDashboardClient() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                     <button
                       onClick={() => setSelectedTrackerOrder(activeOrders[0])}
-                      className="clay-btn-primary px-5 py-2.5 text-xs font-black uppercase tracking-wider flex items-center gap-2 cursor-pointer"
+                      className="clay-btn-primary w-full sm:w-auto px-5 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap text-center"
                     >
-                      <Truck className="w-4 h-4" />
+                      <Truck className="w-4 h-4 shrink-0" />
                       <span>Live 4-Step Tracker</span>
                     </button>
                     <a
                       href="https://wa.me/971582839787"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="clay-pill px-4 py-2.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 border-emerald-500/40 flex items-center gap-2 cursor-pointer hover:bg-emerald-500/10"
+                      className="clay-pill w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 border-emerald-500/40 flex items-center justify-center gap-2 cursor-pointer hover:bg-emerald-500/10 whitespace-nowrap text-center"
                     >
-                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                      <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0" />
                       <span>WhatsApp Courier</span>
                     </a>
                   </div>
@@ -865,18 +1132,18 @@ export function CustomerDashboardClient() {
 
             {/* ── Saved Cart in Account ───────────────────────────────────────── */}
             {cart.length > 0 && (
-              <div className="clay-card p-5 sm:p-7 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+              <div className="clay-card p-4 sm:p-7 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 pb-4 border-b border-border/50">
+                  <div className="flex items-start sm:items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
                       <ShoppingBag className="w-5 h-5" />
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base sm:text-lg font-black text-foreground font-serif">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-black text-foreground font-serif leading-snug">
                           My Saved Cart Items
                         </h3>
-                        <span className="clay-badge px-2 py-0.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                        <span className="clay-badge px-2 py-0.5 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shrink-0">
                           <CheckCircle2 className="w-3 h-3" /> Synced to Account
                         </span>
                       </div>
@@ -887,20 +1154,20 @@ export function CustomerDashboardClient() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto pt-1 sm:pt-0">
                     <button
                       type="button"
                       onClick={() => setIsCartOpen(true)}
-                      className="clay-pill px-3.5 py-2 text-xs font-bold text-foreground hover:text-primary cursor-pointer"
+                      className="clay-pill w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-foreground hover:text-primary cursor-pointer text-center justify-center whitespace-nowrap flex items-center"
                     >
                       View Cart Drawer
                     </button>
                     <Link
                       href="/checkout"
-                      className="clay-btn-primary px-4 py-2 text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
+                      className="clay-btn-primary w-full sm:w-auto px-4 py-2.5 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 whitespace-nowrap text-center"
                     >
                       <span>Checkout (Dhs. {cartTotal.toFixed(2)})</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3.5 h-3.5 shrink-0" />
                     </Link>
                   </div>
                 </div>
@@ -985,15 +1252,14 @@ export function CustomerDashboardClient() {
                             <span className="font-mono text-xs font-black text-foreground">
                               #{order.orderId}
                             </span>
-                            <span
-                              className={`clay-badge px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${
-                                order.status === "delivered"
-                                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                                  : "bg-primary/15 text-primary border border-primary/30"
-                              }`}
-                            >
-                              {order.status || "Processing"}
-                            </span>
+                            {(() => {
+                              const badge = getOrderStatusBadge(order.status, order.statusLabel);
+                              return (
+                                <span className={`clay-badge px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${badge.className}`}>
+                                  {badge.label}
+                                </span>
+                              );
+                            })()}
                           </div>
                           <p className="text-[11px] text-muted-foreground mt-1">
                             {order.lineItems?.length || 0} items • Dhs. {Number(order.totalPrice || 0).toFixed(2)}
@@ -1112,10 +1378,10 @@ export function CustomerDashboardClient() {
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none no-scrollbar">
                 {[
                   { id: "all", label: `All (${orders.length})` },
-                  { id: "to_pay", label: `To Pay (${orderCounts.toPay})` },
-                  { id: "to_ship", label: `To Ship (${orderCounts.toShip})` },
+                  { id: "order_received", label: `Order Received (${orderCounts.received})` },
+                  { id: "confirmed", label: `Order Confirmed (${orderCounts.confirmed})` },
                   { id: "to_receive", label: `To Receive (${orderCounts.toReceive})` },
-                  { id: "to_review", label: `To Review (${orderCounts.toReview})` },
+                  { id: "delivered", label: `Delivered (${orderCounts.delivered})` },
                   { id: "returns", label: `Returns (${orderCounts.returns})` },
                 ].map((f) => (
                   <button
@@ -1217,15 +1483,14 @@ export function CustomerDashboardClient() {
                               <span className="font-mono text-sm sm:text-base font-black text-foreground">
                                 #{order.orderId}
                               </span>
-                              <span
-                                className={`clay-badge px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
-                                  isDelivered
-                                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                                    : "bg-primary/15 text-primary border border-primary/30"
-                                }`}
-                              >
-                                {order.status || "Processing"}
-                              </span>
+                              {(() => {
+                                const badge = getOrderStatusBadge(order.status, order.statusLabel);
+                                return (
+                                  <span className={`clay-badge px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${badge.className}`}>
+                                    {badge.label}
+                                  </span>
+                                );
+                              })()}
                             </div>
                             <span className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
                               <Clock className="w-3 h-3" /> Placed on {orderDate}
@@ -1263,29 +1528,41 @@ export function CustomerDashboardClient() {
 
                       {/* Items Thumbnails & Quantities */}
                       <div className="divide-y divide-border/30">
-                        {items.map((it: any, idx: number) => (
-                          <div key={idx} className="py-3 flex items-center justify-between gap-4">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <img
-                                src={it.image || "/Vape%20Shop%20Dubai%20logo%201.png"}
-                                alt={it.title}
-                                className="w-12 h-12 rounded-xl object-contain bg-white dark:bg-card p-1 shadow-sm flex-shrink-0"
-                              />
-                              <div className="min-w-0">
-                                <p className="text-xs sm:text-sm font-bold text-foreground truncate">
-                                  {it.title}
-                                </p>
-                                <p className="text-[11px] text-muted-foreground mt-0.5">
-                                  Quantity: <span className="font-bold text-foreground">{it.quantity || 1}</span>
-                                  {it.variantTitle && ` • ${it.variantTitle}`}
-                                </p>
+                        {items.map((it: any, idx: number) => {
+                          const displayTitle =
+                            it.title && it.title.toLowerCase().trim() !== "vape product"
+                              ? it.title
+                              : it.handle
+                              ? it.handle.split("-").map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ")
+                              : it.name || "Authentic Vape Product";
+
+                          return (
+                            <div key={idx} className="py-3 flex items-center justify-between gap-4">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <img
+                                  src={it.image || "/Vape%20Shop%20Dubai%20logo%201.png"}
+                                  alt={displayTitle}
+                                  onError={(e) => {
+                                    e.currentTarget.src = "/Vape%20Shop%20Dubai%20logo%201.png";
+                                  }}
+                                  className="w-12 h-12 rounded-xl object-contain bg-white dark:bg-card p-1 shadow-sm flex-shrink-0"
+                                />
+                                <div className="min-w-0">
+                                  <p className="text-xs sm:text-sm font-bold text-foreground truncate">
+                                    {displayTitle}
+                                  </p>
+                                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                                    Quantity: <span className="font-bold text-foreground">{it.quantity || 1}</span>
+                                    {it.variantTitle && it.variantTitle !== "Default Title" && ` • ${it.variantTitle}`}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-xs sm:text-sm font-black text-foreground whitespace-nowrap">
+                                Dhs. {Number(it.price || 0).toFixed(2)}
                               </div>
                             </div>
-                            <div className="text-xs sm:text-sm font-black text-foreground whitespace-nowrap">
-                              Dhs. {Number(it.price || 0).toFixed(2)}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
 
                       {/* Order Footer Summary */}
@@ -1300,7 +1577,7 @@ export function CustomerDashboardClient() {
                         <div className="flex items-center gap-4">
                           <div className="text-muted-foreground text-right">
                             <span className="block text-[10px] uppercase font-bold tracking-wider">
-                              Grand Total (Incl. 5% VAT)
+                              Grand Total
                             </span>
                             <span className="text-base sm:text-lg font-black text-primary font-mono">
                               Dhs. {Number(order.totalPrice || 0).toFixed(2)}
@@ -1632,12 +1909,6 @@ export function CustomerDashboardClient() {
                 <div className="grid grid-cols-1 gap-3.5 md:hidden">
                   {orders.map((order) => {
                     const total = Number(order.totalPrice || 0);
-                    const sub = order.subtotal
-                      ? Number(order.subtotal)
-                      : Math.round((total / 1.05) * 100) / 100;
-                    const vat = order.vatAmount
-                      ? Number(order.vatAmount)
-                      : Math.round((total - sub) * 100) / 100;
                     const date = order.createdAt
                       ? new Date(order.createdAt).toLocaleDateString("en-AE")
                       : "N/A";
@@ -1648,23 +1919,21 @@ export function CustomerDashboardClient() {
                           <span className="font-mono text-xs font-bold text-foreground">
                             INV-{order.orderId}
                           </span>
-                          <span className="clay-badge px-2 py-0.5 text-[10px] font-bold bg-muted text-muted-foreground">
-                            {order.paymentMethod || "Cash on Delivery"}
+                          <span className={`clay-badge px-2 py-0.5 text-[10px] font-bold ${
+                            (order.status || "").toLowerCase().includes("cancel")
+                              ? "bg-red-500/15 text-red-600 border border-red-500/30"
+                              : "bg-emerald-500/15 text-emerald-600 border border-emerald-500/30"
+                          }`}>
+                            {(order.status || "").toLowerCase().includes("cancel") ? "Cancelled" : (order.statusLabel || "Confirmed")}
                           </span>
                         </div>
-                        <div className="grid grid-cols-3 gap-2 text-[11px] pt-2 border-t border-border/40">
+                        <div className="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-border/40">
                           <div>
                             <span className="text-[10px] text-muted-foreground block">Date</span>
                             <span className="font-medium text-foreground">{date}</span>
                           </div>
-                          <div>
-                            <span className="text-[10px] text-muted-foreground block">5% VAT</span>
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                              Dhs. {vat.toFixed(2)}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-muted-foreground block">Total</span>
+                          <div className="text-right">
+                            <span className="text-[10px] text-muted-foreground block">Total Amount</span>
                             <span className="font-black text-primary">
                               Dhs. {total.toFixed(2)}
                             </span>
@@ -1690,22 +1959,15 @@ export function CustomerDashboardClient() {
                         <tr>
                           <th className="py-4 px-6">Invoice #</th>
                           <th className="py-4 px-6">Date</th>
-                          <th className="py-4 px-6">Subtotal</th>
-                          <th className="py-4 px-6">VAT (5%)</th>
+                          <th className="py-4 px-6">Items</th>
                           <th className="py-4 px-6">Total Amount</th>
-                          <th className="py-4 px-6">Payment</th>
+                          <th className="py-4 px-6">Status</th>
                           <th className="py-4 px-6 text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/30">
                         {orders.map((order) => {
                           const total = Number(order.totalPrice || 0);
-                          const sub = order.subtotal
-                            ? Number(order.subtotal)
-                            : Math.round((total / 1.05) * 100) / 100;
-                          const vat = order.vatAmount
-                            ? Number(order.vatAmount)
-                            : Math.round((total - sub) * 100) / 100;
                           const date = order.createdAt
                             ? new Date(order.createdAt).toLocaleDateString("en-AE")
                             : "N/A";
@@ -1716,16 +1978,19 @@ export function CustomerDashboardClient() {
                                 INV-{order.orderId}
                               </td>
                               <td className="py-4 px-6 text-muted-foreground">{date}</td>
-                              <td className="py-4 px-6 font-mono">Dhs. {sub.toFixed(2)}</td>
-                              <td className="py-4 px-6 font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                                Dhs. {vat.toFixed(2)}
+                              <td className="py-4 px-6 font-mono text-muted-foreground">
+                                {order.lineItems?.length || 1} items
                               </td>
                               <td className="py-4 px-6 font-mono font-black text-foreground">
                                 Dhs. {total.toFixed(2)}
                               </td>
                               <td className="py-4 px-6">
-                                <span className="clay-badge px-2 py-0.5 text-[10px] font-bold bg-muted text-muted-foreground">
-                                  {order.paymentMethod || "Cash on Delivery"}
+                                <span className={`clay-badge px-2.5 py-0.5 text-[10px] font-bold ${
+                                  (order.status || "").toLowerCase().includes("cancel")
+                                    ? "bg-red-500/15 text-red-600 border border-red-500/30"
+                                    : "bg-emerald-500/15 text-emerald-600 border border-emerald-500/30"
+                                }`}>
+                                  {(order.status || "").toLowerCase().includes("cancel") ? "Cancelled" : (order.statusLabel || "Confirmed")}
                                 </span>
                               </td>
                               <td className="py-4 px-6 text-right">

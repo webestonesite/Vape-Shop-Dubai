@@ -196,11 +196,14 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      // Map cart items for API payload
+      // Map cart items for API payload with full product details
       const lineItems = cart.map(item => ({
         variantId: item.variantId,
         quantity: item.quantity,
         name: item.name,
+        title: item.name,
+        image: item.image,
+        handle: item.handle,
         price: item.price
       }));
 
@@ -547,10 +550,6 @@ export default function CheckoutPage() {
                       className="accent-primary"
                     />
                   </label>
-
-                  <p className="text-[11px] text-yellow-600 font-bold px-2">
-                    * Note: If Card or Link Payment then 5% VAT Required.
-                  </p>
                 </div>
               </div>
 
