@@ -2606,13 +2606,12 @@
           "col-disp-showcase",
           "col-disp-compare",
           "col-bottom-grid",
-          "col-myle-verify",
+          "col-myle-verification",
           "col-whyshop",
           "col-faq",
           "col-reviews",
           "col-brands",
-          "col-whatsapp",
-          "col-myle-verification"
+          "col-whatsapp"
         ],
         "instances": {
           "col-main": {
@@ -2848,35 +2847,6 @@
                   "href": "/collections/myle-disposable"
                 }
               ]
-            }
-          },
-          "col-myle-verify": {
-            "id": "col-myle-verify",
-            "type": "myleVerification",
-            "enabled": true,
-            "showWhen": "handleIncludesMyle",
-            "settings": {
-              "badgeText": "Official UAE Verification",
-              "heading": "ANTI-COUNTERFEIT SYSTEM",
-              "steps": [
-                {
-                  "illustration": "qr",
-                  "title": "FIND QR CODE",
-                  "description": "Find the security code on your package by peeling off the tab on the side of the package to reveal the QR code."
-                },
-                {
-                  "illustration": "scan",
-                  "title": "SCAN CODE",
-                  "description": "Go online to **ac.mylevape.com** or scan the QR code in your phone with a QR code scanner and enter the 16 digit authenticity number in the fields provided. Please submit."
-                },
-                {
-                  "illustration": "reward",
-                  "title": "RECEIVE REWARD POINTS",
-                  "description": "For each product you authenticate, you will receive 5 Myle rewards point(s). After you scan your products QR code, your rewards point(s) will be automatically added to your rewards account."
-                }
-              ],
-              "ctaLabel": "Authenticate MYLE Product at ac.mylevape.com",
-              "ctaHref": "https://ac.mylevape.com"
             }
           },
           "col-whyshop": {
@@ -4929,7 +4899,7 @@
           "col-juul-specs",
           "col-bottom-grid",
           "col-juul-app",
-          "col-myle-verify",
+          "col-myle-verification",
           "col-whyshop",
           "col-faq",
           "col-reviews",
@@ -5436,35 +5406,6 @@
               ]
             }
           },
-          "col-myle-verify": {
-            "id": "col-myle-verify",
-            "type": "myleVerification",
-            "enabled": true,
-            "showWhen": "handleIncludesMyle",
-            "settings": {
-              "badgeText": "Official UAE Verification",
-              "heading": "ANTI-COUNTERFEIT SYSTEM",
-              "steps": [
-                {
-                  "illustration": "qr",
-                  "title": "FIND QR CODE",
-                  "description": "Find the security code on your package by peeling off the tab on the side of the package to reveal the QR code."
-                },
-                {
-                  "illustration": "scan",
-                  "title": "SCAN CODE",
-                  "description": "Go online to **ac.mylevape.com** or scan the QR code in your phone with a QR code scanner and enter the 16 digit authenticity number in the fields provided. Please submit."
-                },
-                {
-                  "illustration": "reward",
-                  "title": "RECEIVE REWARD POINTS",
-                  "description": "For each product you authenticate, you will receive 5 Myle rewards point(s). After you scan your products QR code, your rewards point(s) will be automatically added to your rewards account."
-                }
-              ],
-              "ctaLabel": "Authenticate MYLE Product at ac.mylevape.com",
-              "ctaHref": "https://ac.mylevape.com"
-            }
-          },
           "col-whyshop": {
             "id": "col-whyshop",
             "type": "whyShop",
@@ -5794,6 +5735,35 @@
               "prefilledMessage": "Hello Vape Shop Dubai, I need assistance or would like to place an order!",
               "buttonText": "Chat on WhatsApp"
             }
+          },
+          "col-myle-verification": {
+            "id": "col-myle-verification",
+            "type": "myleVerification",
+            "enabled": true,
+            "showWhen": "handleIncludesMyle",
+            "settings": {
+              "badgeText": "Official UAE Verification",
+              "heading": "ANTI-COUNTERFEIT SYSTEM",
+              "steps": [
+                {
+                  "illustration": "qr",
+                  "title": "FIND QR CODE",
+                  "description": "Find the security code on your package by peeling off the tab on the side of the package to reveal the QR code."
+                },
+                {
+                  "illustration": "scan",
+                  "title": "SCAN CODE",
+                  "description": "Go online to **ac.mylevape.com** or scan the QR code in your phone with a QR code scanner and enter the 16 digit authenticity number in the fields provided. Please submit."
+                },
+                {
+                  "illustration": "reward",
+                  "title": "RECEIVE REWARD POINTS",
+                  "description": "For each product you authenticate, you will receive 5 Myle rewards point(s). After you scan your products QR code, your rewards point(s) will be automatically added to your rewards account."
+                }
+              ],
+              "ctaLabel": "Authenticate MYLE Product at ac.mylevape.com",
+              "ctaHref": "https://ac.mylevape.com"
+            }
           }
         }
       },
@@ -5815,13 +5785,12 @@
           "col-juul-specs",
           "col-bottom-grid",
           "col-juul-app",
-          "col-myle-verify",
+          "col-myle-verification",
           "col-whyshop",
           "col-faq",
           "col-reviews",
           "col-brands",
-          "col-whatsapp",
-          "col-myle-verification"
+          "col-whatsapp"
         ],
         "instances": {
           "col-main": {
@@ -6323,35 +6292,6 @@
               ]
             }
           },
-          "col-myle-verify": {
-            "id": "col-myle-verify",
-            "type": "myleVerification",
-            "enabled": true,
-            "showWhen": "handleIncludesMyle",
-            "settings": {
-              "badgeText": "Official UAE Verification",
-              "heading": "ANTI-COUNTERFEIT SYSTEM",
-              "steps": [
-                {
-                  "illustration": "qr",
-                  "title": "FIND QR CODE",
-                  "description": "Find the security code on your package by peeling off the tab on the side of the package to reveal the QR code."
-                },
-                {
-                  "illustration": "scan",
-                  "title": "SCAN CODE",
-                  "description": "Go online to **ac.mylevape.com** or scan the QR code in your phone with a QR code scanner and enter the 16 digit authenticity number in the fields provided. Please submit."
-                },
-                {
-                  "illustration": "reward",
-                  "title": "RECEIVE REWARD POINTS",
-                  "description": "For each product you authenticate, you will receive 5 Myle rewards point(s). After you scan your products QR code, your rewards point(s) will be automatically added to your rewards account."
-                }
-              ],
-              "ctaLabel": "Authenticate MYLE Product at ac.mylevape.com",
-              "ctaHref": "https://ac.mylevape.com"
-            }
-          },
           "col-whyshop": {
             "id": "col-whyshop",
             "type": "whyShop",
@@ -6715,6 +6655,6 @@
       }
     }
   },
-  "updatedAt": "2026-10-12T16:25:37.469Z",
-  "updatedBy": "surove.webestone@gmail.com"
+  "updatedAt": "2026-10-12T17:25:26.410Z",
+  "updatedBy": "admin-fix"
 }
