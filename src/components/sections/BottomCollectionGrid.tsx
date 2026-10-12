@@ -174,7 +174,7 @@ function SubCollectionSectionSlider({
         <div className="flex items-center justify-center sm:justify-end gap-3 w-full sm:w-48">
           <div className="hidden lg:flex items-center gap-1.5 text-[10px] font-extrabold text-primary uppercase tracking-wider bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shrink-0">
             <Truck className="w-3.5 h-3.5 text-primary" />
-            <span>2-Hour Express</span>
+            <span>3-Hour Express</span>
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -349,7 +349,7 @@ export function BottomCollectionGrid({ handle, settings }: BottomCollectionGridP
   // The wording below adapts to the handle; a non-empty setting overrides it.
   let badgeText = "Sub-Categories";
   let sectionTitle = "Explore Related Collections";
-  let sectionSub = "Browse complementary certified categories with 2-hour express delivery in Dubai.";
+  let sectionSub = "Browse complementary certified categories with 3-hour express delivery in Dubai.";
   let cards: BottomCardItem[] = DISPOSABLE_CARDS;
 
   if (h.includes("juul")) {

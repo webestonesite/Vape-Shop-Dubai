@@ -552,7 +552,7 @@ const DEFAULT_ARTICLES: ArticleOption[] = [
   },
   {
     id: "art-4",
-    title: "Complete Guide to JUUL 2 in Dubai: Features, Flavors & 2-Hour Delivery (2026)",
+    title: "Complete Guide to JUUL 2 in Dubai: Features, Flavors & 3-Hour Delivery (2026)",
     handle: "juul-2-dubai-complete-guide-2026",
     image: "",
   },

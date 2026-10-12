@@ -41,7 +41,7 @@ export const BRANDS_DATA: BrandData[] = [
     tag: "JUUL 1 & JUUL 2 Series",
     badge: "Official Bestseller",
     color: "from-blue-500/20 via-indigo-500/10 to-transparent",
-    description: "Official JUUL devices, replacement pods, and starter kits with 2-hour express delivery in Dubai.",
+    description: "Official JUUL devices, replacement pods, and starter kits with 3-hour express delivery in Dubai.",
     productCount: 18,
     isFeatured: true,
   },
@@ -364,7 +364,7 @@ export function BrandSphere3D({
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Select any certified brand to view 100% authentic devices, pods, and e-liquids with 2-hour express delivery across Dubai and same-day delivery in UAE.
+            Select any certified brand to view 100% authentic devices, pods, and e-liquids with 3-hour express delivery across Dubai and same-day delivery in UAE.
           </p>
 
           {/* Search & Filter bar */}
@@ -564,7 +564,7 @@ export function BrandSphere3D({
             <Zap className="w-6 h-6" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-foreground">2-Hour Dubai Express</h4>
+            <h4 className="text-sm font-bold text-foreground">3-Hour Dubai Express</h4>
             <p className="text-xs text-muted-foreground">Order before 10 PM for rapid delivery</p>
           </div>
         </div>
@@ -584,8 +584,8 @@ export function BrandSphere3D({
             <CreditCard className="w-6 h-6" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-foreground">Card Machine on Delivery</h4>
-            <p className="text-xs text-muted-foreground">Pay cash or card when driver arrives</p>
+            <h4 className="text-sm font-bold text-foreground">Card & Link Pay on Delivery</h4>
+            <p className="text-xs text-muted-foreground">Pay cash, card or online link when driver arrives</p>
           </div>
         </div>
       </div>

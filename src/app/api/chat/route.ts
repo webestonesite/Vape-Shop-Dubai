@@ -97,9 +97,9 @@ STORE POLICIES:
 - Store Name: Vape Shop Dubai
 - Website: ${siteUrl}
 - Hotline / WhatsApp: +971582839787
-- 2-Hour Express Delivery across Dubai. Same-day for Abu Dhabi, Sharjah, UAE.
+- 3-Hour Express Delivery across Dubai. Same-day for Abu Dhabi, Sharjah, UAE.
 - FREE shipping on 300 AED+ orders. Standard delivery 25 AED.
-- Cash/Card on Delivery available.`;
+- Cash, Card & Online Link Payment on Delivery available.`;
 
     const lastUserMessageObj = [...messages].reverse().find((m: any) => m.role === "user");
     const lastUserMessage = lastUserMessageObj?.content || "";

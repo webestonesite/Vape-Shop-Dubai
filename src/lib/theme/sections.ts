@@ -462,7 +462,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
     defaults: {
       eyebrow: "Live Catalog",
       heading: "Explore Our Collection",
-      description: "Shop Juul Dubai, MYLE devices, disposable vape Dubai favorites, pod kits, and nicotine salts from a trusted vape shop Dubai with fast 2-hour delivery.",
+      description: "Shop Juul Dubai, MYLE devices, disposable vape Dubai favorites, pod kits, and nicotine salts from a trusted vape shop Dubai with fast 3-hour delivery.",
       rows: [
         {
           title: "Flash Sale & Daily Steals",
@@ -714,7 +714,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       pillars: [
         {
           icon: "Truck",
-          title: "2-Hour Express Dubai Delivery",
+          title: "3-Hour Express Dubai Delivery",
           subtitle:
             "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
           badge: "Express Speed",
@@ -728,9 +728,9 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         },
         {
           icon: "CreditCard",
-          title: "Cash & Card on Delivery",
+          title: "Cash, Card & Online Link Payment on Delivery",
           subtitle:
-            "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+            "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
           badge: "Flexible Payment",
         },
         {
@@ -788,14 +788,14 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       badgeText: "Customer Help & FAQs",
       heading: "Frequently Asked Questions",
       description:
-        "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-      deliveryBadge: "2-Hour Delivery",
+        "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+      deliveryBadge: "3-Hour Delivery",
       verifiedNote: "Verified Answer for Dubai & UAE Customers",
       items: [
         {
           question: "How fast is vape delivery in Dubai and across the UAE?",
           answer:
-            "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+            "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
           category: "delivery",
         },
         {
@@ -807,7 +807,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
         {
           question: "Can I pay by card when the delivery driver arrives?",
           answer:
-            "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+            "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
           category: "payment",
         },
         {
@@ -878,11 +878,11 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
       responseNote: "Avg Response < 2 Mins",
       heading: "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
       description:
-        "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+        "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
       features: [
-        { icon: "Zap", label: "2-Hour Express Delivery" },
+        { icon: "Zap", label: "3-Hour Express Delivery" },
         { icon: "ShieldCheck", label: "100% Authentic Products" },
-        { icon: "MessageCircle", label: "Cash / Card on Delivery" },
+        { icon: "MessageCircle", label: "Cash, Card & Online Link Payment on Delivery" },
       ],
       contactLabel: "Official Contact",
       phoneNumber: "971582839787",
@@ -2719,7 +2719,7 @@ export const SECTION_REGISTRY: Record<string, SectionDef> = {
           tag: "JUUL 1 & JUUL 2 Series",
           badge: "Official Bestseller",
           color: "from-blue-500/20 via-indigo-500/10 to-transparent",
-          description: "Official JUUL devices, replacement pods, and starter kits with 2-hour express delivery in Dubai.",
+          description: "Official JUUL devices, replacement pods, and starter kits with 3-hour express delivery in Dubai.",
           productCount: 18,
         },
         fields: [

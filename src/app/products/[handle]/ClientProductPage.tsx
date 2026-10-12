@@ -395,7 +395,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
           setSimilarProducts(filtered);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [product?.category, product?.handle]);
 
   const handleQuantityChange = (val: number) => {
@@ -553,8 +553,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
   // A tab the merchant has since hidden must not leave the panel blank.
   const effectiveTab =
     (activeTab === "shipping" && !showShippingTab) ||
-    (activeTab === "returns" && !showReturnsTab) ||
-    (activeTab === "video" && !effectiveVideoUrl)
+      (activeTab === "returns" && !showReturnsTab) ||
+      (activeTab === "video" && !effectiveVideoUrl)
       ? "description"
       : activeTab;
 
@@ -587,19 +587,19 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
   const primaryColHandle = (product as any)?.primaryCollection?.handle ||
     (product.category === "disposables" ? "disposable-vape" :
-     product.category === "juul" ? "juul-vape-dubai" :
-     product.category === "e-liquids" ? "vape-e-juice" :
-     product.category === "accessories" ? "pod-system" :
-     product.category === "myle" ? "myle-vape-dubai" :
-     product.category || "shop");
+      product.category === "juul" ? "juul-vape-dubai" :
+        product.category === "e-liquids" ? "vape-e-juice" :
+          product.category === "accessories" ? "pod-system" :
+            product.category === "myle" ? "myle-vape-dubai" :
+              product.category || "shop");
 
   const primaryColTitle = (product as any)?.primaryCollection?.title ||
     (product.category === "disposables" ? "Disposable Vapes" :
-     product.category === "juul" ? "JUUL" :
-     product.category === "e-liquids" ? "E-Liquids" :
-     product.category === "accessories" ? "Pod Systems" :
-     product.category === "myle" ? "MYLE" :
-     product.category || "Products");
+      product.category === "juul" ? "JUUL" :
+        product.category === "e-liquids" ? "E-Liquids" :
+          product.category === "accessories" ? "Pod Systems" :
+            product.category === "myle" ? "MYLE" :
+              product.category || "Products");
 
   return (
     <div className="relative flex flex-col min-h-screen bg-background text-foreground" suppressHydrationWarning>
@@ -649,7 +649,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
               },
               {
                 question: `How fast is delivery for ${product.name} in Dubai?`,
-                answer: "We offer express 2-hour delivery across all Dubai areas and same-day delivery across UAE.",
+                answer: "We offer express 3-hour delivery across all Dubai areas and same-day delivery across UAE.",
               },
             ])
           ),
@@ -731,12 +731,11 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                               priority
                               quality={60}
                               sizes="(max-width: 768px) 100vw, 600px"
-                              className={`object-contain filter drop-shadow-2xl group-hover:scale-102 transition-all duration-500 pointer-events-none z-10 ${
-                                mainImageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
-                              }`}
+                              className={`object-contain filter drop-shadow-2xl group-hover:scale-102 transition-all duration-500 pointer-events-none z-10 ${mainImageLoaded ? "opacity-100 blur-0" : "opacity-0 blur-sm"
+                                }`}
                               onLoad={() => setMainImageLoaded(true)}
-                              onError={(e) => { 
-                                (e.currentTarget as HTMLImageElement).style.opacity = "0"; 
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).style.opacity = "0";
                                 setMainImageLoaded(true);
                               }}
                             />
@@ -762,11 +761,10 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                               setActiveImage(img);
                             }}
                             aria-label={`View ${product.name} photo ${idx + 1}`}
-                            className={`h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer ${
-                              activeMediaType === "image" && activeImage === img
+                            className={`h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-2 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer ${activeMediaType === "image" && activeImage === img
                                 ? "border-primary ring-2 ring-primary/30 shadow-md scale-105"
                                 : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
-                            }`}
+                              }`}
                           >
                             <div className="relative w-full h-full">
                               <Image
@@ -787,11 +785,10 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                             key="thumb-video"
                             onClick={() => setActiveMediaType("video")}
                             aria-label={`Watch video of ${product.name}`}
-                            className={`relative h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-1 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer group ${
-                              activeMediaType === "video"
+                            className={`relative h-20 w-20 rounded-2xl border-2 overflow-hidden bg-card p-1 flex items-center justify-center flex-shrink-0 transition-all duration-300 cursor-pointer group ${activeMediaType === "video"
                                 ? "border-primary ring-2 ring-primary/30 shadow-md scale-105"
                                 : "border-border/60 hover:border-primary/50 opacity-80 hover:opacity-100"
-                            }`}
+                              }`}
                           >
                             <div className="relative w-full h-full">
                               {videoThumbSrc && (
@@ -884,64 +881,64 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
                   {/* Compact Social Share Buttons */}
                   {flag("showShareBar") && (
-                  <div className="flex items-center gap-1.5 text-[10px]">
-                    <span className="font-bold tracking-wider text-muted-foreground uppercase mr-0.5">
-                      {text("shareLabel", "SHARE:")}
-                    </span>
+                    <div className="flex items-center gap-1.5 text-[10px]">
+                      <span className="font-bold tracking-wider text-muted-foreground uppercase mr-0.5">
+                        {text("shareLabel", "SHARE:")}
+                      </span>
 
-                    <button
-                      onClick={handleFacebookShare}
-                      className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-blue-600 hover:border-blue-600/40 transition-all cursor-pointer shadow-2xs"
-                      title="Share on Facebook"
-                    >
-                      <svg className="w-3 h-3 fill-current text-blue-600" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                      </svg>
-                    </button>
+                      <button
+                        onClick={handleFacebookShare}
+                        className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-blue-600 hover:border-blue-600/40 transition-all cursor-pointer shadow-2xs"
+                        title="Share on Facebook"
+                      >
+                        <svg className="w-3 h-3 fill-current text-blue-600" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                      </button>
 
-                    <button
-                      onClick={handleTwitterShare}
-                      className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-sky-500 hover:border-sky-500/40 transition-all cursor-pointer shadow-2xs"
-                      title="Share on Twitter"
-                    >
-                      <svg className="w-3 h-3 fill-current text-sky-500" viewBox="0 0 24 24">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                      </svg>
-                    </button>
+                      <button
+                        onClick={handleTwitterShare}
+                        className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-sky-500 hover:border-sky-500/40 transition-all cursor-pointer shadow-2xs"
+                        title="Share on Twitter"
+                      >
+                        <svg className="w-3 h-3 fill-current text-sky-500" viewBox="0 0 24 24">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                      </button>
 
-                    <button
-                      onClick={handleWhatsAppShare}
-                      className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-emerald-500 hover:border-emerald-500/40 transition-all cursor-pointer shadow-2xs"
-                      title="Share on WhatsApp"
-                    >
-                      <MessageCircle className="h-3 w-3 text-emerald-500" />
-                    </button>
+                      <button
+                        onClick={handleWhatsAppShare}
+                        className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-emerald-500 hover:border-emerald-500/40 transition-all cursor-pointer shadow-2xs"
+                        title="Share on WhatsApp"
+                      >
+                        <MessageCircle className="h-3 w-3 text-emerald-500" />
+                      </button>
 
-                    <button
-                      onClick={async () => {
-                        const shared = await handleNativeShare();
-                        if (!shared) {
-                          handleCopyLink();
-                          window.open("https://www.instagram.com/direct/inbox/", "_blank");
-                        }
-                      }}
-                      className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-pink-500 hover:border-pink-500/40 transition-all cursor-pointer shadow-2xs"
-                      title="Share on Instagram (Copies product link to clipboard)"
-                    >
-                      <svg className="w-3 h-3 fill-current text-pink-500" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                      </svg>
-                    </button>
+                      <button
+                        onClick={async () => {
+                          const shared = await handleNativeShare();
+                          if (!shared) {
+                            handleCopyLink();
+                            window.open("https://www.instagram.com/direct/inbox/", "_blank");
+                          }
+                        }}
+                        className="p-1.5 rounded-lg bg-card border border-border/60 text-foreground hover:text-pink-500 hover:border-pink-500/40 transition-all cursor-pointer shadow-2xs"
+                        title="Share on Instagram (Copies product link to clipboard)"
+                      >
+                        <svg className="w-3 h-3 fill-current text-pink-500" viewBox="0 0 24 24">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                      </button>
 
-                    <button
-                      onClick={handleCopyLink}
-                      className="px-2 py-1 rounded-lg bg-card border border-border/60 text-foreground hover:text-primary hover:border-primary/40 transition-all cursor-pointer flex items-center gap-1 text-[10px] font-semibold shadow-2xs"
-                      title="Copy Product Link"
-                    >
-                      {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-                      <span>{copied ? "Copied!" : "Copy"}</span>
-                    </button>
-                  </div>
+                      <button
+                        onClick={handleCopyLink}
+                        className="px-2 py-1 rounded-lg bg-card border border-border/60 text-foreground hover:text-primary hover:border-primary/40 transition-all cursor-pointer flex items-center gap-1 text-[10px] font-semibold shadow-2xs"
+                        title="Copy Product Link"
+                      >
+                        {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                        <span>{copied ? "Copied!" : "Copy"}</span>
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -976,11 +973,11 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 const sourceSpecs = (Array.isArray(product.keySpecifications) && product.keySpecifications.length > 0)
                   ? product.keySpecifications
                   : (Array.isArray(product.specsTable) && product.specsTable.length > 0)
-                  ? product.specsTable.map((s: any) => ({
+                    ? product.specsTable.map((s: any) => ({
                       label: s.label || s.feature || s.key || "",
                       value: s.value || s.details || "",
                     }))
-                  : specCardRows.map((row) => ({ label: row.label, value: specValue(row) }));
+                    : specCardRows.map((row) => ({ label: row.label, value: specValue(row) }));
 
                 const seen = new Set<string>();
                 const displayRows: Array<{ label: string; value: string }> = [];
@@ -1044,13 +1041,12 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                         <div className="sm:col-span-8 bg-card border border-border/80 rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3 overflow-hidden">
                           <div className="flex items-center gap-2.5 min-w-0">
                             <span
-                              className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                                selectedVariant
+                              className={`w-2.5 h-2.5 rounded-full shrink-0 ${selectedVariant
                                   ? selectedVariant.availableForSale
                                     ? "bg-emerald-500 animate-pulse"
                                     : "bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.7)]"
                                   : "bg-emerald-500"
-                              }`}
+                                }`}
                             />
                             <div className="text-left min-w-0">
                               <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block leading-tight">
@@ -1127,8 +1123,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           {!selectedVariant
                             ? `Select ${optionName} First`
                             : !selectedVariant.availableForSale
-                            ? "Out of Stock"
-                            : text("addToCartLabel", "Add to Cart")}
+                              ? "Out of Stock"
+                              : text("addToCartLabel", "Add to Cart")}
                         </button>
 
                         <button
@@ -1140,48 +1136,47 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           {!selectedVariant
                             ? `Select ${optionName} First`
                             : !selectedVariant.availableForSale
-                            ? "Sold Out"
-                            : text("buyNowLabel", "Buy It Now")}
+                              ? "Sold Out"
+                              : text("buyNowLabel", "Buy It Now")}
                         </button>
                       </div>
 
-                {/* Wishlist Toggle Button */}
-                {flag("showWishlist") && (() => {
-                  const isWishlisted = isInWishlist(product.id);
-                  return (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        toggleWishlist({
-                          id: product.id,
-                          handle: product.handle,
-                          title: product.name,
-                          price: selectedVariant ? selectedVariant.price : product.price,
-                          originalPrice: selectedVariant?.compareAtPrice || product.originalPrice,
-                          image: product.image || product.images?.[0] || "/placeholder.png",
-                          category: product.category,
-                          availableForSale: !product.isSoldOut,
-                        })
-                      }
-                      className={`w-full py-3 px-4 rounded-2xl border text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                        isWishlisted
-                          ? "bg-rose-500/10 border-rose-500/40 text-rose-500 shadow-sm"
-                          : "bg-card border-border/60 text-muted-foreground hover:text-foreground hover:border-border"
-                      }`}
-                    >
-                      <Heart className={`h-4 w-4 ${isWishlisted ? "fill-rose-500 text-rose-500" : ""}`} />
-                      <span>
-                        {isWishlisted
-                          ? text("wishlistSavedLabel", "Saved in Wishlist")
-                          : text("wishlistLabel", "Add to Wishlist")}
-                      </span>
-                    </button>
-                  );
-                })()}
-              </div>
-            </>
-          );
-        })()}
+                      {/* Wishlist Toggle Button */}
+                      {flag("showWishlist") && (() => {
+                        const isWishlisted = isInWishlist(product.id);
+                        return (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              toggleWishlist({
+                                id: product.id,
+                                handle: product.handle,
+                                title: product.name,
+                                price: selectedVariant ? selectedVariant.price : product.price,
+                                originalPrice: selectedVariant?.compareAtPrice || product.originalPrice,
+                                image: product.image || product.images?.[0] || "/placeholder.png",
+                                category: product.category,
+                                availableForSale: !product.isSoldOut,
+                              })
+                            }
+                            className={`w-full py-3 px-4 rounded-2xl border text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer ${isWishlisted
+                                ? "bg-rose-500/10 border-rose-500/40 text-rose-500 shadow-sm"
+                                : "bg-card border-border/60 text-muted-foreground hover:text-foreground hover:border-border"
+                              }`}
+                          >
+                            <Heart className={`h-4 w-4 ${isWishlisted ? "fill-rose-500 text-rose-500" : ""}`} />
+                            <span>
+                              {isWishlisted
+                                ? text("wishlistSavedLabel", "Saved in Wishlist")
+                                : text("wishlistLabel", "Add to Wishlist")}
+                            </span>
+                          </button>
+                        );
+                      })()}
+                    </div>
+                  </>
+                );
+              })()}
 
             </div>
           </div>
@@ -1300,26 +1295,26 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
               {(effectiveTab === "shipping" || effectiveTab === "returns") && (
                 <div className="max-w-4xl space-y-6 text-sm text-foreground/90 leading-relaxed">
-                  {(shippingBlocks.length > 0 && !shippingBlocks[0].title.includes("Express 2-Hour Delivery")
+                  {(shippingBlocks.length > 0 && !shippingBlocks[0].title.includes("Express 3-hour Delivery") && !shippingBlocks[0].title.includes("Express 3-Hour Delivery")
                     ? shippingBlocks
                     : [
-                        {
-                          title: "🚚 FREE DELIVERY AND MINIMUM ORDER",
-                          body: "• Delivery country: We are able to deliver all over the UAE. Note: We are unable for international deliveries due to custom restrictions.\n• Minimum order: A minimum 85 AED required to place an order.\n• Free Delivery: Enjoy complimentary shipping for orders valued at AED 300 or more.\n• Delivery Charge: A delivery charge of AED 30 applies to orders below AED 300.",
-                        },
-                        {
-                          title: "⚡ SHIPPING & DELIVERY IN DUBAI AND SHARJAH",
-                          body: "• Same Day Delivery: Place your order before 9pm and we will deliver at your doorstep the same day.\n• Next Day Delivery: Place your order after 9pm and we will deliver it the next morning.\n• Operational Days: Our deliveries run 7 days a week.\n• Prompt Dispatch: We aim to dispatch your order by courier or private car the following business day. Unforeseen circumstances like severe weather or traffic might cause occasional delays.\n• Reception Of Package: We ship it without requiring signatures. Ensure someone is there to collect your parcel.\n• Our Responsibility: We take great care in shipping until you receive it & ensure you are satisfied with the product.\n• Pre-orders: For items on Pre-order you can contact us by email or WhatsApp. Also you can give us details on the order note.\n• Address Finality: Once placed, orders are shipped to the provided address. If you change location let us know by WhatsApp or Email. If a refund is necessary, the initial shipping fee will be excluded.\n• Payment & ID: Delivery will be handed over upon presenting your Emirates ID/Passport and clearing the invoice amount by Cash or Card Payment.\n• Age Restriction: Buyers must be 18 or older. Orders placed by minors will not be handed over or refunded.\n• Delivery Update: After placing an order, expect a confirmation email from info.vapeshopdubai@gmail.com",
-                        },
-                        {
-                          title: "📦 OUTSIDE DUBAI AND SHARJAH",
-                          body: "• 6 working day delivery (Sunday closed).\n• Any order placed after 2:00 PM will be delivered the next day.\n• Orders placed before 2 PM will be delivered same day.\n• Orders placed after 2 PM on Saturday will be delivered on Monday.\n• Cash on delivery only (card payment not acceptable).\n• Orders over 200 AED are free delivery.\n• Minimum order 85 AED required to place an order.\n• Orders under 200 AED: delivery charge is 30 AED.\n• Age Restriction: Buyers must be 18 or older. Orders placed by minors will not be handed over or refunded.",
-                        },
-                        {
-                          title: "📍 OUTSIDE CITY AREA",
-                          body: "• Delivery within 2 working days (Sunday closed).\n• Areas far from the city: 35 AED additional charge.\n• Orders over 200 AED: 35 AED delivery charge only.",
-                        },
-                      ]
+                      {
+                        title: "🚚 FREE DELIVERY AND MINIMUM ORDER",
+                        body: "• Delivery country: We are able to deliver all over the UAE. Note: We are unable for international deliveries due to custom restrictions.\n• Minimum order: A minimum 85 AED required to place an order.\n• Free Delivery: Enjoy complimentary shipping for orders valued at AED 300 or more.\n• Delivery Charge: A delivery charge of AED 30 applies to orders below AED 300.",
+                      },
+                      {
+                        title: "⚡ SHIPPING & DELIVERY IN DUBAI AND SHARJAH",
+                        body: "• Same Day Delivery: Place your order before 9pm and we will deliver at your doorstep the same day.\n• Next Day Delivery: Place your order after 9pm and we will deliver it the next morning.\n• Operational Days: Our deliveries run 7 days a week.\n• Prompt Dispatch: We aim to dispatch your order by courier or private car the following business day. Unforeseen circumstances like severe weather or traffic might cause occasional delays.\n• Reception Of Package: We ship it without requiring signatures. Ensure someone is there to collect your parcel.\n• Our Responsibility: We take great care in shipping until you receive it & ensure you are satisfied with the product.\n• Pre-orders: For items on Pre-order you can contact us by email or WhatsApp. Also you can give us details on the order note.\n• Address Finality: Once placed, orders are shipped to the provided address. If you change location let us know by WhatsApp or Email. If a refund is necessary, the initial shipping fee will be excluded.\n• Payment & ID: Delivery will be handed over upon presenting your Emirates ID/Passport and clearing the invoice amount by Cash, Card, or Online Link Payment.\n• Age Restriction: Buyers must be 18 or older. Orders placed by minors will not be handed over or refunded.\n• Delivery Update: After placing an order, expect a confirmation email from info.vapeshopdubai@gmail.com",
+                      },
+                      {
+                        title: "📦 OUTSIDE DUBAI AND SHARJAH",
+                        body: "• 6 working day delivery (Sunday closed).\n• Any order placed after 2:00 PM will be delivered the next day.\n• Orders placed before 2 PM will be delivered same day.\n• Orders placed after 2 PM on Saturday will be delivered on Monday.\n• Cash on delivery only (card payment not acceptable).\n• Orders over 200 AED are free delivery.\n• Minimum order 85 AED required to place an order.\n• Orders under 200 AED: delivery charge is 30 AED.\n• Age Restriction: Buyers must be 18 or older. Orders placed by minors will not be handed over or refunded.",
+                      },
+                      {
+                        title: "📍 OUTSIDE CITY AREA",
+                        body: "• Delivery within 2 working days (Sunday closed).\n• Areas far from the city: 35 AED additional charge.\n• Orders over 200 AED: 35 AED delivery charge only.",
+                      },
+                    ]
                   ).map((block, idx) => (
                     <div key={`ship-${idx}`} className="border border-border/50 rounded-2xl p-6 bg-card space-y-3 shadow-xs hover:border-primary/30 transition-colors">
                       <h4 className="font-sans font-body font-extrabold text-base sm:text-lg text-primary tracking-tight">
@@ -1392,13 +1387,13 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 specsTable={
                   (Array.isArray(product.keySpecifications) && product.keySpecifications.length > 0)
                     ? product.keySpecifications
-                        .map((k) => ({ feature: k.label, details: k.value }))
-                        .filter((r) => r.feature && r.details && !isInvalidValue(r.details))
+                      .map((k) => ({ feature: k.label, details: k.value }))
+                      .filter((r) => r.feature && r.details && !isInvalidValue(r.details))
                     : (Array.isArray(product.specsTable) && product.specsTable.length > 0)
-                    ? product.specsTable
+                      ? product.specsTable
                         .map((s: any) => ({ feature: s.feature || s.label, details: s.details || s.value }))
                         .filter((r) => r.feature && r.details && !isInvalidValue(r.details))
-                    : undefined
+                      : undefined
                 }
                 settings={settings as never}
                 hideIfEmpty={true}
@@ -1445,42 +1440,42 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
             ),
             relatedProducts: (settings: Record<string, unknown>) => (
 
-          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3">
-            <ProductSectionCarousel
-              sectionName={String(settings.heading ?? "You May Also Like")}
-              products={similarProducts}
-              onAddToCart={(item) => {
-                addToCart({
-                  id: `${item.id}-${item.variantId || 'default'}`,
-                  name: item.name,
-                  price: item.price,
-                  image: item.image,
-                  category: item.category,
-                  variantId: item.variantId || 'default',
-                  handle: item.handle,
-                }, 1);
-              }}
-              onBuyNow={(item) => {
-                addToCart({
-                  id: `${item.id}-${item.variantId || 'default'}`,
-                  name: item.name,
-                  price: item.price,
-                  image: item.image,
-                  category: item.category,
-                  variantId: item.variantId || 'default',
-                  handle: item.handle,
-                }, 1);
-                router.push("/checkout");
-              }}
-              onViewAll={
-                settings.showViewAll === false
-                  ? undefined
-                  : () => {
-                      router.push(`/collections/${product.category}`);
-                    }
-              }
-            />
-          </div>
+              <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3">
+                <ProductSectionCarousel
+                  sectionName={String(settings.heading ?? "You May Also Like")}
+                  products={similarProducts}
+                  onAddToCart={(item) => {
+                    addToCart({
+                      id: `${item.id}-${item.variantId || 'default'}`,
+                      name: item.name,
+                      price: item.price,
+                      image: item.image,
+                      category: item.category,
+                      variantId: item.variantId || 'default',
+                      handle: item.handle,
+                    }, 1);
+                  }}
+                  onBuyNow={(item) => {
+                    addToCart({
+                      id: `${item.id}-${item.variantId || 'default'}`,
+                      name: item.name,
+                      price: item.price,
+                      image: item.image,
+                      category: item.category,
+                      variantId: item.variantId || 'default',
+                      handle: item.handle,
+                    }, 1);
+                    router.push("/checkout");
+                  }}
+                  onViewAll={
+                    settings.showViewAll === false
+                      ? undefined
+                      : () => {
+                        router.push(`/collections/${product.category}`);
+                      }
+                  }
+                />
+              </div>
             ),
           }}
         />
@@ -1544,28 +1539,25 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                           setFlavorSearchQuery("");
                         }
                       }}
-                      className={`w-full p-4 rounded-2xl border flex items-center justify-between text-left transition-all duration-200 ${
-                        !isAvailable
+                      className={`w-full p-4 rounded-2xl border flex items-center justify-between text-left transition-all duration-200 ${!isAvailable
                           ? "cursor-not-allowed bg-red-500/[0.04] border-red-200 dark:border-red-900/50"
                           : isSelected
                             ? "bg-primary/10 border-2 border-primary shadow-md cursor-pointer"
                             : "bg-background hover:bg-muted/30 border-border/60 hover:border-primary/40 cursor-pointer"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <span
-                          className={`w-3.5 h-3.5 rounded-full shrink-0 ${
-                            isAvailable
+                          className={`w-3.5 h-3.5 rounded-full shrink-0 ${isAvailable
                               ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                               : "bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.7)]"
-                          }`}
+                            }`}
                         />
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h4
-                              className={`text-xs sm:text-sm font-extrabold leading-tight ${
-                                !isAvailable ? "text-muted-foreground line-through" : "text-foreground"
-                              }`}
+                              className={`text-xs sm:text-sm font-extrabold leading-tight ${!isAvailable ? "text-muted-foreground line-through" : "text-foreground"
+                                }`}
                             >
                               {v.title}
                             </h4>
@@ -1576,9 +1568,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                             )}
                           </div>
                           <span
-                            className={`text-[10px] font-black block mt-0.5 ${
-                              isAvailable ? "text-emerald-600 dark:text-emerald-400" : "text-red-600"
-                            }`}
+                            className={`text-[10px] font-black block mt-0.5 ${isAvailable ? "text-emerald-600 dark:text-emerald-400" : "text-red-600"
+                              }`}
                           >
                             {isAvailable
                               ? text("variantInStockNote", "In Stock • Ready to ship")
@@ -1589,9 +1580,8 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
 
                       <div className="flex items-center gap-3 shrink-0 ml-3">
                         <span
-                          className={`text-xs font-black ${
-                            isAvailable ? "text-primary" : "text-muted-foreground line-through"
-                          }`}
+                          className={`text-xs font-black ${isAvailable ? "text-primary" : "text-muted-foreground line-through"
+                            }`}
                         >
                           Dhs. {v.price}
                         </span>

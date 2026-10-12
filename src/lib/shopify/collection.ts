@@ -394,7 +394,7 @@ function parseFlavorsSimpleText(val: unknown) {
  * VERIFIED = Verified Answer for Dubai Customers
  *
  * Q: How fast is delivery?
- * A: We offer 2-Hour Express Delivery...
+ * A: We offer 3-Hour Express Delivery...
  *
  * Q: Are products authentic?
  * A: Yes, 100%!
@@ -501,7 +501,7 @@ function parseFaqsMetafield(val: unknown): {
     if (q) {
       items.push({
         question: q,
-        answer: a || "100% authentic products with 2-hour express delivery across Dubai & UAE.",
+        answer: a || "100% authentic products with 3-hour express delivery across Dubai & UAE.",
       });
     }
   }

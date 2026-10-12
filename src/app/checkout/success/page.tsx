@@ -60,7 +60,7 @@ function SuccessContent() {
               </div>
               <div>
                 <h4 className="text-xs font-bold text-foreground">2. Lightning Fast Delivery</h4>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Once confirmed, delivery takes within 2 hours in Dubai and same-day across other UAE emirates.</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">Once confirmed, delivery takes within 3 hours in Dubai and same-day across other UAE emirates.</p>
               </div>
             </div>
 
@@ -70,7 +70,7 @@ function SuccessContent() {
               </div>
               <div>
                 <h4 className="text-xs font-bold text-foreground">3. Pay on Delivery</h4>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Pay conveniently in Cash or via credit Card when our delivery rider arrives with your package.</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">Pay conveniently in Cash, via Credit Card, or Online Link Payment when our delivery rider arrives with your package.</p>
               </div>
             </div>
           </div>

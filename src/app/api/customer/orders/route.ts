@@ -321,7 +321,7 @@ export async function GET(req: NextRequest) {
                 totalPrice,
                 subtotal,
                 vatAmount,
-                paymentMethod: "Cash / Card on Delivery",
+                paymentMethod: "Cash, Card & Online Link Payment on Delivery",
                 customerNote: shopifyCustomNote || "",
                 status,
                 statusLabel,

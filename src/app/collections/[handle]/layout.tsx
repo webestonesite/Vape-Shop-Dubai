@@ -56,17 +56,17 @@ const CANONICAL_COLLECTION_TITLES: Record<string, string> = {
 
 const CANONICAL_COLLECTION_DESCRIPTIONS: Record<string, string> = {
   "accessories": "Shop replacement coils, pod cartridges, batteries, and vape accessories at Vape Shop Dubai. Same-day delivery across Dubai and UAE.",
-  "disposable-vape": "Buy 100% authentic disposable vapes in Dubai. Top brands including Al Fakher, Elf Bar, Tugboat, Vozol & Geek Bar. 2-Hour fast delivery.",
+  "disposable-vape": "Buy 100% authentic disposable vapes in Dubai. Top brands including Al Fakher, Elf Bar, Tugboat, Vozol & Geek Bar. 3-Hour fast delivery.",
   "disposables": "Browse top disposable vape devices in Dubai. Fast same-day delivery, cash on delivery, and 100% authentic products guaranteed.",
   "e-liquids": "Discover premium freebase and salt nicotine e-liquids in Dubai. Top flavors from Pod Salt, Nasty Juice, VGOD, and Dr Vapes.",
   "vape-e-juice": "Shop premium e-juices and vape liquids in UAE. High VG freebase & salt nic options with express delivery across Dubai.",
   "juul-vape-dubai": "Buy authentic JUUL 1 & JUUL 2 devices and pods in Dubai, UAE. 100% original guaranteed with same-day express delivery.",
-  "juul": "Order genuine JUUL devices, replacement pods, and menthol flavors in Dubai. Fast 2-hour delivery across all UAE emirates.",
+  "juul": "Order genuine JUUL devices, replacement pods, and menthol flavors in Dubai. Fast 3-hour delivery across all UAE emirates.",
   "juul-1-series": "Explore JUUL 1 Series pods and devices. Available in 3% and 5% nicotine strengths with same-day delivery in Dubai.",
   "juul-2-series": "Shop JUUL 2 Series pods including Crisp Menthol and Virginia Tobacco. 100% original JUUL 2 pods delivered fast in Dubai.",
-  "juul-pods-offers": "Get special bundle deals and offers on JUUL pods in Dubai. Fast delivery, authentic stock, cash and card on delivery.",
+  "juul-pods-offers": "Get special bundle deals and offers on JUUL pods in Dubai. Fast delivery, authentic stock, cash, card & online link payment on delivery.",
   "myle-vape-dubai": "Buy MYLE Meta V5 pods, devices, and disposable vapes in Dubai. Genuine MYLE products with same-day delivery across UAE.",
-  "myle": "Shop MYLE pod systems, replacement pods, and disposables in Dubai. Original sealed stock with express 2-hour delivery.",
+  "myle": "Shop MYLE pod systems, replacement pods, and disposables in Dubai. Original sealed stock with express 3-hour delivery.",
   "myle-v5-pods": "Original MYLE Meta V5 pods in Iced Mint, Sweet Tobacco & Fruit flavors. Fast same-day delivery in Dubai & Sharjah.",
   "myle-v5-device": "Buy authentic MYLE Meta V5 devices in Dubai. Sleek rechargeable battery design with cash on delivery available.",
   "myle-disposable": "Shop MYLE Micro & Drip disposable vapes in Dubai. High puff capacity, rich flavor profiles, and instant dispatch.",
@@ -114,7 +114,7 @@ export async function generateMetadata(
   const hKey = (handle || "").toLowerCase();
 
   let title = CANONICAL_COLLECTION_TITLES[hKey] || `${handle.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")} | Vape Shop Dubai`;
-  let description = CANONICAL_COLLECTION_DESCRIPTIONS[hKey] || `Shop authentic ${title} products at Vape Shop Dubai with fast 2-hour delivery in Dubai and cash on delivery across the UAE.`;
+  let description = CANONICAL_COLLECTION_DESCRIPTIONS[hKey] || `Shop authentic ${title} products at Vape Shop Dubai with fast 3-hour delivery in Dubai and cash, card & online link payment on delivery across the UAE.`;
 
   try {
     const SHOPIFY_STORE = process.env.SHOPIFY_STORE!;
@@ -165,7 +165,7 @@ export async function generateMetadata(
       .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(" ");
     title = `${filterName} | ${title}`;
-    description = `Explore authentic ${filterName} products under ${title}. Express 2-hour delivery available in Dubai & UAE.`;
+    description = `Explore authentic ${filterName} products under ${title}. Express 3-hour delivery available in Dubai & UAE.`;
   }
 
   if (title.length > 65 && title.includes(" | Vape Shop Dubai")) {

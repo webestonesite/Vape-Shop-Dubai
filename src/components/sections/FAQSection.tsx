@@ -22,7 +22,7 @@ const DEFAULT_FAQ_ITEMS: FaqItem[] = [
   {
     question: "How fast is vape delivery in Dubai and across the UAE?",
     answer:
-      "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+      "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
     category: "delivery",
   },
   {
@@ -34,7 +34,7 @@ const DEFAULT_FAQ_ITEMS: FaqItem[] = [
   {
     question: "Can I pay by card when the delivery driver arrives?",
     answer:
-      "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+      "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide an instant payment link.",
     category: "payment",
   },
   {
@@ -54,8 +54,8 @@ export function FAQSection({ settings, productFaqs, collectionFaqs, hideIfEmpty 
   const description =
     collectionFaqs?.description ||
     settings?.description ||
-    "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.";
-  const deliveryBadge = settings?.deliveryBadge || "2-Hour Delivery";
+    "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.";
+  const deliveryBadge = settings?.deliveryBadge || "3-Hour Delivery";
   const verifiedNote = collectionFaqs?.verifiedNote || settings?.verifiedNote || "Verified Answer for Dubai & UAE Customers";
 
   // Priority: productFaqs → collectionFaqs.items → (if hideIfEmpty, stop here and return null) → settings.items → defaults

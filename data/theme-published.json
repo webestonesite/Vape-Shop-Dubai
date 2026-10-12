@@ -3,7 +3,7 @@
     "version": 4,
     "header": {
       "announcementEnabled": true,
-      "announcementText": "🚀 FREE DELIVERY ON ORDERS 300AED+  |  ⚡ SAME DAY DELIVERY  |  💳 COD & CREDIT CARD MACHINE ON DELIVERY",
+      "announcementText": "🚀 FREE DELIVERY ON ORDERS 300AED+  |  ⚡ DUBAI EXPRESS WITHIN 3 HOURS  |  💳 CASH, CARD & ONLINE LINK PAYMENT ON DELIVERY",
       "logoText": "",
       "logoSubText": "",
       "menu": [
@@ -213,7 +213,7 @@
       "trustItems": [
         {
           "icon": "Truck",
-          "title": "1-2 Hr Express Delivery",
+          "title": "3-Hour Express Delivery",
           "subtitle": "Dubai, Sharjah & Ajman"
         },
         {
@@ -223,7 +223,7 @@
         },
         {
           "icon": "CreditCard",
-          "title": "Cash & Card on Delivery",
+          "title": "Cash, Card & Online Link Payment on Delivery",
           "subtitle": "Pay at your doorstep"
         },
         {
@@ -304,7 +304,7 @@
       "paymentBadges": [
         {
           "icon": "CreditCard",
-          "label": "Cash / Card on Delivery"
+          "label": "Cash, Card & Online Link Payment on Delivery"
         },
         {
           "icon": "Link2",
@@ -537,7 +537,7 @@
             "settings": {
               "eyebrow": "Live Catalog",
               "heading": "Explore Our Vape Collection",
-              "description": "Shop Juul Dubai, MYLE devices, disposable vape Dubai favorites, pod kits, and nicotine salts from a trusted vape shop Dubai with fast 2-hour delivery.",
+              "description": "Shop Juul Dubai, MYLE devices, disposable vape Dubai favorites, pod kits, and nicotine salts from a trusted vape shop Dubai with fast 3-hour delivery.",
               "rows": [
                 {
                   "title": "Flash Sale & Daily Steals",
@@ -802,7 +802,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -814,8 +814,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -846,8 +846,8 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
@@ -882,7 +882,7 @@
                 },
                 {
                   "question": " Do you offer cash on delivery?",
-                  "answer": "Yes, we do. We’re a cash on delivery vape shop for added convenience, and you can also pay by card on delivery where available.\n",
+                  "answer": "Yes, we do. We’re a cash on delivery vape shop for added convenience, and you can also pay by card or online link payment on delivery where available.\n",
                   "category": "products"
                 }
               ]
@@ -907,11 +907,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Want to Order on WhatsApp?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -919,7 +919,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -999,7 +999,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -1011,8 +1011,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -1043,13 +1043,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -1059,7 +1059,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -1292,11 +1292,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -1304,7 +1304,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -1362,7 +1362,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -1374,8 +1374,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -1406,13 +1406,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -1422,7 +1422,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -1469,11 +1469,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -1481,7 +1481,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -1731,7 +1731,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -1743,8 +1743,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -1775,13 +1775,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -1791,7 +1791,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -2024,11 +2024,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -2036,7 +2036,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -2304,7 +2304,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -2316,8 +2316,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -2348,8 +2348,8 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": []
             }
@@ -2561,11 +2561,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -2573,7 +2573,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -2886,7 +2886,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -2898,8 +2898,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -2930,13 +2930,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -2946,7 +2946,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -3179,11 +3179,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -3191,7 +3191,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -3520,7 +3520,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -3532,8 +3532,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -3564,13 +3564,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -3580,7 +3580,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -3813,11 +3813,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -3825,7 +3825,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -3982,7 +3982,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -3994,8 +3994,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -4026,13 +4026,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -4042,7 +4042,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -4089,11 +4089,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -4101,7 +4101,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -4222,7 +4222,7 @@
               "shippingTabLabel": "Shipping and Delivery",
               "shippingBlocks": [
                 {
-                  "title": "⚡ Express 2-Hour Delivery in Dubai",
+                  "title": "⚡ Express 3-Hour Delivery in Dubai",
                   "body": "Place your order before 10:00 PM for rapid express delivery directly to your door anywhere in Dubai (Downtown, Marina, JBR, Deira, Al Barsha, JLT & surrounding areas)."
                 },
                 {
@@ -4231,7 +4231,7 @@
                 },
                 {
                   "title": "💵 Payment Options",
-                  "body": "We support Cash on Delivery (COD) and Card on Delivery for 100% risk-free shopping."
+                  "body": "We support Cash on Delivery (COD), Card on Delivery, and Online Link Payment for 100% risk-free shopping."
                 }
               ],
               "showReturnsTab": true,
@@ -4404,11 +4404,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -4416,7 +4416,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -4453,13 +4453,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -4469,7 +4469,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -4530,7 +4530,7 @@
             "enabled": true,
             "settings": {
               "heading": "",
-              "body": "Vape Shop Dubai is the UAE's trusted destination for 100% authentic vaping products. We supply JUUL, MYLE, disposable vapes, pod systems and premium e-liquids sourced directly from authorized regional distributors.\n\nEvery device and pod we sell carries a manufacturer security seal and a scannable verification code, so you always know exactly what you are buying.\n\n- 2-hour express delivery across Dubai\n- Same-day delivery to Abu Dhabi, Sharjah, Ajman and the wider UAE\n- Cash and card accepted at your door\n- Free replacement on any factory-defective unit",
+              "body": "Vape Shop Dubai is the UAE's trusted destination for 100% authentic vaping products. We supply JUUL, MYLE, disposable vapes, pod systems and premium e-liquids sourced directly from authorized regional distributors.\n\nEvery device and pod we sell carries a manufacturer security seal and a scannable verification code, so you always know exactly what you are buying.\n\n- 3-hour express delivery across Dubai\n- Same-day delivery to Abu Dhabi, Sharjah, Ajman and the wider UAE\n- Cash, card and online link payment accepted at your door\n- Free replacement on any factory-defective unit",
               "width": "narrow",
               "collapsible": false
             }
@@ -4550,7 +4550,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -4562,8 +4562,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -4595,11 +4595,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -4607,7 +4607,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -4685,11 +4685,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -4697,7 +4697,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -4714,13 +4714,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -4730,7 +4730,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -4790,7 +4790,7 @@
             "enabled": true,
             "settings": {
               "heading": "",
-              "body": "We deliver across all seven Emirates, with express service in Dubai.\n\n- Dubai: 2-hour express delivery on orders placed before 10:00 PM\n- Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, UAQ: same-day or next-day express\n- Free delivery on orders above 300 AED\n- Cash on delivery and card machine on delivery both available\n\nAn ID check confirming you are 18 or older is mandatory at the time of delivery.",
+              "body": "We deliver across all seven Emirates, with express service in Dubai.\n\n- Dubai: 3-hour express delivery on orders placed before 10:00 PM\n- Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, UAQ: same-day or next-day express\n- Free delivery on orders above 300 AED\n- Cash on delivery, card machine and online link payment on delivery available\n\nAn ID check confirming you are 18 or older is mandatory at the time of delivery.",
               "width": "narrow",
               "collapsible": false
             }
@@ -4803,11 +4803,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -4815,7 +4815,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -5472,7 +5472,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -5484,8 +5484,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -5516,13 +5516,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -5532,7 +5532,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -5765,11 +5765,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -5777,7 +5777,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",
@@ -6359,7 +6359,7 @@
               "pillars": [
                 {
                   "icon": "Truck",
-                  "title": "2-Hour Express Dubai Delivery",
+                  "title": "3-Hour Express Dubai Delivery",
                   "subtitle": "Order before 10 PM for fast same day vape delivery Dubai. We deliver across Dubai with quick turnaround and easy checkout.",
                   "badge": "Express Speed"
                 },
@@ -6371,8 +6371,8 @@
                 },
                 {
                   "icon": "CreditCard",
-                  "title": "Cash & Card on Delivery",
-                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash or card for a simple, hassle-free order.",
+                  "title": "Cash, Card & Online Link Payment on Delivery",
+                  "subtitle": "Need a cash on delivery vape shop? No problem. Pay at your door with cash, card, or online link payment for a simple, hassle-free order.",
                   "badge": "Flexible Payment"
                 },
                 {
@@ -6403,13 +6403,13 @@
             "settings": {
               "badgeText": "Customer Help & FAQs",
               "heading": "Frequently Asked Questions",
-              "description": "Find instant answers regarding 2-hour express delivery in Dubai, product authenticity, card payments on delivery, and vape device selection.",
-              "deliveryBadge": "2-Hour Delivery",
+              "description": "Find instant answers regarding 3-hour express delivery in Dubai, product authenticity, card & online link payments on delivery, and vape device selection.",
+              "deliveryBadge": "3-Hour Delivery",
               "verifiedNote": "Verified Answer for Dubai & UAE Customers",
               "items": [
                 {
                   "question": "How fast is vape delivery in Dubai and across the UAE?",
-                  "answer": "We offer 2-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
+                  "answer": "We offer 3-Hour Express Delivery in Dubai for all orders placed before 10:00 PM. For Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, and UAQ, we provide guaranteed same-day or next-day express delivery.",
                   "category": "delivery"
                 },
                 {
@@ -6419,7 +6419,7 @@
                 },
                 {
                   "question": "Can I pay by card when the delivery driver arrives?",
-                  "answer": "Yes! We support Cash on Delivery (COD) as well as Card Machine on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments.",
+                  "answer": "Yes! We support Cash on Delivery (COD), Card Machine on Delivery, as well as Online Link Payment on Delivery. Our delivery riders carry mobile wireless card terminals accepting Visa, Mastercard, Apple Pay, and contactless payments, or can provide a secure online payment link on arrival.",
                   "category": "payment"
                 },
                 {
@@ -6652,11 +6652,11 @@
               "badgeText": "Live WhatsApp Support",
               "responseNote": "Avg Response < 2 Mins",
               "heading": "Need Help Choosing or Prefer Direct WhatsApp Ordering?",
-              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 2-hour vape delivery Dubai.",
+              "description": "Chat with our vape shop Dubai team for quick help with JUUL Dubai, MYLE devices, disposable vape Dubai, and pod kits. Get product advice, bundle offers, and fast checkout with 3-hour vape delivery Dubai.",
               "features": [
                 {
                   "icon": "Zap",
-                  "label": "2-Hour Express Delivery"
+                  "label": "3-Hour Express Delivery"
                 },
                 {
                   "icon": "ShieldCheck",
@@ -6664,7 +6664,7 @@
                 },
                 {
                   "icon": "MessageCircle",
-                  "label": "Cash / Card on Delivery"
+                  "label": "Cash, Card & Online Link Payment on Delivery"
                 }
               ],
               "contactLabel": "Official Contact",

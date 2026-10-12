@@ -218,7 +218,7 @@ export function EJuiceBrandsShowcase({
         <div className="flex items-center justify-center sm:justify-end gap-3 w-full sm:w-48">
           <div className="hidden lg:flex items-center gap-1.5 text-[10px] font-extrabold text-primary uppercase tracking-wider bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-full shrink-0">
             <Truck className="w-3.5 h-3.5 text-primary" />
-            <span>2-Hour Express</span>
+            <span>3-Hour Express</span>
           </div>
 
           <div className="flex items-center gap-1.5">

@@ -21,7 +21,7 @@ export function getOrganizationSchema(siteUrl: string = FALLBACK_SITE_URL) {
       "caption": STORE_NAME,
     },
     "image": storeLogo,
-    "description": "Premium luxury vape store in Dubai offering authentic devices, pod kits, disposables, and e-liquids with 2-hour express delivery.",
+    "description": "Premium luxury vape store in Dubai offering authentic devices, pod kits, disposables, and e-liquids with 3-hour express delivery.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Dubai",
@@ -49,7 +49,7 @@ export function getWebSiteSchema(siteUrl: string = FALLBACK_SITE_URL) {
     "@id": `${siteUrl}/#website`,
     "url": siteUrl,
     "name": STORE_NAME,
-    "description": "Buy authentic vape devices, JUUL, Myle, and disposable vapes in Dubai with 2-hour delivery.",
+    "description": "Buy authentic vape devices, JUUL, Myle, and disposable vapes in Dubai with 3-hour delivery.",
     "publisher": {
       "@id": `${siteUrl}/#organization`,
     },
@@ -105,7 +105,7 @@ export function getLocalBusinessSchema(siteUrl: string = FALLBACK_SITE_URL) {
       },
     ],
     "currenciesAccepted": "AED",
-    "paymentAccepted": "Cash, Credit Card, COD",
+    "paymentAccepted": "Cash, Credit Card, Online Link Payment, COD",
   };
 }
 

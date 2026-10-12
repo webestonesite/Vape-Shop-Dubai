@@ -172,7 +172,7 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
 
               <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed">
                 {flashSale?.description ||
-                  "Exclusive wholesale price drops on JUUL, MYLE & top disposable vapes. 2-hour express Dubai delivery!"}
+                  "Exclusive wholesale price drops on JUUL, MYLE & top disposable vapes. 3-hour express Dubai delivery!"}
               </p>
             </div>
 

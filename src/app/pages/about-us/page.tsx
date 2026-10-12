@@ -158,9 +158,9 @@ export default function AboutUsPage() {
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <CreditCard className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-xl font-serif font-semibold text-foreground">Cash & Card on Delivery</h3>
+              <h3 className="text-xl font-serif font-semibold text-foreground">Cash, Card & Online Link Payment on Delivery</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Pay your way. Choose cash on delivery or card on delivery — settle up only when your order reaches your door.
+                Pay your way. Choose cash on delivery, card machine, or online link payment on delivery — settle up only when your order reaches your door.
               </p>
             </div>
 

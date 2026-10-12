@@ -132,30 +132,34 @@ async function fetchShopifyProducts() {
 
   // Fallback to Admin API
   if (ADMIN_API_TOKEN) {
-    const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-Shopify-Access-Token": ADMIN_API_TOKEN,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: adminQuery }),
-      next: { revalidate: 3600 },
-    });
+    try {
+      const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "X-Shopify-Access-Token": ADMIN_API_TOKEN,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: adminQuery }),
+        next: { revalidate: 3600 },
+      });
 
-    if (!response.ok) {
-      throw new Error(`Shopify API error: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Shopify API error: ${response.statusText}`);
+      }
+
+      const json = await response.json();
+      if (json.errors) {
+        throw new Error(`Shopify GraphQL errors: ${JSON.stringify(json.errors)}`);
+      }
+
+      return json.data?.products?.edges?.map((edge: any) => edge.node) || [];
+    } catch (err) {
+      console.warn("Shopify Admin API fetch failed:", err);
     }
-
-    const json = await response.json();
-    if (json.errors) {
-      throw new Error(`Shopify GraphQL errors: ${JSON.stringify(json.errors)}`);
-    }
-
-    return json.data.products.edges.map((edge: any) => edge.node);
   }
 
-  throw new Error("No valid Shopify credentials found");
+  return [];
 }
 
 function detectBrand(title: string, vendor: string): string {
@@ -229,9 +233,15 @@ export async function getAllProducts(): Promise<Product[]> {
     return cachedProducts.data;
   }
 
-  const rawProducts = await fetchShopifyProducts();
+  let rawProducts: any[] = [];
+  try {
+    rawProducts = await fetchShopifyProducts();
+  } catch (err) {
+    console.warn("fetchShopifyProducts failed:", err);
+    return cachedProducts?.data || [];
+  }
 
-  const mappedProducts = rawProducts.map((node: any): Product => {
+  const mappedProducts = (rawProducts || []).map((node: any): Product => {
     const firstVariant = node.variants?.edges?.[0]?.node;
     
     const priceVal = typeof firstVariant?.price === 'object' ? firstVariant?.price?.amount : firstVariant?.price;

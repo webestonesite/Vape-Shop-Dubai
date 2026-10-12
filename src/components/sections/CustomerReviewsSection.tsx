@@ -25,7 +25,7 @@ const INITIAL_REVIEWS: Review[] = [
     date: "August 5, 2026",
     verified: true,
     productName: "JUUL 2 Starter Kit & Crisp Menthol Pods",
-    title: "Insanely fast 2-hour delivery in Dubai Marina!",
+    title: "Insanely fast 3-hour delivery in Dubai Marina!",
     comment: "Ordered at 4 PM and the express driver arrived at my building in Dubai Marina by 5:20 PM with a wireless card machine. 100% authentic sealed JUUL 2 box with genuine QR verification. Easily the best vape store in UAE!",
     helpfulCount: 24,
   },
@@ -311,7 +311,7 @@ export function CustomerReviewsSection({
               </div>
               <div className="flex items-center gap-2 text-primary">
                 <UserCheck className="w-4 h-4 shrink-0" />
-                <span>2-Hour Express Delivery</span>
+                <span>3-Hour Express Delivery</span>
               </div>
               <button
                 onClick={() => setIsWriteModalOpen(true)}
@@ -535,7 +535,7 @@ export function CustomerReviewsSection({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Super fast 2-hour delivery & genuine product!"
+                    placeholder="e.g. Super fast 3-hour delivery & genuine product!"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     className="w-full px-4 py-2.5 bg-background border border-border/80 rounded-xl text-xs font-semibold text-foreground focus:outline-none focus:border-primary"

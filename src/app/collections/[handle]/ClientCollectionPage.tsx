@@ -615,7 +615,7 @@ function CollectionPageContent({
     // If Shopify data loaded, use it merged with customizer overrides
     if (collectionMeta && (collectionMeta.title || (collectionMeta as any).customHeading)) {
       const displayTitle = (mainSettings.customHeading as string) || CANONICAL_HANDLE_TITLES[hKey] || (collectionMeta as any).customHeading || collectionMeta.title || defaultTitle;
-      let shortDesc = `Shop authentic ${displayTitle} devices, pods, and e-liquids at Vape Shop Dubai. 2-Hour fast delivery in Dubai.`;
+      let shortDesc = `Shop authentic ${displayTitle} devices, pods, and e-liquids at Vape Shop Dubai. 3-Hour fast delivery in Dubai.`;
       if (collectionMeta.description) {
         const firstSentence = collectionMeta.description.split(". ")[0];
         if (firstSentence && firstSentence.length > 15 && firstSentence.length < 180) {
@@ -647,7 +647,7 @@ function CollectionPageContent({
 
     // Fallback: hardcoded defaults per collection
     let fallbackTitle = defaultTitle;
-    let fallbackDesc = `Shop authentic ${defaultTitle} devices, pods, and e-liquids at Vape Shop Dubai. 2-Hour fast delivery in Dubai.`;
+    let fallbackDesc = `Shop authentic ${defaultTitle} devices, pods, and e-liquids at Vape Shop Dubai. 3-Hour fast delivery in Dubai.`;
     let fallbackDescHtml = "";
     let fallbackFaqsJson: Array<{ question: string; answer: string }> | null = null;
 

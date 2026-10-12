@@ -70,7 +70,7 @@ export const CartDrawer: React.FC = () => {
     });
 
     message += `\n*Total Value:* ${cartTotal} AED`;
-    message += `\n*Payment Mode:* Cash / Card on Delivery`;
+    message += `\n*Payment Mode:* Cash, Card & Online Link Payment on Delivery`;
     message += `\n\nPlease confirm my order and request delivery details.`;
 
     const encodedText = encodeURIComponent(message);
@@ -235,7 +235,7 @@ export const CartDrawer: React.FC = () => {
               
               <div className="text-center pt-1">
                 <span className="text-[10px] text-text-muted">
-                  Same-day express delivery in 2 hours across Dubai
+                  Same-day express delivery within 3 hours across Dubai
                 </span>
               </div>
             </div>

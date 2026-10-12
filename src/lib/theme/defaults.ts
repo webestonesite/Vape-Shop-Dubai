@@ -58,17 +58,17 @@ const ABOUT_BODY = `Vape Shop Dubai is the UAE's trusted destination for 100% au
 
 Every device and pod we sell carries a manufacturer security seal and a scannable verification code, so you always know exactly what you are buying.
 
-- 2-hour express delivery across Dubai
+- 3-hour express delivery across Dubai
 - Same-day delivery to Abu Dhabi, Sharjah, Ajman and the wider UAE
-- Cash and card accepted at your door
+- Cash, card and online link payment accepted at your door
 - Free replacement on any factory-defective unit`;
 
 const SHIPPING_BODY = `We deliver across all seven Emirates, with express service in Dubai.
 
-- Dubai: 2-hour express delivery on orders placed before 10:00 PM
+- Dubai: 3-hour express delivery on orders placed before 10:00 PM
 - Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, UAQ: same-day or next-day express
 - Free delivery on orders above 300 AED
-- Cash on delivery and card machine on delivery both available
+- Cash on delivery, card machine and online link payment on delivery available
 
 An ID check confirming you are 18 or older is mandatory at the time of delivery.`;
 
@@ -297,7 +297,7 @@ function buildTemplates(): Record<string, Template> {
 const DEFAULT_HEADER: ThemeSettings["header"] = {
   announcementEnabled: true,
   announcementText:
-    "🚀 FREE DELIVERY ON ORDERS 300AED+  |  ⚡ SAME DAY DELIVERY  |  💳 COD & CREDIT CARD MACHINE ON DELIVERY",
+    "🚀 FREE DELIVERY ON ORDERS 300AED+  |  ⚡ DUBAI EXPRESS WITHIN 3 HOURS  |  💳 CASH, CARD & ONLINE LINK PAYMENT ON DELIVERY",
   logoText: "VAPE SHOP",
   logoSubText: "DUBAI",
   menu: [
@@ -381,13 +381,13 @@ const DEFAULT_HEADER: ThemeSettings["header"] = {
 
 const DEFAULT_FOOTER: ThemeSettings["footer"] = {
   trustItems: [
-    { icon: "Truck", title: "1-2 Hr Express Delivery", subtitle: "Dubai, Sharjah & Ajman" },
+    { icon: "Truck", title: "3-Hour Express Delivery", subtitle: "Dubai, Sharjah & Ajman" },
     { icon: "ShieldCheck", title: "100% Authentic UAE", subtitle: "Scratch-code verified" },
-    { icon: "CreditCard", title: "Cash & Card on Delivery", subtitle: "Pay at your doorstep" },
+    { icon: "CreditCard", title: "Cash, Card & Online Link Payment on Delivery", subtitle: "Pay at your doorstep" },
     { icon: "Clock", title: "24/7 Instant Dispatch", subtitle: "365 days non-stop service" },
   ],
   description:
-    "Dubai's leading online vape store. Authorized retailer of 100% authentic JUUL pods, MYLE devices, high-puff disposable vapes, and premium nicotine salts with 1–2 hour delivery across UAE.",
+    "Dubai's leading online vape store. Authorized retailer of 100% authentic JUUL pods, MYLE devices, high-puff disposable vapes, and premium nicotine salts with 3-hour express delivery across Dubai.",
   whatsappLabel: "WhatsApp Order",
   whatsappNumber: "971582839787",
   ratingText: "4.9 / 5.0",
@@ -438,7 +438,7 @@ const DEFAULT_FOOTER: ThemeSettings["footer"] = {
   healthWarning:
     "UAE 18+ ONLY: Products contain nicotine, an addictive chemical. For adult smokers (18+) in the UAE. Keep out of reach of children and pets.",
   paymentBadges: [
-    { icon: "CreditCard", label: "Cash / Card on Delivery" },
+    { icon: "CreditCard", label: "Cash, Card & Online Link Payment on Delivery" },
     { icon: "Link2", label: "Link Pay Accepted" },
     { icon: "Award", label: "Licensed UAE" },
   ],

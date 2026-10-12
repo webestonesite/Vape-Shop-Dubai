@@ -35,7 +35,7 @@ export async function generateMetadata({
   const description =
     meta?.seo?.description ||
     meta?.description ||
-    `Shop authentic ${title} in Dubai, UAE with 2-hour express delivery. 100% original verified products at Vape Shop Dubai.`;
+    `Shop authentic ${title} in Dubai, UAE with 3-hour express delivery. 100% original verified products at Vape Shop Dubai.`;
 
   const siteUrl = "https://vapeshopdubai.webestone.net";
   const canonicalUrl = `${siteUrl}/collections/${handle}`;

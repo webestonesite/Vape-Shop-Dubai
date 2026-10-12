@@ -130,7 +130,7 @@ export const WhatsAppFloating: React.FC = () => {
         const data = await res.json();
         handleNewAssistantMessage(data.reply);
       } else {
-        handleNewAssistantMessage("We offer ⚡ 2-Hour Express Delivery in Dubai for JUUL, Myle, and Disposables! Please reply with your required product or WhatsApp us at +971582839787.");
+        handleNewAssistantMessage("We offer ⚡ 3-Hour Express Delivery in Dubai for JUUL, Myle, and Disposables! Please reply with your required product or WhatsApp us at +971582839787.");
       }
     } catch (err) {
       console.error("AI Chat Error:", err);

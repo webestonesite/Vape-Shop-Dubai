@@ -160,7 +160,7 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
     message += `\n*Subtotal:* Dhs. ${cartTotal}`;
     message += `\n*Shipping:* ${isFreeShipping ? "FREE Express Delivery" : "Dhs. 25 Standard Delivery"}`;
     message += `\n*Total Order Value:* Dhs. ${grandTotal}`;
-    message += `\n*Payment Mode:* Cash / Card Machine on Delivery`;
+    message += `\n*Payment Mode:* Cash, Card & Online Link Payment on Delivery`;
     message += `\n\nPlease confirm my delivery schedule in Dubai.`;
 
     const encodedText = encodeURIComponent(message);
@@ -352,7 +352,7 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
                   </div>
                   <div>
                     <h3 className="text-xs font-black text-foreground uppercase tracking-wide">
-                      Cash / Card on Delivery
+                      Cash, Card & Online Link Payment on Delivery
                     </h3>
                     <p className="text-[11px] text-muted-foreground font-semibold mt-0.5">
                       PAY CONVENIENTLY AT YOUR DOORSTEP
@@ -595,11 +595,11 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
                     </div>
                     <div className="flex items-center gap-2 text-foreground/80">
                       <Clock className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span>Delivery in 2-3 Hours inside Dubai</span>
+                      <span>Delivery within 3 Hours inside Dubai</span>
                     </div>
                     <div className="flex items-center gap-2 text-foreground/80">
                       <CreditCard className="w-4 h-4 text-emerald-500 shrink-0" />
-                      <span>Cash or Card Machine on Delivery</span>
+                      <span>Cash, Card or Online Link Payment on Delivery</span>
                     </div>
                   </div>
                 </div>
@@ -622,7 +622,7 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
                     <Clock className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-black text-foreground uppercase">Fast 2-3h Delivery</h3>
+                    <h3 className="text-xs font-black text-foreground uppercase">Fast 3h Delivery</h3>
                     <p className="text-[10px] text-muted-foreground font-semibold">Across Dubai today</p>
                   </div>
                 </div>
@@ -642,7 +642,7 @@ export default function CartPageClient({ recommendedProducts = [] }: CartPageCli
                     <CreditCard className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-black text-foreground uppercase">Cash / Card on Delivery</h3>
+                    <h3 className="text-xs font-black text-foreground uppercase">Cash, Card & Link Pay</h3>
                     <p className="text-[10px] text-muted-foreground font-semibold">Pay at your doorstep</p>
                   </div>
                 </div>

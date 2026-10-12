@@ -13,14 +13,14 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "All Vape Products & Kits | Vape Shop Dubai",
   description:
-    "Browse all authentic vaping products, JUUL devices, MYLE pod kits, disposable vapes, and premium e-liquids available at Vape Shop Dubai with fast 2-hour UAE delivery.",
+    "Browse all authentic vaping products, JUUL devices, MYLE pod kits, disposable vapes, and premium e-liquids available at Vape Shop Dubai with fast 3-hour UAE delivery.",
   alternates: {
     canonical: "https://vapeshopdubai.webestone.net/products",
   },
   openGraph: {
     title: "All Vape Products & Kits | Vape Shop Dubai",
     description:
-      "Browse all authentic vaping products, JUUL devices, MYLE pod kits, disposable vapes, and premium e-liquids available at Vape Shop Dubai with fast 2-hour UAE delivery.",
+      "Browse all authentic vaping products, JUUL devices, MYLE pod kits, disposable vapes, and premium e-liquids available at Vape Shop Dubai with fast 3-hour UAE delivery.",
     url: "https://vapeshopdubai.webestone.net/products",
     type: "website",
     images: [{ url: "https://vapeshopdubai.webestone.net/hero_vape.png" }],
@@ -93,7 +93,7 @@ export default async function ProductIndexPage({
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground max-w-3xl leading-relaxed">
-            Explore our complete collection of genuine vaping devices, JUUL pods, MYLE systems, disposable vapes, and premium nicotine salts. All products are 100% authentic, sealed from official manufacturers, with guaranteed 2-hour express delivery across Dubai, Abu Dhabi, Sharjah, and all UAE emirates.
+            Explore our complete collection of genuine vaping devices, JUUL pods, MYLE systems, disposable vapes, and premium nicotine salts. All products are 100% authentic, sealed from official manufacturers, with guaranteed 3-hour express delivery across Dubai, Abu Dhabi, Sharjah, and all UAE emirates.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">

@@ -676,7 +676,7 @@ export const ProductFeed: React.FC<
 
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mt-3 max-w-md mx-auto">
           {settings?.description ||
-            "Premium vape products. Authentic brands. 2-hour Dubai delivery."}
+            "Premium vape products. Authentic brands. 3-hour Dubai delivery."}
         </p>
       </div>
 

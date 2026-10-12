@@ -6,9 +6,9 @@ import { Truck, ShieldCheck, CreditCard, RefreshCw } from "lucide-react";
 const POINTS = [
   {
     icon: Truck,
-    title: "1-2 Hr Express Delivery",
+    title: "3-Hour Express Delivery",
     description: "Dubai, Sharjah & Ajman express",
-    badge: "⚡ EXPRESS 2-HR",
+    badge: "⚡ EXPRESS 3-HR",
   },
   {
     icon: ShieldCheck,
@@ -18,9 +18,9 @@ const POINTS = [
   },
   {
     icon: CreditCard,
-    title: "Cash & Card on Delivery",
-    description: "Pay at your doorstep easily",
-    badge: "💳 COD & CARD",
+    title: "Cash, Card & Online Link Payment on Delivery",
+    description: "Pay at your doorstep easily with cash, card or link",
+    badge: "💳 COD, CARD & LINK",
   },
   {
     icon: RefreshCw,
