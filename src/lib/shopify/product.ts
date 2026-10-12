@@ -507,27 +507,83 @@ export async function getProductByHandle(handle: string) {
 
     // Fallback to Admin API if node not fetched
     if (!node && ADMIN_API_TOKEN) {
-      const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": ADMIN_API_TOKEN,
-        },
-        body: JSON.stringify({
-          query: adminQuery,
-          variables: { handle },
-        }),
-        next: { revalidate: 60 },
-      });
+      try {
+        const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": ADMIN_API_TOKEN,
+          },
+          body: JSON.stringify({
+            query: adminQuery,
+            variables: { handle },
+          }),
+          next: { revalidate: 60 },
+        });
 
-      if (response.ok) {
-        const json = await response.json();
-        node = json?.data?.productByHandle;
+        if (response.ok) {
+          const json = await response.json();
+          node = json?.data?.productByHandle;
+        }
+      } catch (err) {
+        console.warn("Admin fetch failed for handle:", err);
       }
     }
 
     if (!node) {
+      if (process.env.NODE_ENV !== "production") {
+        const rawTitle = handle
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+        return {
+          id: `dev-${handle}`,
+          name: rawTitle,
+          handle,
+          category: handle.includes("juul") ? "juul" : "disposables",
+          brand: handle.includes("juul") ? "JUUL" : "Vape Shop Dubai",
+          price: 1200,
+          originalPrice: 1530,
+          rating: 4.9,
+          reviews: 129,
+          image: "/Slider/juul_1_slider.webp",
+          images: ["/Slider/juul_1_slider.webp"],
+          isPopular: true,
+          isSoldOut: false,
+          keySpecifications: [
+            { label: "Brand", value: "JUUL" },
+            { label: "Model", value: "Juul 2 Pods and Kits" },
+            { label: "Device Type", value: "Starter Kit / Pod System" },
+            { label: "Battery Capacity", value: "Rechargeable Built-in" },
+            { label: "Charging System", value: "Magnetic Charging Dock" },
+            { label: "Activation", value: "Draw-Activated" },
+            { label: "Pack Size", value: "24 Pack" },
+            { label: "Compatibility", value: "JUUL 2 Pods Only" },
+          ],
+          specsTable: [
+            { label: "Brand", value: "JUUL" },
+            { label: "Model", value: "Juul 2 Pods and Kits" },
+            { label: "Device Type", value: "Starter Kit / Pod System" },
+            { label: "Battery Capacity", value: "Rechargeable Built-in" },
+            { label: "Charging System", value: "Magnetic Charging Dock" },
+            { label: "Activation", value: "Draw-Activated" },
+            { label: "Pack Size", value: "24 Pack" },
+            { label: "Compatibility", value: "JUUL 2 Pods Only" },
+          ],
+          variants: [
+            {
+              id: `var-${handle}`,
+              title: "Default Option",
+              price: 1200,
+              compareAtPrice: 1530,
+              availableForSale: true,
+              inventoryQuantity: 10,
+            },
+          ],
+          tags: ["juul", "JUUL 2 Series"],
+          descriptionHtml: `<p>${rawTitle} available at Vape Shop Dubai.</p>`,
+        } as any;
+      }
       return null;
     }
 

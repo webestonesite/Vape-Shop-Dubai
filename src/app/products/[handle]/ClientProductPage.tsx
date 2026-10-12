@@ -30,7 +30,16 @@ import {
   Zap,
   X,
   Search,
-  Play
+  Play,
+  BatteryCharging,
+  Layers,
+  Package,
+  Flame,
+  Wind,
+  Cpu,
+  SlidersHorizontal,
+  CheckCircle2,
+  Droplets,
 } from "lucide-react";
 import { ProductVideoPlayer } from "@/components/products/ProductVideoPlayer";
 import { getYouTubeDetails } from "@/lib/youtube";
@@ -62,6 +71,22 @@ import {
   isInvalidValue,
   getDeterministicReviews,
 } from "@/lib/shopify/smart-specs";
+
+function getProductSpecIcon(label: string) {
+  const l = label.toLowerCase();
+  if (l.includes("battery") || l.includes("mah")) return BatteryCharging;
+  if (l.includes("charge") || l.includes("charging") || l.includes("power") || l.includes("watt") || l.includes("output")) return Zap;
+  if (l.includes("brand") || l.includes("maker") || l.includes("manufacturer")) return ShieldCheck;
+  if (l.includes("pack") || l.includes("size") || l.includes("quantity") || l.includes("box")) return Package;
+  if (l.includes("nicotine") || l.includes("salt") || l.includes("strength") || l.includes("mg")) return Droplets;
+  if (l.includes("liquid") || l.includes("capacity") || l.includes("volume") || l.includes("ml") || l.includes("e-juice") || l.includes("e-liquid")) return Droplet;
+  if (l.includes("puff")) return Wind;
+  if (l.includes("activation") || l.includes("draw") || l.includes("fire")) return Flame;
+  if (l.includes("coil") || l.includes("resistance") || l.includes("ohm") || l.includes("chip")) return Cpu;
+  if (l.includes("compatib") || l.includes("pod")) return CheckCircle2;
+  if (l.includes("model") || l.includes("series") || l.includes("type") || l.includes("system") || l.includes("category")) return Layers;
+  return SlidersHorizontal;
+}
 
 /** One row of the buy box's specification card. */
 interface SpecCardRow {
@@ -994,35 +1019,48 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
                 if (!flag("showSpecCard") || displayRows.length === 0) return null;
 
                 return (
-                  <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs relative overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20" />
+                  <div className="rounded-2xl border border-primary/20 bg-gradient-to-b from-card via-card to-primary/[0.02] p-4 sm:p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] relative overflow-hidden transition-all duration-300">
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
                     {text("specCardHeading", "Key Product Specifications") && (
-                      <div className="flex items-center justify-between mb-3.5">
-                        <h3 className="text-xs font-black uppercase tracking-wider text-primary flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          {text("specCardHeading", "Key Product Specifications")}
-                        </h3>
-                        {displayRows.length > 4 && (
-                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                            {displayRows.length} Specifications
+                      <div className="flex items-center justify-between mb-3.5 pb-2.5 border-b border-border/50">
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <SlidersHorizontal className="w-3 h-3 text-primary" />
+                          </div>
+                          <h3 className="text-xs font-black uppercase tracking-wider text-foreground">
+                            {text("specCardHeading", "Key Product Specifications")}
+                          </h3>
+                        </div>
+                        {displayRows.length > 0 && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+                            <CheckCircle2 className="w-2.5 h-2.5 text-primary" />
+                            {displayRows.length} Specs
                           </span>
                         )}
                       </div>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-xs">
-                      {displayRows.map((row: any, idx: number) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between gap-3 border-b border-border/40 py-2 min-w-0"
-                        >
-                          <span className="text-muted-foreground font-medium shrink-0 whitespace-nowrap text-xs">
-                            {row.label}:
-                          </span>
-                          <span className="font-bold text-foreground text-right leading-tight break-words text-xs">
-                            {row.value}
-                          </span>
-                        </div>
-                      ))}
+                    <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                      {displayRows.map((row: any, idx: number) => {
+                        const IconComponent = getProductSpecIcon(row.label);
+                        return (
+                          <div
+                            key={idx}
+                            className="group flex items-start gap-2 sm:gap-2.5 rounded-xl border border-border/60 bg-muted/20 hover:bg-primary/[0.04] hover:border-primary/30 p-2 sm:p-2.5 transition-all duration-200"
+                          >
+                            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-background border border-border/80 flex items-center justify-center shrink-0 text-primary group-hover:scale-105 group-hover:bg-primary group-hover:text-white transition-all shadow-2xs mt-0.5">
+                              <IconComponent className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <span className="block text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-muted-foreground/85 leading-none truncate">
+                                {row.label}
+                              </span>
+                              <span className="block text-[11px] sm:text-xs font-extrabold text-foreground leading-snug break-words mt-1">
+                                {row.value}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
