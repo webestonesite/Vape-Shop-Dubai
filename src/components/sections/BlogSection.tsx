@@ -130,12 +130,14 @@ export const BlogSection: React.FC<{ settings: BlogSettings }> = ({
               className="group overflow-hidden bg-background/80 hover:bg-background border border-border/80 hover:border-primary/40 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 flex flex-col gap-0 h-full rounded-[1.75rem]"
             >
               {/* Card Image Header */}
-              <div className="relative h-48 sm:h-52 w-full overflow-hidden border-b border-border/40">
+              <div className="relative aspect-video w-full overflow-hidden border-b border-border/40">
                 <BlogImageWithSkeleton
                   src={post.image}
                   alt={post.title}
+                  // Card widths: 1 col on mobile, 2 cols from md, 3 cols from lg (capped by the 1600px container).
+                  sizes="(min-width: 1600px) 470px, (min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"
                   containerClassName="w-full h-full"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
                 
                 {/* Category Badge */}

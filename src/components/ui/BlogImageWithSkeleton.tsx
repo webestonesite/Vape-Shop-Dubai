@@ -9,6 +9,24 @@ interface BlogImageWithSkeletonProps {
   className?: string;
   containerClassName?: string;
   priority?: boolean;
+  /** Rendered slot width hint. When set and the image is on the Shopify CDN, a responsive srcSet is generated. */
+  sizes?: string;
+  /** Candidate widths for the generated srcSet. */
+  widths?: number[];
+}
+
+const DEFAULT_WIDTHS = [320, 480, 640, 800, 960, 1200];
+
+/** Returns the Shopify CDN URL resized to `width`, or null if the image isn't on the Shopify CDN. */
+function shopifyResize(src: string, width: number): string | null {
+  try {
+    const url = new URL(src);
+    if (url.hostname !== "cdn.shopify.com") return null;
+    url.searchParams.set("width", String(width));
+    return url.toString();
+  } catch {
+    return null;
+  }
 }
 
 export function BlogImageWithSkeleton({
@@ -17,6 +35,8 @@ export function BlogImageWithSkeleton({
   className = "",
   containerClassName = "",
   priority = false,
+  sizes,
+  widths = DEFAULT_WIDTHS,
 }: BlogImageWithSkeletonProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -47,6 +67,17 @@ export function BlogImageWithSkeleton({
     src.includes("blog_pod") ||
     src.includes("blog_authenticity");
 
+  // Responsive candidates are only generated when the caller describes the slot width.
+  const responsive =
+    sizes && !isDummyImage && shopifyResize(src, widths[0])
+      ? {
+          srcSet: widths.map((w) => `${shopifyResize(src, w)} ${w}w`).join(", "),
+          sizes,
+          // Fallback for browsers without srcset support: a mid-size candidate, not the original upload.
+          src: shopifyResize(src, widths[Math.floor(widths.length / 2)])!,
+        }
+      : null;
+
   return (
     <div className={`relative overflow-hidden bg-muted/70 ${containerClassName}`}>
       {/* Skeleton Pulse animation shown while loading */}
@@ -59,7 +90,9 @@ export function BlogImageWithSkeleton({
       {!isDummyImage && !error && (
         <img
           ref={imgRef}
-          src={src}
+          src={responsive?.src ?? src}
+          srcSet={responsive?.srcSet}
+          sizes={responsive?.sizes}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
