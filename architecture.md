@@ -34,3 +34,9 @@ Pages render `<TemplateSections>`; those with heavy local state (collection,
 product) pass their own sections in as `slots` so the template still controls
 order and visibility. Per-handle overrides (`collection:juul-1-series`) take
 full manual control and switch conditions off. See `docs/theme-customizer.md`.
+
+## Mega Menu Architecture
+- Configured under `ThemeSettings.header.megaMenu`.
+- Managed dynamically from the Admin Theme Customizer (`/admin` -> Header -> Mega Menu tab).
+- Category schemas: `id`, `title`, `subtitle`, `badge`, `icon`, `viewAllHref`, `viewAllLabel`, `featuredTitle`, `featuredDescription`, `featuredTag`, `brands`.
+- Sourced dynamically into `Navbar.tsx` with zero hardcoded client content and seamless live preview bridge.

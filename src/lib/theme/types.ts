@@ -122,6 +122,36 @@ export interface NavItem {
   children: NavSubItem[];
 }
 
+export interface MegaMenuBrandItem {
+  name: string;
+  href: string;
+  badge?: string;
+  subtitle?: string;
+  tag?: string;
+  isHot?: boolean;
+}
+
+export interface MegaMenuCategory {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge?: string;
+  icon?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
+  featuredTitle?: string;
+  featuredDescription?: string;
+  featuredTag?: string;
+  brands: MegaMenuBrandItem[];
+}
+
+export interface MegaMenuSettings {
+  enabled: boolean;
+  triggerLabel?: string;
+  defaultCategoryId?: string;
+  categories: MegaMenuCategory[];
+}
+
 export interface HeaderSettings {
   announcementEnabled: boolean;
   announcementText: string;
@@ -129,6 +159,7 @@ export interface HeaderSettings {
   logoText: string;
   logoSubText: string;
   menu: NavItem[];
+  megaMenu?: MegaMenuSettings;
 }
 
 export interface FooterTrustItem {

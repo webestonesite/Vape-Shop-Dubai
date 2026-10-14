@@ -17,11 +17,17 @@ import {
   Zap,
   Award,
   ArrowRight,
+  Droplet,
+  Box,
+  ShieldCheck,
+  Tag,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useHeaderSettings } from "@/context/ThemeSettingsContext";
 import { useCustomerAuth } from "@/context/CustomerAuthContext";
+import { DEFAULT_MEGA_MENU } from "@/lib/theme/defaults";
+import type { MegaMenuSettings, MegaMenuCategory, MegaMenuBrandItem } from "@/lib/theme/types";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -31,33 +37,44 @@ interface NavbarProps {
   activeCategory?: string;
 }
 
-interface BrandCategory {
-  name: string;
-  desc: string;
-  icon: React.ComponentType<{ className?: string }>;
-  keywords: string[];
-}
+const getMegaCategoryIcon = (iconName?: string) => {
+  switch (iconName?.toLowerCase()) {
+    case "zap":
+    case "lightning":
+      return Zap;
+    case "award":
+    case "trophy":
+      return Award;
+    case "droplet":
+    case "juice":
+    case "water":
+      return Droplet;
+    case "shieldcheck":
+    case "shield":
+      return ShieldCheck;
+    case "box":
+    case "package":
+      return Box;
+    case "tag":
+      return Tag;
+    case "flame":
+    case "fire":
+    default:
+      return Flame;
+  }
+};
 
-const BRAND_CATEGORIES: BrandCategory[] = [
-  {
-    name: "Disposable Brands",
-    desc: "Top high-puff authentic vapes",
-    icon: Flame,
-    keywords: ["fakher", "elf", "mary", "vozol", "tugboat", "hqd", "geek bar", "fummo", "disposable"],
-  },
-  {
-    name: "Pod Systems & Kits",
-    desc: "Refillable devices & pods",
-    icon: Zap,
-    keywords: ["uwell", "oxva", "vaporesso", "smok", "voopoo", "geek vape", "relx", "pod"],
-  },
-  {
-    name: "E-Liquids & Nic Salts",
-    desc: "Premium salt nic & freebase",
-    icon: Award,
-    keywords: ["salt", "stig", "bars", "maskking", "yuoto", "nerd", "silvaper", "juice"],
-  },
-];
+const getBrandMonogram = (name: string): string => {
+  const clean = name.replace(/vape/gi, "").trim();
+  const parts = clean.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  if (parts.length === 1 && parts[0].length >= 2) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+};
 
 const NavbarContent: React.FC<NavbarProps> = ({
   onSearchChange,
@@ -104,33 +121,25 @@ const NavbarContent: React.FC<NavbarProps> = ({
     }, 400);
   };
 
-  const categorizeBrandList = (subItems: string[]) => {
-    const col1: string[] = [];
-    const col2: string[] = [];
-    const col3: string[] = [];
+  const megaMenuConfig: MegaMenuSettings = header.megaMenu ?? DEFAULT_MEGA_MENU;
+  const megaCategories = useMemo(() => {
+    if (
+      megaMenuConfig.enabled !== false &&
+      megaMenuConfig.categories &&
+      megaMenuConfig.categories.length > 0
+    ) {
+      return megaMenuConfig.categories;
+    }
+    return DEFAULT_MEGA_MENU.categories;
+  }, [megaMenuConfig]);
 
-    subItems.forEach((brandName) => {
-      const lower = brandName.toLowerCase();
-      if (BRAND_CATEGORIES[0].keywords.some((k) => lower.includes(k))) {
-        col1.push(brandName);
-      } else if (BRAND_CATEGORIES[1].keywords.some((k) => lower.includes(k))) {
-        col2.push(brandName);
-      } else if (BRAND_CATEGORIES[2].keywords.some((k) => lower.includes(k))) {
-        col3.push(brandName);
-      } else {
-        const minLen = Math.min(col1.length, col2.length, col3.length);
-        if (col1.length === minLen) col1.push(brandName);
-        else if (col2.length === minLen) col2.push(brandName);
-        else col3.push(brandName);
-      }
-    });
+  const [activeMegaCatId, setActiveMegaCatId] = useState<string>(
+    megaMenuConfig.defaultCategoryId ?? megaCategories[0]?.id ?? "disposable"
+  );
 
-    return [
-      { ...BRAND_CATEGORIES[0], items: col1 },
-      { ...BRAND_CATEGORIES[1], items: col2 },
-      { ...BRAND_CATEGORIES[2], items: col3 },
-    ];
-  };
+  const activeMegaCategory = useMemo(() => {
+    return megaCategories.find((c) => c.id === activeMegaCatId) ?? megaCategories[0];
+  }, [megaCategories, activeMegaCatId]);
 
   // Suggestions states & refs
   const [products, setProducts] = useState<any[]>([]);
@@ -393,7 +402,12 @@ const NavbarContent: React.FC<NavbarProps> = ({
             <nav className="hidden lg:flex flex-1 items-center justify-start 2xl:justify-center gap-0.5 xl:gap-1 2xl:gap-1.5 min-w-0 ml-2 xl:ml-4 2xl:ml-6 mr-1 xl:mr-2" ref={dropdownRef}>
               {navLinks.map((link) => {
                 const mainHref = getNavLinkHref(link.id);
-                const isBrand = link.id === "brand" || link.label.toUpperCase() === "BRAND";
+                const triggerLabel = (megaMenuConfig.triggerLabel || "BRAND").toUpperCase();
+                const isBrand =
+                  megaMenuConfig.enabled !== false &&
+                  (link.id === "brand" ||
+                    link.label.toUpperCase() === triggerLabel ||
+                    link.id === triggerLabel.toLowerCase());
 
                 return (
                   <div 
@@ -405,10 +419,10 @@ const NavbarContent: React.FC<NavbarProps> = ({
                   >
                     <div
                       suppressHydrationWarning
-                      className={`flex items-center rounded-xl text-[10.5px] xl:text-[11.5px] 2xl:text-xs font-bold xl:font-extrabold tracking-tight whitespace-nowrap transition-all duration-200 ${
+                      className={`flex items-center rounded-xl text-[12px] lg:text-[12.5px] xl:text-[13.5px] 2xl:text-[14.5px] font-serif font-black [font-weight:900] tracking-wider whitespace-nowrap transition-all duration-200 ${
                         getActiveState(link.id) || openDropdown === link.id
-                          ? "text-primary bg-primary/10 font-black shadow-xs"
-                          : "text-foreground/85 hover:text-primary hover:bg-muted/70"
+                          ? "text-primary bg-primary/10 shadow-xs"
+                          : "text-foreground hover:text-primary hover:bg-muted/70"
                       }`}
                     >
                       <Link
@@ -423,7 +437,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           }
                           setOpenDropdown(null);
                         }}
-                        className={`${link.sub ? "pl-1.5 lg:pl-2 xl:pl-2.5 2xl:px-3 pr-0.5 xl:pr-1" : "px-1.5 lg:px-2 xl:px-2.5 2xl:px-3"} py-1.5 xl:py-2 text-left hover:text-primary transition-colors cursor-pointer`}
+                        className={`${link.sub ? "pl-2 lg:pl-2.5 xl:pl-3 2xl:px-3.5 pr-0.5 xl:pr-1" : "px-2 lg:px-2.5 xl:px-3 2xl:px-3.5"} py-1.5 xl:py-2 text-left hover:text-primary transition-colors cursor-pointer uppercase font-serif font-black [font-weight:900] tracking-wider`}
                       >
                         {link.label}
                       </Link>
@@ -445,7 +459,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           className="pr-1.5 lg:pr-2 xl:pr-2.5 2xl:pr-3 py-1.5 xl:py-2 pl-0.5 hover:text-primary transition-all cursor-pointer flex items-center justify-center"
                           aria-label={`Toggle ${link.label} menu`}
                         >
-                          <ChevronDown className={`h-2.5 w-2.5 xl:h-3 xl:w-3 transition-transform duration-200 ${openDropdown === link.id ? "rotate-180 text-primary" : ""}`} />
+                          <ChevronDown className={`h-3 w-3 xl:h-3.5 xl:w-3.5 stroke-[2.5] transition-transform duration-200 ${openDropdown === link.id ? "rotate-180 text-primary" : ""}`} />
                         </button>
                       )}
                     </div>
@@ -464,57 +478,146 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           isInsideDropdownRef.current = false;
                           handleMouseLeaveNav();
                         }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[940px] xl:w-[1020px] max-w-[calc(100vw-32px)] z-50 animate-in fade-in slide-in-from-top-1 duration-150 before:absolute before:-top-6 before:left-0 before:right-0 before:h-6 before:content-['']"
+                        className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 w-[980px] xl:w-[1080px] 2xl:w-[1160px] max-w-[calc(100vw-32px)] z-50 animate-in fade-in slide-in-from-top-2 duration-150 before:absolute before:-top-6 before:left-0 before:right-0 before:h-6 before:content-['']"
                       >
-                        <div className="bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-2xl p-6 sm:p-7">
-                          <div className="grid grid-cols-3 gap-6 xl:gap-8 items-start">
-                            {categorizeBrandList(link.sub).map((cat) => (
-                              <div key={cat.name} className="flex flex-col">
-                                {/* Column Header */}
-                                <div className="flex items-center gap-3 pb-3 mb-3 border-b border-border/60">
-                                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-xs">
-                                    <cat.icon className="w-4 h-4" />
+                        <div className="bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-2xl p-5 sm:p-6 xl:p-6.5">
+                          {/* 3 Compact Category Cards Across Top */}
+                          <div className="grid grid-cols-3 gap-3 xl:gap-4 pb-4 mb-4 border-b border-border/60">
+                            {megaCategories.map((cat) => {
+                              const isActive = cat.id === activeMegaCategory.id;
+                              const CatIcon = getMegaCategoryIcon(cat.icon);
+                              return (
+                                <div
+                                  key={cat.id}
+                                  onMouseEnter={() => setActiveMegaCatId(cat.id)}
+                                  className={`group/cat cursor-pointer rounded-xl p-2.5 xl:p-3 transition-all duration-150 select-none relative border ${
+                                    isActive
+                                      ? "bg-gradient-to-r from-primary/12 via-primary/6 to-transparent border-primary/50 shadow-2xs"
+                                      : "bg-muted/30 hover:bg-muted/60 border-border/40 hover:border-border/70"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div
+                                      className={`w-9 h-9 xl:w-9.5 xl:h-9.5 rounded-lg flex items-center justify-center shrink-0 shadow-xs transition-all duration-150 ${
+                                        isActive
+                                          ? "bg-primary text-white shadow-primary/25 scale-105"
+                                          : "bg-primary/10 text-primary group-hover/cat:bg-primary/20 group-hover/cat:scale-105"
+                                      }`}
+                                    >
+                                      <CatIcon className="w-4.5 h-4.5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center justify-between gap-1">
+                                        <h4
+                                          className={`text-xs xl:text-[13px] font-black uppercase tracking-wide truncate font-serif transition-colors ${
+                                            isActive ? "text-primary" : "text-foreground group-hover/cat:text-primary"
+                                          }`}
+                                        >
+                                          {cat.title}
+                                        </h4>
+                                        {cat.badge && (
+                                          <span
+                                            className={`text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full shrink-0 ${
+                                              isActive
+                                                ? "bg-primary text-white"
+                                                : "bg-muted-foreground/10 text-muted-foreground"
+                                            }`}
+                                          >
+                                            {cat.badge}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <p className="text-[11px] text-muted-foreground font-medium truncate mt-0.5">
+                                        {cat.subtitle}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div className="min-w-0">
-                                    <h4 className="text-xs font-black text-foreground uppercase tracking-wider truncate font-serif">
-                                      {cat.name}
-                                    </h4>
-                                    <p className="text-[11px] text-muted-foreground font-medium truncate">
-                                      {cat.desc}
-                                    </p>
-                                  </div>
-                                </div>
 
-                                {/* Spacious Clickable Brand Cards */}
-                                <div className="flex flex-col gap-2">
-                                  {cat.items.map((brandName) => {
-                                    const subHref = getNavLinkHref(link.id, brandName);
-                                    const initial = brandName.trim().charAt(0).toUpperCase();
-                                    return (
-                                      <Link
-                                        key={brandName}
-                                        href={subHref}
-                                        onClick={() => {
-                                          setOpenDropdown(null);
-                                          isInsideDropdownRef.current = false;
-                                        }}
-                                        className="group/b flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-border/50 bg-muted/20 hover:bg-primary/10 hover:border-primary/40 hover:shadow-sm transition-all duration-150 cursor-pointer"
-                                      >
-                                        <div className="flex items-center gap-2.5 min-w-0">
-                                          <span className="w-7 h-7 rounded-lg bg-card border border-border/50 text-foreground font-black text-xs flex items-center justify-center group-hover/b:bg-primary group-hover/b:text-primary-foreground group-hover/b:border-primary transition-colors shrink-0 shadow-xs">
-                                            {initial}
-                                          </span>
-                                          <span className="text-[13px] font-bold text-foreground group-hover/b:text-primary transition-colors truncate">
-                                            {brandName}
-                                          </span>
-                                        </div>
-                                        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground opacity-30 -translate-x-1 group-hover/b:opacity-100 group-hover/b:translate-x-0 group-hover/b:text-primary transition-all shrink-0" />
-                                      </Link>
-                                    );
-                                  })}
+                                  {/* Active Accent Line at bottom of category card */}
+                                  <div
+                                    className={`absolute -bottom-[17px] left-2 right-2 h-0.5 rounded-full transition-all duration-150 ${
+                                      isActive ? "bg-primary shadow-xs" : "bg-transparent group-hover/cat:bg-primary/25"
+                                    }`}
+                                  />
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
+                          </div>
+
+                          {/* Brands of Active Category with Distinct Round Orange Borders */}
+                          <div
+                            key={activeMegaCategory.id}
+                            className="grid grid-cols-3 gap-2.5 xl:gap-3 min-h-[220px] animate-in fade-in-50 duration-150 content-start"
+                          >
+                            {activeMegaCategory.brands.map((brand) => {
+                              const initial = brand.name.trim().charAt(0).toUpperCase();
+                              const subHref =
+                                getNavLinkHref(link.id, brand.name) !== "/shop"
+                                  ? getNavLinkHref(link.id, brand.name)
+                                  : (brand.href || `/collections/${brand.name.toLowerCase().replace(/\s+/g, "-")}`);
+
+                              return (
+                                <Link
+                                  key={brand.name}
+                                  href={subHref}
+                                  onClick={() => {
+                                    setOpenDropdown(null);
+                                    isInsideDropdownRef.current = false;
+                                  }}
+                                  className="group/b flex items-center justify-between px-3.5 py-2.5 xl:px-4 xl:py-3 rounded-xl border border-primary/25 hover:border-primary bg-card/90 dark:bg-card/90 hover:bg-primary/[0.06] hover:shadow-sm transition-all duration-150 cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-3 min-w-0">
+                                    <span className="w-8 h-8 xl:w-8.5 xl:h-8.5 rounded-lg bg-primary/10 border border-primary/25 text-primary font-black text-xs xl:text-sm font-serif flex items-center justify-center group-hover/b:scale-105 group-hover/b:bg-primary group-hover/b:text-white group-hover/b:border-primary transition-all shrink-0 shadow-2xs">
+                                      {initial}
+                                    </span>
+                                    <div className="min-w-0">
+                                      <h5 className="text-xs xl:text-[13.5px] font-black font-serif text-foreground group-hover/b:text-primary transition-colors truncate">
+                                        {brand.name}
+                                      </h5>
+                                      {brand.subtitle ? (
+                                        <p className="text-[10px] xl:text-[11px] text-muted-foreground font-medium truncate mt-0.5">
+                                          {brand.subtitle}
+                                        </p>
+                                      ) : (
+                                        <p className="text-[10px] xl:text-[11px] text-muted-foreground/75 font-medium truncate mt-0.5">
+                                          Official Genuine UAE
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Compact Round Action Button with Orange Accent Border */}
+                                  <div className="w-6 h-6 xl:w-6.5 xl:h-6.5 rounded-full bg-muted/60 border border-primary/25 text-muted-foreground group-hover/b:bg-primary group-hover/b:border-primary group-hover/b:text-white flex items-center justify-center shrink-0 ml-2 transition-all duration-150 shadow-2xs group-hover/b:translate-x-0.5">
+                                    <ArrowRight className="w-3 h-3 transition-colors" />
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
+
+                          {/* Clean Bottom Bar with Verified Badges and CTA */}
+                          <div className="flex items-center justify-between pt-4 mt-4 border-t border-border/60">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground font-serif">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 text-[11px]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                100% Genuine UAE Verified Stock
+                              </span>
+                              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary font-bold border border-primary/20 text-[11px]">
+                                ⚡ Dubai Express 3-Hour Delivery
+                              </span>
+                            </div>
+
+                            <Link
+                              href={activeMegaCategory.viewAllHref || "/collections/all"}
+                              onClick={() => {
+                                setOpenDropdown(null);
+                                isInsideDropdownRef.current = false;
+                              }}
+                              className="group/btn px-4 py-2 rounded-lg bg-primary hover:bg-primary/95 text-white font-serif font-black text-xs uppercase tracking-wider shadow-sm hover:shadow-primary/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                            >
+                              <span>{activeMegaCategory.viewAllLabel || `View All ${activeMegaCategory.title}`}</span>
+                              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                            </Link>
                           </div>
                         </div>
                       </div>
@@ -547,7 +650,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                   setOpenDropdown(null);
                                   isInsideDropdownRef.current = false;
                                 }}
-                                className="w-full text-left px-4 py-3 text-sm font-extrabold text-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all cursor-pointer flex items-center justify-between group/sub"
+                                className="w-full text-left px-4 py-3 text-sm font-bold font-serif text-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all cursor-pointer flex items-center justify-between group/sub"
                               >
                                 <span>{s}</span>
                                 <span className="opacity-0 group-hover/sub:opacity-100 text-primary transition-opacity font-bold">→</span>
@@ -843,9 +946,9 @@ const NavbarContent: React.FC<NavbarProps> = ({
                       <button
                         type="button"
                         onClick={() => setOpenDropdown(isSubOpen ? null : link.id)}
-                        className={`w-full text-left px-4 py-3 rounded-xl text-sm font-extrabold tracking-wider transition-all cursor-pointer flex items-center justify-between ${
+                        className={`w-full text-left px-4 py-3 rounded-xl text-sm font-serif font-black tracking-wide uppercase transition-all cursor-pointer flex items-center justify-between ${
                           getActiveState(link.id) || isSubOpen
-                            ? "bg-primary/10 text-primary font-black"
+                            ? "bg-primary/10 text-primary"
                             : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
                         }`}
                       >
@@ -866,9 +969,9 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           setIsMobileMenuOpen(false);
                           setOpenDropdown(null);
                         }}
-                        className={`w-full text-left px-4 py-3 rounded-xl text-sm font-extrabold tracking-wider transition-all ${
+                        className={`w-full text-left px-4 py-3 rounded-xl text-sm font-serif font-black tracking-wide uppercase transition-all ${
                           getActiveState(link.id)
-                            ? "bg-primary/10 text-primary font-black"
+                            ? "bg-primary/10 text-primary"
                             : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
                         }`}
                       >
@@ -885,30 +988,58 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           setIsMobileMenuOpen(false);
                           setOpenDropdown(null);
                         }}
-                        className="w-full text-left px-3.5 py-2.5 text-xs font-black tracking-wider text-primary uppercase hover:bg-primary/10 rounded-xl transition-all flex items-center justify-between cursor-pointer"
+                        className="w-full text-left px-3.5 py-2.5 text-xs font-serif font-black tracking-wider text-primary uppercase hover:bg-primary/10 rounded-xl transition-all flex items-center justify-between cursor-pointer"
                       >
                         <span>View All {link.label}</span>
                         <span>→</span>
                       </Link>
                       {link.id === "brand" || link.label.toUpperCase() === "BRAND" ? (
-                        <div className="grid grid-cols-2 gap-2 pt-1 pb-1">
-                          {(link.sub ?? []).map((s) => {
-                            const subHref = getNavLinkHref(link.id, s);
-                            return (
+                        <div className="space-y-2.5 pt-1.5 pb-2">
+                          {/* Category Switcher Pills */}
+                          <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                            {megaCategories.map((cat) => {
+                              const isCatActive = cat.id === activeMegaCategory.id;
+                              return (
+                                <button
+                                  key={cat.id}
+                                  type="button"
+                                  onClick={() => setActiveMegaCatId(cat.id)}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-black tracking-wide whitespace-nowrap transition-all cursor-pointer ${
+                                    isCatActive
+                                      ? "bg-primary text-primary-foreground shadow-xs"
+                                      : "bg-background/90 text-muted-foreground border border-border/50 hover:text-foreground"
+                                  }`}
+                                >
+                                  {cat.title}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* Side-by-Side Brand Grid in Mobile */}
+                          <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
+                            {activeMegaCategory.brands.map((b) => (
                               <Link
-                                key={s}
-                                href={subHref}
+                                key={b.name}
+                                href={b.href}
                                 onClick={() => {
                                   setIsMobileMenuOpen(false);
                                   setOpenDropdown(null);
                                 }}
-                                className="px-3 py-2 text-xs font-bold text-foreground hover:text-primary rounded-xl bg-background/80 border border-border/40 hover:border-primary/50 transition-all flex items-center justify-between truncate cursor-pointer"
+                                className="px-2.5 py-2 text-xs font-bold text-foreground hover:text-primary rounded-xl bg-background/90 border border-border/50 hover:border-primary/50 transition-all flex items-center justify-between truncate cursor-pointer shadow-2xs"
                               >
-                                <span className="truncate">{s}</span>
+                                <div className="min-w-0">
+                                  <p className="truncate font-extrabold">{b.name}</p>
+                                  {b.badge && (
+                                    <span className="text-[8px] font-black text-primary uppercase">
+                                      {b.badge}
+                                    </span>
+                                  )}
+                                </div>
                                 <span className="text-primary/60 text-[10px] ml-1 shrink-0">→</span>
                               </Link>
-                            );
-                          })}
+                            ))}
+                          </div>
                         </div>
                       ) : (
                         (link.sub ?? []).map((s) => {
