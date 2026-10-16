@@ -146,16 +146,6 @@ export default function CheckoutPage() {
       document.body.style.overflow = "auto";
       document.documentElement.style.pointerEvents = "auto";
       document.documentElement.style.overflow = "auto";
-
-      // Also remove any stray backdrop/overlay elements from portaled dialogs
-      const overlays = document.querySelectorAll(
-        "[data-slot='sheet-overlay'], [data-slot='sheet-portal'], [data-slot='dialog-overlay'], [data-slot='sheet-content']"
-      );
-      overlays.forEach((el) => {
-        if (el && el.parentNode) {
-          el.parentNode.removeChild(el);
-        }
-      });
     }
   }, [setIsCartOpen]);
 

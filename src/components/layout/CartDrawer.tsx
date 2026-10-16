@@ -88,10 +88,7 @@ export const CartDrawer: React.FC = () => {
       document.documentElement.style.pointerEvents = "auto";
       document.documentElement.style.overflow = "auto";
     }
-    // Small timeout ensures Base UI Dialog completes unmount and removes all modal locks before navigation
-    setTimeout(() => {
-      router.push("/checkout");
-    }, 60);
+    router.push("/checkout");
   };
 
   return (
