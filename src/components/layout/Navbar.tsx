@@ -95,12 +95,17 @@ const BrandIconAvatar: React.FC<{
   const isMultiChar = initial.length > 1;
 
   if (imageSrc && !imgError) {
+    const versionedSrc =
+      imageSrc.startsWith("/brands/") && !imageSrc.includes("?")
+        ? `${imageSrc}?v=3`
+        : imageSrc;
+
     return (
       <span
         className={`w-9 h-9 xl:w-9.5 xl:h-9.5 ${roundedClass} bg-black border border-primary/30 p-1 flex items-center justify-center shrink-0 shadow-2xs group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:border-primary group-hover/sub:border-primary transition-all overflow-hidden ${className}`}
       >
         <img
-          src={imageSrc}
+          src={versionedSrc}
           alt={`${name} Dubai UAE - Official Authentic Vape Brand Logo`}
           title={`${name} Authentic UAE`}
           width={36}
