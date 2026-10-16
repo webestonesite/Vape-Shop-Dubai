@@ -19,12 +19,18 @@ import {
   ContactFormSection,
   type ContactFormSettings,
 } from "./ContactFormSection";
-import { FaqSettings, FAQSection } from "./FAQSection";
-import { AuthorizedDealers, type BrandsSettings } from "./AuthorizedDealers";
+import type { FaqSettings } from "./FAQSection";
+import type { BrandsSettings } from "./AuthorizedDealers";
 import { Categories, type CategoriesSettings } from "./Categories";
-import { WhatsAppContactSection, type WhatsAppSettings } from "./WhatsAppContactSection";
-import { WhyShopWithUs, type WhyShopSettings } from "./WhyShopWithUs";
-import { BlogSection, type BlogSettings } from "./BlogSection";
+import type { WhatsAppSettings } from "./WhatsAppContactSection";
+import type { WhyShopSettings } from "./WhyShopWithUs";
+import type { BlogSettings } from "./BlogSection";
+
+const FAQSection = dynamic(() => import("./FAQSection").then((m) => m.FAQSection));
+const AuthorizedDealers = dynamic(() => import("./AuthorizedDealers").then((m) => m.AuthorizedDealers));
+const WhatsAppContactSection = dynamic(() => import("./WhatsAppContactSection").then((m) => m.WhatsAppContactSection));
+const WhyShopWithUs = dynamic(() => import("./WhyShopWithUs").then((m) => m.WhyShopWithUs));
+const BlogSection = dynamic(() => import("./BlogSection").then((m) => m.BlogSection));
 
 const BrandSphere3D = dynamic(() => import("./BrandSphere3D"));
 const FlavorsWheel = dynamic(() => import("./FlavorsWheel"));

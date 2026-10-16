@@ -65,26 +65,43 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
     let intervalId: NodeJS.Timeout;
     let isHovered = false;
 
+    let isVisible = true;
+    let observer: IntersectionObserver | null = null;
+
     const startAutoScroll = () => {
       if (intervalId) clearInterval(intervalId);
       intervalId = setInterval(() => {
-        if (isHovered) return;
+        if (isHovered || !isVisible) return;
         if (api.canScrollNext()) {
           api.scrollNext();
         } else {
           api.scrollTo(0);
         }
-      }, 4000); // 4 seconds interval is perfect for visibility and readability
+      }, 4000);
     };
 
-    startAutoScroll();
+    const emblaRoot = api.rootNode();
+
+    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          startAutoScroll();
+        } else if (intervalId) {
+          clearInterval(intervalId);
+        }
+      }, { threshold: 0.1 });
+      observer.observe(emblaRoot);
+    } else {
+      startAutoScroll();
+    }
 
     const handlePointerDown = () => {
       if (intervalId) clearInterval(intervalId);
     };
     
     const handlePointerUp = () => {
-      startAutoScroll();
+      if (isVisible) startAutoScroll();
     };
 
     api.on("pointerDown", handlePointerDown);
@@ -98,12 +115,12 @@ export const ProductSectionCarousel: React.FC<ProductSectionCarouselProps> = ({
       isHovered = false;
     };
 
-    const emblaRoot = api.rootNode();
     emblaRoot.addEventListener("mouseenter", onMouseEnter);
     emblaRoot.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
-      clearInterval(intervalId);
+      if (intervalId) clearInterval(intervalId);
+      observer?.disconnect();
       api.off("pointerDown", handlePointerDown);
       api.off("pointerUp", handlePointerUp);
       emblaRoot.removeEventListener("mouseenter", onMouseEnter);

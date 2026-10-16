@@ -26,11 +26,12 @@ export default async function Home() {
     .filter(Boolean);
   const isOverride = Boolean(templateMatch(template));
 
-  // On home page, pass featured products needed for the initial feed carousels and category tabs (saves ~130KB flight bloat)
+  // On home page, pass featured products needed for the initial 2 feed carousels (saves ~100KB flight bloat)
   const feedInstance = instances.find((i) => i.type === "productFeed");
   const feedRows = (feedInstance?.settings?.rows as Array<{ collectionHandle?: string }> | undefined) ?? [];
+  const initialFeedRows = feedRows.slice(0, 2);
   const rowHandles = new Set(
-    feedRows.flatMap((r) =>
+    initialFeedRows.flatMap((r) =>
       (r.collectionHandle || "")
         .split(",")
         .map((s) => s.trim().toLowerCase())
@@ -39,21 +40,25 @@ export default async function Home() {
   );
 
   const featuredProductIds = new Set<string>();
-  // 1. Matches for homepage rows
+  // 1. Matches for initial 2 homepage rows (capped at 24 items)
   for (const p of initialProducts) {
     const ph = p.handle.toLowerCase();
     const isRowMatch = Array.from(rowHandles).some(
       (h) => ph.includes(h) || (p.collections || []).some((c) => c.toLowerCase() === h)
     );
-    if (isRowMatch) featuredProductIds.add(p.id);
+    if (isRowMatch) {
+      featuredProductIds.add(p.id);
+      if (featuredProductIds.size >= 24) break;
+    }
   }
 
   // 2. Top products for each category tab
   const categoryCounts: Record<string, number> = {};
   for (const p of initialProducts) {
+    if (featuredProductIds.size >= 28) break;
     const cat = p.category || "other";
     categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-    if (categoryCounts[cat] <= 4) {
+    if (categoryCounts[cat] <= 2) {
       featuredProductIds.add(p.id);
     }
   }
@@ -85,24 +90,11 @@ export default async function Home() {
     .flatMap((i) => (i.settings.items as FaqItem[] | undefined) ?? [])
     .map(({ question, answer }) => ({ question, answer }));
 
-  const heroInstance = instances.find((i) => i.type === "hero");
-  const heroSettings = heroInstance?.settings as unknown as { slides?: Array<{ image?: string; fallbackImage?: string }> } | undefined;
-  const firstHeroImage = heroSettings?.slides?.[0]?.image || heroSettings?.slides?.[0]?.fallbackImage || "/Slider/myle_slider.webp";
-
   const faqSchema = getFAQSchema(questions);
   const breadcrumbSchema = getBreadcrumbSchema([{ name: "Home", item: "/" }]);
   return (
     <HomeStateProvider>
       <div className="relative flex flex-col min-h-screen bg-background text-foreground">
-        {/* Preload the Hero Slide LCP image with high priority for sub-2.5s LCP on mobile */}
-        <link
-          rel="preload"
-          as="image"
-          href={`/_next/image?url=${encodeURIComponent(firstHeroImage)}&w=1200&q=60`}
-          imageSrcSet={`/_next/image?url=${encodeURIComponent(firstHeroImage)}&w=360&q=60 360w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=480&q=60 480w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=640&q=60 640w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=750&q=60 750w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=1200&q=60 1200w`}
-          imageSizes="(max-width: 640px) 220px, (max-width: 1024px) 320px, 400px"
-          fetchPriority="high"
-        />
 
         <script
           type="application/ld+json"

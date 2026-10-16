@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeSettingsProvider } from "@/context/ThemeSettingsContext";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { LazyWhatsApp } from "@/components/layout/LazyWhatsApp";
-import { CartDrawer } from "@/components/layout/CartDrawer";
+import { LazyCartDrawer } from "@/components/layout/LazyCartDrawer";
 import { CanonicalHead } from "@/components/layout/CanonicalHead";
 import {
   getOrganizationSchema,
@@ -160,7 +160,7 @@ export default async function RootLayout({
                 <CartProvider>
                   <WishlistProvider>
                     {children}
-                    <CartDrawer />
+                    <LazyCartDrawer />
                     <LazyWhatsApp />
                   </WishlistProvider>
                 </CartProvider>

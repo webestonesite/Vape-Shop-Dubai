@@ -8,6 +8,7 @@ import { Star, ShoppingCart, Package, Zap, Tag, ChevronLeft, ChevronRight } from
 import { instanceSettings } from "./SectionRenderer";
 import { prefetchProduct } from "@/lib/product-cache";
 import { useCart } from "@/context/CartContext";
+import { useIsIdle } from "@/hooks/use-is-idle";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { ProductSectionCarousel } from "./ProductSectionCarousel";
 
@@ -530,6 +531,7 @@ export const ProductFeed: React.FC<
   initialProducts,
 }) => {
   const { addToCart, setIsCartOpen } = useCart();
+  const isIdle = useIsIdle();
   const [products, setProducts] = useState<Product[]>(initialProducts || []);
   const [loading, setLoading] = useState<boolean>(!initialProducts || initialProducts.length === 0);
 
@@ -558,9 +560,9 @@ export const ProductFeed: React.FC<
     loadProducts();
   }, [initialProducts]);
 
-  // Lazy-load full catalogue in background when user interacts with search
+  // Lazy-load full catalogue in background when idle or when searching
   useEffect(() => {
-    if (searchQuery && products.length < 100) {
+    if ((searchQuery || isIdle) && products.length < 50) {
       fetch("/api/products")
         .then((r) => r.json())
         .then((data) => {
@@ -568,7 +570,7 @@ export const ProductFeed: React.FC<
         })
         .catch(() => {});
     }
-  }, [searchQuery, products.length]);
+  }, [searchQuery, isIdle, products.length]);
 
 
   const activeProductsList = products;
@@ -706,7 +708,7 @@ export const ProductFeed: React.FC<
         </div>
       ) : sections && sections.length > 0 ? (
         <div className="space-y-8 sm:space-y-10">
-          {sections.map(({ row, products }) => (
+          {(isIdle ? sections : sections.slice(0, 2)).map(({ row, products }) => (
             <ProductSectionCarousel
               key={row.title}
               sectionName={row.title}

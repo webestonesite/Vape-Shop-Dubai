@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [
       "lucide-react",
       "@base-ui/react",
+      "embla-carousel-react",
     ],
   },
   transpilePackages: ["firebase-admin", "jwks-rsa", "jose"],
