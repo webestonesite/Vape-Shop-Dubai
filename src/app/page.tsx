@@ -85,11 +85,25 @@ export default async function Home() {
     .flatMap((i) => (i.settings.items as FaqItem[] | undefined) ?? [])
     .map(({ question, answer }) => ({ question, answer }));
 
+  const heroInstance = instances.find((i) => i.type === "hero");
+  const heroSettings = heroInstance?.settings as unknown as { slides?: Array<{ image?: string; fallbackImage?: string }> } | undefined;
+  const firstHeroImage = heroSettings?.slides?.[0]?.image || heroSettings?.slides?.[0]?.fallbackImage || "/Slider/myle_slider.webp";
+
   const faqSchema = getFAQSchema(questions);
   const breadcrumbSchema = getBreadcrumbSchema([{ name: "Home", item: "/" }]);
   return (
     <HomeStateProvider>
       <div className="relative flex flex-col min-h-screen bg-background text-foreground">
+        {/* Preload the Hero Slide LCP image with high priority for sub-2.5s LCP on mobile */}
+        <link
+          rel="preload"
+          as="image"
+          href={`/_next/image?url=${encodeURIComponent(firstHeroImage)}&w=1200&q=60`}
+          imageSrcSet={`/_next/image?url=${encodeURIComponent(firstHeroImage)}&w=360&q=60 360w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=480&q=60 480w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=640&q=60 640w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=750&q=60 750w, /_next/image?url=${encodeURIComponent(firstHeroImage)}&w=1200&q=60 1200w`}
+          imageSizes="(max-width: 640px) 220px, (max-width: 1024px) 320px, 400px"
+          fetchPriority="high"
+        />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

@@ -219,7 +219,7 @@ export function ProductCard({ product, onAddToCart, onBuyNow }: { product: Produ
             src={displayedImage}
             alt={product.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 230px, 260px"
+            sizes="(max-width: 640px) 300px, (max-width: 1024px) 240px, 280px"
             ref={(node) => {
               if (node?.complete && !imageLoaded) {
                 setImageLoaded(true);
