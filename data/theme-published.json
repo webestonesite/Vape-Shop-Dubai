@@ -236,6 +236,7 @@
               {
                 "name": "Al Fakher Vape",
                 "href": "/collections/al-fakher-vape",
+                "logo": "/brands/al-fakher.png",
                 "badge": "HOT",
                 "subtitle": "Crown Bar 8K & 15K Puffs",
                 "isHot": true
@@ -243,6 +244,7 @@
               {
                 "name": "Elf Bar Vape",
                 "href": "/collections/elf-bar-vape",
+                "logo": "/brands/elfbar.png",
                 "badge": "TOP",
                 "subtitle": "BC5000 & Raya D1",
                 "isHot": true
@@ -250,6 +252,7 @@
               {
                 "name": "Lost Mary",
                 "href": "/collections/lost-mary-disposable",
+                "logo": "/brands/lost-mary.png",
                 "badge": "POPULAR",
                 "subtitle": "OS5000 & BM6000",
                 "isHot": true
@@ -257,6 +260,7 @@
               {
                 "name": "Geek Bar",
                 "href": "/collections/geek-bar-disposable",
+                "logo": "/brands/geek-bar.png",
                 "badge": "15K PUFFS",
                 "subtitle": "Pulse 15000 Disposable",
                 "isHot": true
@@ -264,43 +268,51 @@
               {
                 "name": "Vozol Vape",
                 "href": "/collections/vozol-vape",
+                "logo": "/brands/vozol.png",
                 "badge": "NEW",
                 "subtitle": "Star 12000 & Vista 20K"
               },
               {
                 "name": "Tugboat Vape",
                 "href": "/collections/tugboat-vape",
+                "logo": "/brands/tugboat.png",
                 "badge": "BESTSELLER",
                 "subtitle": "Hero & Super 12K"
               },
               {
                 "name": "HQD Vape",
                 "href": "/collections/hqd-vape",
+                "logo": "/brands/hqd.png",
                 "subtitle": "Cuvie & Glaze 15K"
               },
               {
                 "name": "Fummo Vape",
                 "href": "/collections/fummo-vape",
+                "logo": "/brands/fummo.png",
                 "subtitle": "Target & King 6000"
               },
               {
                 "name": "Yuoto Vape",
                 "href": "/collections/yuoto-vape",
+                "logo": "/brands/yuoto.png",
                 "subtitle": "Thanos & XXL 5000"
               },
               {
                 "name": "Vgod Stig",
                 "href": "/collections/vgod-stig",
+                "logo": "/brands/vgod-stig.png",
                 "subtitle": "Classic Ultra Portable"
               },
               {
                 "name": "Maskking Vape",
                 "href": "/collections/maskking-vape",
+                "logo": "/brands/maskking.png",
                 "subtitle": "High Pro & Jam"
               },
               {
                 "name": "Silvaper Vape",
                 "href": "/collections/silvaper-vape",
+                "logo": "/brands/silvaper.png",
                 "subtitle": "Original Taste Pods"
               }
             ]
@@ -320,6 +332,7 @@
               {
                 "name": "Oxva Vape",
                 "href": "/collections/oxva-vape",
+                "logo": "/brands/oxva.png",
                 "badge": "HOT",
                 "subtitle": "Xlim Pro 2 & SQ Pro",
                 "isHot": true
@@ -327,6 +340,7 @@
               {
                 "name": "Uwell Vape",
                 "href": "/collections/uwell-vape",
+                "logo": "/brands/uwell.png",
                 "badge": "TOP",
                 "subtitle": "Caliburn G3 & GK3",
                 "isHot": true
@@ -334,6 +348,7 @@
               {
                 "name": "Vaporesso Vape",
                 "href": "/collections/vaporesso-vape",
+                "logo": "/brands/vaporesso.png",
                 "badge": "POPULAR",
                 "subtitle": "XROS 4 & Luxe X2",
                 "isHot": true
@@ -341,6 +356,7 @@
               {
                 "name": "Relx Vape",
                 "href": "/collections/relx-vape",
+                "logo": "/brands/relx.png",
                 "badge": "CLOSED POD",
                 "subtitle": "Infinity & Essential Pods",
                 "isHot": true
@@ -348,23 +364,27 @@
               {
                 "name": "Pod Salt Vape",
                 "href": "/collections/pod-salt-vape",
+                "logo": "/brands/podsalt.png",
                 "badge": "FEATURED",
                 "subtitle": "Evolve & Go Pods"
               },
               {
                 "name": "Geek Vape",
                 "href": "/collections/geek-vape",
+                "logo": "/brands/geek vape.png",
                 "badge": "RUGGED",
                 "subtitle": "Aegis & Wenax Series"
               },
               {
                 "name": "Smok Vape",
                 "href": "/collections/smok-vape",
+                "logo": "/brands/smok.png",
                 "subtitle": "Nord & Novo Series"
               },
               {
                 "name": "Voopoo Vape",
                 "href": "/collections/voopoo-vape",
+                "logo": "/brands/voopoo.png",
                 "subtitle": "Argus & Drag Series"
               }
             ]
@@ -384,6 +404,7 @@
               {
                 "name": "Pod Salt Vape",
                 "href": "/collections/pod-salt-vape",
+                "logo": "/brands/podsalt.png",
                 "badge": "BESTSELLER",
                 "subtitle": "Nexus & Core Salt Series",
                 "isHot": true
@@ -391,6 +412,7 @@
               {
                 "name": "Vgod Stig",
                 "href": "/collections/vgod-stig",
+                "logo": "/brands/vgod-stig.png",
                 "badge": "ICONIC",
                 "subtitle": "Cubano & Lush Ice Salt",
                 "isHot": true
@@ -398,23 +420,27 @@
               {
                 "name": "Vapes Bars",
                 "href": "/collections/vapes-bars",
+                "logo": "/brands/vapes-bars.png",
                 "badge": "POPULAR",
                 "subtitle": "Ghost Salt & Nicotine"
               },
               {
                 "name": "Nerd Vape",
                 "href": "/collections/nerd-vape",
+                "logo": "/brands/nerd-vape.png",
                 "badge": "SMOOTH",
                 "subtitle": "Nerd Diamond & Salts"
               },
               {
                 "name": "Yuoto Vape",
                 "href": "/collections/yuoto-vape",
+                "logo": "/brands/yuoto.png",
                 "subtitle": "Special Fruit Editions"
               },
               {
                 "name": "Silvaper Vape",
                 "href": "/collections/silvaper-vape",
+                "logo": "/brands/silvaper.png",
                 "subtitle": "Salt E-Liquid Blends"
               }
             ]

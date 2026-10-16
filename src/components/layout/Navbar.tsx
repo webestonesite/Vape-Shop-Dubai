@@ -91,20 +91,21 @@ const BrandIconAvatar: React.FC<{
 }> = ({ name, imageSrc, className = "", shape = "square" }) => {
   const [imgError, setImgError] = useState(false);
   const initial = getInitial(name);
-  const roundedClass = shape === "circle" ? "rounded-full" : "rounded-lg";
+  const roundedClass = shape === "circle" ? "rounded-full" : "rounded-xl";
+  const isMultiChar = initial.length > 1;
 
   if (imageSrc && !imgError) {
     return (
       <span
-        className={`w-8 h-8 xl:w-8.5 xl:h-8.5 ${roundedClass} bg-white dark:bg-card border border-primary/25 p-1 flex items-center justify-center shrink-0 shadow-2xs group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:border-primary group-hover/sub:border-primary transition-all overflow-hidden ${className}`}
+        className={`w-9 h-9 xl:w-9.5 xl:h-9.5 ${roundedClass} bg-black border border-primary/30 p-1 flex items-center justify-center shrink-0 shadow-2xs group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:border-primary group-hover/sub:border-primary transition-all overflow-hidden ${className}`}
       >
         <img
           src={imageSrc}
           alt={`${name} Dubai UAE - Official Authentic Vape Brand Logo`}
           title={`${name} Authentic UAE`}
-          width={34}
-          height={34}
-          className="w-full h-full object-contain"
+          width={36}
+          height={36}
+          className="w-full h-full object-contain scale-105"
           loading="lazy"
           decoding="async"
           onError={() => setImgError(true)}
@@ -115,7 +116,9 @@ const BrandIconAvatar: React.FC<{
 
   return (
     <span
-      className={`w-8 h-8 xl:w-8.5 xl:h-8.5 ${roundedClass} bg-primary/10 border border-primary/25 text-primary font-black text-xs xl:text-sm font-serif flex items-center justify-center group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:bg-primary group-hover/sub:bg-primary group-hover/b:text-white group-hover/sub:text-white group-hover/b:border-primary group-hover/sub:border-primary transition-all shrink-0 shadow-2xs ${className}`}
+      className={`w-9 h-9 xl:w-9.5 xl:h-9.5 ${roundedClass} bg-black border border-primary/30 text-white font-black ${
+        isMultiChar ? "text-xs xl:text-[13px] tracking-tight" : "text-base xl:text-lg"
+      } leading-none flex items-center justify-center group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:bg-primary group-hover/sub:bg-primary group-hover/b:text-white group-hover/sub:text-white group-hover/b:border-primary group-hover/sub:border-primary transition-all shrink-0 shadow-2xs ${className}`}
       aria-label={`${name} brand icon`}
     >
       {initial}
@@ -135,6 +138,8 @@ const KNOWN_BRAND_LOGOS: Record<string, string> = {
   "hqd": "/brands/hqd.png",
   "lost mary": "/brands/lost-mary.png",
   "maskking": "/brands/maskking.png",
+  "myle": "/brands/myle-v5-pods.png",
+  "myle v5 pods": "/brands/myle-v5-pods.png",
   "nerd": "/brands/nerd-vape.png",
   "oxva": "/brands/oxva.png",
   "pod salt": "/brands/podsalt.png",
@@ -164,70 +169,7 @@ const resolveBrandLogo = (name: string, customLogo?: string): string | undefined
   return undefined;
 };
 
-interface StandardMenuMeta {
-  title: string;
-  subtitle: string;
-  badge: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
 
-const getStandardMenuMeta = (linkId: string, linkLabel: string): StandardMenuMeta => {
-  const normId = linkId.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const normLabel = linkLabel.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-  if (normId.includes("juul") || normLabel.includes("juul")) {
-    return {
-      title: "JUUL DUBAI",
-      subtitle: "Original devices & flavor pods",
-      badge: "AUTHENTIC",
-      icon: Flame,
-    };
-  }
-  if (normId.includes("myle") || normLabel.includes("myle")) {
-    return {
-      title: "MYLE DUBAI",
-      subtitle: "Magnetic pods & sleek devices",
-      badge: "TOP RATED",
-      icon: Zap,
-    };
-  }
-  if (normId.includes("disposable") || normLabel.includes("disposable")) {
-    return {
-      title: "DISPOSABLE BRANDS",
-      subtitle: "Top high-puff authentic vapes",
-      badge: "15K+ PUFFS",
-      icon: Flame,
-    };
-  }
-  if (
-    normId.includes("juice") ||
-    normLabel.includes("juice") ||
-    normId.includes("liquid") ||
-    normLabel.includes("liquid")
-  ) {
-    return {
-      title: "E-JUICE & LIQUIDS",
-      subtitle: "Premium vape flavors 30ml-60ml",
-      badge: "PREMIUM",
-      icon: Droplet,
-    };
-  }
-  if (normId.includes("pod") || normLabel.includes("pod")) {
-    return {
-      title: "POD SYSTEMS & KITS",
-      subtitle: "Refillable kits, coils & pods",
-      badge: "REFILLABLE",
-      icon: Box,
-    };
-  }
-
-  return {
-    title: linkLabel.toUpperCase(),
-    subtitle: "Official Genuine UAE Collection",
-    badge: "GENUINE",
-    icon: Award,
-  };
-};
 
 const getSubItemSubtitle = (subItem: string): string => {
   const s = subItem.toLowerCase();
@@ -843,100 +785,69 @@ const NavbarContent: React.FC<NavbarProps> = ({
                         className={`absolute top-full ${link.id === "pod-system" ? "right-0" : "left-0"} pt-2 w-[310px] sm:w-[325px] xl:w-[335px] z-50 animate-in fade-in slide-in-from-top-1.5 duration-150 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']`}
                       >
                         <div className="bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-2xl p-3 sm:p-3.5">
-                          {(() => {
-                            const meta = getStandardMenuMeta(link.id, link.label);
-                            const HeaderIcon = meta.icon;
-                            return (
-                              <>
-                                {/* Top Header Card */}
-                                <div className="rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/[0.08] via-primary/[0.04] to-transparent p-2.5 sm:p-3 flex items-center justify-between gap-2.5 shadow-2xs">
-                                  <div className="flex items-center gap-2.5 min-w-0">
-                                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
-                                      <HeaderIcon className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
-                                    </div>
+                          {/* Submenu Cards List */}
+                          <div className="space-y-2">
+                            {link.sub.map((s) => {
+                              const subHref = getNavLinkHref(link.id, s);
+                              const subSubtitle = getSubItemSubtitle(s);
+                              const childObj = childBySubKey[`${link.id}::${s}`];
+                              const itemLogo = resolveBrandLogo(
+                                s,
+                                childObj?.logo || childObj?.icon || childObj?.image || brandLogoByName[s.toLowerCase().trim()]
+                              );
+
+                              return (
+                                <Link
+                                  key={s}
+                                  href={subHref}
+                                  onClick={() => {
+                                    setOpenDropdown(null);
+                                    isInsideDropdownRef.current = false;
+                                  }}
+                                  className="group/sub flex items-center justify-between p-2.5 sm:p-3 rounded-2xl border border-primary/25 hover:border-primary bg-card/90 dark:bg-card/90 hover:bg-primary/[0.06] hover:shadow-2xs transition-all duration-150 cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                                    <BrandIconAvatar
+                                      name={s}
+                                      imageSrc={itemLogo}
+                                      shape="circle"
+                                    />
                                     <div className="min-w-0">
-                                      <h4 className="text-xs sm:text-[13px] font-black uppercase tracking-wide font-serif text-primary truncate">
-                                        {meta.title}
-                                      </h4>
-                                      <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium truncate mt-0.5">
-                                        {meta.subtitle}
+                                      <h5 className="text-xs sm:text-[13px] font-black font-serif text-foreground group-hover/sub:text-primary transition-colors truncate">
+                                        {s}
+                                      </h5>
+                                      <p className="text-[10px] sm:text-[10.5px] text-muted-foreground font-medium truncate mt-0.5">
+                                        {subSubtitle}
                                       </p>
                                     </div>
                                   </div>
-                                  <span className="text-[8.5px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 sm:py-1 rounded-full bg-primary text-white shrink-0 shadow-2xs">
-                                    {meta.badge}
-                                  </span>
-                                </div>
 
-                                {/* Orange Horizontal Divider */}
-                                <div className="h-0.5 bg-primary/80 rounded-full my-2.5 shadow-2xs" />
+                                  <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full bg-muted/60 border border-primary/25 text-muted-foreground group-hover/sub:bg-primary group-hover/sub:border-primary group-hover/sub:text-white flex items-center justify-center shrink-0 ml-2 transition-all duration-150 shadow-2xs group-hover/sub:translate-x-0.5">
+                                    <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-colors" />
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
 
-                                {/* Submenu Cards List */}
-                                <div className="space-y-2">
-                                  {link.sub.map((s) => {
-                                    const subHref = getNavLinkHref(link.id, s);
-                                    const subSubtitle = getSubItemSubtitle(s);
-                                    const childObj = childBySubKey[`${link.id}::${s}`];
-                                    const itemLogo = resolveBrandLogo(
-                                      s,
-                                      childObj?.logo || childObj?.icon || childObj?.image || brandLogoByName[s.toLowerCase().trim()]
-                                    );
-
-                                    return (
-                                      <Link
-                                        key={s}
-                                        href={subHref}
-                                        onClick={() => {
-                                          setOpenDropdown(null);
-                                          isInsideDropdownRef.current = false;
-                                        }}
-                                        className="group/sub flex items-center justify-between p-2.5 sm:p-3 rounded-2xl border border-primary/25 hover:border-primary bg-card/90 dark:bg-card/90 hover:bg-primary/[0.06] hover:shadow-2xs transition-all duration-150 cursor-pointer"
-                                      >
-                                        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                                          <BrandIconAvatar
-                                            name={s}
-                                            imageSrc={itemLogo}
-                                            shape="circle"
-                                          />
-                                          <div className="min-w-0">
-                                            <h5 className="text-xs sm:text-[13px] font-black font-serif text-foreground group-hover/sub:text-primary transition-colors truncate">
-                                              {s}
-                                            </h5>
-                                            <p className="text-[10px] sm:text-[10.5px] text-muted-foreground font-medium truncate mt-0.5">
-                                              {subSubtitle}
-                                            </p>
-                                          </div>
-                                        </div>
-
-                                        <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full bg-muted/60 border border-primary/25 text-muted-foreground group-hover/sub:bg-primary group-hover/sub:border-primary group-hover/sub:text-white flex items-center justify-center shrink-0 ml-2 transition-all duration-150 shadow-2xs group-hover/sub:translate-x-0.5">
-                                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-colors" />
-                                        </div>
-                                      </Link>
-                                    );
-                                  })}
-                                </div>
-
-                                {/* Clean Bottom Bar */}
-                                <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-border/60">
-                                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 text-[10px] font-serif">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                    100% Genuine UAE
-                                  </span>
-                                  <Link
-                                    href={mainHref}
-                                    onClick={() => {
-                                      setOpenDropdown(null);
-                                      isInsideDropdownRef.current = false;
-                                    }}
-                                    className="group/btn inline-flex items-center gap-1 text-[11px] font-serif font-black text-primary hover:text-primary/90 uppercase tracking-wider transition-colors cursor-pointer"
-                                  >
-                                    <span>View All</span>
-                                    <ArrowRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-0.5" />
-                                  </Link>
-                                </div>
-                              </>
-                            );
-                          })()}
+                          {/* Clean Bottom Bar */}
+                          <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-border/60">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 text-[10px] font-serif">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                              100% Genuine UAE
+                            </span>
+                            <Link
+                              href={mainHref}
+                              onClick={() => {
+                                setOpenDropdown(null);
+                                isInsideDropdownRef.current = false;
+                              }}
+                              className="group/btn inline-flex items-center gap-1 text-[11px] font-serif font-black text-primary hover:text-primary/90 uppercase tracking-wider transition-colors cursor-pointer"
+                            >
+                              <span>View All</span>
+                              <ArrowRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-0.5" />
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -1317,7 +1228,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                     <BrandIconAvatar
                                       name={b.name}
                                       imageSrc={bLogo}
-                                      shape="square"
+                                      shape="circle"
                                       className="w-6 h-6 xl:w-6 xl:h-6 text-[10px]"
                                     />
                                     <div className="min-w-0">
