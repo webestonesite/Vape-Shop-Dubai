@@ -76,6 +76,189 @@ const getBrandMonogram = (name: string): string => {
   return name.slice(0, 2).toUpperCase();
 };
 
+const getInitial = (name: string): string => {
+  const trimmed = name.trim();
+  const numMatch = trimmed.match(/^(\d+)/);
+  if (numMatch) return numMatch[1].slice(0, 2);
+  return trimmed.charAt(0).toUpperCase();
+};
+
+const BrandIconAvatar: React.FC<{
+  name: string;
+  imageSrc?: string;
+  className?: string;
+  shape?: "square" | "circle";
+}> = ({ name, imageSrc, className = "", shape = "square" }) => {
+  const [imgError, setImgError] = useState(false);
+  const initial = getInitial(name);
+  const roundedClass = shape === "circle" ? "rounded-full" : "rounded-lg";
+
+  if (imageSrc && !imgError) {
+    return (
+      <span
+        className={`w-8 h-8 xl:w-8.5 xl:h-8.5 ${roundedClass} bg-white dark:bg-card border border-primary/25 p-1 flex items-center justify-center shrink-0 shadow-2xs group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:border-primary group-hover/sub:border-primary transition-all overflow-hidden ${className}`}
+      >
+        <img
+          src={imageSrc}
+          alt={`${name} Dubai UAE - Official Authentic Vape Brand Logo`}
+          title={`${name} Authentic UAE`}
+          width={34}
+          height={34}
+          className="w-full h-full object-contain"
+          loading="lazy"
+          decoding="async"
+          onError={() => setImgError(true)}
+        />
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={`w-8 h-8 xl:w-8.5 xl:h-8.5 ${roundedClass} bg-primary/10 border border-primary/25 text-primary font-black text-xs xl:text-sm font-serif flex items-center justify-center group-hover/b:scale-105 group-hover/sub:scale-105 group-hover/b:bg-primary group-hover/sub:bg-primary group-hover/b:text-white group-hover/sub:text-white group-hover/b:border-primary group-hover/sub:border-primary transition-all shrink-0 shadow-2xs ${className}`}
+      aria-label={`${name} brand icon`}
+    >
+      {initial}
+    </span>
+  );
+};
+
+const KNOWN_BRAND_LOGOS: Record<string, string> = {
+  "al fakher": "/brands/al-fakher.png",
+  "al dakher": "/brands/al-fakher.png",
+  "elf bar": "/brands/elfbar.png",
+  "elfbar": "/brands/elfbar.png",
+  "fummo": "/brands/fummo.png",
+  "geek bar": "/brands/geek-bar.png",
+  "geek vape": "/brands/geek vape.png",
+  "geekvape": "/brands/geek vape.png",
+  "hqd": "/brands/hqd.png",
+  "lost mary": "/brands/lost-mary.png",
+  "maskking": "/brands/maskking.png",
+  "nerd": "/brands/nerd-vape.png",
+  "oxva": "/brands/oxva.png",
+  "pod salt": "/brands/podsalt.png",
+  "podsalt": "/brands/podsalt.png",
+  "relx": "/brands/relx.png",
+  "silvaper": "/brands/silvaper.png",
+  "smok": "/brands/smok.png",
+  "stig": "/brands/vgod-stig.png",
+  "vgod": "/brands/vgod-stig.png",
+  "tugboat": "/brands/tugboat.png",
+  "uwell": "/brands/uwell.png",
+  "vapes bars": "/brands/vapes-bars.png",
+  "vaporesso": "/brands/vaporesso.png",
+  "voopoo": "/brands/voopoo.png",
+  "vozol": "/brands/vozol.png",
+  "yuoto": "/brands/yuoto.png",
+};
+
+const resolveBrandLogo = (name: string, customLogo?: string): string | undefined => {
+  if (customLogo) return customLogo;
+  const lower = name.toLowerCase().trim();
+  for (const [key, logoPath] of Object.entries(KNOWN_BRAND_LOGOS)) {
+    if (lower.includes(key)) {
+      return logoPath;
+    }
+  }
+  return undefined;
+};
+
+interface StandardMenuMeta {
+  title: string;
+  subtitle: string;
+  badge: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const getStandardMenuMeta = (linkId: string, linkLabel: string): StandardMenuMeta => {
+  const normId = linkId.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const normLabel = linkLabel.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  if (normId.includes("juul") || normLabel.includes("juul")) {
+    return {
+      title: "JUUL DUBAI",
+      subtitle: "Original devices & flavor pods",
+      badge: "AUTHENTIC",
+      icon: Flame,
+    };
+  }
+  if (normId.includes("myle") || normLabel.includes("myle")) {
+    return {
+      title: "MYLE DUBAI",
+      subtitle: "Magnetic pods & sleek devices",
+      badge: "TOP RATED",
+      icon: Zap,
+    };
+  }
+  if (normId.includes("disposable") || normLabel.includes("disposable")) {
+    return {
+      title: "DISPOSABLE BRANDS",
+      subtitle: "Top high-puff authentic vapes",
+      badge: "15K+ PUFFS",
+      icon: Flame,
+    };
+  }
+  if (
+    normId.includes("juice") ||
+    normLabel.includes("juice") ||
+    normId.includes("liquid") ||
+    normLabel.includes("liquid")
+  ) {
+    return {
+      title: "E-JUICE & LIQUIDS",
+      subtitle: "Premium vape flavors 30ml-60ml",
+      badge: "PREMIUM",
+      icon: Droplet,
+    };
+  }
+  if (normId.includes("pod") || normLabel.includes("pod")) {
+    return {
+      title: "POD SYSTEMS & KITS",
+      subtitle: "Refillable kits, coils & pods",
+      badge: "REFILLABLE",
+      icon: Box,
+    };
+  }
+
+  return {
+    title: linkLabel.toUpperCase(),
+    subtitle: "Official Genuine UAE Collection",
+    badge: "GENUINE",
+    icon: Award,
+  };
+};
+
+const getSubItemSubtitle = (subItem: string): string => {
+  const s = subItem.toLowerCase();
+
+  // JUUL
+  if (s.includes("juul 1")) return "Classic 5% & 3% Device & Pods";
+  if (s.includes("juul 2")) return "Next-Gen Smart Pod System";
+  if (s.includes("juul pod")) return "Virginia Tobacco & Menthol Pods";
+
+  // MYLE
+  if (s.includes("myle v5 pod") || s.includes("v5 pod")) return "Meta Pods 50mg & 20mg";
+  if (s.includes("myle v5 device") || s.includes("v5 device")) return "Rechargeable Meta Battery";
+  if (s.includes("myle disposable")) return "Ready to Vape Pocket Bars";
+
+  // DISPOSABLE
+  if (s.includes("50mg")) return "5% Strong Nicotine Hit";
+  if (s.includes("20mg")) return "2% Smooth Everyday Nicotine";
+  if (s.includes("0mg")) return "Zero Nicotine Pure Flavor";
+
+  // E-JUICE
+  if (s.includes("salt")) return "Smooth Nic Salts for Pods";
+  if (s.includes("freebase")) return "High VG Cloud Chasing Juice";
+
+  // POD SYSTEM
+  if (s.includes("pod kit") || s.includes("kit")) return "Compact Open Pod Devices";
+  if (s.includes("cartridge") || s.includes("pod")) return "Replacement Empty Pods";
+  if (s.includes("coil")) return "Sub-Ohm & MTL Replacement Coils";
+
+  return "Official Genuine UAE Stock";
+};
+
 const NavbarContent: React.FC<NavbarProps> = ({
   onSearchChange,
   onCategorySelect,
@@ -140,6 +323,19 @@ const NavbarContent: React.FC<NavbarProps> = ({
   const activeMegaCategory = useMemo(() => {
     return megaCategories.find((c) => c.id === activeMegaCatId) ?? megaCategories[0];
   }, [megaCategories, activeMegaCatId]);
+
+  const brandLogoByName = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const cat of megaCategories) {
+      for (const b of cat.brands) {
+        const logo = b.logo || b.icon || b.image;
+        if (logo) {
+          map[b.name.toLowerCase().trim()] = logo;
+        }
+      }
+    }
+    return map;
+  }, [megaCategories]);
 
   // Suggestions states & refs
   const [products, setProducts] = useState<any[]>([]);
@@ -266,7 +462,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
    * highlighting, the "scroll to products" home/shop shortcuts, dropdown
    * timers — working untouched.
    */
-  const { navLinks, hrefById, hrefBySubKey } = useMemo(() => {
+  const { navLinks, hrefById, hrefBySubKey, childBySubKey } = useMemo(() => {
     const deriveId = (href: string): string => {
       if (href === "/") return "home";
       if (href === "/shop") return "all";
@@ -279,12 +475,14 @@ const NavbarContent: React.FC<NavbarProps> = ({
     const byId: Record<string, string> = {};
     // Keyed by parent so two menus can reuse a child label without colliding.
     const bySubKey: Record<string, string> = {};
+    const childBySubKey: Record<string, any> = {};
 
     for (const item of header.menu) {
       const id = deriveId(item.href);
       byId[id] = item.href;
       for (const child of item.children) {
         bySubKey[`${id}::${child.label}`] = child.href;
+        childBySubKey[`${id}::${child.label}`] = child;
       }
       links.push({
         label: item.label,
@@ -293,7 +491,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
       });
     }
 
-    return { navLinks: links, hrefById: byId, hrefBySubKey: bySubKey };
+    return { navLinks: links, hrefById: byId, hrefBySubKey: bySubKey, childBySubKey };
   }, [header.menu]);
 
   const getNavLinkHref = (id: string, subItem?: string): string => {
@@ -550,7 +748,10 @@ const NavbarContent: React.FC<NavbarProps> = ({
                             className="grid grid-cols-3 gap-2.5 xl:gap-3 min-h-[220px] animate-in fade-in-50 duration-150 content-start"
                           >
                             {activeMegaCategory.brands.map((brand) => {
-                              const initial = brand.name.trim().charAt(0).toUpperCase();
+                              const brandLogo = resolveBrandLogo(
+                                brand.name,
+                                brand.logo || brand.icon || brand.image || brandLogoByName[brand.name.toLowerCase().trim()]
+                              );
                               const subHref =
                                 getNavLinkHref(link.id, brand.name) !== "/shop"
                                   ? getNavLinkHref(link.id, brand.name)
@@ -567,9 +768,11 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                   className="group/b flex items-center justify-between px-3.5 py-2.5 xl:px-4 xl:py-3 rounded-xl border border-primary/25 hover:border-primary bg-card/90 dark:bg-card/90 hover:bg-primary/[0.06] hover:shadow-sm transition-all duration-150 cursor-pointer"
                                 >
                                   <div className="flex items-center gap-3 min-w-0">
-                                    <span className="w-8 h-8 xl:w-8.5 xl:h-8.5 rounded-lg bg-primary/10 border border-primary/25 text-primary font-black text-xs xl:text-sm font-serif flex items-center justify-center group-hover/b:scale-105 group-hover/b:bg-primary group-hover/b:text-white group-hover/b:border-primary transition-all shrink-0 shadow-2xs">
-                                      {initial}
-                                    </span>
+                                    <BrandIconAvatar
+                                      name={brand.name}
+                                      imageSrc={brandLogo}
+                                      shape="square"
+                                    />
                                     <div className="min-w-0">
                                       <h5 className="text-xs xl:text-[13.5px] font-black font-serif text-foreground group-hover/b:text-primary transition-colors truncate">
                                         {brand.name}
@@ -637,26 +840,103 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           isInsideDropdownRef.current = false;
                           handleMouseLeaveNav();
                         }}
-                        className="absolute top-full left-0 pt-1 min-w-[220px] z-50 animate-in fade-in slide-in-from-top-1 duration-150 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+                        className={`absolute top-full ${link.id === "pod-system" ? "right-0" : "left-0"} pt-2 w-[310px] sm:w-[325px] xl:w-[335px] z-50 animate-in fade-in slide-in-from-top-1.5 duration-150 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']`}
                       >
-                        <div className="bg-card/98 backdrop-blur-md border border-border/70 rounded-2xl shadow-xl p-2 max-h-96 overflow-y-auto">
-                          {link.sub.map((s) => {
-                            const subHref = getNavLinkHref(link.id, s);
+                        <div className="bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-2xl p-3 sm:p-3.5">
+                          {(() => {
+                            const meta = getStandardMenuMeta(link.id, link.label);
+                            const HeaderIcon = meta.icon;
                             return (
-                              <Link
-                                key={s}
-                                href={subHref}
-                                onClick={() => {
-                                  setOpenDropdown(null);
-                                  isInsideDropdownRef.current = false;
-                                }}
-                                className="w-full text-left px-4 py-3 text-sm font-bold font-serif text-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all cursor-pointer flex items-center justify-between group/sub"
-                              >
-                                <span>{s}</span>
-                                <span className="opacity-0 group-hover/sub:opacity-100 text-primary transition-opacity font-bold">→</span>
-                              </Link>
+                              <>
+                                {/* Top Header Card */}
+                                <div className="rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/[0.08] via-primary/[0.04] to-transparent p-2.5 sm:p-3 flex items-center justify-between gap-2.5 shadow-2xs">
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-xs">
+                                      <HeaderIcon className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                      <h4 className="text-xs sm:text-[13px] font-black uppercase tracking-wide font-serif text-primary truncate">
+                                        {meta.title}
+                                      </h4>
+                                      <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium truncate mt-0.5">
+                                        {meta.subtitle}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <span className="text-[8.5px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 sm:py-1 rounded-full bg-primary text-white shrink-0 shadow-2xs">
+                                    {meta.badge}
+                                  </span>
+                                </div>
+
+                                {/* Orange Horizontal Divider */}
+                                <div className="h-0.5 bg-primary/80 rounded-full my-2.5 shadow-2xs" />
+
+                                {/* Submenu Cards List */}
+                                <div className="space-y-2">
+                                  {link.sub.map((s) => {
+                                    const subHref = getNavLinkHref(link.id, s);
+                                    const subSubtitle = getSubItemSubtitle(s);
+                                    const childObj = childBySubKey[`${link.id}::${s}`];
+                                    const itemLogo = resolveBrandLogo(
+                                      s,
+                                      childObj?.logo || childObj?.icon || childObj?.image || brandLogoByName[s.toLowerCase().trim()]
+                                    );
+
+                                    return (
+                                      <Link
+                                        key={s}
+                                        href={subHref}
+                                        onClick={() => {
+                                          setOpenDropdown(null);
+                                          isInsideDropdownRef.current = false;
+                                        }}
+                                        className="group/sub flex items-center justify-between p-2.5 sm:p-3 rounded-2xl border border-primary/25 hover:border-primary bg-card/90 dark:bg-card/90 hover:bg-primary/[0.06] hover:shadow-2xs transition-all duration-150 cursor-pointer"
+                                      >
+                                        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                                          <BrandIconAvatar
+                                            name={s}
+                                            imageSrc={itemLogo}
+                                            shape="circle"
+                                          />
+                                          <div className="min-w-0">
+                                            <h5 className="text-xs sm:text-[13px] font-black font-serif text-foreground group-hover/sub:text-primary transition-colors truncate">
+                                              {s}
+                                            </h5>
+                                            <p className="text-[10px] sm:text-[10.5px] text-muted-foreground font-medium truncate mt-0.5">
+                                              {subSubtitle}
+                                            </p>
+                                          </div>
+                                        </div>
+
+                                        <div className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full bg-muted/60 border border-primary/25 text-muted-foreground group-hover/sub:bg-primary group-hover/sub:border-primary group-hover/sub:text-white flex items-center justify-center shrink-0 ml-2 transition-all duration-150 shadow-2xs group-hover/sub:translate-x-0.5">
+                                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-colors" />
+                                        </div>
+                                      </Link>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* Clean Bottom Bar */}
+                                <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-border/60">
+                                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 text-[10px] font-serif">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                    100% Genuine UAE
+                                  </span>
+                                  <Link
+                                    href={mainHref}
+                                    onClick={() => {
+                                      setOpenDropdown(null);
+                                      isInsideDropdownRef.current = false;
+                                    }}
+                                    className="group/btn inline-flex items-center gap-1 text-[11px] font-serif font-black text-primary hover:text-primary/90 uppercase tracking-wider transition-colors cursor-pointer"
+                                  >
+                                    <span>View All</span>
+                                    <ArrowRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-0.5" />
+                                  </Link>
+                                </div>
+                              </>
                             );
-                          })}
+                          })()}
                         </div>
                       </div>
                     )}
@@ -1018,27 +1298,41 @@ const NavbarContent: React.FC<NavbarProps> = ({
 
                           {/* Side-by-Side Brand Grid in Mobile */}
                           <div className="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
-                            {activeMegaCategory.brands.map((b) => (
-                              <Link
-                                key={b.name}
-                                href={b.href}
-                                onClick={() => {
-                                  setIsMobileMenuOpen(false);
-                                  setOpenDropdown(null);
-                                }}
-                                className="px-2.5 py-2 text-xs font-bold text-foreground hover:text-primary rounded-xl bg-background/90 border border-border/50 hover:border-primary/50 transition-all flex items-center justify-between truncate cursor-pointer shadow-2xs"
-                              >
-                                <div className="min-w-0">
-                                  <p className="truncate font-extrabold">{b.name}</p>
-                                  {b.badge && (
-                                    <span className="text-[8px] font-black text-primary uppercase">
-                                      {b.badge}
-                                    </span>
-                                  )}
-                                </div>
-                                <span className="text-primary/60 text-[10px] ml-1 shrink-0">→</span>
-                              </Link>
-                            ))}
+                            {activeMegaCategory.brands.map((b) => {
+                              const bLogo = resolveBrandLogo(
+                                b.name,
+                                b.logo || b.icon || b.image || brandLogoByName[b.name.toLowerCase().trim()]
+                              );
+                              return (
+                                <Link
+                                  key={b.name}
+                                  href={b.href}
+                                  onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    setOpenDropdown(null);
+                                  }}
+                                  className="px-2.5 py-2 text-xs font-bold text-foreground hover:text-primary rounded-xl bg-background/90 border border-border/50 hover:border-primary/50 transition-all flex items-center justify-between truncate cursor-pointer shadow-2xs"
+                                >
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <BrandIconAvatar
+                                      name={b.name}
+                                      imageSrc={bLogo}
+                                      shape="square"
+                                      className="w-6 h-6 xl:w-6 xl:h-6 text-[10px]"
+                                    />
+                                    <div className="min-w-0">
+                                      <p className="truncate font-extrabold">{b.name}</p>
+                                      {b.badge && (
+                                        <span className="text-[8px] font-black text-primary uppercase">
+                                          {b.badge}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <span className="text-primary/60 text-[10px] ml-1 shrink-0">→</span>
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       ) : (

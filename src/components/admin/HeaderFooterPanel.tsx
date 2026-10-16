@@ -598,15 +598,26 @@ export const HeaderFooterPanel: React.FC<{
                           />
                         </div>
 
-                        <input
-                          type="text"
-                          value={brand.subtitle ?? ""}
-                          onChange={(e) =>
-                            handleUpdateBrand(bIdx, "subtitle", e.target.value)
-                          }
-                          placeholder="Subtitle (e.g. Crown Bar 8K & 15K)"
-                          className="w-full text-[11px] font-medium text-slate-500 bg-white border border-slate-200 rounded-md px-2 py-1"
-                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={brand.subtitle ?? ""}
+                            onChange={(e) =>
+                              handleUpdateBrand(bIdx, "subtitle", e.target.value)
+                            }
+                            placeholder="Subtitle (e.g. Crown Bar 8K)"
+                            className="text-[11px] font-medium text-slate-500 bg-white border border-slate-200 rounded-md px-2 py-1"
+                          />
+                          <input
+                            type="text"
+                            value={brand.logo ?? brand.icon ?? ""}
+                            onChange={(e) =>
+                              handleUpdateBrand(bIdx, "logo", e.target.value)
+                            }
+                            placeholder="Favicon/Logo (/brands/x.png)"
+                            className="text-[11px] font-medium text-slate-500 bg-white border border-slate-200 rounded-md px-2 py-1"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>

@@ -114,6 +114,9 @@ export interface Template {
 export interface NavSubItem {
   label: string;
   href: string;
+  logo?: string;
+  icon?: string;
+  image?: string;
 }
 
 export interface NavItem {
@@ -129,6 +132,9 @@ export interface MegaMenuBrandItem {
   subtitle?: string;
   tag?: string;
   isHot?: boolean;
+  logo?: string;
+  icon?: string;
+  image?: string;
 }
 
 export interface MegaMenuCategory {
