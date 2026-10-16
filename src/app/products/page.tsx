@@ -15,15 +15,15 @@ export const metadata: Metadata = {
   description:
     "Browse all authentic vaping products, JUUL devices, MYLE pod kits, disposable vapes, and premium e-liquids available at Vape Shop Dubai with fast 3-hour UAE delivery.",
   alternates: {
-    canonical: "https://vapeshopdubai.webestone.net/products",
+    canonical: "/products",
   },
   openGraph: {
     title: "All Vape Products & Kits | Vape Shop Dubai",
     description:
       "Browse all authentic vaping products, JUUL devices, MYLE pod kits, disposable vapes, and premium e-liquids available at Vape Shop Dubai with fast 3-hour UAE delivery.",
-    url: "https://vapeshopdubai.webestone.net/products",
+    url: "/products",
     type: "website",
-    images: [{ url: "https://vapeshopdubai.webestone.net/hero_vape.png" }],
+    images: [{ url: "/hero_vape.png" }],
   },
 };
 

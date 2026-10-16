@@ -48,11 +48,17 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: page.seo?.title || `${page.title} | Vape Shop Dubai`,
       description: page.seo?.description || page.bodySummary || "Read Vape Shop Dubai Privacy Policy.",
+      alternates: {
+        canonical: "/privacy-policy",
+      },
     };
   }
   return {
     title: "Privacy Policy | Vape Shop Dubai",
     description: "Read Vape Shop Dubai's Privacy Policy. Learn how we handle, protect, and process your personal information securely in the UAE.",
+    alternates: {
+      canonical: "/privacy-policy",
+    },
   };
 }
 

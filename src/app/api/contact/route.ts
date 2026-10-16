@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         const nameParts = name.trim().split(" ");
         const firstName = nameParts[0] || name;
         const lastName = nameParts.slice(1).join(" ") || "Customer";
-        const host = request.headers.get("host") || "vapeshopdubai.webestone.net";
+        const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || (process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL).host : "vapeshopdubai.ae");
         const dummyEmail = `${phone.replace(/[^0-9]/g, "")}@inquiry.${host.replace('www.', '')}`;
 
         const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`;

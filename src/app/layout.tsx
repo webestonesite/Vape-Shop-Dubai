@@ -9,7 +9,6 @@ import { ThemeSettingsProvider } from "@/context/ThemeSettingsContext";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { LazyWhatsApp } from "@/components/layout/LazyWhatsApp";
 import { LazyCartDrawer } from "@/components/layout/LazyCartDrawer";
-import { CanonicalHead } from "@/components/layout/CanonicalHead";
 import {
   getOrganizationSchema,
   getWebSiteSchema,
@@ -88,9 +87,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Buy original Juul online in Dubai, UAE at the best price. Fast and same-day delivery across Dubai, UAE. Shop at the Vape Shop Dubai now.",
       images: [`${SITE_URL}/hero_vape.png`],
     },
-    alternates: {
-      canonical: "/",
-    },
     robots: {
       index: true,
       follow: true,
@@ -153,7 +149,6 @@ export default async function RootLayout({
         className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-200 overflow-x-hidden max-w-full w-full"
         suppressHydrationWarning
       >
-        <CanonicalHead />
         <ThemeSettingsProvider initial={layoutThemeSettings}>
           <ThemeProvider>
               <CustomerAuthProvider>

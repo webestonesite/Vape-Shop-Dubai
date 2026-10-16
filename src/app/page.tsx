@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { HomeStateProvider } from "@/context/HomeStateContext";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
+
 import { HomeNavbarConnector } from "@/components/layout/HomeNavbarConnector";
 import { LazyFooter } from "@/components/layout/LazyFooter";
 import { AgeGate } from "@/components/sections/AgeGate";

@@ -70,6 +70,7 @@ export async function generateMetadata(
     openGraph: {
       title,
       description,
+      url: `/products/${handle}`,
     },
     twitter: {
       title,

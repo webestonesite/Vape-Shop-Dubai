@@ -52,10 +52,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: {
+      canonical: "/blogs/news",
+    },
     openGraph: {
       title,
       description,
       type: "website",
+      url: "/blogs/news",
     },
   };
 }

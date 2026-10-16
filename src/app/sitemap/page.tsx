@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { Metadata } from "next";
-import { FALLBACK_SITE_URL } from "@/lib/seo-schemas";
+import { getRequestSiteUrl } from "@/lib/site-url";
 import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "HTML Sitemap | Vape Shop Dubai",
   description: "Navigate all pages, collections, products, and expert guides of Vape Shop Dubai easily with our comprehensive HTML Sitemap.",
+  alternates: {
+    canonical: "/sitemap",
+  },
 };
 
 const getProducts = async (siteUrl: string) => {
@@ -32,9 +35,9 @@ const getArticles = async (siteUrl: string) => {
 
 export default async function HTMLSitemap() {
   const headersList = await headers();
-  const host = headersList.get('host');
+  const host = headersList.get('x-forwarded-host') || headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'https';
-  const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+  const siteUrl = getRequestSiteUrl(host, protocol);
 
   const [products, articles] = await Promise.all([getProducts(siteUrl), getArticles(siteUrl)]);
 

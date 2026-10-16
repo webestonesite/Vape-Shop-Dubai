@@ -4,6 +4,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Shipping Guidelines | Vape Shop Dubai",
   description: "Fast, reliable delivery across the UAE — same-day available in Dubai & Sharjah",
+  alternates: {
+    canonical: "/shipping-delivery",
+  },
 };
 
 export default ShippingGuidelinesPage;

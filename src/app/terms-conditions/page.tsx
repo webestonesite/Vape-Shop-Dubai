@@ -51,11 +51,17 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: page.seo?.title || `${page.title} | Vape Shop Dubai`,
       description: page.seo?.description || page.bodySummary || "Read Vape Shop Dubai Terms & Conditions.",
+      alternates: {
+        canonical: "/terms-conditions",
+      },
     };
   }
   return {
     title: "Terms & Conditions | Vape Shop Dubai",
     description: "Read Vape Shop Dubai's Terms & Conditions. Store guidelines, legal age requirement (18+), order policies, and customer terms in the UAE.",
+    alternates: {
+      canonical: "/terms-conditions",
+    },
   };
 }
 

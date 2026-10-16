@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
-import { FALLBACK_SITE_URL } from "@/lib/seo-schemas";
+import { getRequestSiteUrl } from "@/lib/site-url";
 import { headers } from "next/headers";
+import { getAllProducts } from "@/lib/shopify/products-fetch";
+import { BUILTIN_ARTICLES } from "../articles/route";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const headersList = await headers();
-  const host = headersList.get('host');
+  const host = headersList.get('x-forwarded-host') || headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'https';
-  const siteUrl = host ? `${protocol}://${host}` : FALLBACK_SITE_URL;
+  const siteUrl = getRequestSiteUrl(host, protocol);
 
   const collectionHandles = [
     "all",
@@ -80,25 +82,39 @@ export async function GET(req: Request) {
 
   let dynamicUrls: string[] = [];
   try {
-    // Fetch products
-    const prodRes = await fetch(`${siteUrl}/api/products`, { next: { revalidate: 3600 } });
-    if (prodRes.ok) {
-      const products = await prodRes.json();
-      if (Array.isArray(products)) {
-        products.forEach((p: any) => dynamicUrls.push(`/products/${p.handle}`));
+    // Fetch products directly or via API
+    const products = await getAllProducts().catch(() => []);
+    if (Array.isArray(products) && products.length > 0) {
+      products.forEach((p: any) => dynamicUrls.push(`/products/${p.handle}`));
+    } else {
+      const prodRes = await fetch(`${siteUrl}/api/products`, { next: { revalidate: 3600 } });
+      if (prodRes.ok) {
+        const prodData = await prodRes.json();
+        if (Array.isArray(prodData)) {
+          prodData.forEach((p: any) => dynamicUrls.push(`/products/${p.handle}`));
+        }
       }
     }
 
     // Fetch blog articles
-    const blogRes = await fetch(`${siteUrl}/api/articles`, { next: { revalidate: 3600 } });
-    if (blogRes.ok) {
-      const blogData = await blogRes.json();
-      if (blogData.articles && Array.isArray(blogData.articles)) {
-        blogData.articles.forEach((a: any) => dynamicUrls.push(`/blogs/news/${a.handle}`));
+    let articlesAdded = false;
+    try {
+      const blogRes = await fetch(`${siteUrl}/api/articles`, { next: { revalidate: 3600 } });
+      if (blogRes.ok) {
+        const blogData = await blogRes.json();
+        if (blogData.articles && Array.isArray(blogData.articles)) {
+          blogData.articles.forEach((a: any) => dynamicUrls.push(`/blogs/news/${a.handle}`));
+          articlesAdded = true;
+        }
       }
+    } catch {
+      // fallback
+    }
+    if (!articlesAdded) {
+      BUILTIN_ARTICLES.forEach((a) => dynamicUrls.push(`/blogs/news/${a.handle}`));
     }
   } catch (e) {
-    console.error("Sitemap fetch error:", e);
+    console.error("Sitemap generation error:", e);
   }
 
   const allUrls = Array.from(new Set([...staticPages, ...dynamicUrls]));

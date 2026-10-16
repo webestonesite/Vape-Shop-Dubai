@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { BlogImageWithSkeleton } from "@/components/ui/BlogImageWithSkeleton";
 import { ShareButtons } from "@/components/ui/ShareButtons";
+import { getRequestSiteUrl, getSiteUrl } from "@/lib/site-url";
 
 const SHOPIFY_STORE = process.env.SHOPIFY_STORE || "vap-shop-dubai.myshopify.com";
 const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "";
@@ -247,11 +248,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: fullTitle,
     description: article.seoDescription || article.excerpt,
+    alternates: {
+      canonical: `/blogs/news/${slug}`,
+    },
     openGraph: {
       title: fullTitle,
       description: article.seoDescription || article.excerpt,
       images: article.image ? [{ url: article.image }] : [],
       type: "article",
+      url: `/blogs/news/${slug}`,
     },
   };
 }
@@ -292,9 +297,9 @@ export default async function SingleBlogNewsPage({
 
   const { headers } = await import("next/headers");
   const headersList = await headers();
-  const host = headersList.get('host');
+  const host = headersList.get('x-forwarded-host') || headersList.get('host');
   const protocol = headersList.get('x-forwarded-proto') || 'https';
-  const siteUrl = host ? `${protocol}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.webestone.net");
+  const siteUrl = getRequestSiteUrl(host, protocol);
 
   const articleSchema = {
     "@context": "https://schema.org",

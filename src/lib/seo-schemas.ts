@@ -3,7 +3,9 @@
  * Strictly adheres to Schema.org and Google Search Central Guidelines.
  */
 
-export const FALLBACK_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.webestone.net";
+import { getSiteUrl } from "./site-url";
+
+export const FALLBACK_SITE_URL = getSiteUrl();
 export const STORE_NAME = "Vape Shop Dubai";
 
 // 1. Organization Schema

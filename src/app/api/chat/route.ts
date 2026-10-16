@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { fetchLiveWebsiteProducts, LiveProductItem } from "@/lib/getStoreProducts";
 import rateLimit from "@/lib/rate-limit";
+import { getRequestSiteUrl } from "@/lib/site-url";
 
 const limiter = rateLimit({
   interval: 60 * 1000, // 60 seconds
@@ -54,11 +55,10 @@ export async function POST(req: Request) {
     }
 
     // DYNAMIC DOMAIN DETECTION
-    const hostHeader = req.headers.get("host") || "";
+    const hostHeader = req.headers.get("x-forwarded-host") || req.headers.get("host") || "";
     const originHeader = req.headers.get("origin") || "";
-    const protocol = hostHeader.includes("localhost") ? "http" : "https";
-    const fallbackHost = hostHeader ? `${protocol}://${hostHeader}` : (process.env.NEXT_PUBLIC_SITE_URL || "https://vapeshopdubai.webestone.net");
-    const siteUrl = originHeader || fallbackHost;
+    const protocol = req.headers.get("x-forwarded-proto") || (hostHeader.includes("localhost") ? "http" : "https");
+    const siteUrl = originHeader || getRequestSiteUrl(hostHeader, protocol);
 
     // INTENTION THINKING PAUSE FOR THOUGHTFUL ANALYSIS
     await new Promise((resolve) => setTimeout(resolve, 1500));

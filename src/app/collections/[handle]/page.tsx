@@ -43,20 +43,19 @@ export async function generateMetadata({
     meta?.description ||
     `Shop authentic ${title} in Dubai, UAE with 3-hour express delivery. 100% original verified products at Vape Shop Dubai.`;
 
-  const siteUrl = "https://vapeshopdubai.webestone.net";
-  const canonicalUrl = `${siteUrl}/collections/${handle}`;
+  const canonicalPath = `/collections/${handle}`;
 
   return {
     title: `${title} | Vape Shop Dubai`,
     description,
     alternates: {
-      canonical: canonicalUrl,
+      canonical: canonicalPath,
     },
     openGraph: {
       title: `${title} | Vape Shop Dubai`,
       description,
-      url: canonicalUrl,
-      images: meta?.image?.url ? [{ url: meta.image.url }] : [`${siteUrl}/hero_vape.png`],
+      url: canonicalPath,
+      images: meta?.image?.url ? [{ url: meta.image.url }] : ["/hero_vape.png"],
       type: "website",
     },
   };
