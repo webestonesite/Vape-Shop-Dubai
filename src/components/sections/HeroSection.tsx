@@ -46,7 +46,7 @@ export interface HeroSettings {
 }
 
 /** Renders the headline, colouring an `&` in the brand colour when present. */
-export const SlideHeadline: React.FC<{ title: string; as: "h1" | "h2" }> = ({ title, as }) => {
+const SlideHeadline: React.FC<{ title: string; as: "h1" | "h2" }> = ({ title, as }) => {
   const Tag = as;
   const className =
     "text-2xl sm:text-4xl lg:text-[3.5rem] font-serif text-foreground leading-[1.05] tracking-tight";
@@ -266,23 +266,18 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                         <div className="md:w-[45%] md:order-2 flex items-center justify-center relative w-full h-[240px] sm:h-[320px] lg:h-[390px] py-1 select-none pointer-events-none">
                           {slideImg && (
                             idx === 0 ? (
-                              <picture className="contents">
-                                {slideImg.includes("myle_slider") && (
-                                  <source media="(max-width: 640px)" srcSet="/Slider/myle_slider_mobile.webp" />
-                                )}
-                                <Image
-                                  src={slideImg}
-                                  alt={slide.title}
-                                  width={400}
-                                  height={400}
-                                  priority
-                                  fetchPriority="high"
-                                  decoding="async"
-                                  quality={65}
-                                  sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
-                                  className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
-                                />
-                              </picture>
+                              <Image
+                                src={slideImg}
+                                alt={slide.title}
+                                width={400}
+                                height={400}
+                                priority
+                                fetchPriority="high"
+                                decoding="async"
+                                quality={60}
+                                sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
+                                className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
+                              />
                             ) : (
                               <SmartImage
                                 src={slideImg}

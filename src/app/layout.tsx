@@ -134,13 +134,6 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://cdn.shopify.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
-        <link
-          rel="preload"
-          as="image"
-          href="/Slider/myle_slider_mobile.webp"
-          media="(max-width: 640px)"
-          fetchPriority="high"
-        />
         <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
         {/* Root Google JSON-LD Schemas */}
         <script

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { shouldRenderInstance, type SectionContext } from "@/lib/theme/conditions";
 import type { SectionInstance } from "@/lib/theme/types";
 
-import { HeroSectionLoader, type HeroSettings } from "./HeroSectionLoader";
+import { HeroSection, type HeroSettings } from "./HeroSection";
 import {
   ContactDetailsSection,
   FeatureGridSection,
@@ -19,22 +19,15 @@ import {
   ContactFormSection,
   type ContactFormSettings,
 } from "./ContactFormSection";
-import type { FaqSettings } from "./FAQSection";
-import type { BrandsSettings } from "./AuthorizedDealers";
-import type { CategoriesSettings } from "./Categories";
-import type { WhatsAppSettings } from "./WhatsAppContactSection";
-import type { WhyShopSettings } from "./WhyShopWithUs";
-import type { BlogSettings } from "./BlogSection";
+import { FaqSettings, FAQSection } from "./FAQSection";
+import { AuthorizedDealers, type BrandsSettings } from "./AuthorizedDealers";
+import { Categories, type CategoriesSettings } from "./Categories";
+import { WhatsAppContactSection, type WhatsAppSettings } from "./WhatsAppContactSection";
+import { WhyShopWithUs, type WhyShopSettings } from "./WhyShopWithUs";
+import { BlogSection, type BlogSettings } from "./BlogSection";
 
-const HeroSection = HeroSectionLoader;
 const BrandSphere3D = dynamic(() => import("./BrandSphere3D"));
 const FlavorsWheel = dynamic(() => import("./FlavorsWheel"));
-const AuthorizedDealers = dynamic(() => import("./AuthorizedDealers").then((m) => ({ default: m.AuthorizedDealers })));
-const Categories = dynamic(() => import("./Categories").then((m) => ({ default: m.Categories })));
-const WhyShopWithUs = dynamic(() => import("./WhyShopWithUs").then((m) => ({ default: m.WhyShopWithUs })));
-const FAQSection = dynamic(() => import("./FAQSection").then((m) => ({ default: m.FAQSection })));
-const WhatsAppContactSection = dynamic(() => import("./WhatsAppContactSection").then((m) => ({ default: m.WhatsAppContactSection })));
-const BlogSection = dynamic(() => import("./BlogSection").then((m) => ({ default: m.BlogSection })));
 
 /**
  * Sections the page renders itself, keyed by section type.
