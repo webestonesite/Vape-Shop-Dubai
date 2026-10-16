@@ -15,6 +15,12 @@ import {
 
 export const revalidate = 3600; // Edge ISR cache for 1 hour
 
+export async function generateStaticParams() {
+  return Object.keys(CANONICAL_HANDLE_TITLES).map((handle) => ({
+    handle,
+  }));
+}
+
 export async function generateMetadata({
   params,
 }: {

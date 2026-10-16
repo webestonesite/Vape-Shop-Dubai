@@ -1,10 +1,22 @@
 import { getProductByHandle } from "@/lib/shopify/product";
+import { getAllProducts } from "@/lib/shopify/products-fetch";
 import { getThemeSettings } from "@/lib/theme/get-settings";
 import { resolveTemplateKey } from "@/lib/theme/types";
 import { PageTemplatesProvider } from "@/context/PageTemplatesContext";
 import ClientProductPage from "./ClientProductPage";
 
 export const revalidate = 60; // Revalidate every 60 seconds for inventory accuracy
+
+export async function generateStaticParams() {
+  try {
+    const products = await getAllProducts();
+    return products.slice(0, 30).map((p) => ({
+      handle: p.handle,
+    }));
+  } catch {
+    return [];
+  }
+}
 
 export default async function ProductPage(props: { params: Promise<{ handle: string }> }) {
   const params = await props.params;
