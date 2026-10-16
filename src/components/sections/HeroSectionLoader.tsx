@@ -21,7 +21,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import type { HeroSettings } from "./HeroSection";
+import { SlideHeadline, type HeroSettings } from "./HeroSection";
 
 // Re-export so consumers (SectionRenderer) can import from one place.
 export type { HeroSettings };
@@ -74,27 +74,33 @@ function HeroStaticShell({ settings }: { settings: HeroSettings }) {
               {/* Badge */}
               <div className="mb-2 sm:mb-3">
                 <span className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full">
-                  <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-primary badge-live flex-shrink-0" />
                   {slide.tag}
                 </span>
               </div>
 
               {/* Content grid */}
               <div className="flex flex-col md:flex-row md:items-center gap-4 sm:gap-6 flex-grow py-1">
-                {/* LCP image — priority loaded */}
-                <div className="md:w-[45%] md:order-2 flex items-center justify-center relative min-h-[200px] sm:min-h-[320px] py-2 sm:py-4 pointer-events-none select-none">
+                {/* LCP image — mobile optimized 14KB asset with high priority */}
+                <div className="md:w-[45%] md:order-2 flex items-center justify-center relative w-full h-[240px] sm:h-[320px] lg:h-[390px] py-1 select-none pointer-events-none">
                   {slideImg && (
-                    <Image
-                      src={slideImg}
-                      alt={slide.title}
-                      width={800}
-                      height={800}
-                      priority
-                      fetchPriority="high"
-                      quality={60}
-                      sizes="(max-width: 640px) 400px, 800px"
-                      className="relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain"
-                    />
+                    <picture className="contents">
+                      {slideImg.includes("myle_slider") && (
+                        <source media="(max-width: 640px)" srcSet="/Slider/myle_slider_mobile.webp" />
+                      )}
+                      <Image
+                        src={slideImg}
+                        alt={slide.title}
+                        width={400}
+                        height={400}
+                        priority
+                        fetchPriority="high"
+                        decoding="async"
+                        quality={65}
+                        sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
+                        className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
+                      />
+                    </picture>
                   )}
                 </div>
 
@@ -104,9 +110,7 @@ function HeroStaticShell({ settings }: { settings: HeroSettings }) {
                     <p className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-primary uppercase mb-2 sm:mb-2.5">
                       {slide.accent}
                     </p>
-                    <h2 className="text-2xl sm:text-4xl lg:text-[3.5rem] font-serif text-foreground leading-[1.05] tracking-tight">
-                      {slide.title}
-                    </h2>
+                    <SlideHeadline title={slide.title} as="h2" />
                   </div>
                   <p className="text-xs sm:text-base text-muted-foreground leading-relaxed font-normal whitespace-pre-line max-w-xl line-clamp-3 sm:line-clamp-none">
                     {slide.description}
