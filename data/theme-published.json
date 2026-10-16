@@ -23,15 +23,18 @@
           "children": [
             {
               "label": "JUUL 1 Series",
-              "href": "/collections/juul-1-series"
+              "href": "/collections/juul-1-series",
+              "logo": "/brands/juul-1-series.png"
             },
             {
               "label": "JUUL 2 Series",
-              "href": "/collections/juul-2-series"
+              "href": "/collections/juul-2-series",
+              "logo": "/brands/juul-2-series.png"
             },
             {
               "label": "JUUL Pods Offers",
-              "href": "/collections/juul-pods-offers"
+              "href": "/collections/juul-pods-offers",
+              "logo": "/brands/juul-pods-offers.png"
             }
           ]
         },
@@ -161,23 +164,28 @@
           "children": [
             {
               "label": "New Disposable",
-              "href": "/collections/buy-new-disposable-vape-uae"
+              "href": "/collections/buy-new-disposable-vape-uae",
+              "logo": "/brands/new-disposable.png"
             },
             {
               "label": "50MG Disposable",
-              "href": "/collections/buy-50mg-disposable-vape-in-uae"
+              "href": "/collections/buy-50mg-disposable-vape-in-uae",
+              "logo": "/brands/disposable-vapes.png"
             },
             {
               "label": "20MG Disposable",
-              "href": "/collections/buy-20mg-disposable-vape-uae"
+              "href": "/collections/buy-20mg-disposable-vape-uae",
+              "logo": "/brands/disposable-vapes.png"
             },
             {
               "label": "0MG Disposable",
-              "href": "/collections/buy-0mg-disposable-vape-in-uae"
+              "href": "/collections/buy-0mg-disposable-vape-in-uae",
+              "logo": "/brands/disposable-vapes.png"
             },
             {
               "label": "Shisha Disposable",
-              "href": "/collections/shisha-disposable-vape-shop-uae"
+              "href": "/collections/shisha-disposable-vape-shop-uae",
+              "logo": "/brands/shisha-disposable.png"
             }
           ]
         },
@@ -187,11 +195,13 @@
           "children": [
             {
               "label": "Salt Nicotine",
-              "href": "/collections/salt-nicotine"
+              "href": "/collections/salt-nicotine",
+              "logo": "/brands/salt-nicotine.png"
             },
             {
               "label": "Freebase e-liquid",
-              "href": "/collections/freebase-e-liquid"
+              "href": "/collections/freebase-e-liquid",
+              "logo": "/brands/freebase-e-liquid.png"
             }
           ]
         },
@@ -201,15 +211,18 @@
           "children": [
             {
               "label": "Pod Kit",
-              "href": "/collections/pod-kit"
+              "href": "/collections/pod-kit",
+              "logo": "/brands/pod-kit.png"
             },
             {
               "label": "Pod Cartridge",
-              "href": "/collections/pod-cartridge"
+              "href": "/collections/pod-cartridge",
+              "logo": "/brands/pod-cartridge.png"
             },
             {
               "label": "Vape Coils",
-              "href": "/collections/vape-coils"
+              "href": "/collections/vape-coils",
+              "logo": "/brands/vape-coils.png"
             }
           ]
         },

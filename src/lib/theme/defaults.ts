@@ -402,26 +402,28 @@ const DEFAULT_HEADER: ThemeSettings["header"] = {
       label: "DISPOSABLE",
       href: "/collections/disposable-vape",
       children: [
-        { label: "50MG Disposable", href: "/collections/buy-50mg-disposable-vape-in-uae" },
-        { label: "20MG Disposable", href: "/collections/buy-20mg-disposable-vape-uae" },
-        { label: "0MG Disposable", href: "/collections/buy-0mg-disposable-vape-in-uae" },
+        { label: "New Disposable", href: "/collections/buy-new-disposable-vape-uae", logo: "/brands/new-disposable.png" },
+        { label: "50MG Disposable", href: "/collections/buy-50mg-disposable-vape-in-uae", logo: "/brands/disposable-vapes.png" },
+        { label: "20MG Disposable", href: "/collections/buy-20mg-disposable-vape-uae", logo: "/brands/disposable-vapes.png" },
+        { label: "0MG Disposable", href: "/collections/buy-0mg-disposable-vape-in-uae", logo: "/brands/disposable-vapes.png" },
+        { label: "Shisha Disposable", href: "/collections/shisha-disposable-vape-shop-uae", logo: "/brands/shisha-disposable.png" },
       ],
     },
     {
       label: "E-JUICE",
       href: "/collections/vape-e-juice",
       children: [
-        { label: "Salt Nicotine", href: "/collections/salt-nicotine" },
-        { label: "Freebase e-liquid", href: "/collections/freebase-e-liquid" },
+        { label: "Salt Nicotine", href: "/collections/salt-nicotine", logo: "/brands/salt-nicotine.png" },
+        { label: "Freebase e-liquid", href: "/collections/freebase-e-liquid", logo: "/brands/freebase-e-liquid.png" },
       ],
     },
     {
       label: "POD SYSTEM",
       href: "/collections/pod-system",
       children: [
-        { label: "Pod Kit", href: "/collections/pod-kit" },
-        { label: "Pod Cartridge", href: "/collections/pod-cartridge" },
-        { label: "Vape Coils", href: "/collections/vape-coils" },
+        { label: "Pod Kit", href: "/collections/pod-kit", logo: "/brands/pod-kit.png" },
+        { label: "Pod Cartridge", href: "/collections/pod-cartridge", logo: "/brands/pod-cartridge.png" },
+        { label: "Vape Coils", href: "/collections/vape-coils", logo: "/brands/vape-coils.png" },
       ],
     },
     {
