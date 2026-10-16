@@ -87,12 +87,13 @@ function HeroStaticShell({ settings }: { settings: HeroSettings }) {
                     <Image
                       src={slideImg}
                       alt={slide.title}
-                      width={800}
-                      height={800}
+                      width={400}
+                      height={400}
                       priority
                       fetchPriority="high"
+                      decoding="async"
                       quality={60}
-                      sizes="(max-width: 640px) 400px, 800px"
+                      sizes="(max-width: 640px) 220px, (max-width: 1024px) 320px, 400px"
                       className="relative z-10 max-h-[260px] sm:max-h-[340px] lg:max-h-[390px] w-auto max-w-full object-contain"
                     />
                   )}
@@ -199,6 +200,7 @@ function HeroStaticShell({ settings }: { settings: HeroSettings }) {
                           width={140}
                           height={190}
                           sizes="140px"
+                          quality={60}
                           className="max-h-full max-w-full w-auto h-auto object-contain pointer-events-none"
                         />
                       </div>

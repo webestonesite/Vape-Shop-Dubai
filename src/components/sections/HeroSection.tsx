@@ -133,6 +133,7 @@ const PromoCard: React.FC<{ card: HeroPromoCard; index: number }> = ({ card, ind
             width={140}
             height={190}
             sizes="140px"
+            quality={60}
             className={`relative max-h-full max-w-full w-auto h-auto object-contain group-hover:scale-108 transition-all duration-500 pointer-events-none ${
               isPrimary ? "group-hover:-rotate-2" : "group-hover:rotate-2"
             }`}
@@ -275,7 +276,7 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                                 fetchPriority="high"
                                 decoding="async"
                                 quality={60}
-                                sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
+                                sizes="(max-width: 640px) 220px, (max-width: 1024px) 320px, 400px"
                                 className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
                               />
                             ) : (
@@ -286,7 +287,8 @@ export const HeroSection: React.FC<{ settings: HeroSettings }> = ({
                                 width={400}
                                 height={400}
                                 draggable={false}
-                                sizes="(max-width: 640px) 240px, (max-width: 1024px) 320px, 400px"
+                                quality={60}
+                                sizes="(max-width: 640px) 220px, (max-width: 1024px) 320px, 400px"
                                 className="sm:animate-float relative z-10 max-h-full w-auto max-w-full object-contain pointer-events-none"
                               />
                             )
