@@ -20,12 +20,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
       "lucide-react",
-      "@radix-ui/react-dialog",
-      "@radix-ui/react-dropdown-menu",
-      "@radix-ui/react-accordion",
-      "@radix-ui/react-tabs",
-      "@radix-ui/react-tooltip",
-      "@radix-ui/react-popover",
+      "@base-ui/react",
     ],
   },
   transpilePackages: ["firebase-admin", "jwks-rsa", "jose"],
