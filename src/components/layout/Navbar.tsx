@@ -143,8 +143,12 @@ const KNOWN_BRAND_LOGOS: Record<string, string> = {
   "hqd": "/brands/hqd.png",
   "lost mary": "/brands/lost-mary.png",
   "maskking": "/brands/maskking.png",
-  "myle": "/brands/myle-v5-pods.png",
+  "myle v5 device": "/brands/myle-v5-device.png",
+  "myle device": "/brands/myle-v5-device.png",
+  "myle disposable": "/brands/myle-disposable.png",
+  "myle v5 pod": "/brands/myle-v5-pods.png",
   "myle v5 pods": "/brands/myle-v5-pods.png",
+  "myle": "/brands/myle-v5-pods.png",
   "nerd": "/brands/nerd-vape.png",
   "oxva": "/brands/oxva.png",
   "pod salt": "/brands/podsalt.png",
@@ -815,7 +819,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                     <BrandIconAvatar
                                       name={s}
                                       imageSrc={itemLogo}
-                                      shape="circle"
+                                      shape="square"
                                     />
                                     <div className="min-w-0">
                                       <h5 className="text-xs sm:text-[13px] font-black font-serif text-foreground group-hover/sub:text-primary transition-colors truncate">

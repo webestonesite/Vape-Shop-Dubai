@@ -135,15 +135,18 @@
           "children": [
             {
               "label": "Myle v5 Pods",
-              "href": "/collections/myle-v5-pods"
+              "href": "/collections/myle-v5-pods",
+              "logo": "/brands/myle-v5-pods.png"
             },
             {
               "label": "Myle v5 Device",
-              "href": "/collections/myle-v5-device"
+              "href": "/collections/myle-v5-device",
+              "logo": "/brands/myle-v5-device.png"
             },
             {
               "label": "Myle Disposable",
-              "href": "/collections/myle-disposable"
+              "href": "/collections/myle-disposable",
+              "logo": "/brands/myle-disposable.png"
             }
           ]
         },
