@@ -1,6 +1,8 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { THEME_CACHE_TAG } from "@/lib/theme/get-settings";
+import { clearProductsCache } from "@/lib/shopify/products-fetch";
+import { clearProductCache } from "@/lib/shopify/product";
 
 const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET || "vape_dubai_revalidate_secret_2026";
 
@@ -26,6 +28,10 @@ export async function GET(req: NextRequest) {
   try {
     const revalidated: string[] = [];
 
+    // Clear server in-memory caches
+    clearProductsCache();
+    clearProductCache();
+
     if (tag) {
       revalidateTag(tag, "max");
       revalidated.push(`tag:${tag}`);
@@ -42,6 +48,7 @@ export async function GET(req: NextRequest) {
       revalidatePath("/", "page");
       revalidatePath("/collections/[handle]", "page");
       revalidatePath("/products/[handle]", "page");
+      revalidateTag("products", "max");
       revalidateTag(THEME_CACHE_TAG, "max");
       revalidated.push("site:core-pages");
     }
@@ -68,11 +75,17 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const revalidated: string[] = [];
 
-    // Check if Shopify product webhook
+    clearProductsCache();
     if (body?.handle) {
+      clearProductCache(body.handle);
       revalidatePath(`/products/${body.handle}`, "page");
+      revalidateTag(`product-${body.handle}`, "max");
       revalidated.push(`/products/${body.handle}`);
+    } else {
+      clearProductCache();
     }
+
+    revalidateTag("products", "max");
 
     // Always keep catalog lists and homepage fresh on catalog updates
     revalidatePath("/", "page");

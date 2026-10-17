@@ -679,7 +679,7 @@ export default function ClientProductPage({ initialProduct }: { initialProduct?:
       <Navbar
         onSearchChange={(q) => {
           setSearchQuery(q);
-          if (q) router.push(`/?search=${encodeURIComponent(q)}`);
+          router.push(q ? `/collections/all?search=${encodeURIComponent(q)}` : "/collections/all");
         }}
         onCategorySelect={(c) => {
           setActiveCategory(c);

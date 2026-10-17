@@ -2,6 +2,8 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { THEME_CACHE_TAG } from "@/lib/theme/get-settings";
+import { clearProductsCache } from "@/lib/shopify/products-fetch";
+import { clearProductCache } from "@/lib/shopify/product";
 
 export async function GET() {
   const session = await getSession();
@@ -11,9 +13,15 @@ export async function GET() {
     }
   }
 
+  // Clear server-side in-memory cache
+  clearProductsCache();
+  clearProductCache();
+
   revalidatePath("/", "layout");
+  revalidatePath("/", "page");
   revalidatePath("/collections/[handle]", "page");
-  revalidatePath("/collections/myle-vape-dubai", "page");
+  revalidatePath("/products/[handle]", "page");
+  revalidateTag("products", "max");
   revalidateTag(THEME_CACHE_TAG, "max");
   return NextResponse.json({ success: true, message: "Cache busted!" });
 }

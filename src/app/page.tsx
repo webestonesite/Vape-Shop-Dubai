@@ -19,7 +19,7 @@ import { HomeProductFeedSlot } from "@/components/layout/HomeProductFeedSlot";
 import { HomeCustomerReviewsSlot } from "@/components/layout/HomeCustomerReviewsSlot";
 import { getAllProducts } from "@/lib/shopify/products-fetch";
 
-export const revalidate = 3600; // Cache the full home page at the CDN edge for 1 hour
+export const revalidate = 60; // Cache the home page for 60 seconds for freshness
 
 export default async function Home() {
   // Run both data fetches in parallel to minimize TTFB

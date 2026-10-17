@@ -21,6 +21,7 @@ import {
   Box,
   ShieldCheck,
   Tag,
+  MoreHorizontal,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
@@ -396,6 +397,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
         router.push(`/collections/all?search=${encodeURIComponent(query)}`);
       }
     }
+    setIsSearchOpen(false);
     setIsMobileMenuOpen(false);
   };
 
@@ -471,8 +473,12 @@ const NavbarContent: React.FC<NavbarProps> = ({
       });
     }
 
-    return { navLinks: links, hrefById: byId, hrefBySubKey: bySubKey, childBySubKey };
+return { navLinks: links, hrefById: byId, hrefBySubKey: bySubKey, childBySubKey };
   }, [header.menu]);
+
+  const isMoreActive = useMemo(() => {
+    return navLinks.slice(5).some((l) => getActiveState(l.id));
+  }, [navLinks, hrefById, hrefBySubKey, pathname, activeCategory]);
 
   const getNavLinkHref = (id: string, subItem?: string): string => {
     if (subItem) {
@@ -577,8 +583,8 @@ const NavbarContent: React.FC<NavbarProps> = ({
             </div>
 
             {/* Desktop Nav Links */}
-            <nav className="hidden lg:flex flex-1 items-center justify-start 2xl:justify-center gap-0.5 xl:gap-1 2xl:gap-1.5 min-w-0 ml-2 xl:ml-4 2xl:ml-6 mr-1 xl:mr-2" ref={dropdownRef}>
-              {navLinks.map((link) => {
+            <nav className="hidden lg:flex flex-1 items-center justify-start 2xl:justify-center gap-0.5 xl:gap-1 2xl:gap-1.5 min-w-0 ml-2 xl:ml-3 2xl:ml-5 mr-1 xl:mr-2 overflow-visible" ref={dropdownRef}>
+              {navLinks.map((link, idx) => {
                 const mainHref = getNavLinkHref(link.id);
                 const triggerLabel = (megaMenuConfig.triggerLabel || "BRAND").toUpperCase();
                 const isBrand =
@@ -587,17 +593,24 @@ const NavbarContent: React.FC<NavbarProps> = ({
                     link.label.toUpperCase() === triggerLabel ||
                     link.id === triggerLabel.toLowerCase());
 
+                const responsiveVisibility =
+                  idx < 5
+                    ? "flex"
+                    : idx < 7
+                    ? "hidden xl:flex"
+                    : "hidden 2xl:flex";
+
                 return (
                   <div 
                     key={link.id} 
                     suppressHydrationWarning
-                    className={`${isBrand ? "static" : "relative"} group`}
+                    className={`${isBrand ? "static" : "relative"} group ${responsiveVisibility} items-center shrink-0`}
                     onMouseEnter={() => link.sub && handleMouseEnterNav(link.id)}
                     onMouseLeave={() => link.sub && handleMouseLeaveNav()}
                   >
                     <div
                       suppressHydrationWarning
-                      className={`flex items-center rounded-xl text-[12px] lg:text-[12.5px] xl:text-[13.5px] 2xl:text-[14.5px] font-serif font-black [font-weight:900] tracking-wider whitespace-nowrap transition-all duration-200 ${
+                      className={`flex items-center rounded-xl text-[11px] xl:text-[12px] 2xl:text-[13px] font-serif font-extrabold tracking-tight xl:tracking-normal 2xl:tracking-wider whitespace-nowrap transition-all duration-200 ${
                         getActiveState(link.id) || openDropdown === link.id
                           ? "text-primary bg-primary/10 shadow-xs"
                           : "text-foreground hover:text-primary hover:bg-muted/70"
@@ -615,7 +628,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                           }
                           setOpenDropdown(null);
                         }}
-                        className={`${link.sub ? "pl-2 lg:pl-2.5 xl:pl-3 2xl:px-3.5 pr-0.5 xl:pr-1" : "px-2 lg:px-2.5 xl:px-3 2xl:px-3.5"} py-1.5 xl:py-2 text-left hover:text-primary transition-colors cursor-pointer uppercase font-serif font-black [font-weight:900] tracking-wider`}
+                        className={`${link.sub ? "pl-1.5 xl:pl-2 2xl:pl-2.5 pr-0.5" : "px-1.5 xl:px-2 2xl:px-2.5"} py-1 xl:py-1.5 text-left hover:text-primary transition-colors cursor-pointer uppercase font-serif font-extrabold tracking-tight xl:tracking-normal 2xl:tracking-wider`}
                       >
                         {link.label}
                       </Link>
@@ -634,10 +647,10 @@ const NavbarContent: React.FC<NavbarProps> = ({
                               setOpenDropdown(link.id);
                             }
                           }}
-                          className="pr-1.5 lg:pr-2 xl:pr-2.5 2xl:pr-3 py-1.5 xl:py-2 pl-0.5 hover:text-primary transition-all cursor-pointer flex items-center justify-center"
+                          className="pr-1.5 xl:pr-2 py-1 xl:py-1.5 pl-0.5 hover:text-primary transition-all cursor-pointer flex items-center justify-center"
                           aria-label={`Toggle ${link.label} menu`}
                         >
-                          <ChevronDown className={`h-3 w-3 xl:h-3.5 xl:w-3.5 stroke-[2.5] transition-transform duration-200 ${openDropdown === link.id ? "rotate-180 text-primary" : ""}`} />
+                          <ChevronDown className={`h-3 w-3 stroke-[2.5] transition-transform duration-200 ${openDropdown === link.id ? "rotate-180 text-primary" : ""}`} />
                         </button>
                       )}
                     </div>
@@ -904,12 +917,131 @@ const NavbarContent: React.FC<NavbarProps> = ({
                   </div>
                 );
               })}
+
+              {/* MORE Dropdown Button (Shown when menu items exceed breakpoint limits) */}
+              {navLinks.length > 5 && (
+                <div
+                  suppressHydrationWarning
+                  className={`relative group ${navLinks.length <= 10 ? "2xl:hidden" : ""} flex items-center shrink-0`}
+                  onMouseEnter={() => handleMouseEnterNav("more-menu")}
+                  onMouseLeave={() => handleMouseLeaveNav()}
+                >
+                  <div
+                    suppressHydrationWarning
+                    className={`flex items-center rounded-xl text-[11px] xl:text-[12px] 2xl:text-[13px] font-serif font-extrabold tracking-tight xl:tracking-normal whitespace-nowrap transition-all duration-200 ${
+                      isMoreActive || openDropdown === "more-menu"
+                        ? "text-primary bg-primary/10 shadow-xs"
+                        : "text-foreground hover:text-primary hover:bg-muted/70"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (openDropdown === "more-menu") {
+                          if (dropdownTimerRef.current) clearTimeout(dropdownTimerRef.current);
+                          setOpenDropdown(null);
+                          isInsideDropdownRef.current = false;
+                        } else {
+                          if (dropdownTimerRef.current) clearTimeout(dropdownTimerRef.current);
+                          setOpenDropdown("more-menu");
+                        }
+                      }}
+                      className="px-2 xl:px-2.5 py-1 xl:py-1.5 text-left hover:text-primary transition-colors cursor-pointer uppercase font-serif font-extrabold flex items-center gap-1"
+                      aria-label="More navigation items"
+                    >
+                      <span>More</span>
+                      <ChevronDown className={`h-3 w-3 stroke-[2.5] transition-transform duration-200 ${openDropdown === "more-menu" ? "rotate-180 text-primary" : ""}`} />
+                    </button>
+                  </div>
+
+                  {/* MORE DROPDOWN MENU */}
+                  {openDropdown === "more-menu" && (
+                    <div
+                      onMouseEnter={() => {
+                        isInsideDropdownRef.current = true;
+                        if (dropdownTimerRef.current) {
+                          clearTimeout(dropdownTimerRef.current);
+                          dropdownTimerRef.current = null;
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        isInsideDropdownRef.current = false;
+                        handleMouseLeaveNav();
+                      }}
+                      className="absolute top-full right-0 pt-2 w-[300px] sm:w-[320px] z-50 animate-in fade-in slide-in-from-top-1.5 duration-150 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+                    >
+                      <div className="bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-2xl p-3 sm:p-3.5 max-h-[calc(100vh-140px)] overflow-y-auto">
+                        <div className="space-y-1.5">
+                          {navLinks.map((link, idx) => {
+                            if (idx < 5) return null;
+                            const isHiddenOnXl = idx < 7;
+                            const hideClass = isHiddenOnXl ? "xl:hidden" : "2xl:hidden";
+                            const mainHref = getNavLinkHref(link.id);
+                            const isActive = getActiveState(link.id);
+
+                            return (
+                              <div key={link.id} className={`${hideClass} space-y-1`}>
+                                <Link
+                                  href={mainHref}
+                                  onClick={() => {
+                                    setOpenDropdown(null);
+                                    isInsideDropdownRef.current = false;
+                                  }}
+                                  className={`flex items-center justify-between p-2.5 rounded-xl border transition-all duration-150 ${
+                                    isActive
+                                      ? "border-primary bg-primary/10 text-primary font-black"
+                                      : "border-border/40 hover:border-primary/50 bg-muted/20 hover:bg-primary/[0.06] text-foreground font-extrabold"
+                                  } font-serif text-xs uppercase tracking-wider`}
+                                >
+                                  <span>{link.label}</span>
+                                  <ArrowRight className="w-3.5 h-3.5 opacity-60" />
+                                </Link>
+
+                                {link.sub && link.sub.length > 0 && (
+                                  <div className="pl-2 pr-1 pb-1 grid grid-cols-2 gap-1">
+                                    {link.sub.map((s) => {
+                                      const subHref = getNavLinkHref(link.id, s);
+                                      const isSubActive = hrefBySubKey[`${link.id}::${s}`]?.replace(/\/$/, "") === pathname?.replace(/\/$/, "");
+                                      return (
+                                        <Link
+                                          key={s}
+                                          href={subHref}
+                                          onClick={() => {
+                                            setOpenDropdown(null);
+                                            isInsideDropdownRef.current = false;
+                                          }}
+                                          className={`px-2 py-1.5 rounded-lg text-[10.5px] font-medium truncate transition-colors border ${
+                                            isSubActive
+                                              ? "bg-primary text-white border-primary"
+                                              : "bg-card/70 hover:bg-primary/10 text-muted-foreground hover:text-primary border-border/30 hover:border-primary/30"
+                                          }`}
+                                          title={s}
+                                        >
+                                          {s}
+                                        </Link>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </nav>
 
             {/* Right Actions */}
-            <div suppressHydrationWarning className="ml-auto flex items-center gap-1.5 xl:gap-2.5 flex-shrink-0 pl-3 xl:pl-4 border-l border-border/70">
-              {/* Search (Desktop Popover Modal) */}
-              <div suppressHydrationWarning className="hidden md:flex items-center relative" ref={searchRef}>
+            <div
+              suppressHydrationWarning
+              className="ml-auto flex items-center gap-1 sm:gap-1.5 xl:gap-2.5 shrink-0 pl-2 sm:pl-3 xl:pl-4 border-l border-border/70 relative z-20 bg-background/95 backdrop-blur-xs"
+            >
+              {/* Search (Desktop & Mobile Popover Modal - Always Up) */}
+              <div suppressHydrationWarning className="flex items-center relative" ref={searchRef}>
                 <button
                   type="button"
                   onClick={() => {
@@ -934,7 +1066,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
 
                 {/* Popover Dropdown */}
                 {isSearchOpen && (
-                  <div className="absolute top-full right-0 mt-2.5 w-80 sm:w-96 max-w-[calc(100vw-32px)] bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-2xl shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="fixed sm:absolute top-[68px] sm:top-full right-2 sm:right-0 mt-2.5 w-[calc(100vw-16px)] sm:w-96 max-w-[calc(100vw-16px)] sm:max-w-none bg-card/98 dark:bg-card/98 backdrop-blur-2xl border border-border/80 rounded-2xl shadow-2xl p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                     <form onSubmit={handleSearchSubmit} className="space-y-2">
                       <div className="flex items-center gap-2 bg-muted/60 border border-border/70 rounded-xl px-3 py-2 focus-within:border-primary transition-colors">
                         <Search className="h-4 w-4 text-muted-foreground shrink-0" />

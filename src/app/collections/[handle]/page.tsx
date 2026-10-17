@@ -13,7 +13,7 @@ import {
   getMatchingCollectionProducts,
 } from "@/lib/shopify/collection-matching";
 
-export const revalidate = 3600; // Edge ISR cache for 1 hour
+export const revalidate = 60; // Edge ISR cache for 60 seconds
 
 export async function generateStaticParams() {
   return Object.keys(CANONICAL_HANDLE_TITLES).map((handle) => ({

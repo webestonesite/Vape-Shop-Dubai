@@ -116,7 +116,7 @@ async function fetchShopifyProducts() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ query: storefrontQuery }),
-        next: { revalidate: 3600 },
+        next: { revalidate: 60, tags: ["products"] },
       });
 
       if (response.ok) {
@@ -141,7 +141,7 @@ async function fetchShopifyProducts() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ query: adminQuery }),
-        next: { revalidate: 3600 },
+        next: { revalidate: 60, tags: ["products"] },
       });
 
       if (!response.ok) {
@@ -227,6 +227,10 @@ function cleanProductTitle(title: string): string {
 let cachedProducts: { data: Product[]; expiresAt: number } | null = null;
 const CACHE_TTL_MS = 60 * 1000; // 60-second in-memory server cache
 
+export function clearProductsCache() {
+  cachedProducts = null;
+}
+
 export async function getAllProducts(): Promise<Product[]> {
   const now = Date.now();
   if (cachedProducts && cachedProducts.expiresAt > now) {
@@ -250,13 +254,7 @@ export async function getAllProducts(): Promise<Product[]> {
     const comparePriceVal = typeof firstVariant?.compareAtPrice === 'object' ? firstVariant?.compareAtPrice?.amount : firstVariant?.compareAtPrice;
     const comparePrice = comparePriceVal ? parseFloat(comparePriceVal) : 0;
     
-    const isSoldOut = !node.variants?.edges?.some((v: any) => {
-      const vNode = v.node;
-      if (!vNode) return false;
-      const rawQty = vNode.quantityAvailable !== undefined ? vNode.quantityAvailable : vNode.inventoryQuantity;
-      const isQtyZero = rawQty !== undefined && rawQty !== null && rawQty <= 0;
-      return vNode.availableForSale && !isQtyZero;
-    });
+    const isSoldOut = !node.variants?.edges?.some((v: any) => Boolean(v.node?.availableForSale));
 
     const typeLower = (node.productType || "").toLowerCase();
     const titleLower = (node.title || "").toLowerCase();

@@ -1075,6 +1075,18 @@ function CollectionPageContent({
       </Suspense>
       {/* Navbar */}
       <Navbar
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          if (typeof window !== "undefined") {
+            const currentUrl = new URL(window.location.href);
+            if (q) {
+              currentUrl.searchParams.set("search", q);
+            } else {
+              currentUrl.searchParams.delete("search");
+            }
+            router.replace(currentUrl.pathname + currentUrl.search);
+          }
+        }}
         onCategorySelect={(c) => {
           router.push(c === "all" ? "/shop" : `/collections/${c}`);
         }}
