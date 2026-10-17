@@ -97,7 +97,7 @@ const BrandIconAvatar: React.FC<{
   if (imageSrc && !imgError) {
     const versionedSrc =
       imageSrc.startsWith("/brands/") && !imageSrc.includes("?")
-        ? `${imageSrc}?v=3`
+        ? `${imageSrc}?v=4`
         : imageSrc;
 
     return (
@@ -663,6 +663,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                             {megaCategories.map((cat) => {
                               const isActive = cat.id === activeMegaCategory.id;
                               const CatIcon = getMegaCategoryIcon(cat.icon);
+                              const catLogo = resolveBrandLogo(cat.title) || resolveBrandLogo(cat.id);
                               return (
                                 <div
                                   key={cat.id}
@@ -675,13 +676,24 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                 >
                                   <div className="flex items-center gap-3">
                                     <div
-                                      className={`w-9 h-9 xl:w-9.5 xl:h-9.5 rounded-lg flex items-center justify-center shrink-0 shadow-xs transition-all duration-150 ${
+                                      className={`w-9 h-9 xl:w-9.5 xl:h-9.5 rounded-lg flex items-center justify-center shrink-0 shadow-xs transition-all duration-150 overflow-hidden ${
                                         isActive
-                                          ? "bg-primary text-white shadow-primary/25 scale-105"
-                                          : "bg-primary/10 text-primary group-hover/cat:bg-primary/20 group-hover/cat:scale-105"
+                                          ? "bg-black border border-primary shadow-primary/25 scale-105"
+                                          : "bg-black/90 border border-primary/30 group-hover/cat:border-primary group-hover/cat:scale-105"
                                       }`}
                                     >
-                                      <CatIcon className="w-4.5 h-4.5" />
+                                      {catLogo ? (
+                                        <img
+                                          src={`${catLogo}?v=4`}
+                                          alt={cat.title}
+                                          width={36}
+                                          height={36}
+                                          className="w-full h-full object-contain p-1"
+                                          loading="lazy"
+                                        />
+                                      ) : (
+                                        <CatIcon className="w-4.5 h-4.5 text-primary" />
+                                      )}
                                     </div>
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center justify-between gap-1">
