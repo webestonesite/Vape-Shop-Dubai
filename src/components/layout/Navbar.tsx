@@ -97,7 +97,7 @@ const BrandIconAvatar: React.FC<{
   if (imageSrc && !imgError) {
     const versionedSrc =
       imageSrc.startsWith("/brands/") && !imageSrc.includes("?")
-        ? `${imageSrc}?v=4`
+        ? `${imageSrc}?v=5`
         : imageSrc;
 
     return (
@@ -159,9 +159,12 @@ const KNOWN_BRAND_LOGOS: Record<string, string> = {
   "myle": "/brands/myle-v5-pods.png",
   "new disposable": "/brands/new-disposable.png",
   "new disposable vapes": "/brands/new-disposable.png",
-  "50mg disposable": "/brands/disposable-vapes.png",
-  "20mg disposable": "/brands/disposable-vapes.png",
-  "0mg disposable": "/brands/disposable-vapes.png",
+  "50mg disposable": "/brands/50-mg-disposable.png",
+  "50mg": "/brands/50-mg-disposable.png",
+  "20mg disposable": "/brands/20-mg-disposable.png",
+  "20mg": "/brands/20-mg-disposable.png",
+  "0mg disposable": "/brands/0-mg-disposable.png",
+  "0mg": "/brands/0-mg-disposable.png",
   "shisha disposable": "/brands/shisha-disposable.png",
   "disposable vapes": "/brands/disposable-vapes.png",
   "disposable": "/brands/disposable-vapes.png",
@@ -684,7 +687,7 @@ const NavbarContent: React.FC<NavbarProps> = ({
                                     >
                                       {catLogo ? (
                                         <img
-                                          src={`${catLogo}?v=4`}
+                                          src={`${catLogo}?v=5`}
                                           alt={cat.title}
                                           width={36}
                                           height={36}

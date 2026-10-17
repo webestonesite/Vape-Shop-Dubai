@@ -22,6 +22,7 @@ query getArticleByHandle($blogHandle: String!, $articleHandle: String!) {
       id
       title
       handle
+      tags
       excerpt
       excerptHtml
       contentHtml
@@ -39,7 +40,7 @@ const adminArticlesQuery = `
 query getArticles {
   articles(first: 250, reverse: true) {
     nodes {
-      id title handle summary body publishedAt
+      id title handle summary body publishedAt tags
       author { name }
       image { url altText width height }
       blog { handle title }
@@ -60,6 +61,7 @@ interface ArticleData {
   blogTitle: string;
   seoTitle: string;
   seoDescription: string;
+  tags?: string[];
   rating?: number;
   ratingCount?: number;
   quickTake?: {
@@ -450,6 +452,7 @@ async function fetchArticle(slug: string): Promise<ArticleData | null> {
               blogTitle: node.blog?.title || fallback?.blogTitle || "News",
               seoTitle: node.seo?.title || node.title,
               seoDescription: node.seo?.description || node.excerpt || fallback?.seoDescription || "",
+              tags: node.tags || [],
               rating: fallback?.rating || 4.9,
               ratingCount: fallback?.ratingCount || 150,
               quickTake: fallback?.quickTake,
@@ -501,6 +504,7 @@ async function fetchArticle(slug: string): Promise<ArticleData | null> {
             blogTitle: node.blog?.title || fallback?.blogTitle || "News",
             seoTitle: node.title,
             seoDescription: node.summary || fallback?.seoDescription || "",
+            tags: node.tags || [],
             rating: fallback?.rating || 4.9,
             ratingCount: fallback?.ratingCount || 150,
             quickTake: fallback?.quickTake,
@@ -772,6 +776,142 @@ const DEFAULT_JUUL_PRODUCTS: ProductRecommendation[] = [
 ];
 
 async function fetchRecommendedProducts(article: ArticleData): Promise<ProductRecommendation[]> {
+  // If Admin token available, fetch dynamically from Shopify
+  if (ADMIN_TOKEN) {
+    try {
+      const res = await fetch(`https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Shopify-Access-Token": ADMIN_TOKEN,
+        },
+        body: JSON.stringify({
+          query: `query getRecommendedContext($articleQuery: String!) {
+            articles(first: 1, query: $articleQuery) {
+              nodes {
+                id
+                title
+                handle
+                tags
+                metafield(namespace: "custom", key: "related_products") {
+                  references(first: 10) {
+                    nodes {
+                      ... on Product {
+                        id
+                        title
+                        handle
+                        featuredImage { url }
+                        priceRangeV2 { minVariantPrice { amount } }
+                        compareAtPriceRange { minVariantCompareAtPrice { amount } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            products(first: 50) {
+              nodes {
+                id
+                title
+                handle
+                featuredImage { url }
+                priceRangeV2 { minVariantPrice { amount } }
+                compareAtPriceRange { minVariantCompareAtPrice { amount } }
+              }
+            }
+          }`,
+          variables: {
+            articleQuery: `handle:${article.handle}`,
+          },
+        }),
+        next: { revalidate: 300 },
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        const articleNode = json.data?.articles?.nodes?.[0];
+        const metafieldProducts = articleNode?.metafield?.references?.nodes || [];
+
+        const formatProduct = (p: any, idx: number): ProductRecommendation => {
+          const rawPrice = parseFloat(p.priceRangeV2?.minVariantPrice?.amount || "0");
+          const rawComp = parseFloat(p.compareAtPriceRange?.minVariantCompareAtPrice?.amount || p.compareAtPriceRange?.minVariantPrice?.amount || "0");
+          return {
+            id: p.id || `prod-${idx}`,
+            title: p.title,
+            handle: p.handle,
+            price: `AED ${rawPrice.toFixed(0)}`,
+            originalPrice: rawComp > rawPrice ? `AED ${rawComp.toFixed(0)}` : undefined,
+            image: p.featuredImage?.url || "/Slider/juul_2_slider.webp",
+            badge: idx === 0 ? "BESTSELLER" : idx === 1 ? "100% GENUINE" : idx === 2 ? "POPULAR" : "FEATURED",
+            rating: 5.0,
+            href: `/products/${p.handle}`,
+          };
+        };
+
+        // Priority 1: Metafield product references manually chosen in Shopify Admin
+        if (metafieldProducts.length > 0) {
+          return metafieldProducts.slice(0, 4).map(formatProduct);
+        }
+
+        const allProducts = json.data?.products?.nodes || [];
+
+        // Priority 2: Manual product tags from Shopify Article (e.g. "prod:juul-2-device" or "product:handle")
+        const articleTags: string[] = (articleNode?.tags || article.tags || []).map((t: string) => t.toLowerCase().trim());
+        const taggedHandles = articleTags
+          .map((t) => t.replace(/^prod(uct)?:/i, "").trim())
+          .filter(Boolean);
+
+        if (taggedHandles.length > 0) {
+          const matchedFromTags = allProducts.filter((p: any) =>
+            taggedHandles.includes(p.handle.toLowerCase())
+          );
+          if (matchedFromTags.length > 0) {
+            return matchedFromTags.slice(0, 4).map(formatProduct);
+          }
+        }
+
+        // Priority 3: Fallback article explicit featuredProducts (if defined)
+        if (article.featuredProducts && article.featuredProducts.length > 0) {
+          return article.featuredProducts.map((p, idx) => ({
+            id: `feat-${idx}`,
+            title: p.title,
+            handle: p.href.replace(/^\/products\//, "").replace(/^\/collections\//, ""),
+            price: p.price,
+            originalPrice: p.originalPrice,
+            image: p.image,
+            badge: p.badge || "RECOMMENDED",
+            rating: 5.0,
+            href: p.href,
+          }));
+        }
+
+        // Priority 4: Dynamic keyword filtering on Shopify products catalog
+        const combinedText = `${article.title} ${article.handle}`.toLowerCase();
+        let filtered = allProducts;
+        if (combinedText.includes("juul")) {
+          const juulOnly = allProducts.filter((n: any) => n.title.toLowerCase().includes("juul") || n.handle.includes("juul"));
+          if (juulOnly.length > 0) filtered = juulOnly;
+        } else if (combinedText.includes("disposable") || combinedText.includes("puff")) {
+          const dispOnly = allProducts.filter((n: any) =>
+            n.title.toLowerCase().includes("disposable") ||
+            n.title.toLowerCase().includes("crown") ||
+            n.title.toLowerCase().includes("mary") ||
+            n.title.toLowerCase().includes("bar")
+          );
+          if (dispOnly.length > 0) filtered = dispOnly;
+        }
+
+        const picked = filtered.slice(0, 4);
+        if (picked.length > 0) {
+          return picked.map(formatProduct);
+        }
+      }
+    } catch {
+      // fallback
+    }
+  }
+
+  // Fallback to static featuredProducts if defined and no Shopify data returned
   if (article.featuredProducts && article.featuredProducts.length > 0) {
     return article.featuredProducts.map((p, idx) => ({
       id: `feat-${idx}`,
@@ -784,75 +924,6 @@ async function fetchRecommendedProducts(article: ArticleData): Promise<ProductRe
       rating: 5.0,
       href: p.href,
     }));
-  }
-
-  // If Admin token available, fetch dynamically from Shopify
-  if (ADMIN_TOKEN) {
-    try {
-      const res = await fetch(`https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Shopify-Access-Token": ADMIN_TOKEN,
-        },
-        body: JSON.stringify({
-          query: `{
-            products(first: 35) {
-              nodes {
-                id
-                title
-                handle
-                priceRangeV2 { minVariantPrice { amount } }
-                compareAtPriceRange { minVariantPrice { amount } }
-                featuredImage { url }
-              }
-            }
-          }`,
-        }),
-        next: { revalidate: 600 },
-      });
-
-      if (res.ok) {
-        const json = await res.json();
-        const nodes = json.data?.products?.nodes || [];
-        const combinedText = `${article.title} ${article.handle}`.toLowerCase();
-
-        let filtered = nodes;
-        if (combinedText.includes("juul")) {
-          const juulOnly = nodes.filter((n: any) => n.title.toLowerCase().includes("juul") || n.handle.includes("juul"));
-          if (juulOnly.length > 0) filtered = juulOnly;
-        } else if (combinedText.includes("disposable") || combinedText.includes("puff")) {
-          const dispOnly = nodes.filter((n: any) =>
-            n.title.toLowerCase().includes("disposable") ||
-            n.title.toLowerCase().includes("crown") ||
-            n.title.toLowerCase().includes("mary") ||
-            n.title.toLowerCase().includes("bar")
-          );
-          if (dispOnly.length > 0) filtered = dispOnly;
-        }
-
-        const picked = filtered.slice(0, 4);
-        if (picked.length > 0) {
-          return picked.map((p: any, idx: number) => {
-            const rawPrice = parseFloat(p.priceRangeV2?.minVariantPrice?.amount || "0");
-            const rawComp = parseFloat(p.compareAtPriceRange?.minVariantPrice?.amount || "0");
-            return {
-              id: p.id || `prod-${idx}`,
-              title: p.title,
-              handle: p.handle,
-              price: `AED ${rawPrice.toFixed(0)}`,
-              originalPrice: rawComp > rawPrice ? `AED ${rawComp.toFixed(0)}` : undefined,
-              image: p.featuredImage?.url || "/Slider/juul_2_slider.webp",
-              badge: idx === 0 ? "EDITOR'S CHOICE" : idx === 1 ? "TOP SELLER" : "100% AUTHENTIC",
-              rating: 5.0,
-              href: `/products/${p.handle}`,
-            };
-          });
-        }
-      }
-    } catch {
-      // fallback
-    }
   }
 
   return DEFAULT_JUUL_PRODUCTS;
