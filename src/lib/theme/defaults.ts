@@ -403,9 +403,9 @@ const DEFAULT_HEADER: ThemeSettings["header"] = {
       href: "/collections/disposable-vape",
       children: [
         { label: "New Disposable", href: "/collections/buy-new-disposable-vape-uae", logo: "/brands/new-disposable.png" },
-        { label: "50MG Disposable", href: "/collections/buy-50mg-disposable-vape-in-uae", logo: "/brands/50-mg-disposable.png" },
-        { label: "20MG Disposable", href: "/collections/buy-20mg-disposable-vape-uae", logo: "/brands/20-mg-disposable.png" },
-        { label: "0MG Disposable", href: "/collections/buy-0mg-disposable-vape-in-uae", logo: "/brands/0-mg-disposable.png" },
+        { label: "50MG Disposable", href: "/collections/buy-50mg-disposable-vape-in-uae" },
+        { label: "20MG Disposable", href: "/collections/buy-20mg-disposable-vape-uae" },
+        { label: "0MG Disposable", href: "/collections/buy-0mg-disposable-vape-in-uae" },
         { label: "Shisha Disposable", href: "/collections/shisha-disposable-vape-shop-uae", logo: "/brands/shisha-disposable.png" },
       ],
     },

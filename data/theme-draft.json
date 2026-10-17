@@ -6,6 +6,218 @@
       "announcementText": "🚀 FREE DELIVERY ON ORDERS 300AED+  |  ⚡ DUBAI EXPRESS WITHIN 3 HOURS  |  💳 CASH, CARD & ONLINE LINK PAYMENT ON DELIVERY",
       "logoText": "",
       "logoSubText": "",
+      "megaMenu": {
+        "enabled": true,
+        "triggerLabel": "BRAND",
+        "defaultCategoryId": "disposable",
+        "categories": [
+          {
+            "id": "disposable",
+            "title": "Disposable Brands",
+            "subtitle": "Top high-puff authentic vapes",
+            "badge": "15K+ Puffs",
+            "icon": "Flame",
+            "viewAllHref": "/collections/disposable-vape",
+            "viewAllLabel": "View All Disposables (12+ Brands)",
+            "featuredTitle": "Dubai's #1 Disposable Vapes",
+            "featuredDescription": "Authentic Al Fakher, Elf Bar, Lost Mary & Vozol with 3-hour express Dubai delivery and verification guarantee.",
+            "featuredTag": "⚡ 3-Hour Delivery",
+            "brands": [
+              {
+                "name": "Al Fakher Vape",
+                "href": "/collections/al-fakher-vape",
+                "badge": "HOT",
+                "subtitle": "Crown Bar 8K & 15K Puffs",
+                "isHot": true
+              },
+              {
+                "name": "Elf Bar Vape",
+                "href": "/collections/elf-bar-vape",
+                "badge": "TOP",
+                "subtitle": "BC5000 & Raya D1",
+                "isHot": true
+              },
+              {
+                "name": "Lost Mary",
+                "href": "/collections/lost-mary-disposable",
+                "badge": "POPULAR",
+                "subtitle": "OS5000 & BM6000",
+                "isHot": true
+              },
+              {
+                "name": "Geek Bar",
+                "href": "/collections/geek-bar-disposable",
+                "badge": "15K PUFFS",
+                "subtitle": "Pulse 15000 Disposable",
+                "isHot": true
+              },
+              {
+                "name": "Vozol Vape",
+                "href": "/collections/vozol-vape",
+                "badge": "NEW",
+                "subtitle": "Star 12000 & Vista 20K"
+              },
+              {
+                "name": "Tugboat Vape",
+                "href": "/collections/tugboat-vape",
+                "badge": "BESTSELLER",
+                "subtitle": "Hero & Super 12K"
+              },
+              {
+                "name": "HQD Vape",
+                "href": "/collections/hqd-vape",
+                "subtitle": "Cuvie & Glaze 15K"
+              },
+              {
+                "name": "Fummo Vape",
+                "href": "/collections/fummo-vape",
+                "subtitle": "Target & King 6000"
+              },
+              {
+                "name": "Yuoto Vape",
+                "href": "/collections/yuoto-vape",
+                "subtitle": "Thanos & XXL 5000"
+              },
+              {
+                "name": "Vgod Stig",
+                "href": "/collections/vgod-stig",
+                "subtitle": "Classic Ultra Portable"
+              },
+              {
+                "name": "Maskking Vape",
+                "href": "/collections/maskking-vape",
+                "subtitle": "High Pro & Jam"
+              },
+              {
+                "name": "Silvaper Vape",
+                "href": "/collections/silvaper-vape",
+                "subtitle": "Original Taste Pods"
+              },
+              {
+                "name": "Pod Salt Vape",
+                "href": "https://vapeshopdubai.webestone.net/collections/pod-salt-vape",
+                "subtitle": "Model or puff count",
+                "badge": "NEW",
+                "isHot": false
+              }
+            ]
+          },
+          {
+            "id": "pods",
+            "title": "Pod Systems & Kits",
+            "subtitle": "Refillable devices & pods",
+            "badge": "Refillable",
+            "icon": "Zap",
+            "viewAllHref": "/collections/pod-system",
+            "viewAllLabel": "View All Pod Kits",
+            "featuredTitle": "Advanced Pod Systems",
+            "featuredDescription": "Top refillable pod kits from Uwell, OXVA, and Vaporesso engineered for pure flavor and leak prevention.",
+            "featuredTag": "Top Rated Devices",
+            "brands": [
+              {
+                "name": "Oxva Vape",
+                "href": "/collections/oxva-vape",
+                "badge": "HOT",
+                "subtitle": "Xlim Pro 2 & SQ Pro",
+                "isHot": true
+              },
+              {
+                "name": "Uwell Vape",
+                "href": "/collections/uwell-vape",
+                "badge": "TOP",
+                "subtitle": "Caliburn G3 & GK3",
+                "isHot": true
+              },
+              {
+                "name": "Vaporesso Vape",
+                "href": "/collections/vaporesso-vape",
+                "badge": "POPULAR",
+                "subtitle": "XROS 4 & Luxe X2",
+                "isHot": true
+              },
+              {
+                "name": "Relx Vape",
+                "href": "/collections/relx-vape",
+                "badge": "CLOSED POD",
+                "subtitle": "Infinity & Essential Pods",
+                "isHot": true
+              },
+              {
+                "name": "Pod Salt Vape",
+                "href": "/collections/pod-salt-vape",
+                "badge": "FEATURED",
+                "subtitle": "Evolve & Go Pods"
+              },
+              {
+                "name": "Geek Vape",
+                "href": "/collections/geek-vape",
+                "badge": "RUGGED",
+                "subtitle": "Aegis & Wenax Series"
+              },
+              {
+                "name": "Smok Vape",
+                "href": "/collections/smok-vape",
+                "subtitle": "Nord & Novo Series"
+              },
+              {
+                "name": "Voopoo Vape",
+                "href": "/collections/voopoo-vape",
+                "subtitle": "Argus & Drag Series"
+              }
+            ]
+          },
+          {
+            "id": "eliquids",
+            "title": "E-Liquids & Nic Salts",
+            "subtitle": "Premium salt nic & freebase",
+            "badge": "Salt Nic",
+            "icon": "Award",
+            "viewAllHref": "/collections/vape-e-juice",
+            "viewAllLabel": "View All E-Liquids",
+            "featuredTitle": "Premium UAE E-Liquids",
+            "featuredDescription": "Smooth throat hit and intense flavor. Authentic nicotine salt & freebase formulations in 20mg, 30mg, 50mg.",
+            "featuredTag": "Authentic Juice",
+            "brands": [
+              {
+                "name": "Pod Salt Vape",
+                "href": "/collections/pod-salt-vape",
+                "badge": "BESTSELLER",
+                "subtitle": "Nexus & Core Salt Series",
+                "isHot": true
+              },
+              {
+                "name": "Vgod Stig",
+                "href": "/collections/vgod-stig",
+                "badge": "ICONIC",
+                "subtitle": "Cubano & Lush Ice Salt",
+                "isHot": true
+              },
+              {
+                "name": "Vapes Bars",
+                "href": "/collections/vapes-bars",
+                "badge": "POPULAR",
+                "subtitle": "Ghost Salt & Nicotine"
+              },
+              {
+                "name": "Nerd Vape",
+                "href": "/collections/nerd-vape",
+                "badge": "SMOOTH",
+                "subtitle": "Nerd Diamond & Salts"
+              },
+              {
+                "name": "Yuoto Vape",
+                "href": "/collections/yuoto-vape",
+                "subtitle": "Special Fruit Editions"
+              },
+              {
+                "name": "Silvaper Vape",
+                "href": "/collections/silvaper-vape",
+                "subtitle": "Salt E-Liquid Blends"
+              }
+            ]
+          }
+        ]
+      },
       "menu": [
         {
           "label": "HOME",
@@ -162,18 +374,15 @@
             },
             {
               "label": "50MG Disposable",
-              "href": "/collections/buy-50mg-disposable-vape-in-uae",
-              "logo": "/brands/50-mg-disposable.png"
+              "href": "/collections/buy-50mg-disposable-vape-in-uae"
             },
             {
               "label": "20MG Disposable",
-              "href": "/collections/buy-20mg-disposable-vape-uae",
-              "logo": "/brands/20-mg-disposable.png"
+              "href": "/collections/buy-20mg-disposable-vape-uae"
             },
             {
               "label": "0MG Disposable",
-              "href": "/collections/buy-0mg-disposable-vape-in-uae",
-              "logo": "/brands/0-mg-disposable.png"
+              "href": "/collections/buy-0mg-disposable-vape-in-uae"
             },
             {
               "label": "Shisha Disposable",
@@ -218,212 +427,7 @@
           "href": "/blog",
           "children": []
         }
-      ],
-      "megaMenu": {
-        "enabled": true,
-        "triggerLabel": "BRAND",
-        "defaultCategoryId": "disposable",
-        "categories": [
-          {
-            "id": "disposable",
-            "title": "Disposable Brands",
-            "subtitle": "Top high-puff authentic vapes",
-            "badge": "15K+ Puffs",
-            "icon": "Flame",
-            "viewAllHref": "/collections/disposable-vape",
-            "viewAllLabel": "View All Disposables (12+ Brands)",
-            "featuredTitle": "Dubai's #1 Disposable Vapes",
-            "featuredDescription": "Authentic Al Fakher, Elf Bar, Lost Mary & Vozol with 3-hour express Dubai delivery and verification guarantee.",
-            "featuredTag": "⚡ 3-Hour Delivery",
-            "brands": [
-              {
-                "name": "Al Fakher Vape",
-                "href": "/collections/al-fakher-vape",
-                "badge": "HOT",
-                "subtitle": "Crown Bar 8K & 15K Puffs",
-                "isHot": true
-              },
-              {
-                "name": "Elf Bar Vape",
-                "href": "/collections/elf-bar-vape",
-                "badge": "TOP",
-                "subtitle": "BC5000 & Raya D1",
-                "isHot": true
-              },
-              {
-                "name": "Lost Mary",
-                "href": "/collections/lost-mary-disposable",
-                "badge": "POPULAR",
-                "subtitle": "OS5000 & BM6000",
-                "isHot": true
-              },
-              {
-                "name": "Geek Bar",
-                "href": "/collections/geek-bar-disposable",
-                "badge": "15K PUFFS",
-                "subtitle": "Pulse 15000 Disposable",
-                "isHot": true
-              },
-              {
-                "name": "Vozol Vape",
-                "href": "/collections/vozol-vape",
-                "badge": "NEW",
-                "subtitle": "Star 12000 & Vista 20K"
-              },
-              {
-                "name": "Tugboat Vape",
-                "href": "/collections/tugboat-vape",
-                "badge": "BESTSELLER",
-                "subtitle": "Hero & Super 12K"
-              },
-              {
-                "name": "HQD Vape",
-                "href": "/collections/hqd-vape",
-                "subtitle": "Cuvie & Glaze 15K"
-              },
-              {
-                "name": "Fummo Vape",
-                "href": "/collections/fummo-vape",
-                "subtitle": "Target & King 6000"
-              },
-              {
-                "name": "Yuoto Vape",
-                "href": "/collections/yuoto-vape",
-                "subtitle": "Thanos & XXL 5000"
-              },
-              {
-                "name": "Vgod Stig",
-                "href": "/collections/vgod-stig",
-                "subtitle": "Classic Ultra Portable"
-              },
-              {
-                "name": "Maskking Vape",
-                "href": "/collections/maskking-vape",
-                "subtitle": "High Pro & Jam"
-              },
-              {
-                "name": "Silvaper Vape",
-                "href": "/collections/silvaper-vape",
-                "subtitle": "Original Taste Pods"
-              }
-            ]
-          },
-          {
-            "id": "pods",
-            "title": "Pod Systems & Kits",
-            "subtitle": "Refillable devices & pods",
-            "badge": "Refillable",
-            "icon": "Zap",
-            "viewAllHref": "/collections/pod-system",
-            "viewAllLabel": "View All Pod Kits",
-            "featuredTitle": "Advanced Pod Systems",
-            "featuredDescription": "Top refillable pod kits from Uwell, OXVA, and Vaporesso engineered for pure flavor and leak prevention.",
-            "featuredTag": "Top Rated Devices",
-            "brands": [
-              {
-                "name": "Oxva Vape",
-                "href": "/collections/oxva-vape",
-                "badge": "HOT",
-                "subtitle": "Xlim Pro 2 & SQ Pro",
-                "isHot": true
-              },
-              {
-                "name": "Uwell Vape",
-                "href": "/collections/uwell-vape",
-                "badge": "TOP",
-                "subtitle": "Caliburn G3 & GK3",
-                "isHot": true
-              },
-              {
-                "name": "Vaporesso Vape",
-                "href": "/collections/vaporesso-vape",
-                "badge": "POPULAR",
-                "subtitle": "XROS 4 & Luxe X2",
-                "isHot": true
-              },
-              {
-                "name": "Relx Vape",
-                "href": "/collections/relx-vape",
-                "badge": "CLOSED POD",
-                "subtitle": "Infinity & Essential Pods",
-                "isHot": true
-              },
-              {
-                "name": "Pod Salt Vape",
-                "href": "/collections/pod-salt-vape",
-                "badge": "FEATURED",
-                "subtitle": "Evolve & Go Pods"
-              },
-              {
-                "name": "Geek Vape",
-                "href": "/collections/geek-vape",
-                "badge": "RUGGED",
-                "subtitle": "Aegis & Wenax Series"
-              },
-              {
-                "name": "Smok Vape",
-                "href": "/collections/smok-vape",
-                "subtitle": "Nord & Novo Series"
-              },
-              {
-                "name": "Voopoo Vape",
-                "href": "/collections/voopoo-vape",
-                "subtitle": "Argus & Drag Series"
-              }
-            ]
-          },
-          {
-            "id": "eliquids",
-            "title": "E-Liquids & Nic Salts",
-            "subtitle": "Premium salt nic & freebase",
-            "badge": "Salt Nic",
-            "icon": "Award",
-            "viewAllHref": "/collections/vape-e-juice",
-            "viewAllLabel": "View All E-Liquids",
-            "featuredTitle": "Premium UAE E-Liquids",
-            "featuredDescription": "Smooth throat hit and intense flavor. Authentic nicotine salt & freebase formulations in 20mg, 30mg, 50mg.",
-            "featuredTag": "Authentic Juice",
-            "brands": [
-              {
-                "name": "Pod Salt Vape",
-                "href": "/collections/pod-salt-vape",
-                "badge": "BESTSELLER",
-                "subtitle": "Nexus & Core Salt Series",
-                "isHot": true
-              },
-              {
-                "name": "Vgod Stig",
-                "href": "/collections/vgod-stig",
-                "badge": "ICONIC",
-                "subtitle": "Cubano & Lush Ice Salt",
-                "isHot": true
-              },
-              {
-                "name": "Vapes Bars",
-                "href": "/collections/vapes-bars",
-                "badge": "POPULAR",
-                "subtitle": "Ghost Salt & Nicotine"
-              },
-              {
-                "name": "Nerd Vape",
-                "href": "/collections/nerd-vape",
-                "badge": "SMOOTH",
-                "subtitle": "Nerd Diamond & Salts"
-              },
-              {
-                "name": "Yuoto Vape",
-                "href": "/collections/yuoto-vape",
-                "subtitle": "Special Fruit Editions"
-              },
-              {
-                "name": "Silvaper Vape",
-                "href": "/collections/silvaper-vape",
-                "subtitle": "Salt E-Liquid Blends"
-              }
-            ]
-          }
-        ]
-      }
+      ]
     },
     "footer": {
       "trustItems": [
@@ -6863,6 +6867,6 @@
       }
     }
   },
-  "updatedAt": "2026-10-12T17:25:26.410Z",
-  "updatedBy": "admin-fix"
+  "updatedAt": "2026-10-17T17:54:07.061Z",
+  "updatedBy": "surove.webestone@gmail.com"
 }

@@ -97,7 +97,7 @@ const BrandIconAvatar: React.FC<{
   if (imageSrc && !imgError) {
     const versionedSrc =
       imageSrc.startsWith("/brands/") && !imageSrc.includes("?")
-        ? `${imageSrc}?v=5`
+        ? `${imageSrc}?v=6`
         : imageSrc;
 
     return (
@@ -159,12 +159,6 @@ const KNOWN_BRAND_LOGOS: Record<string, string> = {
   "myle": "/brands/myle-v5-pods.png",
   "new disposable": "/brands/new-disposable.png",
   "new disposable vapes": "/brands/new-disposable.png",
-  "50mg disposable": "/brands/50-mg-disposable.png",
-  "50mg": "/brands/50-mg-disposable.png",
-  "20mg disposable": "/brands/20-mg-disposable.png",
-  "20mg": "/brands/20-mg-disposable.png",
-  "0mg disposable": "/brands/0-mg-disposable.png",
-  "0mg": "/brands/0-mg-disposable.png",
   "shisha disposable": "/brands/shisha-disposable.png",
   "disposable vapes": "/brands/disposable-vapes.png",
   "disposable": "/brands/disposable-vapes.png",
@@ -199,8 +193,12 @@ const KNOWN_BRAND_LOGOS: Record<string, string> = {
 };
 
 const resolveBrandLogo = (name: string, customLogo?: string): string | undefined => {
-  if (customLogo) return customLogo;
   const lower = name.toLowerCase().trim();
+  // Keep clean monogram badge fallback ("50", "20", "0") for strength-based disposable items
+  if (/^(50|20|0)\s*mg\b/i.test(lower)) {
+    return undefined;
+  }
+  if (customLogo) return customLogo;
   for (const [key, logoPath] of Object.entries(KNOWN_BRAND_LOGOS)) {
     if (lower.includes(key)) {
       return logoPath;
