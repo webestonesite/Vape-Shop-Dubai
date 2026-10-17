@@ -350,6 +350,73 @@ export function productMatchesCapacity(
   });
 }
 
+export interface PuffRangeOption {
+  id: string;
+  label: string;
+  min: number;
+  max: number;
+}
+
+export const PUFF_RANGES: PuffRangeOption[] = [
+  { id: "250-2500", label: "(250 – 2,500 puffs)", min: 250, max: 2999 },
+  { id: "3000-5000", label: "(3,000 – 5,000 puffs)", min: 3000, max: 5999 },
+  { id: "6000-10000", label: "(6,000 – 10,000 puffs)", min: 6000, max: 11999 },
+  { id: "12000-20000", label: "(12,000 – 20,000 puffs)", min: 12000, max: 23999 },
+  { id: "24000-35000", label: "(24,000 – 35,000 puffs)", min: 24000, max: 39999 },
+  { id: "40000-60000", label: "(40,000 – 60,000 puffs)", min: 40000, max: 60000 },
+];
+
+export function parseProductPuffCount(p: { puffs?: string; name?: string; tags?: string[] }): number | null {
+  if (p.puffs && typeof p.puffs === "string" && p.puffs.trim()) {
+    const m = p.puffs.match(/(\d+[\d,]*)/);
+    if (m) {
+      const val = parseInt(m[1].replace(/,/g, ""), 10);
+      if (val >= 200 && val <= 100000) return val;
+    }
+  }
+
+  const text = ((p.name || "") + " " + (p.tags || []).join(" "));
+  if (/stig/i.test(text)) return 300;
+
+  // 1. Letters+Digits followed by puffs (e.g. 'MT15000 Puffs', 'T12000 Puffs', 'EP8000 Puffs', '12000 Puffs', '2500 puff')
+  const m1 = text.match(/(?:^|[^\d])(\d{3,6})\s*puffs?(?![a-z0-9])/i);
+  if (m1) {
+    const val = parseInt(m1[1], 10);
+    if (val >= 200 && val <= 100000) return val;
+  }
+
+  // 2. '30K', '60K', '40K Disposable'
+  const m2 = text.match(/(?:^|[^\w])(\d+)\s*k(?:\s*puffs?)?(?![a-z0-9])/i);
+  if (m2) {
+    const val = parseInt(m2[1], 10) * 1000;
+    if (val >= 1000 && val <= 100000) return val;
+  }
+
+  // 3. Model numbers with puff count: EW9000, BC5000, BM6000, DF9000, MT15000
+  const m3 = text.match(/(?:EW|BC|BM|DF|TE|MT)(\d{4,5})(?![a-z0-9])/i);
+  if (m3) {
+    const val = parseInt(m3[1], 10);
+    if (val >= 1000 && val <= 50000) return val;
+  }
+
+  return null;
+}
+
+export function productMatchesPuffRange(
+  p: { puffs?: string; name?: string; tags?: string[] },
+  selectedOptions: string[]
+): boolean {
+  if (!selectedOptions || selectedOptions.length === 0) return true;
+  const puffCount = parseProductPuffCount(p);
+  if (puffCount === null) return false;
+
+  return selectedOptions.some((sel) => {
+    const range = PUFF_RANGES.find((r) => r.label === sel || r.id === sel);
+    if (!range) return false;
+    return puffCount >= range.min && puffCount <= range.max;
+  });
+}
+
 interface SearchParamsSyncData {
   sub: string;
   brand: string;
@@ -695,7 +762,6 @@ function CollectionPageContent({
 
   // Dynamic filter options generated ONLY from products present inside this specific collection
   const filterOptions = useMemo(() => {
-    const puffsSet = new Set<string>();
     const brandsSet = new Set<string>();
     const categoriesSet = new Set<string>();
     const seriesSet = new Set<string>();
@@ -766,16 +832,38 @@ function CollectionPageContent({
         seriesSet.add("MYLE Meta Box");
       }
 
-      if (p.puffs) puffsSet.add(p.puffs);
       if (p.brand) brandsSet.add(p.brand);
       if (p.category) categoriesSet.add(p.category);
       if (p.price > maxP) maxP = p.price;
     });
 
+    // Puffs ranges with actual counts in this collection
+    const puffCountsByRange: Record<string, number> = {};
+    PUFF_RANGES.forEach((r) => {
+      puffCountsByRange[r.label] = 0;
+    });
+
+    collectionProducts.forEach((p) => {
+      const puff = parseProductPuffCount(p);
+      if (puff !== null) {
+        const matched = PUFF_RANGES.find((r) => puff >= r.min && puff <= r.max);
+        if (matched) {
+          puffCountsByRange[matched.label] = (puffCountsByRange[matched.label] || 0) + 1;
+        }
+      }
+    });
+
+    const puffOptions = PUFF_RANGES.filter(
+      (r) => (puffCountsByRange[r.label] || 0) > 0
+    ).map((r) => ({
+      ...r,
+      count: puffCountsByRange[r.label] || 0,
+    }));
+
     return {
       nicotines: nicotineOptions,
       capacities: capacityOptions,
-      puffs: Array.from(puffsSet).filter(Boolean),
+      puffs: puffOptions,
       brands: Array.from(brandsSet).filter(Boolean),
       categories: Array.from(categoriesSet).filter(Boolean),
       series: Array.from(seriesSet).filter(Boolean),
@@ -819,8 +907,8 @@ function CollectionPageContent({
       // Capacity (ml) filter
       const matchCapacity = productMatchesCapacity(p, selectedCapacities);
 
-      // Puffs filter
-      const matchPuff = selectedPuffs.length === 0 || (p.puffs && selectedPuffs.includes(p.puffs));
+      // Puffs filter (Range-based)
+      const matchPuff = productMatchesPuffRange(p, selectedPuffs);
 
       // Brand filter
       const matchBrand = selectedBrands.length === 0 || (p.brand && selectedBrands.includes(p.brand));
@@ -1233,16 +1321,19 @@ function CollectionPageContent({
                     {filterOptions.puffs.length > 0 && (
                       <div className="space-y-3 pt-4 border-t border-border/40">
                         <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Puffs Capacity:</p>
-                        <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                          {filterOptions.puffs.map((puff) => (
-                            <label key={puff} className="flex items-center gap-2.5 text-xs font-semibold cursor-pointer text-foreground group">
+                        <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                          {filterOptions.puffs.map((puffItem) => (
+                            <label key={puffItem.id} className="flex items-center gap-2.5 text-xs font-semibold cursor-pointer text-foreground group">
                               <input
                                 type="checkbox"
-                                checked={selectedPuffs.includes(puff)}
-                                onChange={() => togglePuff(puff)}
+                                checked={selectedPuffs.includes(puffItem.label)}
+                                onChange={() => togglePuff(puffItem.label)}
                                 className="accent-primary h-4 w-4 rounded border-border focus:ring-0 cursor-pointer"
                               />
-                              <span className="group-hover:text-primary transition-colors">{puff}</span>
+                              <span className="group-hover:text-primary transition-colors flex items-center justify-between flex-1">
+                                <span>{puffItem.label}</span>
+                                <span className="text-[10px] text-muted-foreground/80 font-mono font-normal">({puffItem.count})</span>
+                              </span>
                             </label>
                           ))}
                         </div>
@@ -1781,15 +1872,18 @@ function CollectionPageContent({
                 <div className="space-y-3 pt-4 border-t border-border/40">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Puffs Capacity:</p>
                   <div className="space-y-2">
-                    {filterOptions.puffs.map((puff) => (
-                      <label key={puff} className="flex items-center gap-2.5 text-xs font-semibold cursor-pointer text-foreground group">
+                    {filterOptions.puffs.map((puffItem) => (
+                      <label key={puffItem.id} className="flex items-center gap-2.5 text-xs font-semibold cursor-pointer text-foreground group">
                         <input
                           type="checkbox"
-                          checked={selectedPuffs.includes(puff)}
-                          onChange={() => togglePuff(puff)}
+                          checked={selectedPuffs.includes(puffItem.label)}
+                          onChange={() => togglePuff(puffItem.label)}
                           className="accent-primary h-4 w-4 rounded border-border focus:ring-0 cursor-pointer"
                         />
-                        <span className="group-hover:text-primary transition-colors">{puff}</span>
+                        <span className="group-hover:text-primary transition-colors flex items-center justify-between flex-1">
+                          <span>{puffItem.label}</span>
+                          <span className="text-[10px] text-muted-foreground/80 font-mono font-normal">({puffItem.count})</span>
+                        </span>
                       </label>
                     ))}
                   </div>
